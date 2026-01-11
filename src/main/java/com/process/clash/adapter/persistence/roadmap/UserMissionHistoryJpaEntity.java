@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user_mission_history",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "mission_id"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "fk_mission_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserMissionHistoryJpaEntity {

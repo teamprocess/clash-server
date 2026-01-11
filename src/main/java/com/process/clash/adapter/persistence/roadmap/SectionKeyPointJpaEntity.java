@@ -1,9 +1,14 @@
 package com.process.clash.adapter.persistence.roadmap;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "section_key_points")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SectionKeyPointJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
