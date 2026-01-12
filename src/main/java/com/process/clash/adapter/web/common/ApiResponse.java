@@ -48,6 +48,7 @@ public record ApiResponse<T>(
 
     public static ResponseEntity<ApiResponse<Void>> error(ErrorResponse error, HttpStatus status) {
         return ResponseEntity.status(status).body(ApiResponse.<Void>builder()
+                .success(false)
                 .error(error)
                 .build());
     }

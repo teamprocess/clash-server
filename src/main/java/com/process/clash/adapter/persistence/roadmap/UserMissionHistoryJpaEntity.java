@@ -31,5 +31,6 @@ public class UserMissionHistoryJpaEntity {
     @Column(nullable = false)
     private Integer score; // 0점과 미채점 구분
 
+    @Column(name = "current_question_index")
     private Integer currentQuestionIndex; // 현재 진행 중인 질문 인덱스
 }

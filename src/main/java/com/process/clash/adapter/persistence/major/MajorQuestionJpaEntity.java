@@ -5,7 +5,7 @@ import lombok.*;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "major_questions")
 public class MajorQuestionJpaEntity {
 
