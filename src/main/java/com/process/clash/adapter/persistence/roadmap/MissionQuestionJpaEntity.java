@@ -9,16 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "questions")
+@Table(name = "mission_questions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionJpaEntity {
+public class MissionQuestionJpaEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id")
+    @JoinColumn(name = "fk_mission_id")
     private MissionJpaEntity mission;
 
     @Column(nullable = false, length = 1000)

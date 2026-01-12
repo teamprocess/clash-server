@@ -18,11 +18,11 @@ public class UserMissionHistoryJpaEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id", nullable = false)
+    @JoinColumn(name = "fk_mission_id", nullable = false)
     private MissionJpaEntity mission;
 
     @Column(name = "is_cleared", nullable = false)

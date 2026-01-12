@@ -11,16 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChoiceJpaEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_question_id")
-    private QuestionJpaEntity question;
+    private MissionQuestionJpaEntity question;
 
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "is_correct", nullable = false)
     private boolean isCorrect;
 }
