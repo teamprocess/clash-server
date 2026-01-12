@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.roadmap;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Table(name = "missions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class MissionJpaEntity {
 
     @Id
@@ -30,4 +32,26 @@ public class MissionJpaEntity {
 
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MissionQuestionJpaEntity> questions = new ArrayList<>();
+
+    public void setChapter(ChapterJpaEntity chapter) {
+        this.chapter = chapter;
+    }
+
+    public void setQuestions(List<MissionQuestionJpaEntity> questions) {
+        this.questions = questions;
+    }
+
+    public static MissionJpaEntity ofId(Long id) {
+        MissionJpaEntity e = new MissionJpaEntity();
+        try {
+            java.lang.reflect.Field f = MissionJpaEntity.class.getDeclaredField("id");
+            f.setAccessible(true);
+            f.set(e, id);
+        } catch (Exception ex) {
+        }
+        return e;
+    }
+
+    public void setTitle(String title) { this.title = title; }
+    public void setDifficulty(Integer difficulty) { this.difficulty = difficulty; }
 }

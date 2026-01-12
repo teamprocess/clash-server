@@ -2,6 +2,8 @@ package com.process.clash.adapter.persistence.roadmap;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SectionKeyPointJpaRepository extends JpaRepository<SectionKeyPointJpaEntity, Long> {
+import java.util.List;
 
+public interface SectionKeyPointJpaRepository extends JpaRepository<SectionKeyPointJpaEntity, Long> {
+	List<SectionKeyPointJpaEntity> findAllBySectionId(Long sectionId);
 }
