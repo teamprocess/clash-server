@@ -1,9 +1,12 @@
 package com.process.clash.adapter.persistence.major;
 
 import com.process.clash.domain.major.MajorQuestion;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MajorQuestionJpaMapper {
-    public static MajorQuestionJpaEntity toJpaEntity(MajorQuestion majorQuestion) {
+    public MajorQuestionJpaEntity toJpaEntity(MajorQuestion majorQuestion) {
+
         return new MajorQuestionJpaEntity(
                 majorQuestion.getId(),
                 majorQuestion.getContent(),
@@ -18,7 +21,7 @@ public class MajorQuestionJpaMapper {
         );
     }
 
-    public static MajorQuestion toDomain(MajorQuestionJpaEntity majorQuestionJpaEntity) {
+    public MajorQuestion toDomain(MajorQuestionJpaEntity majorQuestionJpaEntity) {
 
         return new MajorQuestion(
                 majorQuestionJpaEntity.getId(),

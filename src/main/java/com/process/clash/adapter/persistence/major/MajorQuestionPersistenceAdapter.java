@@ -14,22 +14,23 @@ import java.util.Optional;
 public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryPort {
 
     private final MajorQuestionJpaRepository majorQuestionJpaRepository;
+    private final MajorQuestionJpaMapper majorQuestionJpaMapper;
 
     @Override
     public void save(MajorQuestion majorQuestion) {
-        MajorQuestionJpaEntity majorQuestionJpaEntity = MajorQuestionJpaMapper.toJpaEntity(majorQuestion);
+        MajorQuestionJpaEntity majorQuestionJpaEntity = majorQuestionJpaMapper.toJpaEntity(majorQuestion);
         majorQuestionJpaRepository.save(majorQuestionJpaEntity);
     }
 
     @Override
     public Optional<MajorQuestion> findById(Long id) {
-        return majorQuestionJpaRepository.findById(id).map(MajorQuestionJpaMapper::toDomain);
+        return majorQuestionJpaRepository.findById(id).map(majorQuestionJpaMapper::toDomain);
     }
 
     @Override
     public List<MajorQuestion> findAllByMajor(Major major) {
         return majorQuestionJpaRepository.findAllByMajor(major).stream()
-                .map(MajorQuestionJpaMapper::toDomain)
+                .map(majorQuestionJpaMapper::toDomain)
                 .toList();
     }
 }
