@@ -1,11 +1,13 @@
 package com.process.clash.adapter.persistence.major;
 
+import com.process.clash.domain.common.enums.Major;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "major_questions")
 public class MajorQuestionJpaEntity {
 
@@ -15,6 +17,10 @@ public class MajorQuestionJpaEntity {
 
     @Column(nullable = false)
     private String content; // 질문 텍스트 (예: "논리적인 문제 해결을 즐긴다")
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Major major;
 
     @Embedded
     private WeightVo weightVo;

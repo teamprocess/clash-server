@@ -1,0 +1,39 @@
+package com.process.clash.adapter.persistence.major;
+
+import com.process.clash.domain.major.MajorQuestion;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MajorQuestionJpaMapper {
+    public MajorQuestionJpaEntity toJpaEntity(MajorQuestion majorQuestion) {
+
+        return new MajorQuestionJpaEntity(
+                majorQuestion.getId(),
+                majorQuestion.getContent(),
+                majorQuestion.getMajor(),
+                new MajorQuestionJpaEntity.WeightVo(
+                        majorQuestion.getWeightVo().getWeb(),
+                        majorQuestion.getWeightVo().getApp(),
+                        majorQuestion.getWeightVo().getServer(),
+                        majorQuestion.getWeightVo().getAi(),
+                        majorQuestion.getWeightVo().getGame()
+                )
+        );
+    }
+
+    public MajorQuestion toDomain(MajorQuestionJpaEntity majorQuestionJpaEntity) {
+
+        return new MajorQuestion(
+                majorQuestionJpaEntity.getId(),
+                majorQuestionJpaEntity.getContent(),
+                majorQuestionJpaEntity.getMajor(),
+                new MajorQuestion.WeightVo(
+                        majorQuestionJpaEntity.getWeightVo().getWeb(),
+                        majorQuestionJpaEntity.getWeightVo().getApp(),
+                        majorQuestionJpaEntity.getWeightVo().getServer(),
+                        majorQuestionJpaEntity.getWeightVo().getAi(),
+                        majorQuestionJpaEntity.getWeightVo().getGame()
+                )
+        );
+    }
+}
