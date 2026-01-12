@@ -18,11 +18,11 @@ public class UserMissionHistoryJpaEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_id", nullable = false)
+    @JoinColumn(name = "fk_mission_id", nullable = false)
     private MissionJpaEntity mission;
 
     @Column(name = "is_cleared", nullable = false)
@@ -31,6 +31,5 @@ public class UserMissionHistoryJpaEntity {
     @Column(nullable = false)
     private Integer score; // 0점과 미채점 구분
 
-    @Column(name = "current_question_index")
     private Integer currentQuestionIndex; // 현재 진행 중인 질문 인덱스
 }

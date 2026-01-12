@@ -9,25 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "missions")
+@Table(name = "mission_questions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MissionJpaEntity {
+public class MissionQuestionJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_chapter_id")
-    private ChapterJpaEntity chapter;
+    @JoinColumn(name = "fk_mission_id")
+    private MissionJpaEntity mission;
 
-    @Column(nullable = false)
-    private String title;
+    @Column(nullable = false, length = 1000)
+    private String content;
 
-    @Column(nullable = false)
-    private Integer difficulty;
+    private String explanation; // 해설
 
-    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MissionQuestionJpaEntity> questions = new ArrayList<>();
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChoiceJpaEntity> choices = new ArrayList<>();
 }
