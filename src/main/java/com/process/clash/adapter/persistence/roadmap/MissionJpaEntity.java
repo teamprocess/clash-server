@@ -14,7 +14,8 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MissionJpaEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,5 +29,5 @@ public class MissionJpaEntity {
     private Integer difficulty;
 
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestionJpaEntity> questions = new ArrayList<>();
+    private List<MissionQuestionJpaEntity> questions = new ArrayList<>();
 }
