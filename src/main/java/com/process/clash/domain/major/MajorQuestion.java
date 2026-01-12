@@ -1,8 +1,6 @@
 package com.process.clash.domain.major;
 
 import com.process.clash.domain.common.enums.Major;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import lombok.*;
 
 @Getter
@@ -16,10 +14,8 @@ public class MajorQuestion {
 
     private Major major;
 
-    @Embedded
     private MajorQuestion.WeightVo weightVo;
 
-    @Embeddable
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
