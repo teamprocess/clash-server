@@ -28,6 +28,7 @@ public record User(
                 username,
                 name,
                 password,
+                Role.USER,
                 true,
                 null,
                 false,

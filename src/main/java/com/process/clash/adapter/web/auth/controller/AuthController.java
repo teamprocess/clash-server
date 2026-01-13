@@ -7,6 +7,7 @@ import com.process.clash.application.user.data.SignInData;
 import com.process.clash.application.user.data.SignUpData;
 import com.process.clash.application.user.port.in.SignInUseCase;
 import com.process.clash.application.user.port.in.SignUpUseCase;
+import com.process.clash.infrastructure.principle.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -45,10 +46,11 @@ public class AuthController {
 	) {
 		SignInData.Command command = new SignInData.Command(request.username(), request.password());
 		SignInData.Result result = signInUseCase.execute(command);
+		AuthUser authUser = new AuthUser(result.id(), result.role());
 
 		// 인증 토큰을 생성
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-				result.username(),
+				authUser,
 				null,
 				List.of(new SimpleGrantedAuthority("ROLE_USER"))
 		);
