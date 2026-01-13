@@ -33,7 +33,7 @@ public class ChapterJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getOrderIndex(),
-                entity.getMissions().stream().map(missionJpaMapper::toDomain).collect(Collectors.toList())
+                entity.getMissions().stream().map(missionJpaMapper::toDomain).toList()
         );
     }
 }
