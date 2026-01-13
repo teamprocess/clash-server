@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserStatusCode implements StatusCode {
     // 403
-    NOT_PROPER_ACCESS("NOT_PROPER_ACCESS", "적절하지 않은 접근입니다.", ErrorCategory.FORBIDDEN),
+    REQUIRED_ADMIN_ROLE("REQUIRED_ADMIN_ROLE", "어드민 권한이 요구됩니다.", ErrorCategory.FORBIDDEN),
+    REQUIRED_USER_ROLE("REQUIRED_USER_ROLE", "유저 권한이 요구됩니다.", ErrorCategory.FORBIDDEN),
 
     // 404
     USER_NOT_FOUND("USER_NOT_FOUND", "존재하지 않는 유저입니다.", ErrorCategory.NOT_FOUND),
