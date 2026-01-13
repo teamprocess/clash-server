@@ -1,18 +1,19 @@
 package com.process.clash.adapter.persistence.roadmap.chapter;
 
-import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
-import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaMapper;
-import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
-import com.process.clash.domain.roadmap.Chapter;
-import jakarta.annotation.Nullable;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaMapper;
+import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
+import com.process.clash.domain.roadmap.Chapter;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

@@ -1,15 +1,17 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaMapper;
 import com.process.clash.domain.roadmap.Section;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

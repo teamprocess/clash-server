@@ -1,5 +1,10 @@
 package com.process.clash.adapter.web.auth.controller;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.common.ApiResponse;
@@ -7,13 +12,9 @@ import com.process.clash.application.user.data.SignInData;
 import com.process.clash.application.user.data.SignUpData;
 import com.process.clash.application.user.port.in.SignInUseCase;
 import com.process.clash.application.user.port.in.SignUpUseCase;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -35,9 +36,9 @@ public class AuthController {
 		SignInData.Command command = new SignInData.Command(request.username(), request.password());
 		SignInData.Result result = signInUseCase.execute(command);
 		SignInDto.Response response = SignInDto.Response.builder()
-				.id(result.getId())
-				.username(result.getUsername())
-				.name(result.getName())
+				.id(result.id())
+				.username(result.username())
+				.name(result.name())
 				.build();
 		return ApiResponse.success(response);
 	}
