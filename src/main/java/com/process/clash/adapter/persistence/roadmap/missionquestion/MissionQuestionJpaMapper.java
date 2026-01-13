@@ -26,7 +26,7 @@ public class MissionQuestionJpaMapper {
     public MissionQuestion toDomain(MissionQuestionJpaEntity entity) {
         return new MissionQuestion(
                 entity.getId(),
-                entity.getMission().getId(),
+                entity.getMission() != null ? entity.getMission().getId() : null,
                 entity.getContent(),
                 entity.getExplanation(),
                 entity.getChoices().stream().map(choiceJpaMapper::toDomain).toList()
