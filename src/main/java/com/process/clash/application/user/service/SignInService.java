@@ -1,5 +1,6 @@
 package com.process.clash.application.user.service;
 
+import com.process.clash.application.user.exception.exception.unauthorized.InvalidCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class SignInService implements SignInUseCase {
 
 		boolean matches = passwordEncoder.matches(command.password(), user.password());
 		if (!matches) {
-			throw new com.process.clash.application.user.exception.exception.unauthorized.InvalidCredentialsException();
+			throw new InvalidCredentialsException();
 		}
 
 		return new SignInData.Result(user.id(), user.username(), user.name());

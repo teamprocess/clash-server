@@ -1,5 +1,7 @@
 package com.process.clash.application.user.service;
 
+import com.process.clash.application.user.exception.exception.conflict.UsernameAlreadyExistException;
+import com.process.clash.domain.common.enums.Major;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,11 @@ public class SignUpService implements SignUpUseCase {
 
 	@Override
 	public void execute(SignUpData.Command command) {
+
+		if (userRepositoryPort.existsByUsername(command.username())) {
+			throw new UsernameAlreadyExistException();
+		}
+
 		String encoded = passwordEncoder.encode(command.password());
 
 		User user = new User(
@@ -33,7 +40,7 @@ public class SignUpService implements SignUpUseCase {
 				false,
 				0,
 				0,
-				null
+				Major.NONE
 		);
 
 		userRepositoryPort.save(user);

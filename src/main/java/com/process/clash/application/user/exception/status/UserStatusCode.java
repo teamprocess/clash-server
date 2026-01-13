@@ -12,6 +12,9 @@ public enum UserStatusCode implements StatusCode {
     // 404
     USER_NOT_FOUND("USER_NOT_FOUND", "존재하지 않는 유저입니다.", ErrorCategory.NOT_FOUND),
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "유효하지 않은 자격 증명입니다.", ErrorCategory.UNAUTHORIZED),
+
+    // 409
+    USERNAME_ALREADY_EXIST("USERNAME_ALREADY_EXIST", "이미 존재하는 username입니다.", ErrorCategory.CONFLICT),
     ;
 
     private final String code;
