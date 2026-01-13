@@ -18,10 +18,6 @@ public class MajorQuestionJpaEntity {
     @Column(nullable = false)
     private String content; // 질문 텍스트 (예: "논리적인 문제 해결을 즐긴다")
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Major major;
-
     @Embedded
     private WeightVo weightVo;
 

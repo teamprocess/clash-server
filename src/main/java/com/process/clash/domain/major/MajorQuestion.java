@@ -12,8 +12,6 @@ public class MajorQuestion {
 
     private String content; // 질문 텍스트 (예: "논리적인 문제 해결을 즐긴다")
 
-    private Major major;
-
     private MajorQuestion.WeightVo weightVo;
 
     @Getter
