@@ -1,7 +1,5 @@
 package com.process.clash.adapter.persistence.roadmap.choice;
 
-import com.process.clash.adapter.persistence.roadmap.chapterprogress.UserChapterProgressJpaRepository;
-import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaRepository;
 import com.process.clash.domain.roadmap.Choice;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.missionhistory;
 
-import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaRepository;
+import com.process.clash.adapter.persistence.user.UserJpaRepository;
 import com.process.clash.domain.roadmap.UserMissionHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,8 +10,18 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMissionHistoryJpaMapper {
 
+    private final UserJpaRepository userJpaRepository;
+    private final MissionJpaRepository missionJpaRepository;
+
     public UserMissionHistoryJpaEntity toJpaEntity(UserMissionHistory history) {
-        return null; // TODO: impl userjparepository
+        return new UserMissionHistoryJpaEntity(
+                history.getId(),
+                userJpaRepository.getReferenceById(history.getUserId()),
+                missionJpaRepository.getReferenceById(history.getMissionId()),
+                history.isCleared(),
+                history.getScore(),
+                history.getCurrentQuestionIndex()
+        );
     }
 
     public UserMissionHistory toDomain(UserMissionHistoryJpaEntity entity) {

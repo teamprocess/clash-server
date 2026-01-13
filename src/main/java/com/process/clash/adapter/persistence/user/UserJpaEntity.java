@@ -21,14 +21,4 @@ public class UserJpaEntity {
     @Enumerated(EnumType.STRING)
     private Major major;
 
-    // helper to allow creating a lightweight reference by id
-    public static UserJpaEntity ofId(Long id) {
-        UserJpaEntity e = new UserJpaEntity();
-        try {
-            java.lang.reflect.Field f = UserJpaEntity.class.getDeclaredField("id");
-            f.setAccessible(true);
-            f.set(e, id);
-        } catch (Exception ex) {}
-        return e;
-    }
 }
