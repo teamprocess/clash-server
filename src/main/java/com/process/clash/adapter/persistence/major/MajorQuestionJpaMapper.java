@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.major;
 
-import com.process.clash.domain.major.MajorQuestion;
+import com.process.clash.domain.major.entity.MajorQuestion;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,5 +1,6 @@
-package com.process.clash.domain.roadmap;
+package com.process.clash.domain.roadmap.entity;
 
+import com.process.clash.domain.roadmap.enums.ProgressStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,17 +9,13 @@ import lombok.AccessLevel;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserMissionHistory {
+public class UserChapterProgress {
 
     private Long id;
 
     private Long userId;
 
-    private Long missionId;
+    private Long chapterId;
 
-    private boolean isCleared;
-
-    private Integer score;
-
-    private Integer currentQuestionIndex;
+    private ProgressStatus status;
 }

@@ -19,6 +19,12 @@ public enum CommonStatusCode implements StatusCode {
             ErrorCategory.NOT_FOUND
     ),
 
+    UNAUTHORIZED(
+            "UNAUTHORIZED",
+            "인증이 필요한 서비스입니다.", // common으로 쓰기 모호한 느낌의 메세지
+            ErrorCategory.UNAUTHORIZED
+    ),
+
     PERMISSION_DENIED(
             "PERMISSION_DENIED",
             "해당 작업을 수행할 권한이 없습니다.",

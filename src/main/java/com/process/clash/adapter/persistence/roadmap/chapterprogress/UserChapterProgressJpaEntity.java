@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.user.UserJpaEntity;
-import com.process.clash.domain.common.enums.ProgressStatus;
+import com.process.clash.domain.roadmap.enums.ProgressStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
