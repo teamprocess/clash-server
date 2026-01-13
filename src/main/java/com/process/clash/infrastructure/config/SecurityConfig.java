@@ -3,6 +3,7 @@ package com.process.clash.infrastructure.config;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
+import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ public class SecurityConfig {
         http
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
 //                .csrf(csrf -> csrf
 //                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                )
@@ -53,7 +55,7 @@ public class SecurityConfig {
 
                             // 1. ErrorResponse 생성 (인증 실패용)
                             ErrorResponse errorResponse = ErrorResponse.builder()
-                                    .code("UNAUTHORIZED") // 실제 사용하는 StatusCode 상수가 있다면 그것을 쓰세요
+                                    .code(CommonStatusCode.UNAUTHORIZED.getCode()) // 실제 사용하는 StatusCode 상수가 있다면 그것을 쓰세요
                                     .message("인증이 필요한 서비스입니다.")
                                     .timestamp(LocalDateTime.now())
                                     .build();

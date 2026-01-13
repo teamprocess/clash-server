@@ -56,19 +56,4 @@ public class UserJpaEntity {
     @Enumerated(EnumType.STRING)
     private Major major;
 
-    public UserJpaEntity create(String username, String name, String password) {
-        UserJpaEntity userJpaEntity = new UserJpaEntity();
-
-        userJpaEntity.username = username;
-        userJpaEntity.name = name;
-        userJpaEntity.password = password;
-        userJpaEntity.ableToAddRival = true;
-        userJpaEntity.profileImage = null;
-        userJpaEntity.pomodoroEnabled = false;
-        userJpaEntity.pomodoroBreakMinute = 0;
-        userJpaEntity.pomodoroStudyMinute = 0;
-        userJpaEntity.major = null;
-
-        return userJpaEntity;
-    }
 }

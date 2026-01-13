@@ -28,19 +28,10 @@ public class SignUpService implements SignUpUseCase {
 
 		String encoded = passwordEncoder.encode(command.password());
 
-		User user = new User(
-				null,
-				null,
-				null,
+		User user = User.createDefault(
 				command.username(),
 				command.name(),
-				encoded,
-				true,
-				null,
-				false,
-				0,
-				0,
-				Major.NONE
+				encoded
 		);
 
 		userRepositoryPort.save(user);

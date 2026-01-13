@@ -18,4 +18,20 @@ public record User(
         Integer pomodoroBreakMinute,
         Major major
 ) {
+    public static User createDefault(String username, String name, String password) {
+        return new User(
+                null,
+                null,
+                null,
+                username,
+                name,
+                password,
+                true,
+                null,
+                false,
+                25,   // 기본 공부 시간 (기본값이 없다면 null)
+                5,
+                Major.NONE
+        );
+    }
 }
