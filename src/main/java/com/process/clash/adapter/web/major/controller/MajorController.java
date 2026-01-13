@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.major.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,4 +30,5 @@ public class MajorController {
         GetMajorQuestionDto.Response response = GetMajorQuestionDto.Response.from(result);
         return ApiResponse.success(response);
     }
+
 }
