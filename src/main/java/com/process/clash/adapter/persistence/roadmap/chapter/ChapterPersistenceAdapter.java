@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.chapter;
 
+import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
 import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
 import com.process.clash.domain.roadmap.Chapter;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +16,11 @@ public class ChapterPersistenceAdapter implements ChapterRepositoryPort {
 
     private final ChapterJpaRepository chapterJpaRepository;
     private final ChapterJpaMapper chapterJpaMapper;
-    private final com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository sectionJpaRepository;
+    private final SectionJpaRepository sectionJpaRepository;
 
     @Override
     public void save(Chapter chapter) {
-        com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity sectionEntity = sectionJpaRepository.getReferenceById(chapter.getSectionId());
+        SectionJpaEntity sectionEntity = sectionJpaRepository.getReferenceById(chapter.getSectionId());
         chapterJpaRepository.save(chapterJpaMapper.toEntity(chapter, sectionEntity));
     }
 
