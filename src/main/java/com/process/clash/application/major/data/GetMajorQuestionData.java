@@ -1,12 +1,13 @@
 package com.process.clash.application.major.data;
 
+import java.util.List;
+
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.major.MajorQuestion;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
 
 public class GetMajorQuestionData {
 

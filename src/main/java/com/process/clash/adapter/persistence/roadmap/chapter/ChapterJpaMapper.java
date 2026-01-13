@@ -1,11 +1,17 @@
 package com.process.clash.adapter.persistence.roadmap.chapter;
 
+import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaMapper;
-import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
+import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.domain.roadmap.Chapter;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -13,17 +19,25 @@ import java.util.stream.Collectors;
 public class ChapterJpaMapper {
 
     private final MissionJpaMapper missionJpaMapper;
-    private final SectionJpaRepository sectionJpaRepository;
 
-    public ChapterJpaEntity toEntity(Chapter chapter) {
-        return new ChapterJpaEntity(
+    public ChapterJpaEntity toEntity(Chapter chapter, SectionJpaEntity sectionEntity) {
+        // 먼저 빈 missions 리스트로 Chapter 엔티티 생성
+        ChapterJpaEntity chapterEntity = new ChapterJpaEntity(
                 chapter.getId(),
-                sectionJpaRepository.getReferenceById(chapter.getSectionId()),
+                sectionEntity,
                 chapter.getTitle(),
                 chapter.getDescription(),
                 chapter.getOrderIndex(),
-                chapter.getMissions().stream().map(missionJpaMapper::toJpaEntity).toList()
+                new ArrayList<>()
         );
+
+        List<MissionJpaEntity> missions = Optional.ofNullable(chapter.getMissions()).orElse(Collections.emptyList())
+                .stream().map(m -> missionJpaMapper.toJpaEntity(m, chapterEntity)).toList();
+
+        // missions 리스트를 기존의 리스트에 추가
+        chapterEntity.getMissions().addAll(missions);
+
+        return chapterEntity;
     }
 
     public Chapter toDomain(ChapterJpaEntity entity) {
@@ -33,7 +47,8 @@ public class ChapterJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getOrderIndex(),
-                entity.getMissions().stream().map(missionJpaMapper::toDomain).toList()
+                Optional.ofNullable(entity.getMissions()).orElse(Collections.emptyList())
+                        .stream().map(missionJpaMapper::toDomain).collect(Collectors.toList())
         );
     }
 }

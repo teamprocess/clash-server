@@ -1,26 +1,39 @@
 package com.process.clash.adapter.persistence.roadmap.missionquestion;
 
+import com.process.clash.adapter.persistence.roadmap.choice.ChoiceJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.choice.ChoiceJpaMapper;
-import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaRepository;
+import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
 import com.process.clash.domain.roadmap.MissionQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class MissionQuestionJpaMapper {
 
     private final ChoiceJpaMapper choiceJpaMapper;
-    private final MissionJpaRepository missionJpaRepository;
 
-    public MissionQuestionJpaEntity toJpaEntity(MissionQuestion question) {
-        return new MissionQuestionJpaEntity(
+    public MissionQuestionJpaEntity toJpaEntity(MissionQuestion question, MissionJpaEntity missionEntity) {
+        MissionQuestionJpaEntity questionEntity = new MissionQuestionJpaEntity(
                 question.getId(),
-                missionJpaRepository.getReferenceById(question.getMissionId()),
+                missionEntity,
                 question.getContent(),
                 question.getExplanation(),
-                question.getChoices().stream().map(choiceJpaMapper::toJpaEntity).toList()
+                new ArrayList<>()
         );
+
+        // null-safe: question.getChoices()가 null이면 빈 리스트로 처리
+        List<ChoiceJpaEntity> choices = (question.getChoices() != null)
+                ? question.getChoices().stream()
+                .map(c -> choiceJpaMapper.toJpaEntity(c, questionEntity)).toList() :
+                new ArrayList<>();
+
+        questionEntity.getChoices().addAll(choices);
+
+        return questionEntity;
     }
 
     public MissionQuestion toDomain(MissionQuestionJpaEntity entity) {
@@ -29,7 +42,11 @@ public class MissionQuestionJpaMapper {
                 entity.getMission() != null ? entity.getMission().getId() : null,
                 entity.getContent(),
                 entity.getExplanation(),
-                entity.getChoices().stream().map(choiceJpaMapper::toDomain).toList()
+                // null-safe: entity.getChoices()가 null이면 빈 리스트로 처리
+                (entity.getChoices() != null)
+                        ? entity.getChoices().stream()
+                        .map(choiceJpaMapper::toDomain).toList() :
+                        new ArrayList<>()
         );
     }
 }

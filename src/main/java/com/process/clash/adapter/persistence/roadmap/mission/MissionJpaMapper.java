@@ -1,28 +1,39 @@
 package com.process.clash.adapter.persistence.roadmap.mission;
 
-import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository;
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaMapper;
-import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaRepository;
 import com.process.clash.domain.roadmap.Mission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class MissionJpaMapper {
 
     private final MissionQuestionJpaMapper missionQuestionJpaMapper;
-    private final ChapterJpaRepository chapterJpaRepository;
-    private final MissionQuestionJpaRepository missionQuestionJpaRepository;
 
-    public MissionJpaEntity toJpaEntity(Mission mission) {
-        return new MissionJpaEntity(
+    public MissionJpaEntity toJpaEntity(Mission mission, ChapterJpaEntity chapterEntity) {
+        MissionJpaEntity missionEntity = new MissionJpaEntity(
                 mission.getId(),
-                chapterJpaRepository.getReferenceById(mission.getChapterId()),
+                chapterEntity,
                 mission.getTitle(),
                 mission.getDifficulty(),
-                mission.getQuestions().stream().map(missionQuestionJpaMapper::toJpaEntity).toList()
+                new ArrayList<>()
         );
+
+        // null-safe: mission.getQuestions()가 null이면 빈 리스트로 처리
+        List<MissionQuestionJpaEntity> questions = (mission.getQuestions() != null)
+                ? mission.getQuestions().stream()
+                .map(q -> missionQuestionJpaMapper.toJpaEntity(q, missionEntity)).toList() :
+                new ArrayList<>();
+
+        missionEntity.getQuestions().addAll(questions);
+
+        return missionEntity;
     }
 
     public Mission toDomain(MissionJpaEntity entity) {
@@ -31,7 +42,11 @@ public class MissionJpaMapper {
                 entity.getChapter() != null ? entity.getChapter().getId() : null,
                 entity.getTitle(),
                 entity.getDifficulty(),
-                entity.getQuestions().stream().map(missionQuestionJpaMapper::toDomain).toList()
+                // null-safe: entity.getQuestions()가 null이면 빈 리스트로 처리
+                (entity.getQuestions() != null)
+                        ? entity.getQuestions().stream()
+                        .map(missionQuestionJpaMapper::toDomain).toList() :
+                        new ArrayList<>()
         );
     }
 }
