@@ -15,7 +15,7 @@ public class GetUserProfileService implements GetUserProfileUseCase {
 
     @Override
     public GetUserProfileData.Result execute(GetUserProfileData.Command command) {
-        User user = userRepositoryPort.findById(command.actor().userId())
+        User user = userRepositoryPort.findById(command.actor().id())
                 .orElseThrow(UserNotFoundException::new);
 
         return GetUserProfileData.Result.from(user);
