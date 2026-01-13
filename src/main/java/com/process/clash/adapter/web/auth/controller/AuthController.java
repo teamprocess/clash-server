@@ -68,7 +68,7 @@ public class AuthController {
 		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
 		SignInDto.Response response = SignInDto.Response.fromResult(result);
-		return ApiResponse.success(response, "로그인을 성송했습니다.");
+		return ApiResponse.success(response, "로그인을 성공했습니다.");
 	}
 
 	@PostMapping("/signout")
