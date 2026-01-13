@@ -38,8 +38,20 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private Boolean ableToAddRival;
+
+    @Column
+    private String profileImage;
+
     @Column(nullable = false)
-    private boolean ableToAddRival;
+    private Boolean pomodoroEnabled;
+
+    @Column(nullable = false)
+    private Integer pomodoroStudyMinute;
+
+    @Column(nullable = false)
+    private Integer pomodoroBreakMinute;
 
     @Enumerated(EnumType.STRING)
     private Major major;
@@ -51,6 +63,10 @@ public class UserJpaEntity {
         userJpaEntity.name = name;
         userJpaEntity.password = password;
         userJpaEntity.ableToAddRival = true;
+        userJpaEntity.profileImage = null;
+        userJpaEntity.pomodoroEnabled = false;
+        userJpaEntity.pomodoroBreakMinute = 0;
+        userJpaEntity.pomodoroStudyMinute = 0;
         userJpaEntity.major = null;
 
         return userJpaEntity;
