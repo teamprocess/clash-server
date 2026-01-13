@@ -1,7 +1,6 @@
 package com.process.clash.adapter.persistence.major;
 
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
-import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.major.MajorQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -28,8 +27,8 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
     }
 
     @Override
-    public List<MajorQuestion> findAllByMajor(Major major) {
-        return majorQuestionJpaRepository.findAllByMajor(major).stream()
+    public List<MajorQuestion> findAll() {
+        return majorQuestionJpaRepository.findAll().stream()
                 .map(majorQuestionJpaMapper::toDomain)
                 .toList();
     }

@@ -7,6 +7,4 @@ import java.util.List;
 
 public interface MajorQuestionJpaRepository extends JpaRepository<MajorQuestionJpaEntity, Long> {
 
-    List<MajorQuestionJpaEntity>findAllByMajor(Major major);
-
 }

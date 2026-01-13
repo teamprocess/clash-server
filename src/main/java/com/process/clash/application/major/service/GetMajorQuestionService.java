@@ -1,9 +1,8 @@
 package com.process.clash.application.major.service;
 
-import com.process.clash.application.major.dto.GetMajorQuestionCommand;
+import com.process.clash.application.major.data.GetMajorQuestionData;
 import com.process.clash.application.major.port.in.GetMajorQuestionUseCase;
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
-import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.major.MajorQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,8 @@ public class GetMajorQuestionService implements GetMajorQuestionUseCase {
     private final MajorQuestionRepositoryPort majorQuestionRepositoryPort;
 
     @Override
-    public List<MajorQuestion> findAllByMajor(Major major, GetMajorQuestionCommand command) {
-        return null;
+    public GetMajorQuestionData.Result findAll(GetMajorQuestionData.Command command) {
+        List<MajorQuestion> majorQuestions = majorQuestionRepositoryPort.findAll();
+        return GetMajorQuestionData.Result.from(majorQuestions);
     }
 }
