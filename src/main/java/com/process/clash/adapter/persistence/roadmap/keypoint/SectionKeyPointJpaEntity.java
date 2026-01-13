@@ -1,7 +1,9 @@
-package com.process.clash.adapter.persistence.roadmap;
+package com.process.clash.adapter.persistence.roadmap.keypoint;
 
+import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "section_key_points")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class SectionKeyPointJpaEntity {
 
     @Id
@@ -23,4 +26,5 @@ public class SectionKeyPointJpaEntity {
 
     @Column(nullable = false)
     private Integer orderIndex;
+
 }

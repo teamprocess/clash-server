@@ -1,7 +1,10 @@
-package com.process.clash.adapter.persistence.roadmap;
+package com.process.clash.adapter.persistence.roadmap.chapter;
 
+import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +15,7 @@ import java.util.List;
 @Table(name = "chapters")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ChapterJpaEntity {
 
     @Id
@@ -32,4 +36,5 @@ public class ChapterJpaEntity {
 
     @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MissionJpaEntity> missions = new ArrayList<>();
+
 }

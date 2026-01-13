@@ -1,9 +1,11 @@
-package com.process.clash.adapter.persistence.roadmap;
+package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.user.UserJpaEntity;
 import com.process.clash.domain.common.enums.ProgressStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ import lombok.NoArgsConstructor;
         uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "fk_chapter_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class UserChapterProgressJpaEntity {
 
     @Id
@@ -29,4 +32,5 @@ public class UserChapterProgressJpaEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ProgressStatus status; // LOCKED, IN_PROGRESS, COMPLETED
+
 }

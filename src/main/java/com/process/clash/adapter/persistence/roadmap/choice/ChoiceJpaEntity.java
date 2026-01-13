@@ -1,7 +1,9 @@
-package com.process.clash.adapter.persistence.roadmap;
+package com.process.clash.adapter.persistence.roadmap.choice;
 
+import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "choices")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class ChoiceJpaEntity {
 
     @Id
@@ -24,4 +27,5 @@ public class ChoiceJpaEntity {
 
     @Column(name = "is_correct", nullable = false)
     private boolean isCorrect;
+
 }
