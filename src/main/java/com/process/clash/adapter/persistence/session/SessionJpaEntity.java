@@ -1,13 +1,15 @@
 package com.process.clash.adapter.persistence.session;
 
-import com.process.clash.domain.common.enums.Major;
+import com.process.clash.adapter.persistence.task.TaskJpaEntity;
+import com.process.clash.adapter.persistence.user.UserJpaEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -18,7 +20,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "users")
+@Table(name = "sessions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -35,46 +37,37 @@ public class SessionJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
-    private String username;
+    @Column(name = "fk_user_id", nullable = false)
+    private Long userId;
+
+    @JoinColumn(name = "fk_user_id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private UserJpaEntity user;
+
+    @Column(name = "fk_task_id", nullable = false)
+    private Long taskId;
+
+    @JoinColumn(name = "fk_task_id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private TaskJpaEntity task;
 
     @Column(nullable = false)
-    private String name;
+    private LocalDateTime startedAt;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(nullable = true)
+    private LocalDateTime endedAt;
 
-    @Column
-    private Boolean ableToAddRival;
-
-    @Column
-    private String profileImage;
-
-    @Column(nullable = false)
-    private Boolean pomodoroEnabled;
-
-    @Column(nullable = false)
-    private Integer pomodoroStudyMinute;
-
-    @Column(nullable = false)
-    private Integer pomodoroBreakMinute;
-
-    @Enumerated(EnumType.STRING)
-    private Major major;
-
-    public SessionJpaEntity create(String username, String name, String password) {
+    public static SessionJpaEntity create(Long userId, Long taskId, LocalDateTime startedAt) {
         SessionJpaEntity sessionJpaEntity = new SessionJpaEntity();
 
-        sessionJpaEntity.username = username;
-        sessionJpaEntity.name = name;
-        sessionJpaEntity.password = password;
-        sessionJpaEntity.ableToAddRival = true;
-        sessionJpaEntity.profileImage = null;
-        sessionJpaEntity.pomodoroEnabled = false;
-        sessionJpaEntity.pomodoroBreakMinute = 0;
-        sessionJpaEntity.pomodoroStudyMinute = 0;
-        sessionJpaEntity.major = null;
+        sessionJpaEntity.userId = userId;
+        sessionJpaEntity.taskId = taskId;
+        sessionJpaEntity.startedAt = startedAt;
 
         return sessionJpaEntity;
+    }
+
+    public void changeEndedAt(LocalDateTime endedAt) {
+        this.endedAt = endedAt;
     }
 }

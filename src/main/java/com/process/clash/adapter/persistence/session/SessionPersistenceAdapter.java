@@ -1,26 +1,34 @@
 package com.process.clash.adapter.persistence.session;
 
-import com.process.clash.application.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.user.model.entity.User;
+import com.process.clash.application.record.port.out.SessionRepositoryPort;
+import com.process.clash.domain.record.model.entity.Session;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class SessionPersistenceAdapter implements UserRepositoryPort {
+public class SessionPersistenceAdapter implements SessionRepositoryPort {
 
     private final SessionJpaRepository sessionJpaRepository;
     private final SessionJpaMapper sessionJpaMapper;
 
     @Override
-    public void save(User user) {
-        SessionJpaEntity sessionJpaEntity = sessionJpaMapper.toJpaEntity(user);
-        userJpaRepository.save(sessionJpaEntity);
+    public void save(Session session) {
+        SessionJpaEntity sessionJpaEntity = sessionJpaMapper.toJpaEntity(session);
+        sessionJpaRepository.save(sessionJpaEntity);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userJpaRepository.findById(id).map(sessionJpaMapper::toDomain);
+    public Optional<Session> findById(Long id) {
+        return sessionJpaRepository.findById(id).map(sessionJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Session> findAllByUserId(Long userId) {
+        return sessionJpaRepository.findAllByUserId(userId).stream()
+            .map(sessionJpaMapper::toDomain)
+            .toList();
     }
 }

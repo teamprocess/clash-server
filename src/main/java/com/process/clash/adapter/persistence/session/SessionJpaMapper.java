@@ -1,42 +1,28 @@
 package com.process.clash.adapter.persistence.session;
 
-import com.process.clash.domain.user.model.entity.User;
+import com.process.clash.adapter.persistence.task.TaskJpaMapper;
+import com.process.clash.adapter.persistence.user.UserJpaMapper;
+import com.process.clash.domain.record.model.entity.Session;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SessionJpaMapper {
 
-    public SessionJpaEntity toJpaEntity(User user) {
-        return new SessionJpaEntity(
-                user.id(),
-                user.createdAt(),
-                user.updatedAt(),
-                user.username(),
-                user.name(),
-                user.password(),
-                user.ableToAddRival(),
-                user.profileImage(),
-                user.pomodoroEnabled(),
-                user.pomodoroStudyMinute(),
-                user.pomodoroBreakMinute(),
-                user.major()
+    public SessionJpaEntity toJpaEntity(Session session) {
+        return SessionJpaEntity.create(
+            session.user().id(),
+            session.task().id(),
+            session.startedAt()
         );
     }
 
-    public User toDomain(SessionJpaEntity sessionJpaEntity) {
-        return new User(
-                sessionJpaEntity.getId(),
-                sessionJpaEntity.getCreatedAt(),
-                sessionJpaEntity.getUpdatedAt(),
-                sessionJpaEntity.getUsername(),
-                sessionJpaEntity.getName(),
-                sessionJpaEntity.getPassword(),
-                sessionJpaEntity.getAbleToAddRival(),
-                sessionJpaEntity.getProfileImage(),
-                sessionJpaEntity.getPomodoroEnabled(),
-                sessionJpaEntity.getPomodoroStudyMinute(),
-                sessionJpaEntity.getPomodoroBreakMinute(),
-                sessionJpaEntity.getMajor()
+    public Session toDomain(SessionJpaEntity sessionJpaEntity) {
+        return Session.create(
+            sessionJpaEntity.getId(),
+            UserJpaMapper.toDomain(sessionJpaEntity.getUser()),
+            TaskJpaMapper.toDomain(sessionJpaEntity.getTask()),
+            sessionJpaEntity.getStartedAt(),
+            sessionJpaEntity.getEndedAt()
         );
     }
 }

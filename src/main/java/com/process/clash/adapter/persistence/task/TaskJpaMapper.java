@@ -1,42 +1,29 @@
 package com.process.clash.adapter.persistence.task;
 
-import com.process.clash.domain.user.model.entity.User;
+import com.process.clash.adapter.persistence.user.UserJpaMapper;
+import com.process.clash.domain.record.model.entity.Task;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskJpaMapper {
 
-    public TaskJpaEntity toJpaEntity(User user) {
-        return new TaskJpaEntity(
-                user.id(),
-                user.createdAt(),
-                user.updatedAt(),
-                user.username(),
-                user.name(),
-                user.password(),
-                user.ableToAddRival(),
-                user.profileImage(),
-                user.pomodoroEnabled(),
-                user.pomodoroStudyMinute(),
-                user.pomodoroBreakMinute(),
-                user.major()
+    public static TaskJpaEntity toJpaEntity(Task task) {
+        return TaskJpaEntity.create(
+            task.name(),
+            task.color(),
+            task.user().id()
         );
     }
 
-    public User toDomain(TaskJpaEntity taskJpaEntity) {
-        return new User(
-                taskJpaEntity.getId(),
-                taskJpaEntity.getCreatedAt(),
-                taskJpaEntity.getUpdatedAt(),
-                taskJpaEntity.getUsername(),
-                taskJpaEntity.getName(),
-                taskJpaEntity.getPassword(),
-                taskJpaEntity.getAbleToAddRival(),
-                taskJpaEntity.getProfileImage(),
-                taskJpaEntity.getPomodoroEnabled(),
-                taskJpaEntity.getPomodoroStudyMinute(),
-                taskJpaEntity.getPomodoroBreakMinute(),
-                taskJpaEntity.getMajor()
+    public static Task toDomain(TaskJpaEntity taskJpaEntity) {
+        return new Task(
+            taskJpaEntity.getId(),
+            taskJpaEntity.getName(),
+            taskJpaEntity.getColor(),
+            0L,
+            taskJpaEntity.getCreatedAt(),
+            taskJpaEntity.getUpdatedAt(),
+            UserJpaMapper.toDomain(taskJpaEntity.getUser())
         );
     }
 }

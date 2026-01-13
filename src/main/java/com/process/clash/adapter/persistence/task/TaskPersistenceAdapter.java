@@ -1,26 +1,35 @@
 package com.process.clash.adapter.persistence.task;
 
+import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.application.user.port.out.UserRepositoryPort;
+import com.process.clash.domain.record.model.entity.Task;
 import com.process.clash.domain.user.model.entity.User;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class TaskPersistenceAdapter implements UserRepositoryPort {
+public class TaskPersistenceAdapter implements TaskRepositoryPort {
 
     private final TaskJpaRepository taskJpaRepository;
-    private final TaskJpaMapper taskJpaMapper;
 
     @Override
-    public void save(User user) {
-        TaskJpaEntity taskJpaEntity = taskJpaMapper.toJpaEntity(user);
-        userJpaRepository.save(taskJpaEntity);
+    public void save(Task task) {
+        TaskJpaEntity taskJpaEntity = TaskJpaMapper.toJpaEntity(task);
+        taskJpaRepository.save(taskJpaEntity);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userJpaRepository.findById(id).map(taskJpaMapper::toDomain);
+    public Optional<Task> findById(Long id) {
+        return taskJpaRepository.findById(id).map(TaskJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Task> findAllByUserId(Long userId) {
+        return taskJpaRepository.findAllByUserId(userId).stream()
+            .map(TaskJpaMapper::toDomain)
+            .toList();
     }
 }

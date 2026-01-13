@@ -9,4 +9,14 @@ public record Session (
     Task task,
     LocalDateTime startedAt,
     LocalDateTime endedAt
-) {}
+) {
+    public static Session create(Long id, User user, Task task, LocalDateTime startedAt, LocalDateTime endedAt) {
+        return new Session(
+            id,
+            user,
+            task,
+            startedAt,
+            endedAt
+        );
+    }
+}
