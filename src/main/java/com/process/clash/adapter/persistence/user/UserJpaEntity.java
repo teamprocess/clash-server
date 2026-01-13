@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.user;
 
 import com.process.clash.domain.common.enums.Major;
+import com.process.clash.domain.common.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,9 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private Role role;
+
     @Column
     private Boolean ableToAddRival;
 
@@ -62,6 +66,7 @@ public class UserJpaEntity {
         userJpaEntity.username = username;
         userJpaEntity.name = name;
         userJpaEntity.password = password;
+        userJpaEntity.role = Role.USER;
         userJpaEntity.ableToAddRival = true;
         userJpaEntity.profileImage = null;
         userJpaEntity.pomodoroEnabled = false;
