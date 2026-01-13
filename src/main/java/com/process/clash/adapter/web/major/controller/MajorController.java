@@ -1,10 +1,9 @@
 package com.process.clash.adapter.web.major.controller;
 
+import com.process.clash.adapter.web.major.dto.MajorTestSubmitDto;
+import com.process.clash.application.major.data.MajorTestSubmitData;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.major.dto.GetMajorQuestionDto;
@@ -31,4 +30,10 @@ public class MajorController {
         return ApiResponse.success(response);
     }
 
+    @PostMapping("/test/submit")
+    public ApiResponse<Void> testResultSubmit(@AuthenticationPrincipal AuthUser authUser, @RequestBody MajorTestSubmitDto.Request request) {
+        Actor actor = authUser.toActor();
+        MajorTestSubmitData.Command command = new MajorTestSubmitData.Command(actor, request.major());
+        return null;
+    }
 }
