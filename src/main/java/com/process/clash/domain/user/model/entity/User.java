@@ -11,7 +11,7 @@ public record User(
         String username,
         String name,
         String password,
-        Boolean ableToAddRival,
+        boolean ableToAddRival,
         Major major
 ) {
 }
