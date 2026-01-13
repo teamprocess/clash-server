@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainPageController {
 
     @GetMapping("/user-info")
-    public ApiResponse<GetUserProfileDto.Response> getUserInfo(
+    public ApiResponse<GetUserProfileDto.Response> getUserProfile(
             @AuthenticationPrincipal AuthUser authUser
     ) {
         Actor actor = authUser.toActor();
-        GetUserProfileData.Command command = GetUserProfileData.Command.builder()
-                .actor(actor)
-                .build();
+        GetUserProfileData.Command command = GetUserProfileData.Command.from(actor);
         return null;
     }
 }
