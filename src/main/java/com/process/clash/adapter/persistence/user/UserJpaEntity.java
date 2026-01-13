@@ -38,8 +38,8 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private boolean ableToAddRival;
+    @Column
+    private Boolean ableToAddRival;
 
     @Enumerated(EnumType.STRING)
     private Major major;
