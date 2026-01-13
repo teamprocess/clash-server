@@ -1,5 +1,6 @@
 package com.process.clash.application.major.service;
 
+import com.process.clash.application.major.dto.GetMajorQuestionCommand;
 import com.process.clash.application.major.port.in.GetMajorQuestionUseCase;
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -16,7 +17,7 @@ public class GetMajorQuestionService implements GetMajorQuestionUseCase {
     private final MajorQuestionRepositoryPort majorQuestionRepositoryPort;
 
     @Override
-    public List<MajorQuestion> findAllByMajor(Major major) {
-        return null;
+    public List<MajorQuestion> findAllByMajor(Major major, GetMajorQuestionCommand command) {
+
     }
 }
