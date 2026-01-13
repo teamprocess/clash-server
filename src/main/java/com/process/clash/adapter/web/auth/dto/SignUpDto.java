@@ -1,7 +1,6 @@
 package com.process.clash.adapter.web.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class SignUpDto {
     public record Request(
