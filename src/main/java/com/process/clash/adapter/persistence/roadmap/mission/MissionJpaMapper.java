@@ -7,13 +7,15 @@ import com.process.clash.domain.roadmap.Mission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class MissionJpaMapper {
 
     private final MissionQuestionJpaMapper missionQuestionJpaMapper;
     private final ChapterJpaRepository chapterJpaRepository;
-    private final MissionQuestionJpaRepository missionQuestionJpaRepository;
 
     public MissionJpaEntity toJpaEntity(Mission mission) {
         return new MissionJpaEntity(
@@ -21,7 +23,8 @@ public class MissionJpaMapper {
                 chapterJpaRepository.getReferenceById(mission.getChapterId()),
                 mission.getTitle(),
                 mission.getDifficulty(),
-                mission.getQuestions().stream().map(missionQuestionJpaMapper::toJpaEntity).toList()
+                Optional.ofNullable(mission.getQuestions()).orElse(Collections.emptyList())
+                        .stream().map(missionQuestionJpaMapper::toJpaEntity).toList()
         );
     }
 
@@ -31,7 +34,8 @@ public class MissionJpaMapper {
                 entity.getChapter() != null ? entity.getChapter().getId() : null,
                 entity.getTitle(),
                 entity.getDifficulty(),
-                entity.getQuestions().stream().map(missionQuestionJpaMapper::toDomain).toList()
+                Optional.ofNullable(entity.getQuestions()).orElse(Collections.emptyList())
+                        .stream().map(missionQuestionJpaMapper::toDomain).toList()
         );
     }
 }

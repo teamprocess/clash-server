@@ -3,9 +3,12 @@ package com.process.clash.adapter.persistence.roadmap.chapter;
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
 import com.process.clash.domain.roadmap.Chapter;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -22,7 +25,8 @@ public class ChapterJpaMapper {
                 chapter.getTitle(),
                 chapter.getDescription(),
                 chapter.getOrderIndex(),
-                chapter.getMissions().stream().map(missionJpaMapper::toJpaEntity).toList()
+                Optional.ofNullable(chapter.getMissions()).orElse(Collections.emptyList())
+                        .stream().map(missionJpaMapper::toJpaEntity).toList()
         );
     }
 
@@ -33,7 +37,8 @@ public class ChapterJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getOrderIndex(),
-                entity.getMissions().stream().map(missionJpaMapper::toDomain).collect(Collectors.toList())
+                Optional.ofNullable(entity.getMissions()).orElse(Collections.emptyList())
+                        .stream().map(missionJpaMapper::toDomain).collect(Collectors.toList())
         );
     }
 }

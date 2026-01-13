@@ -6,6 +6,9 @@ import com.process.clash.domain.roadmap.MissionQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class MissionQuestionJpaMapper {
@@ -19,7 +22,8 @@ public class MissionQuestionJpaMapper {
                 missionJpaRepository.getReferenceById(question.getMissionId()),
                 question.getContent(),
                 question.getExplanation(),
-                question.getChoices().stream().map(choiceJpaMapper::toJpaEntity).toList()
+                Optional.ofNullable(question.getChoices()).orElse(Collections.emptyList())
+                        .stream().map(choiceJpaMapper::toJpaEntity).toList()
         );
     }
 

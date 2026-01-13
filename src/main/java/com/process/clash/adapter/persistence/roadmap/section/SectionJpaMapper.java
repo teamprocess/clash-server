@@ -6,6 +6,9 @@ import com.process.clash.domain.roadmap.Section;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class SectionJpaMapper {
@@ -20,8 +23,10 @@ public class SectionJpaMapper {
                 section.getTitle(),
                 section.getDescription(),
                 section.getCategory(),
-                section.getChapters().stream().map(chapterJpaMapper::toEntity).toList(),
-                section.getKeyPoints().stream().map(sectionKeyPointJpaMapper::toJpaEntity).toList()
+                Optional.ofNullable(section.getChapters()).orElse(Collections.emptyList())
+                        .stream().map(chapterJpaMapper::toEntity).toList(),
+                Optional.ofNullable(section.getKeyPoints()).orElse(Collections.emptyList())
+                        .stream().map(sectionKeyPointJpaMapper::toJpaEntity).toList()
         );
     }
 
@@ -32,8 +37,10 @@ public class SectionJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getChapters().stream().map(chapterJpaMapper::toDomain).toList(),
-                entity.getKeyPoints().stream().map(sectionKeyPointJpaMapper::toDomain).toList()
+                Optional.ofNullable(entity.getChapters()).orElse(Collections.emptyList())
+                        .stream().map(chapterJpaMapper::toDomain).toList(),
+                Optional.ofNullable(entity.getKeyPoints()).orElse(Collections.emptyList())
+                        .stream().map(sectionKeyPointJpaMapper::toDomain).toList()
         );
     }
 }
