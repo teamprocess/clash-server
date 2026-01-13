@@ -18,6 +18,6 @@ public class GetMajorQuestionService implements GetMajorQuestionUseCase {
 
     @Override
     public List<MajorQuestion> findAllByMajor(Major major, GetMajorQuestionCommand command) {
-
+        return null;
     }
 }
