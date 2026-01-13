@@ -1,4 +1,4 @@
-package com.process.clash.application.common.exception;
+package com.process.clash.application.common.exception.statuscode;
 
 public enum ErrorCategory {
     BAD_REQUEST,

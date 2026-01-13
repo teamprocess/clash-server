@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import com.process.clash.application.common.exception.StatusCode;
+import com.process.clash.application.common.exception.statuscode.StatusCode;
 import lombok.Builder;
 
 @Builder
