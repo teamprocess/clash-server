@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.major;
 
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
-import com.process.clash.domain.major.model.entity.MajorQuestion;
+import com.process.clash.domain.major.entity.MajorQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

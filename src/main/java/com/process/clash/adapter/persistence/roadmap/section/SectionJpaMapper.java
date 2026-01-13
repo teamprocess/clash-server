@@ -9,7 +9,7 @@ import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaMapper;
-import com.process.clash.domain.roadmap.model.entity.Section;
+import com.process.clash.domain.roadmap.entity.Section;
 
 import lombok.RequiredArgsConstructor;
 

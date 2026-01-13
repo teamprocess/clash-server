@@ -1,4 +1,4 @@
-package com.process.clash.domain.roadmap.model.entity;
+package com.process.clash.domain.roadmap.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,13 +8,13 @@ import lombok.AccessLevel;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Choice {
+public class SectionKeyPoint {
 
     private Long id;
 
-    private Long questionId;
+    private Long sectionId;
 
     private String content;
 
-    private boolean isCorrect;
+    private Integer orderIndex;
 }

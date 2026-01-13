@@ -3,7 +3,7 @@ package com.process.clash.adapter.persistence.roadmap.choice;
 import org.springframework.stereotype.Component;
 
 import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaEntity;
-import com.process.clash.domain.roadmap.model.entity.Choice;
+import com.process.clash.domain.roadmap.entity.Choice;
 
 import lombok.RequiredArgsConstructor;
 

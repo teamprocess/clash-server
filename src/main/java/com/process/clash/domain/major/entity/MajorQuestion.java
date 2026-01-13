@@ -1,4 +1,4 @@
-package com.process.clash.domain.major.model.entity;
+package com.process.clash.domain.major.entity;
 
 import lombok.*;
 

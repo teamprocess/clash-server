@@ -1,6 +1,6 @@
 package com.process.clash.application.roadmap.port.out;
 
-import com.process.clash.domain.roadmap.model.entity.UserChapterProgress;
+import com.process.clash.domain.roadmap.entity.UserChapterProgress;
 
 import java.util.List;
 import java.util.Optional;

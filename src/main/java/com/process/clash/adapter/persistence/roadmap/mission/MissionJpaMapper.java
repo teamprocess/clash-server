@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaMapper;
-import com.process.clash.domain.roadmap.model.entity.Mission;
+import com.process.clash.domain.roadmap.entity.Mission;
 
 import lombok.RequiredArgsConstructor;
 

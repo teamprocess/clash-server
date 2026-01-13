@@ -1,5 +1,6 @@
-package com.process.clash.domain.roadmap.model.entity;
+package com.process.clash.domain.roadmap.entity;
 
+import com.process.clash.domain.common.enums.Major;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +11,19 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Chapter {
+public class Section {
 
     private Long id;
 
-    private Long sectionId;
+    private Major major;
 
     private String title;
 
     private String description;
 
-    private Integer orderIndex;
+    private String category;
 
-    private List<Mission> missions;
+    private List<Chapter> chapters;
+
+    private List<SectionKeyPoint> keyPoints;
 }
