@@ -1,4 +1,7 @@
 spring:
+  main:
+    web-application-type: reactive
+
   jackson:
     property-naming-strategy: SNAKE_CASE
 

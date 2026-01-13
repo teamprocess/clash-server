@@ -2,7 +2,7 @@ package com.process.clash.adapter.web.record.dto;
 
 import com.process.clash.application.record.dto.GetTodayRecordData;
 import com.process.clash.domain.record.model.entity.Task;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 public class GetTodayRecordDto {
@@ -11,7 +11,7 @@ public class GetTodayRecordDto {
         String date,
         Boolean pomodoro_enabled,
         Long totalStudyTime,
-        Date studyStoppedAt,
+        Instant studyStoppedAt,
         List<Task> tasks
     ) {
         public static Response from(GetTodayRecordData.Result result){

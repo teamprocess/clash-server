@@ -18,6 +18,6 @@ public class GetUserProfileService implements GetUserProfileUseCase {
         User user = userRepositoryPort.findById(command.actor().userId())
                 .orElseThrow(UserNotFoundException::new);
 
-        return GetUserProfileData.Result
+        return GetUserProfileData.Result.from(user);
     }
 }
