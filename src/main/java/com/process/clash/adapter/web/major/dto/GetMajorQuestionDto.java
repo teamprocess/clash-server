@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.major.dto;
 
-import com.process.clash.application.major.data.GetMajorQuestionResult;
+import com.process.clash.application.major.data.GetMajorQuestionData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,7 +13,7 @@ public class GetMajorQuestionDto {
     public static class Response {
         private final List<MajorQuestionVo> majorQuestions;
 
-        public static Response from(GetMajorQuestionResult result) {
+        public static Response from(GetMajorQuestionData.Result result) {
             // Result 내부의 List<MajorQuestionVo>를 Web용 List<MajorQuestionVo>로 변환
             List<MajorQuestionVo> vos = result.getMajorQuestionVos().stream()
                     .map(MajorQuestionVo::from)
@@ -31,7 +31,7 @@ public class GetMajorQuestionDto {
         private final MajorWeightVo weight;
 
         // Result 내부의 개별 Vo를 인자로 받아 변환
-        public static MajorQuestionVo from(GetMajorQuestionResult.MajorQuestionVo vo) {
+        public static MajorQuestionVo from(GetMajorQuestionData.Result.MajorQuestionVo vo) {
             return new MajorQuestionVo(
                     vo.getId(),
                     vo.getContent(),
@@ -50,7 +50,7 @@ public class GetMajorQuestionDto {
         private final Integer game;
 
         // Result 내부의 WeightVo를 인자로 받아 변환
-        public static MajorWeightVo from(GetMajorQuestionResult.MajorQuestionVo.WeightVo vo) {
+        public static MajorWeightVo from(GetMajorQuestionData.Result.MajorQuestionVo.WeightVo vo) {
             return new MajorWeightVo(
                     vo.getWeb(),
                     vo.getApp(),

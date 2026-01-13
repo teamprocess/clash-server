@@ -1,9 +1,8 @@
 package com.process.clash.application.major.port.in;
 
-import com.process.clash.application.major.data.GetMajorQuestionCommand;
-import com.process.clash.application.major.data.GetMajorQuestionResult;
+import com.process.clash.application.major.data.GetMajorQuestionData;
 
 public interface GetMajorQuestionUseCase {
 
-    GetMajorQuestionResult findAll(GetMajorQuestionCommand command);
+    GetMajorQuestionData.Result findAll(GetMajorQuestionData.Command command);
 }
