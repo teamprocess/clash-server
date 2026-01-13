@@ -12,6 +12,10 @@ public record User(
         String name,
         String password,
         Boolean ableToAddRival,
+        String profileImage,
+        Boolean pomodoroEnabled,
+        Integer pomodoroStudyMinute,
+        Integer pomodoroBreakMinute,
         Major major
 ) {
 }
