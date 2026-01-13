@@ -16,7 +16,7 @@ public class GetMajorQuestionService implements GetMajorQuestionUseCase {
     private final MajorQuestionRepositoryPort majorQuestionRepositoryPort;
 
     @Override
-    public GetMajorQuestionData.Result findAll(GetMajorQuestionData.Command command) {
+    public GetMajorQuestionData.Result execute(GetMajorQuestionData.Command command) {
         List<MajorQuestion> majorQuestions = majorQuestionRepositoryPort.findAll();
         return GetMajorQuestionData.Result.from(majorQuestions);
     }

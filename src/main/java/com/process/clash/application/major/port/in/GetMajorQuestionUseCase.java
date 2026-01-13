@@ -4,5 +4,5 @@ import com.process.clash.application.major.data.GetMajorQuestionData;
 
 public interface GetMajorQuestionUseCase {
 
-    GetMajorQuestionData.Result findAll(GetMajorQuestionData.Command command);
+    GetMajorQuestionData.Result execute(GetMajorQuestionData.Command command);
 }
