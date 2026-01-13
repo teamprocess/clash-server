@@ -1,5 +1,6 @@
 package com.process.clash.infrastructure.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
@@ -27,6 +28,8 @@ import java.time.LocalDateTime;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -67,9 +70,7 @@ public class SecurityConfig {
                                     .build();
 
                             // 3. JSON 변환 및 출력
-                            String json = new com.fasterxml.jackson.databind.ObjectMapper()
-                                    .registerModule(new JavaTimeModule()) // LocalDateTime 처리를 위해 필수
-                                    .writeValueAsString(commonResponse);
+                            String json = objectMapper.writeValueAsString(commonResponse);
 
                             response.getWriter().write(json);
                         })
