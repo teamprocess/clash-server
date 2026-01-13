@@ -14,10 +14,12 @@ public class ChapterPersistenceAdapter implements ChapterRepositoryPort {
 
     private final ChapterJpaRepository chapterJpaRepository;
     private final ChapterJpaMapper chapterJpaMapper;
+    private final com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository sectionJpaRepository;
 
     @Override
     public void save(Chapter chapter) {
-        chapterJpaRepository.save(chapterJpaMapper.toEntity(chapter));
+        com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity sectionEntity = sectionJpaRepository.getReferenceById(chapter.getSectionId());
+        chapterJpaRepository.save(chapterJpaMapper.toEntity(chapter, sectionEntity));
     }
 
     @Override

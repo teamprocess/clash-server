@@ -14,10 +14,12 @@ public class ChoicePersistenceAdapter implements ChoiceRepositoryPort {
 
     private final ChoiceJpaRepository choiceJpaRepository;
     private final ChoiceJpaMapper choiceJpaMapper;
+    private final com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaRepository missionQuestionJpaRepository;
 
     @Override
     public void save(Choice choice) {
-        choiceJpaRepository.save(choiceJpaMapper.toJpaEntity(choice));
+        com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaEntity questionEntity = missionQuestionJpaRepository.getReferenceById(choice.getQuestionId());
+        choiceJpaRepository.save(choiceJpaMapper.toJpaEntity(choice, questionEntity));
     }
 
     @Override

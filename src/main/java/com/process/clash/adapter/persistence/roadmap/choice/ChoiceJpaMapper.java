@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.choice;
 
-import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaRepository;
+import com.process.clash.adapter.persistence.roadmap.missionquestion.MissionQuestionJpaEntity;
 import com.process.clash.domain.roadmap.Choice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -9,12 +9,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ChoiceJpaMapper {
 
-    private final MissionQuestionJpaRepository missionQuestionJpaRepository;
-
-    public ChoiceJpaEntity toJpaEntity(Choice choice) {
+    public ChoiceJpaEntity toJpaEntity(Choice choice, MissionQuestionJpaEntity missionQuestionEntity) {
         return new ChoiceJpaEntity(
                 choice.getId(),
-                missionQuestionJpaRepository.getReferenceById(choice.getQuestionId()),
+                missionQuestionEntity,
                 choice.getContent(),
                 choice.isCorrect()
         );

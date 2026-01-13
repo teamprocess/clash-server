@@ -14,10 +14,14 @@ public class UserChapterProgressPersistenceAdapter implements UserChapterProgres
 
     private final UserChapterProgressJpaRepository userChapterProgressJpaRepository;
     private final UserChapterProgressJpaMapper userChapterProgressJpaMapper;
+    private final com.process.clash.adapter.persistence.user.UserJpaRepository userJpaRepository;
+    private final com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository chapterJpaRepository;
 
     @Override
     public void save(UserChapterProgress progress) {
-        userChapterProgressJpaRepository.save(userChapterProgressJpaMapper.toJpaEntity(progress));
+        com.process.clash.adapter.persistence.user.UserJpaEntity userEntity = userJpaRepository.getReferenceById(progress.getUserId());
+        com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity chapterEntity = chapterJpaRepository.getReferenceById(progress.getChapterId());
+        userChapterProgressJpaRepository.save(userChapterProgressJpaMapper.toJpaEntity(progress, userEntity, chapterEntity));
     }
 
     @Override

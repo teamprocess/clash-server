@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 
-import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository;
-import com.process.clash.adapter.persistence.user.UserJpaRepository;
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
+import com.process.clash.adapter.persistence.user.UserJpaEntity;
 import com.process.clash.domain.roadmap.UserChapterProgress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,14 +10,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserChapterProgressJpaMapper {
 
-    private final ChapterJpaRepository chapterJpaRepository;
-    private final UserJpaRepository userJpaRepository;
-
-    public UserChapterProgressJpaEntity toJpaEntity(UserChapterProgress progress) {
+    public UserChapterProgressJpaEntity toJpaEntity(UserChapterProgress progress, UserJpaEntity userEntity, ChapterJpaEntity chapterEntity) {
         return new UserChapterProgressJpaEntity(
                 progress.getId(),
-                userJpaRepository.getReferenceById(progress.getUserId()),
-                chapterJpaRepository.getReferenceById(progress.getChapterId()),
+                userEntity,
+                chapterEntity,
                 progress.getStatus()
         );
     }

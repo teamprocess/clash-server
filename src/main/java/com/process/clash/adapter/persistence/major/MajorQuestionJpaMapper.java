@@ -10,7 +10,6 @@ public class MajorQuestionJpaMapper {
         return new MajorQuestionJpaEntity(
                 majorQuestion.getId(),
                 majorQuestion.getContent(),
-                majorQuestion.getMajor(),
                 new MajorQuestionJpaEntity.WeightVo(
                         majorQuestion.getWeightVo().getWeb(),
                         majorQuestion.getWeightVo().getApp(),
@@ -26,7 +25,6 @@ public class MajorQuestionJpaMapper {
         return new MajorQuestion(
                 majorQuestionJpaEntity.getId(),
                 majorQuestionJpaEntity.getContent(),
-                majorQuestionJpaEntity.getMajor(),
                 new MajorQuestion.WeightVo(
                         majorQuestionJpaEntity.getWeightVo().getWeb(),
                         majorQuestionJpaEntity.getWeightVo().getApp(),

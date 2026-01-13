@@ -1,10 +1,8 @@
 package com.process.clash.application.major.port.in;
 
-import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.major.MajorQuestion;
-
-import java.util.List;
+import com.process.clash.application.major.data.GetMajorQuestionData;
 
 public interface GetMajorQuestionUseCase {
-    List<MajorQuestion> findAllByMajor(Major major);
+
+    GetMajorQuestionData.Result execute(GetMajorQuestionData.Command command);
 }

@@ -1,55 +1,36 @@
 package com.process.clash.adapter.web.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public record ApiResponse<T>(
-        T data,
-        Boolean success,
-        String message,
-        ErrorResponse error,
-        @JsonIgnore
-        Integer status
-) {
-    public static <T> ResponseEntity<ApiResponse<T>> success(T data, HttpStatus status) {
-        return ResponseEntity.status(status).body(ApiResponse.<T>builder()
-                .data(data)
-                .success(true)
-                .message(null)
-                .error(null)
-                .status(status.value())
-                .build());
+public class ApiResponse<T> extends ResponseEntity<CommonResponse<T>> {
+
+    private ApiResponse(ResponseEntity<CommonResponse<T>> entity) {
+        super(entity.getBody(), entity.getHeaders(), entity.getStatusCode());
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> success(String message, HttpStatus status) {
-        return ResponseEntity.status(status).body(ApiResponse.<T>builder()
-                .data(null)
-                .success(true)
-                .message(message)
-                .error(null)
-                .status(status.value())
-                .build());
+    // 1. 데이터만 포함된 성공 응답 (200 OK)
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(CommonResponse.success(data, HttpStatus.OK));
     }
 
-    public static <T> ResponseEntity<ApiResponse<T>> success(T data, String message, HttpStatus status) {
-        return ResponseEntity.status(status).body(ApiResponse.<T>builder()
-                .data(data)
-                .success(true)
-                .message(message)
-                .error(null)
-                .status(status.value())
-                .build());
+    // 2. 데이터와 메시지가 포함된 성공 응답 (200 OK)
+    public static <T> ApiResponse<T> success(T data, String message) {
+        return new ApiResponse<>(CommonResponse.success(data, message, HttpStatus.OK));
     }
 
-    public static ResponseEntity<ApiResponse<Void>> error(ErrorResponse error, HttpStatus status) {
-        return ResponseEntity.status(status).body(ApiResponse.<Void>builder()
-                .success(false)
-                .error(error)
-                .build());
+    // 3. 메시지만 포함된 성공 응답 (200 OK)
+    public static ApiResponse<Void> success(String message) {
+        return new ApiResponse<>(CommonResponse.success(message, HttpStatus.OK));
+    }
+
+    // 4. 생성 성공 응답 (201 Created)
+    public static <T> ApiResponse<T> created(T data, String message) {
+        return new ApiResponse<>(CommonResponse.success(data, message, HttpStatus.CREATED));
+    }
+
+    // 5. 에러 응답 (GlobalExceptionHandler 등에서 사용)
+    public static ApiResponse<Void> error(ErrorResponse error, HttpStatus status) {
+        return new ApiResponse<>(CommonResponse.error(error, status));
     }
 }

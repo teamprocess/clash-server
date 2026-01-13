@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.mission;
 
 import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.domain.roadmap.Mission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,10 +15,12 @@ public class MissionPersistenceAdapter implements MissionRepositoryPort {
 
     private final MissionJpaRepository missionJpaRepository;
     private final MissionJpaMapper missionJpaMapper;
+    private final com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository chapterJpaRepository;
 
     @Override
     public void save(Mission mission) {
-        missionJpaRepository.save(missionJpaMapper.toJpaEntity(mission));
+        ChapterJpaEntity chapterEntity = chapterJpaRepository.getReferenceById(mission.getChapterId());
+        missionJpaRepository.save(missionJpaMapper.toJpaEntity(mission, chapterEntity));
     }
 
     @Override
