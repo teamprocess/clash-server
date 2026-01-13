@@ -3,20 +3,15 @@ package com.process.clash.adapter.persistence.roadmap.section;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaMapper;
 import com.process.clash.domain.roadmap.Section;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
-
 @Component
+@RequiredArgsConstructor
 public class SectionJpaMapper {
 
     private final ChapterJpaMapper chapterJpaMapper;
     private final SectionKeyPointJpaMapper sectionKeyPointJpaMapper;
-
-    public SectionJpaMapper(ChapterJpaMapper chapterJpaMapper, SectionKeyPointJpaMapper sectionKeyPointJpaMapper) {
-        this.chapterJpaMapper = chapterJpaMapper;
-        this.sectionKeyPointJpaMapper = sectionKeyPointJpaMapper;
-    }
 
     public SectionJpaEntity toJpaEntity(Section section) {
         return new SectionJpaEntity(
@@ -37,8 +32,8 @@ public class SectionJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getCategory(),
-                entity.getChapters().stream().map(chapterJpaMapper::toDomain).collect(Collectors.toList()),
-                entity.getKeyPoints().stream().map(sectionKeyPointJpaMapper::toDomain).collect(Collectors.toList())
+                entity.getChapters().stream().map(chapterJpaMapper::toDomain).toList(),
+                entity.getKeyPoints().stream().map(sectionKeyPointJpaMapper::toDomain).toList()
         );
     }
 }

@@ -7,8 +7,6 @@ import com.process.clash.domain.roadmap.Mission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
-
 @Component
 @RequiredArgsConstructor
 public class MissionJpaMapper {
@@ -33,7 +31,7 @@ public class MissionJpaMapper {
                 entity.getChapter() != null ? entity.getChapter().getId() : null,
                 entity.getTitle(),
                 entity.getDifficulty(),
-                entity.getQuestions().stream().map(missionQuestionJpaMapper::toDomain).collect(Collectors.toList())
+                entity.getQuestions().stream().map(missionQuestionJpaMapper::toDomain).toList()
         );
     }
 }
