@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.roadmap.port.out.UserChapterProgressRepositoryPort;
 import com.process.clash.domain.roadmap.UserChapterProgress;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +16,12 @@ public class UserChapterProgressPersistenceAdapter implements UserChapterProgres
 
     private final UserChapterProgressJpaRepository userChapterProgressJpaRepository;
     private final UserChapterProgressJpaMapper userChapterProgressJpaMapper;
-    private final com.process.clash.adapter.persistence.user.UserJpaRepository userJpaRepository;
+    private final UserJpaRepository userJpaRepository;
     private final com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository chapterJpaRepository;
 
     @Override
     public void save(UserChapterProgress progress) {
-        com.process.clash.adapter.persistence.user.UserJpaEntity userEntity = userJpaRepository.getReferenceById(progress.getUserId());
+        UserJpaEntity userEntity = userJpaRepository.getReferenceById(progress.getUserId());
         com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity chapterEntity = chapterJpaRepository.getReferenceById(progress.getChapterId());
         userChapterProgressJpaRepository.save(userChapterProgressJpaMapper.toJpaEntity(progress, userEntity, chapterEntity));
     }

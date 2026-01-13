@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.user;
+package com.process.clash.adapter.persistence.user.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

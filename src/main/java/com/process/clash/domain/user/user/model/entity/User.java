@@ -1,4 +1,4 @@
-package com.process.clash.domain.user.model.entity;
+package com.process.clash.domain.user.user.model.entity;
 
 import com.process.clash.domain.common.enums.Major;
 
