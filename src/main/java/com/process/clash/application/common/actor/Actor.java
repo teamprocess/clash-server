@@ -7,8 +7,7 @@ public class Actor {
     private final Role role;
 
     public Actor(Long id) {
-        this.id = id;
-        this.role = Role.USER;
+        this(id, Role.USER);
     }
 
     public Actor(Long id, Role role) {
