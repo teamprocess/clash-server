@@ -11,7 +11,7 @@ public class SignInDto {
             String password
     ) { }
 
-    @Builder
+    @Builder // TODO: Builder 제거
     public record Response(
             Long id,
             String username,
