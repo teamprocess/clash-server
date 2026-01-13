@@ -3,8 +3,6 @@ package com.process.clash.adapter.web.common;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
-// 컨트롤러에서 ResponseEntity<ApiResponse<T>> 대신 CommonResponse<T>를 반환 타입으로 사용
 public class ApiResponse<T> extends ResponseEntity<CommonResponse<T>> {
 
     private ApiResponse(ResponseEntity<CommonResponse<T>> entity) {
