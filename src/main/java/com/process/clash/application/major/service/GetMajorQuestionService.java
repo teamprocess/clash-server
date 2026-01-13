@@ -1,5 +1,6 @@
 package com.process.clash.application.major.service;
 
+import com.process.clash.application.major.data.GetMajorQuestionCommand;
 import com.process.clash.application.major.data.GetMajorQuestionResult;
 import com.process.clash.application.major.port.in.GetMajorQuestionUseCase;
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
@@ -16,7 +17,7 @@ public class GetMajorQuestionService implements GetMajorQuestionUseCase {
     private final MajorQuestionRepositoryPort majorQuestionRepositoryPort;
 
     @Override
-    public GetMajorQuestionResult findAll() {
+    public GetMajorQuestionResult findAll(GetMajorQuestionCommand command) {
         List<MajorQuestion> majorQuestions = majorQuestionRepositoryPort.findAll();
         return GetMajorQuestionResult.from(majorQuestions);
     }
