@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.keypoint;
 
-import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
+import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.domain.roadmap.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -9,12 +9,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SectionKeyPointJpaMapper {
 
-    private final SectionJpaRepository sectionJpaRepository;
-
-    public SectionKeyPointJpaEntity toJpaEntity(SectionKeyPoint keyPoint) {
+    public SectionKeyPointJpaEntity toJpaEntity(SectionKeyPoint keyPoint, SectionJpaEntity sectionEntity) {
         return new SectionKeyPointJpaEntity(
                 keyPoint.getId(),
-                sectionJpaRepository.getReferenceById(keyPoint.getSectionId()),
+                sectionEntity,
                 keyPoint.getContent(),
                 keyPoint.getOrderIndex()
         );

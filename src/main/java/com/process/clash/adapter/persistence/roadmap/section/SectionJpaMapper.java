@@ -1,13 +1,15 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
+import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaMapper;
 import com.process.clash.domain.roadmap.Section;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -17,17 +19,30 @@ public class SectionJpaMapper {
     private final SectionKeyPointJpaMapper sectionKeyPointJpaMapper;
 
     public SectionJpaEntity toJpaEntity(Section section) {
-        return new SectionJpaEntity(
+        SectionJpaEntity sectionEntity = new SectionJpaEntity(
                 section.getId(),
                 section.getMajor(),
                 section.getTitle(),
                 section.getDescription(),
                 section.getCategory(),
-                Optional.ofNullable(section.getChapters()).orElse(Collections.emptyList())
-                        .stream().map(chapterJpaMapper::toEntity).toList(),
-                Optional.ofNullable(section.getKeyPoints()).orElse(Collections.emptyList())
-                        .stream().map(sectionKeyPointJpaMapper::toJpaEntity).toList()
+                new ArrayList<>(),
+                new ArrayList<>()
         );
+
+        // null-safe: section.getChapters()가 null이면 빈 리스트로 처리
+        List<ChapterJpaEntity> chapters = (section.getChapters() != null)
+                ? section.getChapters().stream()
+                .map(c -> chapterJpaMapper.toEntity(c, sectionEntity)).toList() :
+                new ArrayList<>();
+
+        List<SectionKeyPointJpaEntity> keyPoints = (section.getKeyPoints() != null)
+                ? section.getKeyPoints().stream().map(k -> sectionKeyPointJpaMapper.toJpaEntity(k, sectionEntity)).toList() :
+                new ArrayList<>();
+
+        sectionEntity.getChapters().addAll(chapters);
+        sectionEntity.getKeyPoints().addAll(keyPoints);
+
+        return sectionEntity;
     }
 
     public Section toDomain(SectionJpaEntity entity) {
@@ -37,10 +52,15 @@ public class SectionJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getCategory(),
-                Optional.ofNullable(entity.getChapters()).orElse(Collections.emptyList())
-                        .stream().map(chapterJpaMapper::toDomain).toList(),
-                Optional.ofNullable(entity.getKeyPoints()).orElse(Collections.emptyList())
-                        .stream().map(sectionKeyPointJpaMapper::toDomain).toList()
+                // null-safe: entity.getChapters()가 null이면 빈 리스트로 처리
+                (entity.getChapters() != null)
+                        ? entity.getChapters().stream()
+                        .map(chapterJpaMapper::toDomain).toList() :
+                        new ArrayList<>(),
+                (entity.getKeyPoints() != null)
+                        ? entity.getKeyPoints().stream()
+                        .map(sectionKeyPointJpaMapper::toDomain).toList() :
+                        new ArrayList<>()
         );
     }
 }

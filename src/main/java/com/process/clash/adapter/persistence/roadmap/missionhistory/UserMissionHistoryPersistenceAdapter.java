@@ -14,10 +14,14 @@ public class UserMissionHistoryPersistenceAdapter implements UserMissionHistoryR
 
     private final UserMissionHistoryJpaRepository userMissionHistoryJpaRepository;
     private final UserMissionHistoryJpaMapper userMissionHistoryJpaMapper;
+    private final com.process.clash.adapter.persistence.user.UserJpaRepository userJpaRepository;
+    private final com.process.clash.adapter.persistence.roadmap.mission.MissionJpaRepository missionJpaRepository;
 
     @Override
     public void save(UserMissionHistory history) {
-        userMissionHistoryJpaRepository.save(userMissionHistoryJpaMapper.toJpaEntity(history));
+        com.process.clash.adapter.persistence.user.UserJpaEntity userEntity = userJpaRepository.getReferenceById(history.getUserId());
+        com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity missionEntity = missionJpaRepository.getReferenceById(history.getMissionId());
+        userMissionHistoryJpaRepository.save(userMissionHistoryJpaMapper.toJpaEntity(history, userEntity, missionEntity));
     }
 
     @Override

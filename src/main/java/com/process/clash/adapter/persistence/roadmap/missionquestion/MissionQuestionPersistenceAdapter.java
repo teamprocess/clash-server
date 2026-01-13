@@ -14,10 +14,12 @@ public class MissionQuestionPersistenceAdapter implements MissionQuestionReposit
 
     private final MissionQuestionJpaRepository missionQuestionJpaRepository;
     private final MissionQuestionJpaMapper missionQuestionJpaMapper;
+    private final com.process.clash.adapter.persistence.roadmap.mission.MissionJpaRepository missionJpaRepository;
 
     @Override
     public void save(MissionQuestion question) {
-        missionQuestionJpaRepository.save(missionQuestionJpaMapper.toJpaEntity(question));
+        com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity missionEntity = missionJpaRepository.getReferenceById(question.getMissionId());
+        missionQuestionJpaRepository.save(missionQuestionJpaMapper.toJpaEntity(question, missionEntity));
     }
 
     @Override
