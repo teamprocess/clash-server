@@ -1,7 +1,7 @@
 package com.process.clash.application.mainpage.service;
 
 import com.process.clash.application.mainpage.data.GetUserProfileData;
-import com.process.clash.application.mainpage.exception.exception.notfound.UserNotFoundException;
+import com.process.clash.application.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.mainpage.port.in.GetUserProfileUseCase;
 import com.process.clash.application.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.model.entity.User;
@@ -18,6 +18,6 @@ public class GetUserProfileService implements GetUserProfileUseCase {
         User user = userRepositoryPort.findById(command.actor().userId())
                 .orElseThrow(UserNotFoundException::new);
 
-        return GetUserProfileData.Result
+        return GetUserProfileData.Result.from(user);
     }
 }

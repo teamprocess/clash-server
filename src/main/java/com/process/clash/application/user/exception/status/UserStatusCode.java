@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.exception.status;
+package com.process.clash.application.user.exception.status;
 
 import com.process.clash.application.common.exception.statuscode.ErrorCategory;
 import com.process.clash.application.common.exception.statuscode.StatusCode;
