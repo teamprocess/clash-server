@@ -1,4 +1,4 @@
-package com.process.clash.domain.roadmap;
+package com.process.clash.domain.roadmap.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,17 +10,15 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Chapter {
+public class Mission {
 
     private Long id;
 
-    private Long sectionId;
+    private Long chapterId;
 
     private String title;
 
-    private String description;
+    private Integer difficulty;
 
-    private Integer orderIndex;
-
-    private List<Mission> missions;
+    private List<MissionQuestion> questions;
 }

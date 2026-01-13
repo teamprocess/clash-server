@@ -10,7 +10,7 @@ import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaRepositor
 import com.process.clash.adapter.persistence.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.UserJpaRepository;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
-import com.process.clash.domain.roadmap.UserMissionHistory;
+import com.process.clash.domain.roadmap.model.entity.UserMissionHistory;
 
 import lombok.RequiredArgsConstructor;
 

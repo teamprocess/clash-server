@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaRepository;
 import com.process.clash.application.roadmap.port.out.MissionQuestionRepositoryPort;
-import com.process.clash.domain.roadmap.MissionQuestion;
+import com.process.clash.domain.roadmap.model.entity.MissionQuestion;
 
 import lombok.RequiredArgsConstructor;
 

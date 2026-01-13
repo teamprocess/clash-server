@@ -1,4 +1,4 @@
-package com.process.clash.domain.roadmap;
+package com.process.clash.domain.roadmap.model.entity;
 
 import com.process.clash.domain.common.enums.Major;
 import lombok.AllArgsConstructor;

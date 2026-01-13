@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.choice;
 
 import com.process.clash.application.roadmap.port.out.ChoiceRepositoryPort;
-import com.process.clash.domain.roadmap.Choice;
+import com.process.clash.domain.roadmap.model.entity.Choice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

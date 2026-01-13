@@ -1,6 +1,6 @@
-package com.process.clash.domain.roadmap;
+package com.process.clash.domain.roadmap.model.entity;
 
-import com.process.clash.domain.common.enums.ProgressStatus;
+import com.process.clash.domain.roadmap.model.enums.ProgressStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

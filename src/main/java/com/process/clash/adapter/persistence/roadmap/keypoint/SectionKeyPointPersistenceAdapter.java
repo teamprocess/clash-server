@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.roadmap.keypoint;
 
 import com.process.clash.application.roadmap.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
-import com.process.clash.domain.roadmap.SectionKeyPoint;
+import com.process.clash.domain.roadmap.model.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

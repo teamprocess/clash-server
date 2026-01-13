@@ -1,6 +1,6 @@
 package com.process.clash.application.major.port.out;
 
-import com.process.clash.domain.major.MajorQuestion;
+import com.process.clash.domain.major.model.entity.MajorQuestion;
 
 import java.util.List;
 import java.util.Optional;

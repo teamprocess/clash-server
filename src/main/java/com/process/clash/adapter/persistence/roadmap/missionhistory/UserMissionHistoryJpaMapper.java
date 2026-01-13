@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.roadmap.missionhistory;
 
 import com.process.clash.adapter.persistence.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
-import com.process.clash.domain.roadmap.UserMissionHistory;
+import com.process.clash.domain.roadmap.model.entity.UserMissionHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

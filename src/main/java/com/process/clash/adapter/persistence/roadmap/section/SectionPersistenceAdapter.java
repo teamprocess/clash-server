@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.roadmap.section;
 
 import com.process.clash.application.roadmap.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.roadmap.Section;
+import com.process.clash.domain.roadmap.model.entity.Section;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

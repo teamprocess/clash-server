@@ -1,4 +1,4 @@
-package com.process.clash.domain.common.enums;
+package com.process.clash.domain.roadmap.model.enums;
 
 public enum ProgressStatus {
     LOCKED,
