@@ -23,8 +23,8 @@ public class MajorController {
     public ApiResponse<GetMajorQuestionDto.Response> getMajorQuestion(@AuthenticationPrincipal AuthUser authUser) {
         Actor actor = authUser.toActor();
         GetMajorQuestionData.Command command = new GetMajorQuestionData.Command(actor);
-        GetMajorQuestionData.Result Result = getMajorQuestionUseCase.findAll(command);
-        GetMajorQuestionDto.Response response = GetMajorQuestionDto.Response.from(Result);
+        GetMajorQuestionData.Result result = getMajorQuestionUseCase.findAll(command);
+        GetMajorQuestionDto.Response response = GetMajorQuestionDto.Response.from(result);
         return ApiResponse.success(response);
     }
 }
