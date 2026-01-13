@@ -1,4 +1,7 @@
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
   datasource:
     url: jdbc:postgresql://localhost:5432/clash
     username: ${DATABASE_USERNAME}
