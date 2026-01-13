@@ -23,7 +23,8 @@ public class GetUserProfileData {
                     user.id(),
                     user.name(),
                     user.username(),
-                    user.)
+                    user.profileImage()
+            );
         }
     }
 }
