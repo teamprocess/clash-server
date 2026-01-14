@@ -47,7 +47,7 @@ public class AuthControllerTest {
 
         // signup
         SignUpDto.Request signUpRequest = new SignUpDto.Request(username, password, name);
-        MockHttpServletRequestBuilder signupRequest = post("/api/auth/signup")
+        MockHttpServletRequestBuilder signupRequest = post("/api/auth/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signUpRequest));
 
@@ -57,7 +57,7 @@ public class AuthControllerTest {
 
         // signin
         SignInDto.Request signInRequest = new SignInDto.Request(username, password, false);
-        MockHttpServletRequestBuilder signinRequest = post("/api/auth/signin")
+        MockHttpServletRequestBuilder signinRequest = post("/api/auth/sign-in")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signInRequest));
 
