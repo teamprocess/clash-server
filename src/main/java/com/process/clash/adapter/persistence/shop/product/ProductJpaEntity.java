@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.shop.product;
 
 import com.process.clash.adapter.persistence.shop.season.SeasonJpaEntity;
+import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import jakarta.persistence.*;
