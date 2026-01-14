@@ -38,18 +38,12 @@ public class SessionJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "fk_user_id", nullable = false)
-    private Long userId;
-
-    @JoinColumn(name = "fk_user_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    @Column(name = "fk_task_id", nullable = false)
-    private Long taskId;
-
-    @JoinColumn(name = "fk_task_id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_task_id", nullable = false)
     private TaskJpaEntity task;
 
     @Column(nullable = false)
@@ -59,10 +53,10 @@ public class SessionJpaEntity {
     private LocalDateTime endedAt;
 
     @Builder
-    public static SessionJpaEntity create(Long userId, Long taskId, LocalDateTime startedAt) {
+    public static SessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, LocalDateTime startedAt) {
         return SessionJpaEntity.builder()
-            .userId(userId)
-            .taskId(taskId)
+            .user(user)
+            .task(task)
             .startedAt(startedAt)
             .build();
     }
