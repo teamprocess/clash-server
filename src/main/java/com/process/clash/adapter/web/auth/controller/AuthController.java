@@ -7,6 +7,7 @@ import com.process.clash.application.user.data.SignInData;
 import com.process.clash.application.user.data.SignUpData;
 import com.process.clash.application.user.port.in.SignInUseCase;
 import com.process.clash.application.user.port.in.SignUpUseCase;
+import com.process.clash.application.user.port.out.AuthEventRepositoryPort;
 import com.process.clash.infrastructure.principle.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +38,7 @@ public class AuthController {
 	private final SignInUseCase signInUseCase;
 	private final RememberMeServices rememberMeServices;
 	private final SecurityContextRepository securityContextRepository;
+	private final AuthEventRepositoryPort authEventRepositoryPort;
 
 	@PostMapping("/signup")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
@@ -70,6 +72,11 @@ public class AuthController {
 		SecurityContextHolder.setContext(context); // 홀더에 올리기
 		securityContextRepository.saveContext(context, httpRequest, httpResponse); // 완성된 컨텍스트를 세션에 저장
 
+		// record login event (ip, device)
+		String ip = httpRequest.getRemoteAddr();
+		String device = httpRequest.getHeader("User-Agent");
+		authEventRepositoryPort.recordLogin(result.username(), ip, device);
+
 		if (request.rememberMe()) {
 			rememberMeServices.loginSuccess(httpRequest, httpResponse, token);
 		}
@@ -81,10 +88,32 @@ public class AuthController {
 	@PostMapping("/signout")
 	public ApiResponse<Void> signOut(HttpServletRequest request) {
 		HttpSession session = request.getSession(false); // 세션이 없으면 새로 만들지 않음
+
+		// try to determine username before invalidation
+		String username = null;
+		if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null) {
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if (principal instanceof org.springframework.security.core.userdetails.UserDetails) {
+				username = ((org.springframework.security.core.userdetails.UserDetails) principal).getUsername();
+			} else if (principal instanceof String) {
+				username = (String) principal;
+			} else if (SecurityContextHolder.getContext().getAuthentication().getName() != null) {
+				username = SecurityContextHolder.getContext().getAuthentication().getName();
+			}
+		}
+
+		String ip = request.getRemoteAddr();
+		String device = request.getHeader("User-Agent");
+
 		if (session != null) {
 			session.invalidate(); // 세션 완전 제거
 		}
 		SecurityContextHolder.clearContext();
+
+		if (username != null) {
+			authEventRepositoryPort.recordLogout(username, ip, device);
+		}
+
 		return ApiResponse.success("로그아웃 되었습니다.");
 	}
 }

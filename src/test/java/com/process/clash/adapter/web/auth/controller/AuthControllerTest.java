@@ -56,7 +56,7 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.message").value("회원가입이 완료되었습니다."));
 
         // signin
-        SignInDto.Request signInRequest = new SignInDto.Request(username, password);
+        SignInDto.Request signInRequest = new SignInDto.Request(username, password, false);
         MockHttpServletRequestBuilder signinRequest = post("/api/auth/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signInRequest));
