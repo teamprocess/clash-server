@@ -1,6 +1,7 @@
 package com.process.clash.application.user.service;
 
 import com.process.clash.application.user.exception.exception.unauthorized.InvalidCredentialsException;
+import com.process.clash.domain.user.user.model.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +9,6 @@ import com.process.clash.application.user.data.SignInData;
 import com.process.clash.application.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.port.in.SignInUseCase;
 import com.process.clash.application.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.user.model.entity.User;
 
 import lombok.RequiredArgsConstructor;
 

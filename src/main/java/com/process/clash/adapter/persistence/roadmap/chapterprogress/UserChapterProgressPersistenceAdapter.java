@@ -3,12 +3,12 @@ package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 import java.util.List;
 import java.util.Optional;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository;
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
-import com.process.clash.adapter.persistence.user.UserJpaRepository;
 import com.process.clash.application.roadmap.port.out.UserChapterProgressRepositoryPort;
 import com.process.clash.domain.roadmap.entity.UserChapterProgress;
 

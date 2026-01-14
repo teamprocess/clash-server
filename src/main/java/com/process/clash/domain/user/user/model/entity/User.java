@@ -1,4 +1,4 @@
-package com.process.clash.domain.user.model.entity;
+package com.process.clash.domain.user.user.model.entity;
 
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.common.enums.Role;
@@ -29,10 +29,10 @@ public record User(
                 name,
                 password,
                 Role.USER,
-                true,
                 null,
-                false,
-                25,   // 기본 공부 시간 (기본값이 없다면 null)
+                "",
+                false,   // 기본 공부 시간 (기본값이 없다면 null)
+                25,
                 5,
                 Major.NONE
         );

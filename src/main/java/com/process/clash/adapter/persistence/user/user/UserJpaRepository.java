@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.user;
+package com.process.clash.adapter.persistence.user.user;
 
 import java.util.Optional;
 
