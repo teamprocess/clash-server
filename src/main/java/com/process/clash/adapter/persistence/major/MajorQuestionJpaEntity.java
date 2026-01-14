@@ -3,6 +3,10 @@ package com.process.clash.adapter.persistence.major;
 import com.process.clash.domain.common.enums.Major;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -20,6 +24,14 @@ public class MajorQuestionJpaEntity {
 
     @Embedded
     private WeightVo weightVo;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @Embeddable
     @Getter

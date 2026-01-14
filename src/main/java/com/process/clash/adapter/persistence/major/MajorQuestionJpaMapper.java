@@ -16,7 +16,9 @@ public class MajorQuestionJpaMapper {
                         majorQuestion.getWeightVo().getServer(),
                         majorQuestion.getWeightVo().getAi(),
                         majorQuestion.getWeightVo().getGame()
-                )
+                ),
+                null, // createdAt은 @CreationTimestamp가 자동으로 설정
+                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
     }
 
@@ -31,7 +33,8 @@ public class MajorQuestionJpaMapper {
                         majorQuestionJpaEntity.getWeightVo().getServer(),
                         majorQuestionJpaEntity.getWeightVo().getAi(),
                         majorQuestionJpaEntity.getWeightVo().getGame()
-                )
+                ),
+                majorQuestionJpaEntity.getCreatedAt()
         );
     }
 }

@@ -15,7 +15,9 @@ public class UserChapterProgressJpaMapper {
                 progress.getId(),
                 userEntity,
                 chapterEntity,
-                progress.getStatus()
+                progress.getStatus(),
+                null, // createdAt은 @CreationTimestamp가 자동으로 설정
+                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
     }
     public UserChapterProgress toDomain(UserChapterProgressJpaEntity entity) {

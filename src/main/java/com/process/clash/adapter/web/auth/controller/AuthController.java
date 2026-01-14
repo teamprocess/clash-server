@@ -28,7 +28,7 @@ public class AuthController {
 
 	@PostMapping("/sign-up")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
-		SignUpData.Command command = SignUpData.Command.fromRequest(request);
+		SignUpData.Command command = request.toCommand();
 		signUpUseCase.execute(command);
 		return ApiResponse.success("회원가입이 완료되었습니다.");
 	}

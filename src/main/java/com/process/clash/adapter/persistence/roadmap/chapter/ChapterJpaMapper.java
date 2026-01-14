@@ -29,7 +29,9 @@ public class ChapterJpaMapper {
                 chapter.getTitle(),
                 chapter.getDescription(),
                 chapter.getOrderIndex(),
-                new ArrayList<>()
+                new ArrayList<>(),
+                null, // createdAt은 @CreationTimestamp가 자동으로 설정
+                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
 
         List<MissionJpaEntity> missions = Optional.ofNullable(chapter.getMissions()).orElse(Collections.emptyList())

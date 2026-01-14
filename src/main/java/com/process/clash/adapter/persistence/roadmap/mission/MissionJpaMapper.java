@@ -24,7 +24,9 @@ public class MissionJpaMapper {
                 chapterEntity,
                 mission.getTitle(),
                 mission.getDifficulty(),
-                new ArrayList<>()
+                new ArrayList<>(),
+                null, // createdAt은 @CreationTimestamp가 자동으로 설정
+                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
 
         // null-safe: mission.getQuestions()가 null이면 빈 리스트로 처리
