@@ -3,12 +3,15 @@ package com.process.clash.adapter.web.mainpage.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.mainpage.dto.compare.CompareGitHubDto;
 import com.process.clash.adapter.web.mainpage.dto.mainpage.*;
+import com.process.clash.adapter.web.mainpage.dto.rival.GetAllAbleRivalsDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.mainpage.data.compare.CompareGitHubData;
 import com.process.clash.application.mainpage.data.mainpage.*;
+import com.process.clash.application.mainpage.data.rival.GetAllAbleRivalsData;
 import com.process.clash.application.mainpage.port.in.compare.CompareGitHubUseCase;
 import com.process.clash.application.mainpage.port.in.mainpage.*;
+import com.process.clash.application.mainpage.port.in.rival.GetAllAbleRivalsUseCase;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,8 @@ public class MainPageController {
     private final GetRankingUseCase getRankingUseCase;
 
     private final CompareGitHubUseCase compareGitHubUseCase;
+
+    private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;
 
     /* MainPage 부분 */
     // 유저 정보 조회 - 상단바 프로필 정보
@@ -109,5 +114,18 @@ public class MainPageController {
         CompareGitHubData.Result result = compareGitHubUseCase.execute(command);
         CompareGitHubDto.Response response = CompareGitHubDto.Response.from(result);
         return ApiResponse.success(response, "어제와 비교한 유저의 깃허브 정보 조회를 성공적으로 완료 했습니다.");
+    }
+
+    /* Rival 부분 */
+    // 라이벌 - 전체 유저 조회(내 라이벌 제외)
+    @GetMapping("/rival/fresh-user")
+    public ApiResponse<GetAllAbleRivalsDto.Response> getAllAbleRivals(
+            @AuthenticatedActor Actor actor
+    ) {
+
+        GetAllAbleRivalsData.Command command = GetAllAbleRivalsData.Command.from(actor);
+        GetAllAbleRivalsData.Result result = getAllAbleRivalsUseCase.execute(command);
+        GetAllAbleRivalsDto.Response response = GetAllAbleRivalsDto.Response.from(result);
+        return ApiResponse.success(response, "라이벌 등록 가능한 유저 목록을 성공적으로 조회했습니다.");
     }
 }
