@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -20,13 +21,13 @@ public class UserStudyTimeJpaEntity {
 
     @CreationTimestamp
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    public UserStudyTimeJpaEntity(Long id, Date date, UserJpaEntity user) {
+    public UserStudyTimeJpaEntity(Long id, LocalDate date, UserJpaEntity user) {
         this.id = id;
         this.date = date;
         this.user = user;
