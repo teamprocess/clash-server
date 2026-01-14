@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskRepositoryPort {
-    void save(Task session);
+    void save(Task task);
     Optional<Task> findById(Long id);
     List<Task> findAllByUserId(Long userId);
+    void deleteById(Long id);
 }

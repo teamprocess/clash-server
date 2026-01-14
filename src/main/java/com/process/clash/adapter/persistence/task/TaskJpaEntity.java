@@ -58,4 +58,17 @@ public class TaskJpaEntity {
 
         return taskJpaEntity;
     }
+
+    public static TaskJpaEntity from(Long taskId, String name, TaskColor color, Long userId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
+
+        taskJpaEntity.id = taskId;
+        taskJpaEntity.name = name;
+        taskJpaEntity.color = color;
+        taskJpaEntity.userId = userId;
+        taskJpaEntity.createdAt = createdAt;
+        taskJpaEntity.updatedAt = updatedAt;
+
+        return taskJpaEntity;
+    }
 }

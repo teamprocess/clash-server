@@ -8,10 +8,21 @@ import org.springframework.stereotype.Component;
 public class TaskJpaMapper {
 
     public static TaskJpaEntity toJpaEntity(Task task) {
-        return TaskJpaEntity.create(
+        if (task.id() == null) {
+            return TaskJpaEntity.create(
+                task.name(),
+                task.color(),
+                task.user().id()
+            );
+        }
+
+        return TaskJpaEntity.from(
+            task.id(),
             task.name(),
             task.color(),
-            task.user().id()
+            task.user().id(),
+            task.createdAt(),
+            task.updatedAt()
         );
     }
 

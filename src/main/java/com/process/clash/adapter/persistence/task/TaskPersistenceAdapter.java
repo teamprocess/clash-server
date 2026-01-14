@@ -1,9 +1,7 @@
 package com.process.clash.adapter.persistence.task;
 
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
-import com.process.clash.application.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.model.entity.Task;
-import com.process.clash.domain.user.model.entity.User;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +29,10 @@ public class TaskPersistenceAdapter implements TaskRepositoryPort {
         return taskJpaRepository.findAllByUserId(userId).stream()
             .map(TaskJpaMapper::toDomain)
             .toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        taskJpaRepository.deleteById(id);
     }
 }
