@@ -1,8 +1,10 @@
 package com.process.clash.adapter.web.major.dto;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.major.data.GetMajorQuestionData;
 import com.process.clash.application.major.data.PostMajorQuestionData;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +13,10 @@ import java.time.LocalDateTime;
 public class PostMajorQuestionDto {
 
     public record Request(
+            @NotBlank(message = "질문 내용은 비워둘 수 없습니다.")
             String content,
+            @NotNull(message = "가중치는 비워둘 수 없습니다.")
+            @Valid
             MajorWeightVo weight
     ) {
         public PostMajorQuestionData.Command toCommand(Actor actor) {
@@ -55,22 +60,19 @@ public class PostMajorQuestionDto {
     @AllArgsConstructor
     public static class MajorWeightVo {
 
+        @NotNull(message = "web 가중치는 비워둘 수 없습니다.")
         private final Integer web;
+
+        @NotNull(message = "app 가중치는 비워둘 수 없습니다.")
         private final Integer app;
+
+        @NotNull(message = "server 가중치는 비워둘 수 없습니다.")
         private final Integer server;
+
+        @NotNull(message = "ai 가중치는 비워둘 수 없습니다.")
         private final Integer ai;
+
+        @NotNull(message = "game 가중치는 비워둘 수 없습니다.")
         private final Integer game;
-
-        // Result 내부의 WeightVo를 인자로 받아 변환
-        public static GetMajorQuestionDto.MajorWeightVo from(GetMajorQuestionData.Result.MajorQuestionVo.WeightVo vo) {
-
-            return new GetMajorQuestionDto.MajorWeightVo(
-                    vo.getWeb(),
-                    vo.getApp(),
-                    vo.getServer(),
-                    vo.getAi(),
-                    vo.getGame()
-            );
-        }
     }
 }
