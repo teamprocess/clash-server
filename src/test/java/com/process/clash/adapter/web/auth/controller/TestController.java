@@ -1,4 +1,4 @@
-package com.process.clash.adapter.web;
+package com.process.clash.adapter.web.auth.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.infrastructure.principle.AuthUser;
