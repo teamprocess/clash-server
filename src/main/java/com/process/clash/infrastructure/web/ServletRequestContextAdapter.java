@@ -1,18 +1,12 @@
 package com.process.clash.infrastructure.web;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-/**
- * Adapter that can read IP/User-Agent from the current servlet request.
- *
- * NOTE: This component is retained for backwards compatibility but
- * the application should prefer passing AccessContext explicitly.
- */
+@Deprecated
 @Component
 public class ServletRequestContextAdapter {
 
