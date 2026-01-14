@@ -13,16 +13,16 @@ public class GetMyRivalActingDto {
 
         public static Response from(GetMyRivalActingData.Result result) {
             return new Response(
-                    result.myRivals().stream()
-                            .map(data -> new MyRival(
-                                    data.name(),
-                                    data.username(),
-                                    data.profileImage(),
-                                    data.activeTime(),
-                                    data.usingApp(),
-                                    data.status()
-                            ))
-                            .toList()
+                result.myRivals().stream()
+                    .map(data -> new MyRival(
+                        data.name(),
+                        data.username(),
+                        data.profileImage(),
+                        data.activeTime(),
+                        data.usingApp(),
+                        data.status()
+                    ))
+                .toList()
             );
         }
     }
