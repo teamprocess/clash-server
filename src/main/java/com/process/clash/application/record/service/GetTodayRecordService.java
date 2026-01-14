@@ -1,15 +1,14 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.mainpage.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.record.dto.GetTodayRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.out.SessionRepositoryPort;
+import com.process.clash.application.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.port.out.UserRepositoryPort;
 import com.process.clash.common.DateUtil;
 import com.process.clash.domain.record.model.entity.Session;
-import com.process.clash.domain.user.model.entity.User;
+import com.process.clash.domain.user.user.model.entity.User;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -26,7 +25,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
 
     public GetTodayRecordData.Result execute(GetTodayRecordData.Command command) {
 
-        User user = userRepositoryPort.findById(command.actor().userId())
+        User user = userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
         String date = DateUtil.getCurrentDate();
 

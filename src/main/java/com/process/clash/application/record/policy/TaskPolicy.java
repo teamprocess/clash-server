@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class TaskPolicy {
 
     public void validateOwnership(Actor actor, Task task) {
-        if (!task.user().id().equals(actor.userId())) {
+        if (!task.user().id().equals(actor.id())) {
             throw new TaskAccessDeniedException();
         }
     }

@@ -16,7 +16,7 @@ public class GetAllTasksService implements GetAllTasksUseCase {
 
     public GetAllTasksData.Result execute(GetAllTasksData.Command command) {
 
-        List<Task> taskList = taskRepositoryPort.findAllByUserId(command.actor().userId());
+        List<Task> taskList = taskRepositoryPort.findAllByUserId(command.actor().id());
 
         return GetAllTasksData.Result.create(taskList);
     }

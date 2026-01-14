@@ -1,6 +1,6 @@
 package com.process.clash.application.roadmap.port.out;
 
-import com.process.clash.domain.roadmap.Mission;
+import com.process.clash.domain.roadmap.entity.Mission;
 
 import java.util.List;
 import java.util.Optional;

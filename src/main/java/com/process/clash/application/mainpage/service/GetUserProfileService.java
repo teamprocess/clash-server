@@ -1,10 +1,10 @@
 package com.process.clash.application.mainpage.service;
 
 import com.process.clash.application.mainpage.data.GetUserProfileData;
-import com.process.clash.application.mainpage.exception.exception.notfound.UserNotFoundException;
+import com.process.clash.application.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.mainpage.port.in.GetUserProfileUseCase;
 import com.process.clash.application.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.user.model.entity.User;
+import com.process.clash.domain.user.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class GetUserProfileService implements GetUserProfileUseCase {
 
     @Override
     public GetUserProfileData.Result execute(GetUserProfileData.Command command) {
-        User user = userRepositoryPort.findById(command.actor().userId())
+        User user = userRepositoryPort.findById(command.actor().id())
                 .orElseThrow(UserNotFoundException::new);
 
         return GetUserProfileData.Result.from(user);

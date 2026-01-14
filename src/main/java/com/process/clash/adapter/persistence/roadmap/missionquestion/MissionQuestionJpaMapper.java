@@ -1,14 +1,16 @@
 package com.process.clash.adapter.persistence.roadmap.missionquestion;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.process.clash.adapter.persistence.roadmap.choice.ChoiceJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.choice.ChoiceJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
-import com.process.clash.domain.roadmap.MissionQuestion;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.process.clash.domain.roadmap.entity.MissionQuestion;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

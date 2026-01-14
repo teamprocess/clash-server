@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.session;
 
 import com.process.clash.adapter.persistence.task.TaskJpaMapper;
-import com.process.clash.adapter.persistence.user.UserJpaMapper;
+import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
 import com.process.clash.domain.record.model.entity.Session;
 import org.springframework.stereotype.Component;
 

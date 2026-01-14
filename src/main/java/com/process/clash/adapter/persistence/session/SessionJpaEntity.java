@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.session;
 
 import com.process.clash.adapter.persistence.task.TaskJpaEntity;
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

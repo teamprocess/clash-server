@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.task;
 
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.record.model.enums.TaskColor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

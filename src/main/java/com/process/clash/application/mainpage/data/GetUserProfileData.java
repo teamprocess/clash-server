@@ -1,7 +1,7 @@
 package com.process.clash.application.mainpage.data;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.user.model.entity.User;
+import com.process.clash.domain.user.user.model.entity.User;
 
 public class GetUserProfileData {
     public record Command(
