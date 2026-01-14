@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.record.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.record.dto.GetTodayRecordDto;
+import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.dto.GetTodayRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
@@ -21,9 +22,8 @@ public class RecordController {
 
     @GetMapping("/today")
     public ApiResponse<GetTodayRecordDto.Response> getTodayRecord(
-        @AuthenticationPrincipal AuthUser authUser
+        @AuthenticatedActor Actor actor
     ) {
-        Actor actor = authUser.toActor();
 
         GetTodayRecordData.Command command = GetTodayRecordData.Command.builder()
             .actor(actor)
