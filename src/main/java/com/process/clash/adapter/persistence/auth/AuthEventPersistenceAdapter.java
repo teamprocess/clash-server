@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.auth;
 
-import com.process.clash.application.user.port.out.AuthEventRepositoryPort;
+import com.process.clash.application.user.user.port.out.AuthEventRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

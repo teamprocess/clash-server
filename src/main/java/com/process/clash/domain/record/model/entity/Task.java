@@ -1,7 +1,7 @@
 package com.process.clash.domain.record.model.entity;
 
 import com.process.clash.domain.record.model.enums.TaskColor;
-import com.process.clash.domain.user.user.model.entity.User;
+import com.process.clash.domain.user.user.entity.User;
 import java.time.LocalDateTime;
 
 public record Task(

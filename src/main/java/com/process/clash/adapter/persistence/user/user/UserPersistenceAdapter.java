@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.user.user;
 
-import com.process.clash.application.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.user.user.model.entity.User;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

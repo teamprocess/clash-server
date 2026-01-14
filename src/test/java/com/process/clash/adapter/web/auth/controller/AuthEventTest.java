@@ -3,8 +3,8 @@ package com.process.clash.adapter.web.auth.controller;
 import com.process.clash.adapter.persistence.auth.AuthEventJpaEntity;
 import com.process.clash.adapter.persistence.auth.AuthEventJpaRepository;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
-import com.process.clash.application.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.user.user.model.entity.User;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.domain.user.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +53,7 @@ class AuthEventTest {
     @DisplayName("실제 HTTP 요청을 통해 로그인 시 IP와 기기 정보가 로깅되어야 한다")
     void recordRealHttpEvent() {
         // 1. 요청 준비 (실제 브라우저처럼 User-Agent 설정)
-        String url = "http://localhost:" + port + "/api/auth/signin";
+        String url = "http://localhost:" + port + "/api/auth/sign-in";
         String realUserAgent = "test";
 
         SignInDto.Request body = new SignInDto.Request("testuser", "password123", false);
