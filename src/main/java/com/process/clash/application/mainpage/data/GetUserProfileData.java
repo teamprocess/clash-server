@@ -1,14 +1,14 @@
 package com.process.clash.application.mainpage.data;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.user.user.model.entity.User;
+import com.process.clash.domain.user.user.entity.User;
 
 public class GetUserProfileData {
     public record Command(
             Actor actor
     ) {
-        public static GetUserProfileData.Command from(Actor actor) {
-            return new GetUserProfileData.Command(actor);
+        public static Command from(Actor actor) {
+            return new Command(actor);
         }
     }
 
@@ -18,8 +18,8 @@ public class GetUserProfileData {
             String username,
             String profileImage
     ) {
-        public static GetUserProfileData.Result from(User user) {
-            return new GetUserProfileData.Result(
+        public static Result from(User user) {
+            return new Result(
                     user.id(),
                     user.name(),
                     user.username(),

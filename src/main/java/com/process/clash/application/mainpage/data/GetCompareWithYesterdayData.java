@@ -7,8 +7,8 @@ public class GetCompareWithYesterdayData {
     public record Command(
             Actor actor
     ) {
-        public static GetCompareWithYesterdayData.Command from(Actor actor) {
-            return new GetCompareWithYesterdayData.Command(
+        public static Command from(Actor actor) {
+            return new Command(
                     actor
             );
         }

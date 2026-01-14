@@ -1,7 +1,7 @@
 package com.process.clash.application.user.service;
 
 import com.process.clash.application.user.exception.exception.conflict.UsernameAlreadyExistException;
-import com.process.clash.domain.user.user.model.entity.User;
+import com.process.clash.domain.user.user.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

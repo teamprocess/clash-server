@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.user.userstudytime;
 
-import com.process.clash.domain.user.userstudytime.model.entity.UserStudyTime;
+import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import org.springframework.stereotype.Component;
 
 @Component

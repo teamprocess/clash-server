@@ -1,4 +1,4 @@
-package com.process.clash.domain.user.userstudytime.model.entity;
+package com.process.clash.domain.user.userstudytime.entity;
 
 import java.util.Date;
 

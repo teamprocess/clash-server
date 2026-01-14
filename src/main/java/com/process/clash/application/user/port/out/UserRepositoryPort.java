@@ -1,11 +1,10 @@
 package com.process.clash.application.user.port.out;
 
-import com.process.clash.domain.user.user.model.entity.User;
+import com.process.clash.domain.user.user.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public interface UserRepositoryPort {
     User save(User user);
     Optional<User> findById(Long id);

@@ -9,9 +9,9 @@ public class GetCompareWithYesterdayDto {
             Contributors contributors
     ) {
 
-        public static GetCompareWithYesterdayDto.Response from(GetCompareWithYesterdayData.Result result) {
+        public static Response from(GetCompareWithYesterdayData.Result result) {
 
-            return new GetCompareWithYesterdayDto.Response(
+            return new Response(
                     new ActiveTime(
                             result.activeTime().yesterdayActiveTime(),
                             result.activeTime().todayActiveTime()

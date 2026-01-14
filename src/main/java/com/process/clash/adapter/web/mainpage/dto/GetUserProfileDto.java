@@ -9,8 +9,8 @@ public class GetUserProfileDto {
             String username,
             String profileImage
     ) {
-        public static GetUserProfileDto.Response from(GetUserProfileData.Result result) {
-            return new GetUserProfileDto.Response(
+        public static Response from(GetUserProfileData.Result result) {
+            return new Response(
                     result.id(),
                     result.name(),
                     result.username(),
