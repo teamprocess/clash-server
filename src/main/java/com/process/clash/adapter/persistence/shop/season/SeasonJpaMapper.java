@@ -13,8 +13,7 @@ public class SeasonJpaMapper {
                 season.updatedAt(),
                 season.title(),
                 season.startDate(),
-                season.endDate(),
-                season.isActive()
+                season.endDate()
         );
     }
 
@@ -25,8 +24,7 @@ public class SeasonJpaMapper {
                 seasonJpaEntity.getUpdatedAt(),
                 seasonJpaEntity.getTitle(),
                 seasonJpaEntity.getStartDate(),
-                seasonJpaEntity.getEndDate(),
-                seasonJpaEntity.getIsActive()
+                seasonJpaEntity.getEndDate()
         );
     }
 }

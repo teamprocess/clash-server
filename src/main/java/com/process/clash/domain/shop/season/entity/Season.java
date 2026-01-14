@@ -9,8 +9,7 @@ public record Season(
         LocalDateTime updatedAt,
         String title,
         LocalDate startDate,
-        LocalDate endDate,
-        Boolean isActive
+        LocalDate endDate
 ) {
     public static Season createDefault(String title, LocalDate startDate, LocalDate endDate) {
         return new Season(
@@ -19,8 +18,16 @@ public record Season(
                 null,
                 title,
                 startDate,
-                endDate,
-                false
+                endDate
         );
+    }
+
+    public Boolean isActive() {
+        LocalDate today = LocalDate.now();
+        return !today.isBefore(startDate) && !today.isAfter(endDate);
+    }
+
+    public Boolean isActiveOn(LocalDate date) {
+        return !date.isBefore(startDate) && !date.isAfter(endDate);
     }
 }
