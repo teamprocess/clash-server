@@ -1,10 +1,13 @@
 package com.process.clash.adapter.web.mainpage.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.mainpage.dto.compare.CompareGitHubDto;
 import com.process.clash.adapter.web.mainpage.dto.mainpage.*;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.mainpage.data.compare.CompareGitHubData;
 import com.process.clash.application.mainpage.data.mainpage.*;
+import com.process.clash.application.mainpage.port.in.compare.CompareGitHubUseCase;
 import com.process.clash.application.mainpage.port.in.mainpage.*;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
@@ -25,6 +28,9 @@ public class MainPageController {
     private final AnalyzeMyActivityUseCase analyzeMyActivityUseCase;
     private final GetRankingUseCase getRankingUseCase;
 
+    private final CompareGitHubUseCase compareGitHubUseCase;
+
+    /* MainPage 부분 */
     // 유저 정보 조회 - 상단바 프로필 정보
     @GetMapping("/user-info")
     public ApiResponse<GetUserProfileDto.Response> getUserProfile(
@@ -90,5 +96,18 @@ public class MainPageController {
         GetRankingData.Result result = getRankingUseCase.execute(command);
         GetRankingDto.Response response = GetRankingDto.Response.from(result);
         return ApiResponse.success(response, "내 EXP 획득 정보 분석 결과를 성공적으로 반환했습니다.");
+    }
+
+    /* Compare 부분 */
+    // 어제와 비교 - GitHub
+    @GetMapping("/compare/github")
+    public ApiResponse<CompareGitHubDto.Response> compareGitHub(
+            @AuthenticatedActor Actor actor
+    ) {
+
+        CompareGitHubData.Command command = CompareGitHubData.Command.from(actor);
+        CompareGitHubData.Result result = compareGitHubUseCase.execute(command);
+        CompareGitHubDto.Response response = CompareGitHubDto.Response.from(result);
+        return ApiResponse.success(response, "어제와 비교한 유저의 깃허브 정보 조회를 성공적으로 완료 했습니다.");
     }
 }

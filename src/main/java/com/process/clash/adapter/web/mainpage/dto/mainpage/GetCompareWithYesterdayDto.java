@@ -8,29 +8,35 @@ public class GetCompareWithYesterdayDto {
             ActiveTime activeTime,
             Contributors contributors
     ) {
-
         public static Response from(GetCompareWithYesterdayData.Result result) {
-
             return new Response(
-                    new ActiveTime(
-                            result.activeTime().yesterdayActiveTime(),
-                            result.activeTime().todayActiveTime()
-                    ),
-                    new Contributors(
-                            result.contributors().yesterdayContributors(),
-                            result.contributors().todayContributors()
-                    )
+                    ActiveTime.from(result.activeTime()),
+                    Contributors.from(result.contributors())
             );
         }
     }
 
-    private record ActiveTime(
+    public record ActiveTime(
             Integer yesterdayActiveTime,
             Integer todayActiveTime
-    ) {}
+    ) {
+        public static ActiveTime from(GetCompareWithYesterdayData.ActiveTime data) {
+            return new ActiveTime(
+                    data.yesterdayActiveTime(),
+                    data.todayActiveTime()
+            );
+        }
+    }
 
-    private record Contributors(
+    public record Contributors(
             Integer yesterdayContributors,
             Integer todayContributors
-    ) {}
+    ) {
+        public static Contributors from(GetCompareWithYesterdayData.Contributors data) {
+            return new Contributors(
+                    data.yesterdayContributors(),
+                    data.todayContributors()
+            );
+        }
+    }
 }
