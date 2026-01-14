@@ -39,4 +39,14 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
             .map(studySessionJpaMapper::toDomain)
             .toList();
     }
+
+    @Override
+    public Boolean existsActiveSessionByUserId(Long userId) {
+        return studySessionJpaRepository.existsByUserIdAndEndedAtIsNull(userId);
+    }
+
+    @Override
+    public Optional<StudySession> findActiveSessionByUserId(Long userId) {
+        return studySessionJpaRepository.findByUserIdAndEndedAtIsNull(userId);
+    }
 }

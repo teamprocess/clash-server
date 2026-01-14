@@ -8,4 +8,6 @@ public interface StudySessionRepositoryPort {
     void save(StudySession studySession);
     Optional<StudySession> findById(Long id);
     List<StudySession> findAllByUserId(Long userId);
+    Boolean existsActiveSessionByUserId(Long userId);
+    Optional<StudySession> findActiveSessionByUserId(Long userId);
 }
