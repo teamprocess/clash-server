@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // RANDOM_PORT를 사용하면 실제 서블릿 컨테이너(Tomcat)가 구동됩니다.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class AuthEventRealHttpTest {
+class AuthEventTest {
 
     @LocalServerPort
     private int port; // 랜덤으로 할당된 포트 번호

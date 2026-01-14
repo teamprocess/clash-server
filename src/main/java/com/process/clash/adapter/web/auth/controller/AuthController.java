@@ -10,6 +10,7 @@ import com.process.clash.application.user.port.in.SignUpUseCase;
 import com.process.clash.application.user.port.out.AuthEventRepositoryPort;
 import com.process.clash.infrastructure.principle.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -56,12 +57,19 @@ public class AuthController {
 		SignInData.Command command = new SignInData.Command(request.username(), request.password());
 		SignInData.Result result = signInUseCase.execute(command);
 
+		HttpServletRequest wrapper = new HttpServletRequestWrapper(httpRequest) {
+			@Override
+			public String getParameter(String name) {
+				if ("remember-me".equals(name)) return "true"; // 파라미터 이름 확인!
+				return super.getParameter(name);
+			}
+		};
 
 		AuthUser authUser = new AuthUser(result.id(), result.username(), result.role());
 		// 인증 토큰을 생성
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				authUser,
-				null,
+				request.password(),
 				authUser.getAuthorities()
 		);
 

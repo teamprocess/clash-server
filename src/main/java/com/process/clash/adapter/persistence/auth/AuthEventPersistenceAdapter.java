@@ -23,4 +23,10 @@ public class AuthEventPersistenceAdapter implements AuthEventRepositoryPort {
         AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "LOGOUT", ipAddress, device, LocalDateTime.now());
         repository.save(entity);
     }
+
+    @Override
+    public void recordSessionExpired(String username, String ipAddress, String device) {
+        AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "SESSION_EXPIRE", ipAddress, device, LocalDateTime.now());
+        repository.save(entity);
+    }
 }

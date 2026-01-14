@@ -4,15 +4,19 @@ import com.process.clash.application.user.port.out.AuthEventRepositoryPort;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class SessionListener implements HttpSessionListener {
 
     private final AuthEventRepositoryPort authEventRepositoryPort;
+
+    public SessionListener(@Lazy AuthEventRepositoryPort authEventRepositoryPort) {
+        this.authEventRepositoryPort = authEventRepositoryPort;
+    }
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
@@ -27,7 +31,7 @@ public class SessionListener implements HttpSessionListener {
             if (context.getAuthentication() != null) {
                 String username = context.getAuthentication().getName();
                 // session destroyed (expired or invalidated elsewhere)
-                authEventRepositoryPort.recordLogout(username, null, null);
+                authEventRepositoryPort.recordSessionExpired(username, null, null);
             }
         }
     }
