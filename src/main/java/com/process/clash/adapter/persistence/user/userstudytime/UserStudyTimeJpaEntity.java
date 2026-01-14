@@ -1,6 +1,5 @@
 package com.process.clash.adapter.persistence.user.userstudytime;
 
-import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,12 +21,8 @@ public class UserStudyTimeJpaEntity {
     @Column(nullable = false)
     private Date date;
 
-    @Column(name = "fk_user_id", nullable = false)
+    @Column(nullable = false)
     private Long userId;
-
-    @JoinColumn(name = "fk_user_id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private UserJpaEntity user;
 
     public UserStudyTimeJpaEntity(Long id, Date date, Long userId) {
         this.id = id;
