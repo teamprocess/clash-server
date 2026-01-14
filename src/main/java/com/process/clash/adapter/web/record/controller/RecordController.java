@@ -10,6 +10,7 @@ import com.process.clash.infrastructure.principle.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,5 +35,19 @@ public class RecordController {
             GetTodayRecordDto.Response.from(result),
             "오늘의 일반 기록 현황을 조회했습니다."
         );
+    }
+
+    @PostMapping("/start")
+    public ApiResponse<?> startRecord(
+
+    ) {
+        return null;
+    }
+
+    @PostMapping("/stop")
+    public ApiResponse<?> stopRecord(
+
+    ) {
+        return null;
     }
 }
