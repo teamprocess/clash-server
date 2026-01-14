@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GetUserProfileService implements GetUserProfileUseCase {
+
     private final UserRepositoryPort userRepositoryPort;
 
     @Override
