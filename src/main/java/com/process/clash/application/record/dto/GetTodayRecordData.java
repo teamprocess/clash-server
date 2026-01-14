@@ -18,17 +18,15 @@ public class GetTodayRecordData {
         String date,
         Boolean pomodoro_enabled,
         Long totalStudyTime,
-        Instant studyStoppedAt,
-        List<Task> tasks
+        Instant studyStoppedAt
     ) {
 
-        public static Result create(String date, Boolean pomodoro_enabled, Long totalStudyTime, Instant studyStoppedAt, List<Task> tasks) {
+        public static Result create(String date, Boolean pomodoro_enabled, Long totalStudyTime, Instant studyStoppedAt) {
             return new Result(
                 date,
                 pomodoro_enabled,
                 totalStudyTime,
-                studyStoppedAt,
-                tasks
+                studyStoppedAt
             );
         }
     }
