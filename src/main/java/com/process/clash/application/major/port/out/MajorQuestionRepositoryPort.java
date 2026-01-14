@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MajorQuestionRepositoryPort {
-    void save(MajorQuestion majorQuestion);
+    MajorQuestion save(MajorQuestion majorQuestion);
     Optional<MajorQuestion> findById(Long id);
     List<MajorQuestion> findAll();
 }

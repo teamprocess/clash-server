@@ -16,9 +16,10 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
     private final MajorQuestionJpaMapper majorQuestionJpaMapper;
 
     @Override
-    public void save(MajorQuestion majorQuestion) {
+    public MajorQuestion save(MajorQuestion majorQuestion) {
         MajorQuestionJpaEntity majorQuestionJpaEntity = majorQuestionJpaMapper.toJpaEntity(majorQuestion);
-        majorQuestionJpaRepository.save(majorQuestionJpaEntity);
+        MajorQuestionJpaEntity saved = majorQuestionJpaRepository.save(majorQuestionJpaEntity);
+        return majorQuestionJpaMapper.toDomain(saved);
     }
 
     @Override

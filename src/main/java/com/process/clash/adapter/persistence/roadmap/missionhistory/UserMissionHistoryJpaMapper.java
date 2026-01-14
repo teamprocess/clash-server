@@ -17,7 +17,9 @@ public class UserMissionHistoryJpaMapper {
                 missionEntity,
                 history.isCleared(),
                 history.getScore(),
-                history.getCurrentQuestionIndex()
+                history.getCurrentQuestionIndex(),
+                null, // createdAt은 @CreationTimestamp가 자동으로 설정
+                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
     }
 
