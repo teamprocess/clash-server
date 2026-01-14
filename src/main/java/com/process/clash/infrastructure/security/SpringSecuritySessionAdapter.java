@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +37,7 @@ public class SpringSecuritySessionAdapter implements SessionManager {
     public void createSession(AuthPrincipal principal, boolean rememberMe) {
         AuthUser authUser = new AuthUser(principal.id(), principal.username(), "", principal.role());
 
-        Authentication token = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+        Authentication token = new UsernamePasswordAuthenticationToken(
             authUser,
             null,
             authUser.getAuthorities()
