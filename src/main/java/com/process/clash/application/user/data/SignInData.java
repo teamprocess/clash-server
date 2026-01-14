@@ -1,6 +1,5 @@
 package com.process.clash.application.user.data;
 
-import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.common.enums.Role;
 
 import java.io.Serializable;
