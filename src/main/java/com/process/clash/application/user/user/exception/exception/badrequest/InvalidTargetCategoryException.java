@@ -9,6 +9,6 @@ public class InvalidTargetCategoryException extends BadRequestException {
     }
 
     public InvalidTargetCategoryException(Throwable cause) {
-        super(UserStatusCode.INVALID_CREDENTIALS, cause);
+        super(UserStatusCode.INVALID_TARGET_CATEGORY, cause);
     }
 }

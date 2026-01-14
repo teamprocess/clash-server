@@ -14,11 +14,11 @@ public class AnalyzeMyActivityData {
             TargetCategory category
     ) {
 
-        public static Command from(Actor actor, String category) {
+        public static Command from(Actor actor, TargetCategory category) {
 
             return new Command(
                     actor,
-                    TargetCategory.from(category)
+                    category
             );
         }
     }

@@ -14,12 +14,12 @@ public class GetRankingData {
             PeriodCategory period
     ) {
 
-        public static Command from(Actor actor, String category, String period) {
+        public static Command from(Actor actor, TargetCategory category, PeriodCategory period) {
 
             return new Command(
                     actor,
-                    TargetCategory.from(category),
-                    PeriodCategory.from(period)
+                    category,
+                    period
             );
         }
     }

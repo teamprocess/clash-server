@@ -6,6 +6,8 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.mainpage.data.*;
 import com.process.clash.application.mainpage.port.in.*;
+import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.domain.common.enums.TargetCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,7 +68,7 @@ public class MainPageController {
     @GetMapping("/analyze-my-activity/category/{category}")
     public ApiResponse<AnalyzeMyActivityDto.Response> analyzeMyActivity(
             @AuthenticatedActor Actor actor,
-            @PathVariable String category
+            @PathVariable TargetCategory category
     ) {
 
         AnalyzeMyActivityData.Command command = AnalyzeMyActivityData.Command.from(actor, category);
@@ -80,8 +82,8 @@ public class MainPageController {
     @GetMapping("/ranking/category/{category}/period/{period}")
     public ApiResponse<GetRankingDto.Response> getRanking(
             @AuthenticatedActor Actor actor,
-            @PathVariable String category,
-            @PathVariable String period
+            @PathVariable TargetCategory category,
+            @PathVariable PeriodCategory period
     ) {
 
         GetRankingData.Command command = GetRankingData.Command.from(actor, category, period);
