@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.auth.service;
 
-import com.process.clash.application.user.exception.exception.notfound.UserNotFoundException;
-import com.process.clash.application.user.port.out.UserRepositoryPort;
+import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.infrastructure.principle.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

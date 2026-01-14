@@ -39,6 +39,7 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
@@ -59,5 +60,4 @@ public class UserJpaEntity {
 
     @Enumerated(EnumType.STRING)
     private Major major;
-
 }
