@@ -1,7 +1,7 @@
-package com.process.clash.application.user.exception.exception.unauthorized;
+package com.process.clash.application.user.user.exception.exception.unauthorized;
 
 import com.process.clash.application.common.exception.exception.UnAuthorizedException;
-import com.process.clash.application.user.exception.status.UserStatusCode;
+import com.process.clash.application.user.user.exception.status.UserStatusCode;
 
 public class NotAuthenticatedException extends UnAuthorizedException {
     public NotAuthenticatedException() {

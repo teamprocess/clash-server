@@ -1,7 +1,8 @@
 package com.process.clash.infrastructure.security;
 
-import com.process.clash.application.user.data.AuthPrincipal;
-import com.process.clash.application.user.port.out.SessionManager;
+import com.process.clash.application.user.user.data.AuthPrincipal;
+import com.process.clash.application.user.user.exception.exception.unauthorized.NotAuthenticatedException;
+import com.process.clash.application.user.user.port.out.SessionManager;
 import com.process.clash.infrastructure.principle.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -76,7 +77,7 @@ public class SpringSecuritySessionAdapter implements SessionManager {
     public String getCurrentUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
-            throw new com.process.clash.application.user.exception.exception.unauthorized.NotAuthenticatedException();
+            throw new NotAuthenticatedException();
         }
 
         Object principal = auth.getPrincipal();

@@ -1,4 +1,4 @@
-package com.process.clash.application.user.exception.exception.invalid;
+package com.process.clash.application.user.user.exception.exception.validation;
 
 import com.process.clash.application.common.exception.exception.ValidationException;
 

@@ -1,7 +1,7 @@
-package com.process.clash.application.user.data;
+package com.process.clash.application.user.user.data;
 
 import com.process.clash.domain.common.enums.Role;
-import com.process.clash.domain.user.user.model.entity.User;
+import com.process.clash.domain.user.user.entity.User;
 
 public record AuthPrincipal(Long id, String username, Role role) {
 	public static AuthPrincipal from(User user) {

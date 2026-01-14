@@ -1,9 +1,9 @@
-package com.process.clash.application.user.service;
+package com.process.clash.application.user.user.service;
 
 import com.process.clash.application.common.data.AccessContext;
-import com.process.clash.application.user.port.in.SignOutUseCase;
-import com.process.clash.application.user.port.out.AuthEventRepositoryPort;
-import com.process.clash.application.user.port.out.SessionManager;
+import com.process.clash.application.user.user.port.in.SignOutUseCase;
+import com.process.clash.application.user.user.port.out.AuthEventRepositoryPort;
+import com.process.clash.application.user.user.port.out.SessionManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

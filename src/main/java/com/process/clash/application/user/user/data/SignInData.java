@@ -1,8 +1,7 @@
 package com.process.clash.application.user.user.data;
 
 import com.process.clash.application.common.data.AccessContext;
-import com.process.clash.application.common.exception.exception.ValidationException;
-import com.process.clash.application.user.exception.exception.invalid.AccessContextMissingException;
+import com.process.clash.application.user.user.exception.exception.validation.AccessContextMissingException;
 import com.process.clash.domain.common.enums.Role;
 
 import java.io.Serializable;
