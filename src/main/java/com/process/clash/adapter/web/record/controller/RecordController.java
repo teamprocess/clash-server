@@ -3,12 +3,15 @@ package com.process.clash.adapter.web.record.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.record.dto.GetTodayRecordDto;
 import com.process.clash.adapter.web.record.dto.StartRecordDto;
+import com.process.clash.adapter.web.record.dto.StopRecordDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.dto.GetTodayRecordData;
 import com.process.clash.application.record.dto.StartRecordData;
+import com.process.clash.application.record.dto.StopRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.in.StartRecordUseCase;
+import com.process.clash.application.record.port.in.StopRecordUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +27,7 @@ public class RecordController {
 
     private final GetTodayRecordUseCase getTodayRecordUseCase;
     private final StartRecordUseCase startRecordUseCase;
+    private final StopRecordUseCase stopRecordUseCase;
 
     @GetMapping("/today")
     public ApiResponse<GetTodayRecordDto.Response> getTodayRecord(
@@ -59,6 +63,19 @@ public class RecordController {
                 ),
                 "일반 기록을 시작했습니다."
         );
+    }
+
+    @PostMapping("/stop")
+    public ApiResponse<StopRecordDto.Response> stopRecord(
+            @AuthenticatedActor Actor actor
+    ) {
+        StopRecordData.Command command = new StopRecordData.Command(
+                actor
+        );
+
+        StopRecordData.Result result = stopRecordUseCase.execute(command);
+
+        return ApiResponse.success(StopRecordDto.Response.from(result));
     }
 
 }

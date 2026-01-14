@@ -18,6 +18,11 @@ public enum RecordStatusCode implements StatusCode {
         "STUDY_SESSION_ALREADY_STARTED",
         "이미 공부 세션이 시작되었습니다.",
         ErrorCategory.CONFLICT
+    ),
+    ACTIVE_SESSION_NOT_FOUND(
+            "ACTIVE_SESSION_NOT_FOUND",
+            "진행 중인 공부 세션이 존재하지 않습니다.",
+            ErrorCategory.NOT_FOUND
     );
 
     private final String code;

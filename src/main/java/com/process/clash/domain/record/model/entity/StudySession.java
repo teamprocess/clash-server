@@ -20,4 +20,14 @@ public record StudySession (
             endedAt
         );
     }
+
+    public StudySession changeEndedAt(LocalDateTime newEndedAt) {
+        return new StudySession(
+                this.id,
+                this.user,
+                this.task,
+                this.startedAt,
+                newEndedAt
+        );
+    }
 }
