@@ -22,9 +22,11 @@ public class UserChapterProgressJpaEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_chapter_id", nullable = false)
     private ChapterJpaEntity chapter;
 
     @Enumerated(EnumType.STRING)

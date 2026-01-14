@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -40,6 +41,7 @@ public class TaskJpaEntity {
     @Column(nullable = false)
     private TaskColor color;
 
+    @JoinColumn(name = "fk_user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private UserJpaEntity user;
 

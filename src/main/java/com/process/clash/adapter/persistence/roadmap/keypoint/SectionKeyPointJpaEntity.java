@@ -19,6 +19,7 @@ public class SectionKeyPointJpaEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_section_id", nullable = false)
     private SectionJpaEntity section;
 
     private String content;
