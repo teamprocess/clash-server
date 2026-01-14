@@ -1,4 +1,4 @@
-package com.process.clash.domain.shop.enums;
+package com.process.clash.domain.shop.product.enums;
 
 public enum ProductGoodsType {
     COOKIE,

@@ -1,8 +1,8 @@
 package com.process.clash.adapter.persistence.shop.product;
 
 import com.process.clash.adapter.persistence.shop.season.SeasonJpaEntity;
-import com.process.clash.domain.shop.enums.ProductCategory;
-import com.process.clash.domain.shop.enums.ProductGoodsType;
+import com.process.clash.domain.shop.product.enums.ProductCategory;
+import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
