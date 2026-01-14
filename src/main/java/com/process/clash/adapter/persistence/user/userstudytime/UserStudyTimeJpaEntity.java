@@ -32,6 +32,6 @@ public class UserStudyTimeJpaEntity {
     public UserStudyTimeJpaEntity(Long id, Date date, Long userId) {
         this.id = id;
         this.date = date;
-        this.userId = id;
+        this.userId = userId;
     }
 }

@@ -17,9 +17,8 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     @Override
     public User save(User user) {
         UserJpaEntity userJpaEntity = userJpaMapper.toJpaEntity(user);
-        userJpaRepository.save(userJpaEntity);
-
-        return userJpaMapper.toDomain(userJpaEntity);
+        UserJpaEntity savedEntity = userJpaRepository.save(userJpaEntity);
+        return userJpaMapper.toDomain(savedEntity);
     }
 
     @Override
@@ -29,11 +28,11 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return Optional.empty();
+        return userJpaRepository.findByUsername(username).map(userJpaMapper::toDomain);
     }
 
     @Override
     public boolean existsByUsername(String username) {
-        return false;
+        return userJpaRepository.existsByUsername(username);
     }
 }
