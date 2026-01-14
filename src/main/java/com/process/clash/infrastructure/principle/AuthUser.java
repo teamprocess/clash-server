@@ -11,6 +11,7 @@ import java.util.List;
 
 public record AuthUser(
         Long id,
+        String username,
         Role role
 ) implements UserDetails {
     public Actor toActor() {
@@ -29,7 +30,7 @@ public record AuthUser(
 
     @Override
     public String getUsername() {
-        return String.valueOf(id);
+        return username;
     }
 
     @Override public boolean isAccountNonExpired() { return true; }

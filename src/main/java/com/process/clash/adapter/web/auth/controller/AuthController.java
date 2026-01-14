@@ -55,18 +55,13 @@ public class AuthController {
 		SignInData.Result result = signInUseCase.execute(command);
 
 
-		AuthUser authUser = new AuthUser(result.id(), result.role());
+		AuthUser authUser = new AuthUser(result.id(), result.username(), result.role());
 		// 인증 토큰을 생성
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				authUser,
 				null,
-				List.of(new SimpleGrantedAuthority("ROLE_USER"))
+				authUser.getAuthorities()
 		);
-
-		// 세션 만료되어도 자동 로그인
-		if (request.rememberMe()) {
-			httpRequest.setAttribute("remember-me", "true");
-		}
 
 		// 빈 보안 컨텍스트 가져오기
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -75,7 +70,9 @@ public class AuthController {
 		SecurityContextHolder.setContext(context); // 홀더에 올리기
 		securityContextRepository.saveContext(context, httpRequest, httpResponse); // 완성된 컨텍스트를 세션에 저장
 
-		rememberMeServices.loginSuccess(httpRequest, httpResponse, token);
+		if (request.rememberMe()) {
+			rememberMeServices.loginSuccess(httpRequest, httpResponse, token);
+		}
 
 		SignInDto.Response response = SignInDto.Response.fromResult(result);
 		return ApiResponse.success(response, "로그인을 성공했습니다.");

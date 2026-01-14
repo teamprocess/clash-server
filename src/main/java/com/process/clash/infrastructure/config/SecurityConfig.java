@@ -51,7 +51,7 @@ public class SecurityConfig {
                         .sessionFixation().changeSessionId() // 로그인 시 세션 ID를 새로 발급
                 )
                 .rememberMe(remember -> remember
-                        .key("UniqueKey")
+                        .key("UniqueKey") // 프로덕선 환경에서는 키를 노출시키지 마세요
                         .rememberMeParameter("remember-me")
                         .alwaysRemember(false)
                         .userDetailsService(customUserDetailsService)
@@ -111,7 +111,7 @@ public class SecurityConfig {
 
     @Bean
     public RememberMeServices rememberMeServices(CustomUserDetailsService customUserDetailsService) {
-        return new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService);
+        return new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService); // 프로덕선 환경에서는 키를 노출시키지 마세요
     }
 }
 
