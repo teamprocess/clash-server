@@ -8,7 +8,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -41,31 +40,27 @@ public class TaskJpaEntity {
     @Column(nullable = false)
     private TaskColor color;
 
-    @Column(name = "fk_user_id", nullable = false)
-    private Long userId;
-
-    @JoinColumn(name = "fk_user_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private UserJpaEntity user;
 
 
-    public static TaskJpaEntity create(String name, TaskColor color, Long userId) {
+    public static TaskJpaEntity create(String name, TaskColor color, UserJpaEntity userJpaEntity) {
         TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
 
         taskJpaEntity.name = name;
         taskJpaEntity.color = color;
-        taskJpaEntity.userId = userId;
+        taskJpaEntity.user = userJpaEntity;
 
         return taskJpaEntity;
     }
 
-    public static TaskJpaEntity from(Long taskId, String name, TaskColor color, Long userId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static TaskJpaEntity from(Long taskId, String name, TaskColor color, UserJpaEntity userJpaEntity, LocalDateTime createdAt, LocalDateTime updatedAt) {
         TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
 
         taskJpaEntity.id = taskId;
         taskJpaEntity.name = name;
         taskJpaEntity.color = color;
-        taskJpaEntity.userId = userId;
+        taskJpaEntity.user = userJpaEntity;
         taskJpaEntity.createdAt = createdAt;
         taskJpaEntity.updatedAt = updatedAt;
 

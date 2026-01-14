@@ -8,7 +8,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -38,17 +37,9 @@ public class SessionJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "fk_user_id", nullable = false)
-    private Long userId;
-
-    @JoinColumn(name = "fk_user_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private UserJpaEntity user;
 
-    @Column(name = "fk_task_id", nullable = false)
-    private Long taskId;
-
-    @JoinColumn(name = "fk_task_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TaskJpaEntity task;
 
@@ -59,10 +50,10 @@ public class SessionJpaEntity {
     private LocalDateTime endedAt;
 
     @Builder
-    public static SessionJpaEntity create(Long userId, Long taskId, LocalDateTime startedAt) {
+    public static SessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, LocalDateTime startedAt) {
         return SessionJpaEntity.builder()
-            .userId(userId)
-            .taskId(taskId)
+            .user(user)
+            .task(task)
             .startedAt(startedAt)
             .build();
     }

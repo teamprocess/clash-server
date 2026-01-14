@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.task;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
 import com.process.clash.domain.record.model.entity.Task;
 import org.springframework.stereotype.Component;
@@ -7,12 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskJpaMapper {
 
-    public static TaskJpaEntity toJpaEntity(Task task) {
+    public static TaskJpaEntity toJpaEntity(Task task, UserJpaEntity user) {
+
         if (task.id() == null) {
             return TaskJpaEntity.create(
                 task.name(),
                 task.color(),
-                task.user().id()
+                user
             );
         }
 
@@ -20,7 +22,7 @@ public class TaskJpaMapper {
             task.id(),
             task.name(),
             task.color(),
-            task.user().id(),
+            user,
             task.createdAt(),
             task.updatedAt()
         );

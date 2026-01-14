@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.task;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.domain.record.model.entity.Task;
 import java.util.List;
@@ -12,10 +14,12 @@ import org.springframework.stereotype.Repository;
 public class TaskPersistenceAdapter implements TaskRepositoryPort {
 
     private final TaskJpaRepository taskJpaRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Override
     public void save(Task task) {
-        TaskJpaEntity taskJpaEntity = TaskJpaMapper.toJpaEntity(task);
+        UserJpaEntity user = userJpaRepository.getReferenceById(task.user().id());
+        TaskJpaEntity taskJpaEntity = TaskJpaMapper.toJpaEntity(task, user);
         taskJpaRepository.save(taskJpaEntity);
     }
 
