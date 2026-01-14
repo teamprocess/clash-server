@@ -7,11 +7,11 @@ import java.time.LocalDate;
 public class CreateSeasonDto {
 
     public record Request(
-            @NotBlank
+            @NotBlank(message = "시즌명은 필수 입력값입니다.")
             String title,
-            @NotNull
+            @NotNull(message = "시작일은 필수 입력값입니다.")
             LocalDate startDate,
-            @NotNull
+            @NotNull(message = "종료일은 필수 입력값입니다.")
             LocalDate endDate
     ) {}
 }
