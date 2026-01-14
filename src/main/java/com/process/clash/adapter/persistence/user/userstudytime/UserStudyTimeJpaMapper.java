@@ -19,7 +19,7 @@ public class UserStudyTimeJpaMapper {
         return new UserStudyTime(
                 userStudyTimeJpaEntity.getId(),
                 userStudyTimeJpaEntity.getDate(),
-                userStudyTimeJpaEntity.getUser() != null ? userStudyTimeJpaEntity.getUser().getId() : null
+                userStudyTimeJpaEntity.getUser().getId()
         );
     }
 }
