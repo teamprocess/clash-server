@@ -36,7 +36,7 @@ public class ProductJpaEntity {
     private String title;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private ProductCategory category;
 
     @Column(nullable = false)

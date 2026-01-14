@@ -21,6 +21,7 @@ public class SeasonAdminController {
 
     private final CreateSeasonUseCase createSeasonUseCase;
 
+    // 시즌 생성
     @PostMapping
     public ApiResponse<Void> createSeason(
             @AuthenticationPrincipal AuthUser authUser,

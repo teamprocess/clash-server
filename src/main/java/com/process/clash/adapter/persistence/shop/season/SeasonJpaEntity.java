@@ -28,7 +28,7 @@ public class SeasonJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String title;
 
     @Column(nullable = false)
@@ -36,7 +36,4 @@ public class SeasonJpaEntity {
 
     @Column(nullable = false)
     private LocalDate endDate;
-
-    @Column(nullable = false)
-    private Boolean isActive;
 }
