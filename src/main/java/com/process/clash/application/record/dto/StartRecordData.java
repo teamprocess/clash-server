@@ -12,5 +12,10 @@ public class StartRecordData {
 
     public record Result(
         Instant startedAt
-    ) {}
+    ) {
+
+        public static Result from(Instant startedAt) {
+            return new Result(startedAt);
+        }
+    }
 }
