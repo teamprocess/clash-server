@@ -53,7 +53,7 @@ class AuthEventTest {
     @DisplayName("실제 HTTP 요청을 통해 로그인 시 IP와 기기 정보가 로깅되어야 한다")
     void recordRealHttpEvent() {
         // 1. 요청 준비 (실제 브라우저처럼 User-Agent 설정)
-        String url = "http://localhost:" + port + "/api/auth/signin";
+        String url = "http://localhost:" + port + "/api/auth/sign-in";
         String realUserAgent = "test";
 
         SignInDto.Request body = new SignInDto.Request("testuser", "password123", false);
