@@ -3,6 +3,7 @@ package com.process.clash.adapter.web.major.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.major.dto.GetMajorQuestionDto;
 import com.process.clash.adapter.web.major.dto.MajorTestSubmitDto;
+import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.major.data.GetMajorQuestionData;
 import com.process.clash.application.major.data.MajorTestSubmitData;
@@ -22,8 +23,7 @@ public class MajorController {
     private final MajorTestSubmitUseCase majorTestSubmitUseCase;
 
     @GetMapping("/questions")
-    public ApiResponse<GetMajorQuestionDto.Response> getMajorQuestion(@AuthenticationPrincipal AuthUser authUser) {
-        Actor actor = authUser.toActor();
+    public ApiResponse<GetMajorQuestionDto.Response> getMajorQuestion(@AuthenticatedActor Actor actor) {
         GetMajorQuestionData.Command command = new GetMajorQuestionData.Command(actor);
         GetMajorQuestionData.Result result = getMajorQuestionUseCase.execute(command);
         GetMajorQuestionDto.Response response = GetMajorQuestionDto.Response.from(result);
@@ -31,8 +31,7 @@ public class MajorController {
     }
 
     @PostMapping("/test/submit")
-    public ApiResponse<Void> testResultSubmit(@AuthenticationPrincipal AuthUser authUser, @RequestBody MajorTestSubmitDto.Request request) {
-        Actor actor = authUser.toActor();
+    public ApiResponse<Void> testResultSubmit(@AuthenticatedActor Actor actor, @RequestBody MajorTestSubmitDto.Request request) {
         MajorTestSubmitData.Command command = new MajorTestSubmitData.Command(actor, request.major());
         majorTestSubmitUseCase.execute(command);
         return ApiResponse.success("전공 성향 검사 결과 저장을 성공했습니다.");
