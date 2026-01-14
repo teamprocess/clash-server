@@ -1,6 +1,5 @@
-package com.process.clash.domain.major;
+package com.process.clash.domain.major.entity;
 
-import com.process.clash.domain.common.enums.Major;
 import lombok.*;
 
 @Getter

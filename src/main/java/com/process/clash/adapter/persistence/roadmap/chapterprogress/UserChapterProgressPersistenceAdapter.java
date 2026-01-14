@@ -1,14 +1,18 @@
 package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 
-import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
-import com.process.clash.application.roadmap.port.out.UserChapterProgressRepositoryPort;
-import com.process.clash.domain.roadmap.UserChapterProgress;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository;
+import com.process.clash.adapter.persistence.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.UserJpaRepository;
+import com.process.clash.application.roadmap.port.out.UserChapterProgressRepositoryPort;
+import com.process.clash.domain.roadmap.entity.UserChapterProgress;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,12 +21,12 @@ public class UserChapterProgressPersistenceAdapter implements UserChapterProgres
     private final UserChapterProgressJpaRepository userChapterProgressJpaRepository;
     private final UserChapterProgressJpaMapper userChapterProgressJpaMapper;
     private final UserJpaRepository userJpaRepository;
-    private final com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository chapterJpaRepository;
+    private final ChapterJpaRepository chapterJpaRepository;
 
     @Override
     public void save(UserChapterProgress progress) {
         UserJpaEntity userEntity = userJpaRepository.getReferenceById(progress.getUserId());
-        com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity chapterEntity = chapterJpaRepository.getReferenceById(progress.getChapterId());
+        ChapterJpaEntity chapterEntity = chapterJpaRepository.getReferenceById(progress.getChapterId());
         userChapterProgressJpaRepository.save(userChapterProgressJpaMapper.toJpaEntity(progress, userEntity, chapterEntity));
     }
 
