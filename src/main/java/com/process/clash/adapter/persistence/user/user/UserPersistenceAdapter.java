@@ -12,22 +12,23 @@ import java.util.Optional;
 public class UserPersistenceAdapter implements UserRepositoryPort {
 
     private final UserJpaRepository userJpaRepository;
+    private final UserJpaMapper userJpaMapper;
 
     @Override
     public User save(User user) {
-        UserJpaEntity userJpaEntity = UserJpaMapper.toJpaEntity(user);
+        UserJpaEntity userJpaEntity = userJpaMapper.toJpaEntity(user);
         UserJpaEntity savedEntity = userJpaRepository.save(userJpaEntity);
-        return UserJpaMapper.toDomain(savedEntity);
+        return userJpaMapper.toDomain(savedEntity);
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        return userJpaRepository.findById(id).map(UserJpaMapper::toDomain);
+        return userJpaRepository.findById(id).map(userJpaMapper::toDomain);
     }
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return userJpaRepository.findByUsername(username).map(UserJpaMapper::toDomain);
+        return userJpaRepository.findByUsername(username).map(userJpaMapper::toDomain);
     }
 
     @Override
