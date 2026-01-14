@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
             return userRepositoryPort.findByUsername(username)
-                    .map(user -> new AuthUser(user.id(), user.username(), user.role()))
+                    .map(user -> new AuthUser(user.id(), user.username(), user.password(), user.role()))
                     .orElseThrow(UserNotFoundException::new);
         } catch (UserNotFoundException e) {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다." + username, e);

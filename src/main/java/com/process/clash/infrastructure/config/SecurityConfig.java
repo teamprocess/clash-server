@@ -1,7 +1,6 @@
 package com.process.clash.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.process.clash.adapter.web.auth.service.CustomUserDetailsService;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
@@ -37,7 +36,7 @@ public class SecurityConfig {
     private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 14;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
         http
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -56,6 +55,7 @@ public class SecurityConfig {
                         .alwaysRemember(false)
                         .userDetailsService(customUserDetailsService)
                         .tokenValiditySeconds(TOKEN_VALIDITY_SECONDS)
+                        .rememberMeServices(rememberMeServices)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()

@@ -16,19 +16,15 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,15 +36,16 @@ public class AuthController {
 	private final RememberMeServices rememberMeServices;
 	private final SecurityContextRepository securityContextRepository;
 	private final AuthEventRepositoryPort authEventRepositoryPort;
+	private final PasswordEncoder passwordEncoder;
 
-	@PostMapping("/signup")
+	@PostMapping("/sign-up")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
 		SignUpData.Command command = SignUpData.Command.fromRequest(request);
 		signUpUseCase.execute(command);
 		return ApiResponse.success("회원가입이 완료되었습니다.");
 	}
 
-	@PostMapping("/signin")
+	@PostMapping("/sign-in")
 	public ApiResponse<SignInDto.Response> signIn(
 			@Valid @RequestBody SignInDto.Request request,
 			HttpServletRequest httpRequest,
@@ -65,11 +62,11 @@ public class AuthController {
 			}
 		};
 
-		AuthUser authUser = new AuthUser(result.id(), result.username(), result.role());
+		AuthUser authUser = new AuthUser(result.id(), result.username(), result.encodedPassword(), result.role());
 		// 인증 토큰을 생성
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				authUser,
-				request.password(),
+				result.encodedPassword(),
 				authUser.getAuthorities()
 		);
 
@@ -86,14 +83,14 @@ public class AuthController {
 		authEventRepositoryPort.recordLogin(result.username(), ip, device);
 
 		if (request.rememberMe()) {
-			rememberMeServices.loginSuccess(httpRequest, httpResponse, token);
+			rememberMeServices.loginSuccess(wrapper, httpResponse, token);
 		}
 
 		SignInDto.Response response = SignInDto.Response.fromResult(result);
 		return ApiResponse.success(response, "로그인을 성공했습니다.");
 	}
 
-	@PostMapping("/signout")
+	@PostMapping("/sign-out")
 	public ApiResponse<Void> signOut(HttpServletRequest request) {
 		HttpSession session = request.getSession(false); // 세션이 없으면 새로 만들지 않음
 
