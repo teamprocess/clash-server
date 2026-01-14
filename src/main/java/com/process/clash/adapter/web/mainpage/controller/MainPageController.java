@@ -3,20 +3,24 @@ package com.process.clash.adapter.web.mainpage.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.mainpage.dto.compare.CompareGitHubDto;
 import com.process.clash.adapter.web.mainpage.dto.mainpage.*;
+import com.process.clash.adapter.web.mainpage.dto.rival.AddRivalDto;
 import com.process.clash.adapter.web.mainpage.dto.rival.GetAllAbleRivalsDto;
 import com.process.clash.adapter.web.mainpage.dto.rival.SearchRivalByKeywordDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.mainpage.data.compare.CompareGitHubData;
 import com.process.clash.application.mainpage.data.mainpage.*;
+import com.process.clash.application.mainpage.data.rival.AddRivalData;
 import com.process.clash.application.mainpage.data.rival.GetAllAbleRivalsData;
 import com.process.clash.application.mainpage.data.rival.SearchRivalByKeywordData;
 import com.process.clash.application.mainpage.port.in.compare.CompareGitHubUseCase;
 import com.process.clash.application.mainpage.port.in.mainpage.*;
+import com.process.clash.application.mainpage.port.in.rival.AddRivalUseCase;
 import com.process.clash.application.mainpage.port.in.rival.GetAllAbleRivalsUseCase;
 import com.process.clash.application.mainpage.port.in.rival.SearchRivalByKeywordUseCase;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +39,7 @@ public class MainPageController {
 
     private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;
     private final SearchRivalByKeywordUseCase searchRivalByKeywordUseCase;
+    private final AddRivalUseCase addRivalUseCase;
 
     /* MainPage 부분 */
     // 유저 정보 조회 - 상단바 프로필 정보
@@ -141,5 +146,17 @@ public class MainPageController {
         SearchRivalByKeywordData.Result result = searchRivalByKeywordUseCase.execute(command);
         SearchRivalByKeywordDto.Response response = SearchRivalByKeywordDto.Response.from(result);
         return ApiResponse.success(response, "키워드를 이용하여 라이벌 등록가능한 유저를 성공적으로 조회했습니다.");
+    }
+
+    // 라이벌 - 라이벌 추가
+    @GetMapping("/rival")
+    public ApiResponse<Void> addRival(
+            @AuthenticatedActor Actor actor,
+            @Valid @RequestBody AddRivalDto.Request request
+    ) {
+
+        AddRivalData.Command command = AddRivalData.Command.from(actor, request);
+        addRivalUseCase.execute(command);
+        return ApiResponse.created("라이벌을 성공적으로 추가했습니다.");
     }
 }
