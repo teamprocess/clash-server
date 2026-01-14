@@ -28,10 +28,11 @@ public record User(
                 username,
                 name,
                 password,
-                true,
+                Role.USER,
                 null,
-                false,
-                25,   // 기본 공부 시간 (기본값이 없다면 null)
+                "",
+                false,   // 기본 공부 시간 (기본값이 없다면 null)
+                25,
                 5,
                 Major.NONE
         );

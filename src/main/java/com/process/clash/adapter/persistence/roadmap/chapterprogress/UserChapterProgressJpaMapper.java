@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.roadmap.entity.UserChapterProgress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

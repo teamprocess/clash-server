@@ -3,12 +3,12 @@ package com.process.clash.adapter.persistence.roadmap.missionhistory;
 import java.util.List;
 import java.util.Optional;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaRepository;
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
-import com.process.clash.adapter.persistence.user.UserJpaRepository;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
 import com.process.clash.domain.roadmap.entity.UserMissionHistory;
 
