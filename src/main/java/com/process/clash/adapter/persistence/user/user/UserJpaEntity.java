@@ -1,6 +1,7 @@
-package com.process.clash.adapter.persistence.user;
+package com.process.clash.adapter.persistence.user.user;
 
 import com.process.clash.domain.common.enums.Major;
+import com.process.clash.domain.common.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,7 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)

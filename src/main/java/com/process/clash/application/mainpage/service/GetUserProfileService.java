@@ -4,7 +4,7 @@ import com.process.clash.application.mainpage.data.GetUserProfileData;
 import com.process.clash.application.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.mainpage.port.in.GetUserProfileUseCase;
 import com.process.clash.application.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.user.model.entity.User;
+import com.process.clash.domain.user.user.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
