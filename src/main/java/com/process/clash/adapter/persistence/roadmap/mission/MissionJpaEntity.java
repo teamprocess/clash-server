@@ -23,7 +23,6 @@ public class MissionJpaEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_chapter_id")
     private ChapterJpaEntity chapter;
 
     @Column(nullable = false)

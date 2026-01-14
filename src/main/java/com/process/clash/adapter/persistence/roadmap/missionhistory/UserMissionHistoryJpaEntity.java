@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user_mission_history",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "fk_mission_id"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "mission_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -20,12 +20,10 @@ public class UserMissionHistoryJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private UserJpaEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_mission_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private MissionJpaEntity mission;
 
     @Column(name = "is_cleared", nullable = false)

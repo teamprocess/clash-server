@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user_chapter_progress",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "fk_chapter_id"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "chapter_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -21,12 +21,10 @@ public class UserChapterProgressJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private UserJpaEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_chapter_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private ChapterJpaEntity chapter;
 
     @Enumerated(EnumType.STRING)
