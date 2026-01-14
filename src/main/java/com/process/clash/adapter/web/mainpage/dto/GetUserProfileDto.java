@@ -8,14 +8,14 @@ public class GetUserProfileDto {
             String name,
             String username,
             String profileImage
-    ) {}
-
-    public static GetUserProfileDto.Response from(GetUserProfileData.Result result) {
-        return new GetUserProfileDto.Response(
-                result.id(),
-                result.name(),
-                result.username(),
-                result.profileImage()
-        );
+    ) {
+        public static GetUserProfileDto.Response from(GetUserProfileData.Result result) {
+            return new GetUserProfileDto.Response(
+                    result.id(),
+                    result.name(),
+                    result.username(),
+                    result.profileImage()
+            );
+        }
     }
 }

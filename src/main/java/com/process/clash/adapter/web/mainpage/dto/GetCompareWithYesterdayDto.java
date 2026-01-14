@@ -1,0 +1,36 @@
+package com.process.clash.adapter.web.mainpage.dto;
+
+import com.process.clash.application.mainpage.data.GetCompareWithYesterdayData;
+
+public class GetCompareWithYesterdayDto {
+
+    public record Response(
+            ActiveTime activeTime,
+            Contributors contributors
+    ) {
+
+        public static GetCompareWithYesterdayDto.Response from(GetCompareWithYesterdayData.Result result) {
+
+            return new GetCompareWithYesterdayDto.Response(
+                    new ActiveTime(
+                            result.activeTime().yesterdayActiveTime(),
+                            result.activeTime().todayActiveTime()
+                    ),
+                    new Contributors(
+                            result.contributors().yesterdayContributors(),
+                            result.contributors().todayContributors()
+                    )
+            );
+        }
+    }
+
+    private record ActiveTime(
+            Integer yesterdayActiveTime,
+            Integer todayActiveTime
+    ) {}
+
+    private record Contributors(
+            Integer yesterdayContributors,
+            Integer todayContributors
+    ) {}
+}
