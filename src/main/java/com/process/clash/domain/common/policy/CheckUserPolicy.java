@@ -1,7 +1,7 @@
 package com.process.clash.domain.common.policy;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.user.exception.exception.forbidden.RequiredUserRoleException;
+import com.process.clash.application.user.user.exception.exception.forbidden.RequiredUserRoleException;
 import org.springframework.stereotype.Component;
 
 @Component

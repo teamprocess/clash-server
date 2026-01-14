@@ -1,13 +1,13 @@
-package com.process.clash.application.user.service;
+package com.process.clash.application.user.user.service;
 
-import com.process.clash.application.user.exception.exception.conflict.UsernameAlreadyExistException;
+import com.process.clash.application.user.user.exception.exception.conflict.UsernameAlreadyExistException;
 import com.process.clash.domain.user.user.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.process.clash.application.user.data.SignUpData;
-import com.process.clash.application.user.port.in.SignUpUseCase;
-import com.process.clash.application.user.port.out.UserRepositoryPort;
+import com.process.clash.application.user.user.data.SignUpData;
+import com.process.clash.application.user.user.port.in.SignUpUseCase;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,7 +1,6 @@
-package com.process.clash.application.user.port.out;
+package com.process.clash.application.user.user.port.out;
 
 import com.process.clash.domain.user.user.entity.User;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 

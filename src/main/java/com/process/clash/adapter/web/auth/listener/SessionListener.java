@@ -1,9 +1,8 @@
 package com.process.clash.adapter.web.auth.listener;
 
-import com.process.clash.application.user.port.out.AuthEventRepositoryPort;
+import com.process.clash.application.user.user.port.out.AuthEventRepositoryPort;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;

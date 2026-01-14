@@ -1,6 +1,5 @@
-package com.process.clash.application.user.data;
+package com.process.clash.application.user.user.data;
 
-import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 
 public class SignUpData {

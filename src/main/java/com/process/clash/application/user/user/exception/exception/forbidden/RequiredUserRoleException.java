@@ -1,7 +1,7 @@
-package com.process.clash.application.user.exception.exception.forbidden;
+package com.process.clash.application.user.user.exception.exception.forbidden;
 
 import com.process.clash.application.common.exception.exception.ForbiddenException;
-import com.process.clash.application.user.exception.status.UserStatusCode;
+import com.process.clash.application.user.user.exception.status.UserStatusCode;
 
 public class RequiredUserRoleException extends ForbiddenException {
     public RequiredUserRoleException() {

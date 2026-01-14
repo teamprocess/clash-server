@@ -1,4 +1,4 @@
-package com.process.clash.application.user.data;
+package com.process.clash.application.user.user.data;
 
 import com.process.clash.domain.common.enums.Role;
 

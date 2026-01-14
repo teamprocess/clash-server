@@ -22,16 +22,13 @@ public class UserStudyTimeJpaEntity {
     @Column(nullable = false)
     private Date date;
 
-    @Column(name = "fk_user_id", nullable = false)
-    private Long userId;
-
-    @JoinColumn(name = "fk_user_id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    public UserStudyTimeJpaEntity(Long id, Date date, Long userId) {
+    public UserStudyTimeJpaEntity(Long id, Date date, UserJpaEntity user) {
         this.id = id;
         this.date = date;
-        this.userId = userId;
+        this.user = user;
     }
 }

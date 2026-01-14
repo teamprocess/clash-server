@@ -1,7 +1,7 @@
-package com.process.clash.application.user.exception.exception.conflict;
+package com.process.clash.application.user.user.exception.exception.conflict;
 
 import com.process.clash.application.common.exception.exception.ConflictException;
-import com.process.clash.application.user.exception.status.UserStatusCode;
+import com.process.clash.application.user.user.exception.status.UserStatusCode;
 
 public class UsernameAlreadyExistException extends ConflictException {
     public UsernameAlreadyExistException() {

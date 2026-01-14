@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.process.clash.application.user.data.SignInData;
+import com.process.clash.application.user.user.data.SignInData;
 import jakarta.validation.constraints.NotBlank;
 
 public class SignInDto {
