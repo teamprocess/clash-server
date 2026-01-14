@@ -1,7 +1,7 @@
 package com.process.clash.infrastructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.process.clash.adapter.web.auth.service.CustomUserDetailsService;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
@@ -18,6 +18,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
@@ -30,9 +32,11 @@ import java.time.LocalDateTime;
 public class SecurityConfig {
 
     private final ObjectMapper objectMapper;
+    private final CustomUserDetailsService customUserDetailsService;
+    private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 14;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
         http
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -44,6 +48,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionFixation().changeSessionId() // 로그인 시 세션 ID를 새로 발급
+                )
+                .rememberMe(remember -> remember
+                        .key("UniqueKey") // 프로덕선 환경에서는 키를 노출시키지 마세요
+                        .rememberMeParameter("remember-me")
+                        .alwaysRemember(false)
+                        .userDetailsService(customUserDetailsService)
+                        .tokenValiditySeconds(TOKEN_VALIDITY_SECONDS)
+                        .rememberMeServices(rememberMeServices)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
@@ -95,6 +107,11 @@ public class SecurityConfig {
     @Bean
     public SecurityContextRepository securityContextRepository() {
         return new HttpSessionSecurityContextRepository();
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices(CustomUserDetailsService customUserDetailsService) {
+        return new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService); // 프로덕선 환경에서는 키를 노출시키지 마세요
     }
 }
 

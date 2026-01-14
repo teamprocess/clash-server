@@ -1,11 +1,10 @@
 package com.process.clash.adapter.web.major.dto;
 
-import java.util.List;
-
 import com.process.clash.application.major.data.GetMajorQuestionData;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.List;
 
 public class GetMajorQuestionDto {
 

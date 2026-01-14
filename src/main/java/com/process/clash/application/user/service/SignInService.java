@@ -29,6 +29,6 @@ public class SignInService implements SignInUseCase {
 			throw new InvalidCredentialsException();
 		}
 
-		return new SignInData.Result(user.id(), user.username(), user.name());
+		return new SignInData.Result(user.id(), user.username(), user.password(), user.name(), user.role());
 	}
 }
