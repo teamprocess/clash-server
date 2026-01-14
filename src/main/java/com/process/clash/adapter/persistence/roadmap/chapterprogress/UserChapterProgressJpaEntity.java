@@ -1,8 +1,8 @@
 package com.process.clash.adapter.persistence.roadmap.chapterprogress;
 
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
-import com.process.clash.domain.common.enums.ProgressStatus;
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.domain.roadmap.enums.ProgressStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,11 +21,11 @@ public class UserChapterProgressJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_chapter_id", nullable = false)
     private ChapterJpaEntity chapter;
 

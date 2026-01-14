@@ -3,7 +3,7 @@ package com.process.clash.application.major.data;
 import java.util.List;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.major.MajorQuestion;
+import com.process.clash.domain.major.entity.MajorQuestion;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

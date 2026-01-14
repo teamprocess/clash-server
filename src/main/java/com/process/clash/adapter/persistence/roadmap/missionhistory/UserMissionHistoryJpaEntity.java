@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.missionhistory;
 
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaEntity;
-import com.process.clash.adapter.persistence.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,11 +20,11 @@ public class UserMissionHistoryJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_mission_id", nullable = false)
     private MissionJpaEntity mission;
 
