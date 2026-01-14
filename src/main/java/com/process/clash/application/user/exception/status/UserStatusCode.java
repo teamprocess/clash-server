@@ -18,6 +18,7 @@ public enum UserStatusCode implements StatusCode {
 
     // 401
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "유효하지 않은 자격 증명입니다.", ErrorCategory.UNAUTHORIZED),
+    NOT_AUTHENTICATED("NOT_AUTHENTICATED", "인증된 사용자가 아닙니다.", ErrorCategory.UNAUTHORIZED),
 
     // 409
     USERNAME_ALREADY_EXIST("USERNAME_ALREADY_EXIST", "이미 존재하는 username입니다.", ErrorCategory.CONFLICT),
