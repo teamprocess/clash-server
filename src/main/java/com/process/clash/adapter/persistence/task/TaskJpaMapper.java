@@ -8,7 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskJpaMapper {
 
-    public static TaskJpaEntity toJpaEntity(Task task, UserJpaEntity user) {
+    private final UserJpaMapper userJpaMapper;
+
+    public TaskJpaMapper(UserJpaMapper userJpaMapper) {
+        this.userJpaMapper = userJpaMapper;
+    }
+
+    public TaskJpaEntity toJpaEntity(Task task, UserJpaEntity user) {
 
         if (task.id() == null) {
             return TaskJpaEntity.create(
@@ -28,7 +34,7 @@ public class TaskJpaMapper {
         );
     }
 
-    public static Task toDomain(TaskJpaEntity taskJpaEntity) {
+    public Task toDomain(TaskJpaEntity taskJpaEntity) {
         return new Task(
             taskJpaEntity.getId(),
             taskJpaEntity.getName(),
@@ -36,7 +42,7 @@ public class TaskJpaMapper {
             0L,
             taskJpaEntity.getCreatedAt(),
             taskJpaEntity.getUpdatedAt(),
-            UserJpaMapper.toDomain(taskJpaEntity.getUser())
+            userJpaMapper.toDomain(taskJpaEntity.getUser())
         );
     }
 }

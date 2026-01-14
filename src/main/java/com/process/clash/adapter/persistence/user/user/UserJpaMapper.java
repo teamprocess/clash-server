@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserJpaMapper {
 
-    public static UserJpaEntity toJpaEntity(User user) {
+    public UserJpaEntity toJpaEntity(User user) {
         return new UserJpaEntity(
                 user.id(),
                 user.createdAt(),
@@ -24,7 +24,7 @@ public class UserJpaMapper {
         );
     }
 
-    public static User toDomain(UserJpaEntity userJpaEntity) {
+    public User toDomain(UserJpaEntity userJpaEntity) {
         return new User(
                 userJpaEntity.getId(),
                 userJpaEntity.getCreatedAt(),

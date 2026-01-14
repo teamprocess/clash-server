@@ -15,23 +15,25 @@ public class TaskPersistenceAdapter implements TaskRepositoryPort {
 
     private final TaskJpaRepository taskJpaRepository;
     private final UserJpaRepository userJpaRepository;
+    private final TaskJpaMapper taskJpaMapper;
 
     @Override
-    public void save(Task task) {
+    public Task save(Task task) {
         UserJpaEntity user = userJpaRepository.getReferenceById(task.user().id());
-        TaskJpaEntity taskJpaEntity = TaskJpaMapper.toJpaEntity(task, user);
+        TaskJpaEntity taskJpaEntity = taskJpaMapper.toJpaEntity(task, user);
         taskJpaRepository.save(taskJpaEntity);
+        return taskJpaMapper.toDomain(taskJpaEntity);
     }
 
     @Override
     public Optional<Task> findById(Long id) {
-        return taskJpaRepository.findById(id).map(TaskJpaMapper::toDomain);
+        return taskJpaRepository.findById(id).map(taskJpaMapper::toDomain);
     }
 
     @Override
     public List<Task> findAllByUserId(Long userId) {
         return taskJpaRepository.findAllByUserId(userId).stream()
-            .map(TaskJpaMapper::toDomain)
+            .map(taskJpaMapper::toDomain)
             .toList();
     }
 
