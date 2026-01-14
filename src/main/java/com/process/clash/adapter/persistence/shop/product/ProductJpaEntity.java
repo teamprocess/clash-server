@@ -58,11 +58,11 @@ public class ProductJpaEntity {
     @Column(nullable = false)
     private String popularity;
 
-    @Column(name = "fk_season_id", nullable = false)
+    @Column(name = "fk_season_id")
     private Long seasonId;
 
-    @JoinColumn(name = "fk_season_id", nullable = false, insertable = false, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_season_id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private SeasonJpaEntity season;
 
     @Column(nullable = false)
