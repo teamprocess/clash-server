@@ -1,13 +1,22 @@
 package com.process.clash.application.user.user.data;
 
+import com.process.clash.application.common.data.AccessContext;
+import com.process.clash.application.common.exception.exception.ValidationException;
+import com.process.clash.application.user.exception.exception.invalid.AccessContextMissingException;
 import com.process.clash.domain.common.enums.Role;
 
 import java.io.Serializable;
 
 public class SignInData {
 
-	public record Command(String username, String password) {}
+	public record Command(String username, String password, boolean rememberMe, AccessContext accessContext) {
+		public Command {
+			if (accessContext == null) {
+				throw new AccessContextMissingException();
+			}
+		}
+	}
 
-	public record Result(Long id, String username, String encodedPassword, String name, Role role) implements Serializable {}
+	public record Result(Long id, String username, String name, Role role) implements Serializable {}
 
 }
