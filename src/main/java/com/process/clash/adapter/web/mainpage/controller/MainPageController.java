@@ -14,6 +14,7 @@ import com.process.clash.application.mainpage.port.in.GetMyRivalActingUseCase;
 import com.process.clash.application.mainpage.port.in.GetUserProfileUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,5 +63,15 @@ public class MainPageController {
         GetMyRivalActingData.Result result = getMyRivalActingUseCase.execute(command);
         GetMyRivalActingDto.Response response = GetMyRivalActingDto.Response.from(result);
         return ApiResponse.success(response, "라이벌의 현재 상태 정보를 성공적으로 반환했습니다.");
+    }
+
+    // 내 활동 분석
+    // TODO: 추가 구현 필요합니다
+    @GetMapping("/analyze-my-activity/category/{category}")
+    public ApiResponse<Void> analyzeMyActivity(
+            @AuthenticatedActor Actor actor,
+            @PathVariable String category
+    ) {
+        return null;
     }
 }
