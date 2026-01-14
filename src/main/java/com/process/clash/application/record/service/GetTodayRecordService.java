@@ -1,5 +1,6 @@
 package com.process.clash.application.record.service;
 
+import com.process.clash.application.mainpage.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.record.dto.GetTodayRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.out.SessionRepositoryPort;
@@ -25,7 +26,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
     public GetTodayRecordData.Result execute(GetTodayRecordData.Command command) {
 
         User user = userRepositoryPort.findById(command.actor().userId())
-            .orElseThrow(() -> new RuntimeException("유저 없음 (예외 런타인임 교체 부탁)"));
+            .orElseThrow(UserNotFoundException::new);
         String date = DateUtil.getCurrentDate();
 
         List<Session> sessionList = sessionRepositoryPort.findAllByUserId(user.id());
