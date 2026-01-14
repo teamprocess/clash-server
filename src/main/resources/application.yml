@@ -1,6 +1,6 @@
 spring:
-  jackson:
-    property-naming-strategy: SNAKE_CASE
+  main:
+    web-application-type: servlet
 
   datasource:
     url: jdbc:postgresql://localhost:5432/clash
