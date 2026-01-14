@@ -12,6 +12,7 @@ import java.util.List;
 public record AuthUser(
         Long id,
         String username,
+        String password,
         Role role
 ) implements UserDetails {
     public Actor toActor() {
@@ -25,7 +26,7 @@ public record AuthUser(
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override

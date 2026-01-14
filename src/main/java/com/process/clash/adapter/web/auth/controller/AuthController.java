@@ -8,6 +8,7 @@ import com.process.clash.application.user.data.SignUpData;
 import com.process.clash.application.user.port.in.SignInUseCase;
 import com.process.clash.application.user.port.in.SignUpUseCase;
 import com.process.clash.application.user.port.out.AuthEventRepositoryPort;
+import com.process.clash.application.user.port.out.UserRepositoryPort;
 import com.process.clash.infrastructure.principle.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -40,6 +43,7 @@ public class AuthController {
 	private final RememberMeServices rememberMeServices;
 	private final SecurityContextRepository securityContextRepository;
 	private final AuthEventRepositoryPort authEventRepositoryPort;
+	private final PasswordEncoder passwordEncoder;
 
 	@PostMapping("/signup")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
@@ -65,11 +69,11 @@ public class AuthController {
 			}
 		};
 
-		AuthUser authUser = new AuthUser(result.id(), result.username(), result.role());
+		AuthUser authUser = new AuthUser(result.id(), result.username(), result.encodedPassword(), result.role());
 		// 인증 토큰을 생성
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 				authUser,
-				request.password(),
+				result.encodedPassword(),
 				authUser.getAuthorities()
 		);
 
@@ -86,7 +90,7 @@ public class AuthController {
 		authEventRepositoryPort.recordLogin(result.username(), ip, device);
 
 		if (request.rememberMe()) {
-			rememberMeServices.loginSuccess(httpRequest, httpResponse, token);
+			rememberMeServices.loginSuccess(wrapper, httpResponse, token);
 		}
 
 		SignInDto.Response response = SignInDto.Response.fromResult(result);

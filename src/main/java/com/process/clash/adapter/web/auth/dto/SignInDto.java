@@ -1,8 +1,8 @@
 package com.process.clash.adapter.web.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.process.clash.application.user.data.SignInData;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
 
 public class SignInDto {
     public record Request(
@@ -10,6 +10,7 @@ public class SignInDto {
             String username,
             @NotBlank(message = "비밀번호는 필수 입력값입니다.")
             String password,
+            @JsonProperty("rememberMe")
             boolean rememberMe
     ) { }
 
