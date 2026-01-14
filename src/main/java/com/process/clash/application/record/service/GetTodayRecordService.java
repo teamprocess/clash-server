@@ -2,11 +2,11 @@ package com.process.clash.application.record.service;
 
 import com.process.clash.application.record.dto.GetTodayRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
-import com.process.clash.application.record.port.out.SessionRepositoryPort;
+import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.common.DateUtil;
-import com.process.clash.domain.record.model.entity.Session;
+import com.process.clash.domain.record.model.entity.StudySession;
 import com.process.clash.domain.user.user.entity.User;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class GetTodayRecordService implements GetTodayRecordUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
-    private final SessionRepositoryPort sessionRepositoryPort;
+    private final StudySessionRepositoryPort studySessionRepositoryPort;
 
     public GetTodayRecordData.Result execute(GetTodayRecordData.Command command) {
 
@@ -29,8 +29,8 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
             .orElseThrow(UserNotFoundException::new);
         String date = DateUtil.getCurrentDate();
 
-        List<Session> sessionList = sessionRepositoryPort.findAllByUserId(user.id());
-        List<Session> endedSessions = sessionList.stream()
+        List<StudySession> studySessions = studySessionRepositoryPort.findAllByUserId(user.id());
+        List<StudySession> endedSessions = studySessions.stream()
             .filter(s -> s.endedAt() != null)
             .toList();
 
@@ -38,7 +38,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
             .mapToLong(s -> ChronoUnit.MILLIS.between(s.startedAt(), s.endedAt()))
             .sum();
         Instant studyStoppedAt = endedSessions.stream()
-            .max(Comparator.comparing(Session::endedAt))
+            .max(Comparator.comparing(StudySession::endedAt))
             .map(s -> s.endedAt().atZone(ZoneOffset.UTC).toInstant())
             .orElse(null);
 
