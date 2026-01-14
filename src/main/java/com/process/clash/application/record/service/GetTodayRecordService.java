@@ -10,6 +10,7 @@ import com.process.clash.domain.record.model.entity.Session;
 import com.process.clash.domain.user.model.entity.User;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
@@ -39,7 +40,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
             .sum();
         Instant studyStoppedAt = endedSessions.stream()
             .max(Comparator.comparing(Session::endedAt))
-            .map(s -> s.endedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant())
+            .map(s -> s.endedAt().atZone(ZoneOffset.UTC).toInstant())
             .orElse(null);
 
         return GetTodayRecordData.Result.create(
