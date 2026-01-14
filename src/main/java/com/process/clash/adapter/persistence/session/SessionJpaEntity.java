@@ -41,7 +41,7 @@ public class SessionJpaEntity {
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_task_id", nullable = false)
     private TaskJpaEntity task;
 
