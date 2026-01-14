@@ -7,9 +7,11 @@ import com.process.clash.domain.common.policy.CheckAdminPolicy;
 import com.process.clash.domain.shop.season.entity.Season;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CreateSeasonService implements CreateSeasonUseCase {
 
     private final SeasonRepositoryPort seasonRepositoryPort;

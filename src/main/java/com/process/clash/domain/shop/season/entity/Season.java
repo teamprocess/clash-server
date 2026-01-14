@@ -26,8 +26,4 @@ public record Season(
         LocalDate today = LocalDate.now();
         return !today.isBefore(startDate) && !today.isAfter(endDate);
     }
-
-    public Boolean isActiveOn(LocalDate date) {
-        return !date.isBefore(startDate) && !date.isAfter(endDate);
-    }
 }

@@ -56,7 +56,7 @@ public class ProductJpaEntity {
     private String description;
 
     @Column(nullable = false)
-    private String popularity;
+    private Integer popularity;
 
     @Column(name = "fk_season_id")
     private Long seasonId;
