@@ -1,11 +1,11 @@
 package com.process.clash.adapter.web.mainpage.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.mainpage.dto.*;
+import com.process.clash.adapter.web.mainpage.dto.mainpage.*;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.mainpage.data.*;
-import com.process.clash.application.mainpage.port.in.*;
+import com.process.clash.application.mainpage.data.mainpage.*;
+import com.process.clash.application.mainpage.port.in.mainpage.*;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 import lombok.RequiredArgsConstructor;

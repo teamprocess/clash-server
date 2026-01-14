@@ -1,6 +1,6 @@
-package com.process.clash.adapter.web.mainpage.dto;
+package com.process.clash.adapter.web.mainpage.dto.mainpage;
 
-import com.process.clash.application.mainpage.data.GetUserProfileData;
+import com.process.clash.application.mainpage.data.mainpage.GetUserProfileData;
 
 public class GetUserProfileDto {
     public record Response(

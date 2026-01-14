@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.data;
+package com.process.clash.application.mainpage.data.mainpage;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.TargetCategory;

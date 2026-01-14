@@ -1,6 +1,6 @@
-package com.process.clash.adapter.web.mainpage.dto;
+package com.process.clash.adapter.web.mainpage.dto.mainpage;
 
-import com.process.clash.application.mainpage.data.GetMyRivalActingData;
+import com.process.clash.application.mainpage.data.mainpage.GetMyRivalActingData;
 import com.process.clash.domain.rival.enums.RivalStatus;
 
 import java.util.List;
