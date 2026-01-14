@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -52,13 +51,16 @@ public class SessionJpaEntity {
     @Column(nullable = true)
     private LocalDateTime endedAt;
 
-    @Builder
     public static SessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, LocalDateTime startedAt) {
-        return SessionJpaEntity.builder()
-            .user(user)
-            .task(task)
-            .startedAt(startedAt)
-            .build();
+        return new SessionJpaEntity(
+            null,
+            null,
+            null,
+            user,
+            task,
+            startedAt,
+            null
+        );
     }
 
     public void changeEndedAt(LocalDateTime endedAt) {
