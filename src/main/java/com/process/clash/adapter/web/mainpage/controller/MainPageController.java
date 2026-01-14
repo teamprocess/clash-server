@@ -1,14 +1,17 @@
 package com.process.clash.adapter.web.mainpage.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.mainpage.dto.AnalyzeMyActivityDto;
 import com.process.clash.adapter.web.mainpage.dto.GetCompareWithYesterdayDto;
 import com.process.clash.adapter.web.mainpage.dto.GetMyRivalActingDto;
 import com.process.clash.adapter.web.mainpage.dto.GetUserProfileDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.mainpage.data.AnalyzeMyActivityData;
 import com.process.clash.application.mainpage.data.GetCompareWithYesterdayData;
 import com.process.clash.application.mainpage.data.GetMyRivalActingData;
 import com.process.clash.application.mainpage.data.GetUserProfileData;
+import com.process.clash.application.mainpage.port.in.AnalyzeMyActivityUseCase;
 import com.process.clash.application.mainpage.port.in.GetCompareWithYesterdayUseCase;
 import com.process.clash.application.mainpage.port.in.GetMyRivalActingUseCase;
 import com.process.clash.application.mainpage.port.in.GetUserProfileUseCase;
@@ -26,6 +29,7 @@ public class MainPageController {
     private final GetUserProfileUseCase getUserProfileUseCase;
     private final GetCompareWithYesterdayUseCase getCompareWithYesterdayUseCase;
     private final GetMyRivalActingUseCase getMyRivalActingUseCase;
+    private final AnalyzeMyActivityUseCase analyzeMyActivityUseCase;
 
     // 유저 정보 조회 - 상단바 프로필 정보
     @GetMapping("/user-info")
@@ -68,10 +72,14 @@ public class MainPageController {
     // 내 활동 분석
     // TODO: 추가 구현 필요합니다
     @GetMapping("/analyze-my-activity/category/{category}")
-    public ApiResponse<Void> analyzeMyActivity(
+    public ApiResponse<AnalyzeMyActivityDto.Response> analyzeMyActivity(
             @AuthenticatedActor Actor actor,
             @PathVariable String category
     ) {
-        return null;
+
+        AnalyzeMyActivityData.Command command = AnalyzeMyActivityData.Command.from(actor, category);
+        AnalyzeMyActivityData.Result result = analyzeMyActivityUseCase.execute(command);
+        AnalyzeMyActivityDto.Response response = AnalyzeMyActivityDto.Response.from(result);
+        return ApiResponse.success(response, "내 활동 분석 결과를 성공적으로 반환했습니다.");
     }
 }
