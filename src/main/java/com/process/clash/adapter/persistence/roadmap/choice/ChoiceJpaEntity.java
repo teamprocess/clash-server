@@ -19,7 +19,6 @@ public class ChoiceJpaEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_question_id")
     private MissionQuestionJpaEntity question;
 
     @Column(nullable = false)

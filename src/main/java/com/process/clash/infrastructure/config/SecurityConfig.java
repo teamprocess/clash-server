@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -65,26 +66,23 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
+                            // 1. HTTP 응답 헤더 설정
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json;charset=UTF-8");
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
 
-                            // 1. ErrorResponse 생성 (인증 실패용)
-                            ErrorResponse errorResponse = ErrorResponse.builder()
-                                    .code(CommonStatusCode.UNAUTHORIZED.getCode()) // 실제 사용하는 StatusCode 상수가 있다면 그것을 쓰세요
-                                    .message("인증이 필요한 서비스입니다.")
-                                    .timestamp(LocalDateTime.now())
-                                    .build();
+                            // 2. 일관된 에러 객체 생성 (팩토리 메서드 활용)
+                            // ErrorResponse.of 내부에서 timestamp와 code, message를 자동으로 채워줍니다.
+                            ErrorResponse errorResponse = ErrorResponse.of(CommonStatusCode.UNAUTHORIZED);
 
-                            // 2. CommonResponse 생성 (부모 객체)
+                            // 3. 공통 응답 포맷으로 감싸기
                             CommonResponse<Void> commonResponse = CommonResponse.<Void>builder()
                                     .success(false)
                                     .error(errorResponse)
                                     .build();
 
-                            // 3. JSON 변환 및 출력
-                            String json = objectMapper.writeValueAsString(commonResponse);
-
-                            response.getWriter().write(json);
+                            // 4. JSON 변환 및 출력
+                            response.getWriter().write(objectMapper.writeValueAsString(commonResponse));
                         })
                 )
                 .securityContext(securityContext -> securityContext

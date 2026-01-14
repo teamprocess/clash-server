@@ -1,5 +1,9 @@
 package com.process.clash.adapter.persistence.session;
 
+import com.process.clash.adapter.persistence.task.TaskJpaEntity;
+import com.process.clash.adapter.persistence.task.TaskJpaRepository;
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.record.port.out.SessionRepositoryPort;
 import com.process.clash.domain.record.model.entity.Session;
 import java.util.List;
@@ -13,10 +17,14 @@ public class SessionPersistenceAdapter implements SessionRepositoryPort {
 
     private final SessionJpaRepository sessionJpaRepository;
     private final SessionJpaMapper sessionJpaMapper;
+    private final UserJpaRepository userJpaRepository;
+    private final TaskJpaRepository taskJpaRepository;
 
     @Override
     public void save(Session session) {
-        SessionJpaEntity sessionJpaEntity = sessionJpaMapper.toJpaEntity(session);
+        UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
+        TaskJpaEntity task = taskJpaRepository.getReferenceById(session.task().id());
+        SessionJpaEntity sessionJpaEntity = sessionJpaMapper.toJpaEntity(session, user, task);
         sessionJpaRepository.save(sessionJpaEntity);
     }
 

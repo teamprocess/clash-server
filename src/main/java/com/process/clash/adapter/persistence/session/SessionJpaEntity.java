@@ -14,7 +14,6 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,18 +37,12 @@ public class SessionJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "fk_user_id", nullable = false)
-    private Long userId;
-
-    @JoinColumn(name = "fk_user_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    @Column(name = "fk_task_id", nullable = false)
-    private Long taskId;
-
-    @JoinColumn(name = "fk_task_id", nullable = false, insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_task_id", nullable = false)
     private TaskJpaEntity task;
 
     @Column(nullable = false)
@@ -58,13 +51,16 @@ public class SessionJpaEntity {
     @Column(nullable = true)
     private LocalDateTime endedAt;
 
-    @Builder
-    public static SessionJpaEntity create(Long userId, Long taskId, LocalDateTime startedAt) {
-        return SessionJpaEntity.builder()
-            .userId(userId)
-            .taskId(taskId)
-            .startedAt(startedAt)
-            .build();
+    public static SessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, LocalDateTime startedAt) {
+        return new SessionJpaEntity(
+            null,
+            null,
+            null,
+            user,
+            task,
+            startedAt,
+            null
+        );
     }
 
     public void changeEndedAt(LocalDateTime endedAt) {

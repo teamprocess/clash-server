@@ -1,9 +1,9 @@
 package com.process.clash.domain.user.userstudytime.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record UserStudyTime(
         Long id,
-        Date date,
+        LocalDate date,
         Long userId
 ) {}
