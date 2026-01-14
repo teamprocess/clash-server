@@ -7,10 +7,12 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.model.entity.Task;
 import com.process.clash.domain.user.user.entity.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CreateTaskService implements CreateTaskUseCase {
 
