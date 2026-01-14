@@ -35,14 +35,17 @@ public class TaskController {
     private final DeleteTaskUseCase deleteTaskUseCase;
 
     @GetMapping
-    public GetAllTasksDto.Response getAllTasks(
+    public ApiResponse<GetAllTasksDto.Response> getAllTasks(
         @AuthenticatedActor Actor actor
     ) {
 
         GetAllTasksData.Command command = new GetAllTasksData.Command(actor);
         GetAllTasksData.Result result = getAllTasksUseCase.execute(command);
 
-        return GetAllTasksDto.Response.from(result);
+        return ApiResponse.success(
+            GetAllTasksDto.Response.from(result),
+            "과목 목록을 조회했습니다."
+        );
     }
 
     @PostMapping
@@ -60,10 +63,10 @@ public class TaskController {
         return ApiResponse.success("새로운 과목을 생성했습니다.");
     }
 
-    @PatchMapping("/{task_id}")
+    @PatchMapping("/{taskId}")
     public ApiResponse<UpdateTaskDto.Response> updateTask(
         @AuthenticatedActor Actor actor,
-        @PathVariable("task_id") Long taskId,
+        @PathVariable Long taskId,
         @RequestBody UpdateTaskDto.Request request
     ) {
         UpdateTaskData.Command command = new UpdateTaskData.Command(
@@ -80,10 +83,10 @@ public class TaskController {
         );
     }
 
-    @DeleteMapping("/{task_id}")
+    @DeleteMapping("/{taskId}")
     public ApiResponse<Void> deleteTask(
         @AuthenticatedActor Actor actor,
-        @PathVariable("task_id") Long taskId
+        @PathVariable Long taskId
     ) {
         DeleteTaskData.Command command = new DeleteTaskData.Command(actor, taskId);
         deleteTaskUseCase.execute(command);

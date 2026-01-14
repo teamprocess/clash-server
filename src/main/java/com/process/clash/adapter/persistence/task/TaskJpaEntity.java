@@ -49,12 +49,12 @@ public class TaskJpaEntity {
     private UserJpaEntity user;
 
 
-    public static TaskJpaEntity create(String name, TaskColor color, Long id) {
+    public static TaskJpaEntity create(String name, TaskColor color, Long userId) {
         TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
 
         taskJpaEntity.name = name;
         taskJpaEntity.color = color;
-        taskJpaEntity.userId = id;
+        taskJpaEntity.userId = userId;
 
         return taskJpaEntity;
     }
