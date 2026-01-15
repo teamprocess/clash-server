@@ -9,6 +9,7 @@ import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,7 +20,9 @@ public class UpdateSectionService implements UpdateSectionUseCase {
     private final SectionRepositoryPort sectionRepository;
     private final CheckAdminPolicy checkAdminPolicy;
 
+    // TODO: 추후 키포인트 수정을 다른 API로 분리
     @Override
+    @Transactional
     public UpdateSectionData.Result execute(UpdateSectionData.Command command) {
         checkAdminPolicy.check(command.actor());
 
@@ -27,8 +30,10 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         Section section = sectionRepository.findById(command.sectionId())
                 .orElseThrow(SectionNotFoundException::new);
 
+        section.update(command);
+
         // 업데이트된 Section 업데이트/저장
-        Section updatedSection = sectionRepository.save(section.update(command));
+        Section updatedSection = sectionRepository.save(section);
 
         // 저장된 Section에서 keyPoints 추출
         List<String> keyPointContents = updatedSection.getKeyPoints() != null

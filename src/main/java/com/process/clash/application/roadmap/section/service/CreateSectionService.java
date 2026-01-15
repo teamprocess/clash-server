@@ -8,6 +8,7 @@ import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class CreateSectionService implements CreateSectionUseCase {
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
+    @Transactional
     public CreateSectionData.Result execute(CreateSectionData.Command command) {
         checkAdminPolicy.check(command.actor());
 
