@@ -33,9 +33,9 @@ public class UserJpaMapper {
                 userJpaEntity.getName(),
                 userJpaEntity.getPassword(),
                 userJpaEntity.getRole(),
-                userJpaEntity.getAbleToAddRival(),
+                userJpaEntity.isAbleToAddRival(),
                 userJpaEntity.getProfileImage(),
-                userJpaEntity.getPomodoroEnabled(),
+                userJpaEntity.isPomodoroEnabled(),
                 userJpaEntity.getPomodoroStudyMinute(),
                 userJpaEntity.getPomodoroBreakMinute(),
                 userJpaEntity.getMajor()

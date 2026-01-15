@@ -12,7 +12,6 @@ public class UpdateMajorQuestionDto {
 
     public record Request(
             String content,
-            @Valid
             MajorWeightVo weight
     ) {
         public UpdateMajorQuestionData.Command toCommand(Actor actor, Long questionId) {

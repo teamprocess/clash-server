@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.major;
 
+import com.process.clash.application.common.exception.exception.internalerror.EntityRefreshFailedException;
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
 import com.process.clash.domain.major.entity.MajorQuestion;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,13 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
     public MajorQuestion save(MajorQuestion majorQuestion) {
         MajorQuestionJpaEntity majorQuestionJpaEntity = majorQuestionJpaMapper.toJpaEntity(majorQuestion);
         MajorQuestionJpaEntity saved = majorQuestionJpaRepository.save(majorQuestionJpaEntity);
-        return majorQuestionJpaMapper.toDomain(saved);
+        majorQuestionJpaRepository.flush();
+
+        // @UpdateTimestamp가 적용된 최신 데이터를 가져오기 위해 다시 조회
+        MajorQuestionJpaEntity refreshed = majorQuestionJpaRepository.findById(saved.getId())
+                .orElseThrow(EntityRefreshFailedException::new);
+
+        return majorQuestionJpaMapper.toDomain(refreshed);
     }
 
     @Override

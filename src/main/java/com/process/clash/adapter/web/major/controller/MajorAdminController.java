@@ -42,7 +42,7 @@ public class MajorAdminController {
     public ApiResponse<UpdateMajorQuestionDto.Response> updateMajorQuestion(
             @AuthenticatedActor Actor actor,
             @PathVariable Long questionId,
-            @Valid @RequestBody UpdateMajorQuestionDto.Request request
+            @RequestBody UpdateMajorQuestionDto.Request request
     ) {
         UpdateMajorQuestionData.Command command = request.toCommand(actor, questionId);
         UpdateMajorQuestionData.Result result = updateMajorQuestionUseCase.execute(command);
