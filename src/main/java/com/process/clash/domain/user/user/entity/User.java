@@ -44,7 +44,7 @@ public record User(
         return new User(
                 this.id,
                 this.createdAt,
-                this.updatedAt,
+                LocalDateTime.now(),
                 this.username,
                 this.name,
                 this.password,
