@@ -29,11 +29,11 @@ public class SectionJpaMapper {
                 section.getCategory(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                null, // createdAt은 @CreationTimestamp가 자동으로 설정
-                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
+                section.getCreatedAt(), // createdAt
+                section.getUpdatedAt()  // updatedAt
         );
 
-        // null-safe: section.getChapters()가 null이면 빈 리스트로 처리
+        // null 안전성: section.getChapters()가 null이면 빈 리스트로 처리
         List<ChapterJpaEntity> chapters = (section.getChapters() != null)
                 ? section.getChapters().stream()
                 .map(c -> chapterJpaMapper.toEntity(c, sectionEntity)).toList() :
@@ -56,7 +56,7 @@ public class SectionJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getCategory(),
-                // null-safe: entity.getChapters()가 null이면 빈 리스트로 처리
+                // null 안전성: entity.getChapters()가 null이면 빈 리스트로 처리
                 (entity.getChapters() != null)
                         ? entity.getChapters().stream()
                         .map(chapterJpaMapper::toDomain).toList() :
@@ -64,7 +64,9 @@ public class SectionJpaMapper {
                 (entity.getKeyPoints() != null)
                         ? entity.getKeyPoints().stream()
                         .map(sectionKeyPointJpaMapper::toDomain).toList() :
-                        new ArrayList<>()
+                        new ArrayList<>(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }

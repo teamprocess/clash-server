@@ -1,4 +1,4 @@
-package com.process.clash.application.roadmap.port.out;
+package com.process.clash.application.roadmap.section.port.out;
 
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 

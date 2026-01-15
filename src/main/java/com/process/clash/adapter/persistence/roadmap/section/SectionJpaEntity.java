@@ -21,7 +21,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class SectionJpaEntity { // roadmap
+public class SectionJpaEntity { // 로드맵
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

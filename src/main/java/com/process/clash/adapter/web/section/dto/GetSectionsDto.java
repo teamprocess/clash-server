@@ -1,5 +1,7 @@
 package com.process.clash.adapter.web.section.dto;
 
+import com.process.clash.application.roadmap.section.data.GetSectionsData;
+
 import java.util.List;
 
 public class GetSectionsDto {
@@ -8,8 +10,12 @@ public class GetSectionsDto {
             List<SectionVo> sections,
             List<String> categories
     ) {
-        // TODO: Implement from() method when Result is available
-        // public static Response from(GetSectionsData.Result result) { ... }
+        public static Response from(GetSectionsData.Result result) {
+            List<SectionVo> sections = result.sections().stream()
+                    .map(SectionVo::from)
+                    .toList();
+            return new Response(sections, result.categories());
+        }
     }
 
     public record SectionVo(
@@ -19,7 +25,8 @@ public class GetSectionsDto {
             Boolean completed,
             Boolean locked
     ) {
-        // TODO: Implement from() method when Result.SectionVo is available
-        // public static SectionVo from(GetSectionsData.Result.SectionVo vo) { ... }
+        public static SectionVo from(GetSectionsData.Result.SectionVo vo) {
+            return new SectionVo(vo.id(), vo.title(), vo.category(), vo.completed(), vo.locked());
+        }
     }
 }
