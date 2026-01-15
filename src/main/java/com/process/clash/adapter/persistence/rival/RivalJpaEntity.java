@@ -1,7 +1,8 @@
 package com.process.clash.adapter.persistence.rival;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.rival.enums.RivalStatus;
+import com.process.clash.domain.rival.enums.RivalCurrentStatus;
+import com.process.clash.domain.rival.enums.RivalLinkingStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -41,7 +42,11 @@ public class RivalJpaEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RivalStatus rivalStatus;
+    private RivalCurrentStatus rivalCurrentStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RivalLinkingStatus rivalLinkingStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_my_id", nullable = false)

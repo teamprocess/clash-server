@@ -68,7 +68,7 @@ public class RivalCompeteController {
     }
 
     // 라이벌 - 라이벌 추가
-    @PostMapping
+    @PostMapping("/apply")
     public ApiResponse<Void> addRival(
             @AuthenticatedActor Actor actor,
             @Valid @RequestBody AddRivalDto.Request request

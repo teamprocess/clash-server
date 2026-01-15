@@ -1,7 +1,7 @@
 package com.process.clash.application.compete.rival.data;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.rival.enums.RivalStatus;
+import com.process.clash.domain.rival.enums.RivalCurrentStatus;
 
 import java.util.List;
 
@@ -29,6 +29,6 @@ public class GetMyRivalActingData {
             String profileImage,
             String activeTime,
             String usingApp,
-            RivalStatus status
+            RivalCurrentStatus status
     ) {}
 }

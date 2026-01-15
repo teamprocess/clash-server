@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.compete.rival.dto;
 
 import com.process.clash.application.compete.rival.data.GetMyRivalActingData;
-import com.process.clash.domain.rival.enums.RivalStatus;
+import com.process.clash.domain.rival.enums.RivalCurrentStatus;
 
 import java.util.List;
 
@@ -33,6 +33,6 @@ public class GetMyRivalActingDto {
             String profileImage,
             String activeTime,
             String usingApp,
-            RivalStatus status
+            RivalCurrentStatus status
     ) {}
 }

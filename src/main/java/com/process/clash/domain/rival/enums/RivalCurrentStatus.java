@@ -1,6 +1,6 @@
 package com.process.clash.domain.rival.enums;
 
-public enum RivalStatus {
+public enum RivalCurrentStatus {
     ONLINE,
     AWAY,
     OFFLINE
