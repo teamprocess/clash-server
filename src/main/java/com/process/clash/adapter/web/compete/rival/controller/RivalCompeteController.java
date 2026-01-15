@@ -67,7 +67,7 @@ public class RivalCompeteController {
         return ApiResponse.success(response, "키워드를 이용하여 라이벌 등록가능한 유저를 성공적으로 조회했습니다.");
     }
 
-    // 라이벌 - 라이벌 추가
+    // 라이벌 - 라이벌 신청
     @PostMapping("/apply")
     public ApiResponse<Void> applyRival(
             @AuthenticatedActor Actor actor,
