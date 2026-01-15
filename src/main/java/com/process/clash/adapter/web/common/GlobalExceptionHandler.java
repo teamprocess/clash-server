@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -42,13 +43,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Void> handleMissingParams(
             MethodArgumentNotValidException ex) {
-
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
+        log.warn("Validation failed: {}", ex.getMessage());
+        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        error -> error.getDefaultMessage() != null
+                                ? error.getDefaultMessage()
+                                : "유효하지 않은 값입니다."
+                ));
         StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
 
@@ -57,39 +59,15 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // RequestParam
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ApiResponse<Void> handleMissingRequestParam(
-            MissingServletRequestParameterException ex) {
-
-        StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
-
-        return ApiResponse.error(
-                ErrorResponse.of(statusCode),
-                httpStatus
-        );
-    }
-
-    // PathVariable, RequestParam 타입 불일치
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ApiResponse<Void> handleMethodArgumentTypeMismatch(
-            MethodArgumentTypeMismatchException ex) {
-
-        StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
-
-        return ApiResponse.error(
-                ErrorResponse.of(statusCode),
-                httpStatus
-        );
-    }
-
-    // Json 파싱 실패
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ApiResponse<Void> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex) {
-
+    // RequestParam, PathVariable, RequestBody 등 형식 관련 예외 처리
+    @ExceptionHandler({
+            MissingServletRequestParameterException.class,
+            MethodArgumentTypeMismatchException.class,
+            HttpMessageNotReadableException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse<Void> handleInvalidArgumentExceptions(Exception ex) {
+        log.warn("Invalid argument exception: {}", ex.getMessage());
         StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
 
