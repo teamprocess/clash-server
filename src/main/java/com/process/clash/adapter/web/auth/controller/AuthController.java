@@ -4,6 +4,7 @@ import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.application.common.data.AccessContext;
+import com.process.clash.application.common.exception.exception.EndpointMovedException;
 import com.process.clash.application.user.user.data.SignInData;
 import com.process.clash.application.user.user.port.in.SignOutUseCase;
 import com.process.clash.application.user.user.data.SignUpData;
@@ -62,27 +63,18 @@ public class AuthController {
 	}
 
 	@PostMapping("/signin")
-	public ResponseEntity<Void> signinRedirect() {
-		return ResponseEntity
-				.status(HttpStatus.PERMANENT_REDIRECT) // 308
-				.header("Location", "/api/auth/sign-in")
-				.build();
+	public void signinRedirect() {
+		throw new EndpointMovedException("/api/auth/sign-in");
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<Void> signupRedirect() {
-		return ResponseEntity
-				.status(HttpStatus.PERMANENT_REDIRECT) // 308
-				.header("Location", "/api/auth/sign-up")
-				.build();
+	public void signupRedirect() {
+		throw new EndpointMovedException("/api/auth/sign-up");
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<Void> signoutRedirect() {
-		return ResponseEntity
-				.status(HttpStatus.PERMANENT_REDIRECT) // 308
-				.header("Location", "/api/auth/sign-out")
-				.build();
+	public void signoutRedirect() {
+		throw new EndpointMovedException("/api/auth/sign-out");
 	}
 
 	private AccessContext extractAccessContext(HttpServletRequest request) {

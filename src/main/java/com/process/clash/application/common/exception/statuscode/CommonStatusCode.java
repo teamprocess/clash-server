@@ -37,6 +37,12 @@ public enum CommonStatusCode implements StatusCode {
             ErrorCategory.METHOD_NOT_ALLOWED
     ),
 
+    ENDPOINT_MOVED(
+            "ENDPOINT_MOVED",
+            "엔드포인트가 변경되었습니다.",
+            ErrorCategory.GONE
+    ),
+
     UNAUTHORIZED(
             "UNAUTHORIZED",
             "인증이 필요한 서비스입니다.", // common으로 쓰기 모호한 느낌의 메세지

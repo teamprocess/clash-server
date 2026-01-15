@@ -3,6 +3,7 @@ package com.process.clash.adapter.web.common;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
 import com.process.clash.application.common.exception.statuscode.StatusCode;
 import com.process.clash.application.common.exception.exception.ApplicationException;
+import com.process.clash.application.common.exception.exception.EndpointMovedException;
 import com.process.clash.application.common.exception.mapper.HttpStatusMapper;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,23 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(EndpointMovedException.class)
+    @ResponseStatus(HttpStatus.GONE)
+    public ApiResponse<Void> handleEndpointMovedException(
+            EndpointMovedException ex
+    ) {
+        StatusCode statusCode = ex.getStatusCode();
+        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+
+        Map<String, String> newEndpointInfo = new HashMap<>();
+        newEndpointInfo.put("newEndpoint", ex.getNewEndpoint());
+
+        return ApiResponse.error(
+                ErrorResponse.of(statusCode, newEndpointInfo),
+                httpStatus
+        );
+    }
 
     @ExceptionHandler(ApplicationException.class)
     public ApiResponse<Void> handleApplicationException(
