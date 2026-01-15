@@ -11,7 +11,6 @@ public class GetTodayRecordDto {
     public record Response(
         String date,
         Boolean pomodoroEnabled,
-        @JsonProperty("total_studyTime")
         Long totalStudyTime,
         Instant studyStoppedAt,
         List<Session> sessions
