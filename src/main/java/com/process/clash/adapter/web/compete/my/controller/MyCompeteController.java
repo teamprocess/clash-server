@@ -1,9 +1,9 @@
 package com.process.clash.adapter.web.compete.my.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.mainpage.dto.compare.CompareGitHubDto;
-import com.process.clash.adapter.web.mainpage.dto.mainpage.AnalyzeMyActivityDto;
-import com.process.clash.adapter.web.mainpage.dto.mainpage.GetCompareWithYesterdayDto;
+import com.process.clash.adapter.web.compete.my.dto.CompareGitHubDto;
+import com.process.clash.adapter.web.compete.my.dto.AnalyzeMyActivityDto;
+import com.process.clash.adapter.web.compete.my.dto.GetCompareWithYesterdayDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.mainpage.data.compare.CompareGitHubData;

@@ -1,4 +1,4 @@
-package com.process.clash.adapter.web.mainpage.dto.mainpage;
+package com.process.clash.adapter.web.compete.rival.dto;
 
 import com.process.clash.application.mainpage.data.mainpage.GetMyRivalActingData;
 import com.process.clash.domain.rival.enums.RivalStatus;

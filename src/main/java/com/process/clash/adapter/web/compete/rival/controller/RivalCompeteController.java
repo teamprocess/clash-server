@@ -1,10 +1,10 @@
 package com.process.clash.adapter.web.compete.rival.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.mainpage.dto.mainpage.GetMyRivalActingDto;
-import com.process.clash.adapter.web.mainpage.dto.rival.AddRivalDto;
-import com.process.clash.adapter.web.mainpage.dto.rival.GetAllAbleRivalsDto;
-import com.process.clash.adapter.web.mainpage.dto.rival.SearchRivalByKeywordDto;
+import com.process.clash.adapter.web.compete.rival.dto.GetMyRivalActingDto;
+import com.process.clash.adapter.web.compete.rival.dto.AddRivalDto;
+import com.process.clash.adapter.web.compete.rival.dto.GetAllAbleRivalsDto;
+import com.process.clash.adapter.web.compete.rival.dto.SearchRivalByKeywordDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.mainpage.data.mainpage.GetMyRivalActingData;

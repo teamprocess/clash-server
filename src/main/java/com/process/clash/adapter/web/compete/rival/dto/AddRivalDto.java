@@ -1,4 +1,4 @@
-package com.process.clash.adapter.web.mainpage.dto.rival;
+package com.process.clash.adapter.web.compete.rival.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 

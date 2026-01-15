@@ -1,4 +1,4 @@
-package com.process.clash.adapter.web.mainpage.dto.compare;
+package com.process.clash.adapter.web.compete.my.dto;
 
 import com.process.clash.application.mainpage.data.compare.CompareGitHubData;
 

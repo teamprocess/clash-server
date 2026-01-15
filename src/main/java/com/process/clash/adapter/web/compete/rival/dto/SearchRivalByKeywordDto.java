@@ -1,16 +1,16 @@
-package com.process.clash.adapter.web.mainpage.dto.rival;
+package com.process.clash.adapter.web.compete.rival.dto;
 
-import com.process.clash.application.mainpage.data.rival.GetAllAbleRivalsData;
+import com.process.clash.application.mainpage.data.rival.SearchRivalByKeywordData;
 
 import java.util.List;
 
-public class GetAllAbleRivalsDto {
+public class SearchRivalByKeywordDto {
 
     public record Response(
-        List<User> users
+            List<User> users
     ) {
 
-        public static Response from(GetAllAbleRivalsData.Result result) {
+        public static Response from(SearchRivalByKeywordData.Result result) {
 
             return new Response(
                     result.users().stream()
@@ -19,7 +19,7 @@ public class GetAllAbleRivalsDto {
                                     data.name(),
                                     data.githubId()
                             ))
-                    .toList()
+                            .toList()
             );
         }
     }

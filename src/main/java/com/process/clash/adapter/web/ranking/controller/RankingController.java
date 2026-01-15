@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.ranking.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.mainpage.dto.mainpage.GetRankingDto;
+import com.process.clash.adapter.web.ranking.dto.GetRankingDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.mainpage.data.mainpage.GetRankingData;
