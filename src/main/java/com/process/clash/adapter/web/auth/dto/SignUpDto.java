@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.auth.dto;
 
+import com.process.clash.application.user.user.data.SignUpData;
 import jakarta.validation.constraints.NotBlank;
 
 public class SignUpDto {
@@ -10,5 +11,9 @@ public class SignUpDto {
             String password,
             @NotBlank(message = "이름은 필수 입력값입니다.")
             String name
-    ) {}
+    ) {
+        public SignUpData.Command toCommand() {
+            return new SignUpData.Command(username, password, name);
+        }
+    }
 }

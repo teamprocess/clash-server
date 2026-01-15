@@ -4,6 +4,7 @@ import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.application.common.data.AccessContext;
+import com.process.clash.application.common.exception.exception.EndpointMovedException;
 import com.process.clash.application.user.user.data.SignInData;
 import com.process.clash.application.user.user.port.in.SignOutUseCase;
 import com.process.clash.application.user.user.data.SignUpData;
@@ -12,15 +13,22 @@ import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
+	private static final Map<String, String> REDIRECT_MAP = Map.of(
+			"signin", "/api/auth/sign-in",
+			"signup", "/api/auth/sign-up",
+			"signout", "/api/auth/sign-out"
+	);
 
 	private final SignUpUseCase signUpUseCase;
 	private final SignInUseCase signInUseCase;
@@ -28,7 +36,7 @@ public class AuthController {
 
 	@PostMapping("/sign-up")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
-		SignUpData.Command command = SignUpData.Command.fromRequest(request);
+		SignUpData.Command command = request.toCommand();
 		signUpUseCase.execute(command);
 		return ApiResponse.success("회원가입이 완료되었습니다.");
 	}
@@ -57,6 +65,11 @@ public class AuthController {
 		AccessContext context = extractAccessContext(httpRequest);
 		signOutUseCase.execute(context);
 		return ApiResponse.success("로그아웃 되었습니다.");
+	}
+
+	@PostMapping({"/{action:signin|signup|signout}"})
+	public void handleRedirect(@PathVariable String action) {
+		throw new EndpointMovedException(REDIRECT_MAP.get(action));
 	}
 
 	private AccessContext extractAccessContext(HttpServletRequest request) {

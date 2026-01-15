@@ -1,8 +1,8 @@
 package com.process.clash.application.record.dto;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.record.model.entity.Task;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 
@@ -16,18 +16,37 @@ public class GetTodayRecordData {
     @Builder
     public record Result(
         String date,
-        Boolean pomodoro_enabled,
+        Boolean pomodoroEnabled,
         Long totalStudyTime,
-        Instant studyStoppedAt
+        Instant studyStoppedAt,
+        List<Session> sessions
     ) {
 
-        public static Result create(String date, Boolean pomodoro_enabled, Long totalStudyTime, Instant studyStoppedAt) {
+        public static Result create(
+            String date,
+            Boolean pomodoroEnabled,
+            Long totalStudyTime,
+            Instant studyStoppedAt,
+            List<Session> sessions
+        ) {
             return new Result(
                 date,
-                pomodoro_enabled,
+                pomodoroEnabled,
                 totalStudyTime,
-                studyStoppedAt
+                studyStoppedAt,
+                sessions
             );
+        }
+    }
+
+    public record Session(
+        LocalDateTime startedAt,
+        LocalDateTime endedAt,
+        Long taskId,
+        String taskName
+    ) {
+        public static Session from(LocalDateTime startedAt, LocalDateTime endedAt, Long taskId, String taskName) {
+            return new Session(startedAt, endedAt, taskId, taskName);
         }
     }
 }

@@ -14,7 +14,7 @@ public class GetMajorQuestionDto {
         public static Response from(GetMajorQuestionData.Result result) {
 
             // Result 내부의 List<MajorQuestionVo>를 Web용 List<MajorQuestionVo>로 변환
-            List<MajorQuestionVo> vos = result.getMajorQuestionVos().stream()
+            List<MajorQuestionVo> vos = result.majorQuestionVos().stream()
                     .map(MajorQuestionVo::from)
                     .toList();
 
@@ -27,36 +27,33 @@ public class GetMajorQuestionDto {
             String content,
             MajorWeightVo weight
     ) {
-        // Result 내부의 개별 Vo를 인자로 받아 변환
+        // Result 내부의 개별 VO를 인자로 받아 변환
         public static MajorQuestionVo from(GetMajorQuestionData.Result.MajorQuestionVo vo) {
 
             return new MajorQuestionVo(
-                    vo.getId(),
-                    vo.getContent(),
-                    MajorWeightVo.from(vo.getWeightVo())
+                    vo.id(),
+                    vo.content(),
+                    MajorWeightVo.from(vo.weightVo())
             );
         }
     }
 
-    @Getter
-    @AllArgsConstructor
-    public static class MajorWeightVo {
-
-        private final Integer web;
-        private final Integer app;
-        private final Integer server;
-        private final Integer ai;
-        private final Integer game;
-
+    public record MajorWeightVo(
+            Integer web,
+            Integer app,
+            Integer server,
+            Integer ai,
+            Integer game
+    ) {
         // Result 내부의 WeightVo를 인자로 받아 변환
         public static MajorWeightVo from(GetMajorQuestionData.Result.MajorQuestionVo.WeightVo vo) {
 
             return new MajorWeightVo(
-                    vo.getWeb(),
-                    vo.getApp(),
-                    vo.getServer(),
-                    vo.getAi(),
-                    vo.getGame()
+                    vo.web(),
+                    vo.app(),
+                    vo.server(),
+                    vo.ai(),
+                    vo.game()
             );
         }
     }

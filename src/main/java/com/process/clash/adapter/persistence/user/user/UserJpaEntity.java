@@ -43,14 +43,14 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private Role role;
 
-    @Column
-    private Boolean ableToAddRival;
+    @Column(nullable = false)
+    private boolean ableToAddRival;
 
     @Column
     private String profileImage;
 
     @Column(nullable = false)
-    private Boolean pomodoroEnabled;
+    private boolean pomodoroEnabled;
 
     @Column(nullable = false)
     private Integer pomodoroStudyMinute;

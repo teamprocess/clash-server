@@ -2,9 +2,10 @@ package com.process.clash.infrastructure.security;
 
 import com.process.clash.application.user.user.data.AuthPrincipal;
 import com.process.clash.application.user.user.exception.exception.unauthorized.NotAuthenticatedException;
+import com.process.clash.application.user.user.exception.exception.internalserver.ServletContextUnavailableException;
 import com.process.clash.application.user.user.port.out.SessionManager;
-import com.process.clash.infrastructure.principle.AuthUser;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
@@ -25,6 +28,7 @@ public class SpringSecuritySessionAdapter implements SessionManager {
 
     private final SecurityContextRepository securityContextRepository;
     private final RememberMeServices rememberMeServices;
+    private final UserDetailsService userDetailsService;
 
     private ServletRequestAttributes currentRequestAttributes() {
         RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
@@ -36,11 +40,11 @@ public class SpringSecuritySessionAdapter implements SessionManager {
 
     @Override
     public void createSession(AuthPrincipal principal, boolean rememberMe) {
-        AuthUser authUser = new AuthUser(principal.id(), principal.username(), "", principal.role());
+        UserDetails authUser = userDetailsService.loadUserByUsername(principal.username());
 
         Authentication token = new UsernamePasswordAuthenticationToken(
             authUser,
-            null,
+            authUser.getPassword(),
             authUser.getAuthorities()
         );
 
@@ -50,16 +54,31 @@ public class SpringSecuritySessionAdapter implements SessionManager {
 
         ServletRequestAttributes attrs = currentRequestAttributes();
         if (attrs == null) {
-            throw new IllegalStateException("No HttpServletRequest available for session creation");
+            throw new ServletContextUnavailableException();
         }
 
         HttpServletRequest req = attrs.getRequest();
         HttpServletResponse res = attrs.getResponse();
-        securityContextRepository.saveContext(context, req, res);
+
+        if (res == null) {
+            throw new ServletContextUnavailableException();
+        }
 
         if (rememberMe) {
-            rememberMeServices.loginSuccess(req, res, token);
+            HttpServletRequest wrappedRequest = new HttpServletRequestWrapper(req) {
+                @Override
+                public String getParameter(String name) {
+                    if ("remember-me".equals(name)) {
+                        return "true";
+                    }
+                    return super.getParameter(name);
+                }
+            };
+
+            rememberMeServices.loginSuccess(wrappedRequest, res, token);
         }
+
+        securityContextRepository.saveContext(context, req, res);
     }
 
     @Override

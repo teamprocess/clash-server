@@ -2,6 +2,8 @@ package com.process.clash.domain.major.entity;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -12,6 +14,10 @@ public class MajorQuestion {
     private String content; // 질문 텍스트 (예: "논리적인 문제 해결을 즐긴다")
 
     private MajorQuestion.WeightVo weightVo;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.major;
 
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
+import com.process.clash.application.user.user.exception.exception.internalserver.EntityRefreshFailedException;
 import com.process.clash.domain.major.entity.MajorQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,9 +17,16 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
     private final MajorQuestionJpaMapper majorQuestionJpaMapper;
 
     @Override
-    public void save(MajorQuestion majorQuestion) {
+    public MajorQuestion save(MajorQuestion majorQuestion) {
         MajorQuestionJpaEntity majorQuestionJpaEntity = majorQuestionJpaMapper.toJpaEntity(majorQuestion);
-        majorQuestionJpaRepository.save(majorQuestionJpaEntity);
+        MajorQuestionJpaEntity saved = majorQuestionJpaRepository.save(majorQuestionJpaEntity);
+        majorQuestionJpaRepository.flush();
+
+        // @UpdateTimestamp가 적용된 최신 데이터를 가져오기 위해 다시 조회함
+        MajorQuestionJpaEntity refreshed = majorQuestionJpaRepository.findById(saved.getId())
+                .orElseThrow(EntityRefreshFailedException::new);
+
+        return majorQuestionJpaMapper.toDomain(refreshed);
     }
 
     @Override
@@ -31,5 +39,15 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
         return majorQuestionJpaRepository.findAll().stream()
                 .map(majorQuestionJpaMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        majorQuestionJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return majorQuestionJpaRepository.existsById(id);
     }
 }

@@ -1,0 +1,48 @@
+package com.process.clash.adapter.web.section.dto;
+
+import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.roadmap.section.data.UpdateSectionData;
+import jakarta.validation.constraints.Size;
+
+import java.util.List;
+
+public class UpdateSectionDto {
+
+    public record Request(
+            @Size(min = 1, message = "title이 제공되는 경우 비워둘 수 없습니다.")
+            String title,        // 선택사항
+
+            @Size(min = 1, message = "category가 제공되는 경우 비워둘 수 없습니다.")
+            String category,     // 선택사항
+
+            @Size(min = 1, message = "description이 제공되는 경우 비워둘 수 없습니다.")
+            String description,  // 선택사항
+
+            @Size(min = 1, message = "keyPoints가 제공되는 경우 비워둘 수 없습니다.")
+            List<String> keyPoints  // 선택사항
+    ) {
+        public UpdateSectionData.Command toCommand(Actor actor, Long sectionId) {
+            return new UpdateSectionData.Command(actor, sectionId, title, category, description, keyPoints);
+        }
+    }
+
+    public record Response(
+            Long sectionId,
+            String title,
+            String category,
+            String description,
+            List<String> keyPoints,
+            String updatedAt
+    ) {
+        public static Response from(UpdateSectionData.Result result) {
+            return new Response(
+                    result.sectionId(),
+                    result.title(),
+                    result.category(),
+                    result.description(),
+                    result.keyPoints(),
+                    result.updatedAt()
+            );
+        }
+    }
+}

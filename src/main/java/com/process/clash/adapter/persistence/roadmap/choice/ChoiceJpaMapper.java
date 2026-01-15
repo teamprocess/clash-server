@@ -16,7 +16,9 @@ public class ChoiceJpaMapper {
                 choice.getId(),
                 missionQuestionEntity,
                 choice.getContent(),
-                choice.isCorrect()
+                choice.isCorrect(),
+                null, // createdAt은 @CreationTimestamp가 자동으로 설정
+                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
     }
 

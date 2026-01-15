@@ -6,11 +6,13 @@ import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.UpdateTaskUseCase;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.domain.record.model.entity.Task;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UpdateTaskService implements UpdateTaskUseCase {
 
