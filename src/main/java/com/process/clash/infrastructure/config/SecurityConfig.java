@@ -34,7 +34,7 @@ public class SecurityConfig {
 
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService customUserDetailsService;
-    private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 14;
+    private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 30;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
