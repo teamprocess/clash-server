@@ -5,6 +5,8 @@ import com.process.clash.domain.shop.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class ProductPersistenceAdapter implements ProductRepositoryPort {
@@ -17,5 +19,11 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
         ProductJpaEntity productJpaEntity = productJpaMapper.toJpaEntity(product);
         ProductJpaEntity savedEntity = productJpaRepository.save(productJpaEntity);
         return productJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<Product> findById(Long productId) {
+        return productJpaRepository.findById(productId)
+                .map(productJpaMapper::toDomain);
     }
 }
