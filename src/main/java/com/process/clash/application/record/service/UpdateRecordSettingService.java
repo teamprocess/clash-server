@@ -6,6 +6,7 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class UpdateRecordSettingService implements UpdateRecordSettingUseCase {
         User updatedUser = new User(
             user.id(),
             user.createdAt(),
-            user.updatedAt(),
+            LocalDateTime.now(),
             user.username(),
             user.name(),
             user.password(),
