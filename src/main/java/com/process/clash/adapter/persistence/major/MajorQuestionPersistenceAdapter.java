@@ -19,8 +19,14 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
     @Override
     public MajorQuestion save(MajorQuestion majorQuestion) {
         MajorQuestionJpaEntity majorQuestionJpaEntity = majorQuestionJpaMapper.toJpaEntity(majorQuestion);
-        MajorQuestionJpaEntity saved = majorQuestionJpaRepository.saveAndFlush(majorQuestionJpaEntity);
-        return majorQuestionJpaMapper.toDomain(saved);
+        MajorQuestionJpaEntity saved = majorQuestionJpaRepository.save(majorQuestionJpaEntity);
+        majorQuestionJpaRepository.flush();
+
+        // @UpdateTimestamp가 적용된 최신 데이터를 가져오기 위해 다시 조회함
+        MajorQuestionJpaEntity refreshed = majorQuestionJpaRepository.findById(saved.getId())
+                .orElseThrow(EntityRefreshFailedException::new);
+
+        return majorQuestionJpaMapper.toDomain(refreshed);
     }
 
     @Override
