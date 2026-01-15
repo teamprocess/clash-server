@@ -28,7 +28,7 @@ public class ChoiceJpaEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(name = "is_correct", nullable = false)
+    @Column(nullable = false)
     private boolean isCorrect;
 
     @CreationTimestamp
