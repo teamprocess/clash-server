@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.major;
 
-import com.process.clash.application.common.exception.exception.internalerror.EntityRefreshFailedException;
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
+import com.process.clash.application.user.user.exception.exception.internalserver.EntityRefreshFailedException;
 import com.process.clash.domain.major.entity.MajorQuestion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

@@ -7,5 +7,6 @@ public enum ErrorCategory {
     NOT_FOUND,
     METHOD_NOT_ALLOWED,
     CONFLICT,
+    GONE,
     INTERNAL_ERROR
 }
