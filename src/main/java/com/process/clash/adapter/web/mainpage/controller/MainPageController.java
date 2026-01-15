@@ -28,6 +28,4 @@ public class MainPageController {
         GetUserProfileDto.Response response = GetUserProfileDto.Response.from(result);
         return ApiResponse.success(response, "유저 정보를 성공적으로 반환했습니다.");
     }
-
-
 }

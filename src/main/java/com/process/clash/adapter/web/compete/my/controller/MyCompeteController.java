@@ -55,7 +55,7 @@ public class MyCompeteController {
 
     // 내 활동 분석
     // TODO: 추가 구현 필요합니다
-    @GetMapping("/analyze/category/{category]")
+    @GetMapping("/analyze/category/{category}")
     public ApiResponse<AnalyzeMyActivityDto.Response> analyzeMyActivity(
             @AuthenticatedActor Actor actor,
             @PathVariable TargetCategory category
