@@ -11,4 +11,5 @@ public interface SectionRepositoryPort {
     Optional<Section> findById(Long id);
     List<Section> findAll();
     List<Section> findAllByMajor(Major major);
+    void deleteById(Long id);
 }
