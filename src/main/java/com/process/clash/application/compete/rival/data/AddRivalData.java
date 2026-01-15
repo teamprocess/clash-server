@@ -23,7 +23,7 @@ public class AddRivalData {
         }
     }
 
-    private record Id(
+    public record Id(
             Long id
     ) {}
 }

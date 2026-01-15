@@ -16,7 +16,15 @@ public class AddRivalPolicy {
 
         int myRivalCount = rivalRepositoryPort.countAllByMy_Id(command.actor().id());
 
-        if (myRivalCount + command.ids().toArray().length > 4)
+        if (myRivalCount + command.ids().size() > 4) {
             throw new TooMuchRivalsException();
+        }
+
+        boolean hasOverLimitRival = command.ids().stream()
+                .anyMatch(id -> rivalRepositoryPort.countAllByOpponent_Id(id.id()) >= 4);
+
+        if (hasOverLimitRival) {
+            throw new TooMuchRivalsException();
+        }
     }
 }
