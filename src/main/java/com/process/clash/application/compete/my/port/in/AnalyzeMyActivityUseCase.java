@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.port.in.mainpage;
+package com.process.clash.application.compete.my.port.in;
 
 import com.process.clash.application.compete.my.data.AnalyzeMyActivityData;
 

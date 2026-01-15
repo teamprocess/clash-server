@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.port.in.rival;
+package com.process.clash.application.compete.rival.port.in;
 
 import com.process.clash.application.compete.rival.data.SearchRivalByKeywordData;
 

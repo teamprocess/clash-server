@@ -1,7 +1,7 @@
 package com.process.clash.application.mainpage.service.compare;
 
 import com.process.clash.application.compete.my.data.CompareGitHubData;
-import com.process.clash.application.mainpage.port.in.compare.CompareGitHubUseCase;
+import com.process.clash.application.compete.my.port.in.CompareGitHubUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

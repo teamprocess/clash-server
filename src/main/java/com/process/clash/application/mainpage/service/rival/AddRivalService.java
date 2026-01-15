@@ -1,7 +1,7 @@
 package com.process.clash.application.mainpage.service.rival;
 
 import com.process.clash.application.compete.rival.data.AddRivalData;
-import com.process.clash.application.mainpage.port.in.rival.AddRivalUseCase;
+import com.process.clash.application.compete.rival.port.in.AddRivalUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
