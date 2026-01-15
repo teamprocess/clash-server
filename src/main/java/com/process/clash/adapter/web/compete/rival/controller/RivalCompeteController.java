@@ -43,7 +43,7 @@ public class RivalCompeteController {
     }
 
     // 라이벌 - 전체 유저 조회(내 라이벌 제외)
-    @GetMapping("/fresh-user")
+    @GetMapping("/available")
     public ApiResponse<GetAllAbleRivalsDto.Response> getAllAbleRivals(
             @AuthenticatedActor Actor actor
     ) {
@@ -55,10 +55,10 @@ public class RivalCompeteController {
     }
 
     // 라이벌 - 키워드 검색
-    @GetMapping("/keyword/{keyword}")
+    @GetMapping("/search")
     public ApiResponse<SearchRivalByKeywordDto.Response> searchRivalByKeyword(
             @AuthenticatedActor Actor actor,
-            @PathVariable String keyword
+            @RequestParam String keyword
     ) {
 
         SearchRivalByKeywordData.Command command = SearchRivalByKeywordData.Command.from(actor, keyword);
