@@ -36,6 +36,26 @@ public record User(
                 5,
                 Major.NONE
         );
+
+    }
+
+    public User submitMajor(Major major) {
+        // 모든 필드를 복사하되 major만 교체한 새 객체 반환
+        return new User(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.username,
+                this.name,
+                this.password,
+                this.role,
+                this.ableToAddRival,
+                this.profileImage,
+                this.pomodoroEnabled,
+                this.pomodoroStudyMinute,
+                this.pomodoroBreakMinute,
+                major // 변경점
+        );
     }
 
     public User withPomodoroSettings(Boolean pomodoroEnabled, Integer studyMinute, Integer breakMinute) {
