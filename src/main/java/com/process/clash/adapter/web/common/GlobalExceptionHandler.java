@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -40,16 +41,31 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ApiResponse<Void> handleNoResourceFound(
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse<Void> handleNoResourceFoundException(
             NoResourceFoundException ex) {
-        log.warn("Resource not found: {}", ex.getMessage());
-
+        log.warn("Endpoint not found", ex);
         StatusCode statusCode = CommonStatusCode.ENDPOINT_NOT_FOUND;
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
 
         return ApiResponse.error(
-                ErrorResponse.of(statusCode),
-                httpStatus
+                ErrorResponse.of(statusCode), httpStatus
+        );
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ApiResponse<Void> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException ex) {
+        log.warn("Http request method not supported: {}", ex.getMethod());
+
+        Map<String, String> errorMethod = new HashMap<>();
+        errorMethod.put("method", ex.getMethod());
+        StatusCode statusCode = CommonStatusCode.METHOD_NOT_ALLOWED;
+        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+
+        return ApiResponse.error(
+                ErrorResponse.of(statusCode, errorMethod), httpStatus
         );
     }
 
