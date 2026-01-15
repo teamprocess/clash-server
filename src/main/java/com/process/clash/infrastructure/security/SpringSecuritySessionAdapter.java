@@ -2,7 +2,7 @@ package com.process.clash.infrastructure.security;
 
 import com.process.clash.application.user.user.data.AuthPrincipal;
 import com.process.clash.application.user.user.exception.exception.unauthorized.NotAuthenticatedException;
-import com.process.clash.application.user.user.exception.exception.validation.ServletContextUnavailableException;
+import com.process.clash.application.user.user.exception.exception.internalserver.ServletContextUnavailableException;
 import com.process.clash.application.user.user.port.out.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
