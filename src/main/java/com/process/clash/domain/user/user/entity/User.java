@@ -29,7 +29,7 @@ public record User(
                 name,
                 password,
                 Role.USER,
-                null,
+                true,
                 "",
                 false,   // 기본 공부 시간 (기본값이 없다면 null)
                 25,

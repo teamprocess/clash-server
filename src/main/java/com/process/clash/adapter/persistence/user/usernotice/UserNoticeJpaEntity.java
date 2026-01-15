@@ -24,7 +24,7 @@ public class UserNoticeJpaEntity {
 
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime localDateTime;
+    private LocalDateTime creationAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
