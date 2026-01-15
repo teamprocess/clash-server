@@ -23,7 +23,7 @@ public class UpdateMajorQuestionService implements UpdateMajorQuestionUseCase {
         checkAdminPolicy.check(command.actor());
 
         MajorQuestion existingQuestion = majorQuestionRepositoryPort.findById(command.questionId())
-                .orElseThrow(() -> new MajorQuestionNotFoundException(command.questionId()));
+                .orElseThrow(MajorQuestionNotFoundException::new);
 
         // 부분 업데이트: null이 아닌 필드만 업데이트
         String updatedContent = command.content() != null ? command.content() : existingQuestion.getContent();

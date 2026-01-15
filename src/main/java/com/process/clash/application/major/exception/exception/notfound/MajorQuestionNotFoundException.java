@@ -4,11 +4,11 @@ import com.process.clash.application.common.exception.exception.NotFoundExceptio
 import com.process.clash.application.major.exception.status.MajorStatusCode;
 
 public class MajorQuestionNotFoundException extends NotFoundException {
-    public MajorQuestionNotFoundException(Long questionId) {
+    public MajorQuestionNotFoundException() {
         super(MajorStatusCode.MAJOR_QUESTION_NOT_FOUND);
     }
 
-    public MajorQuestionNotFoundException(Long questionId, Throwable cause) {
+    public MajorQuestionNotFoundException(Throwable cause) {
         super(MajorStatusCode.MAJOR_QUESTION_NOT_FOUND, cause);
     }
 }

@@ -22,7 +22,7 @@ public class DeleteMajorQuestionService implements DeleteMajorQuestionUseCase {
         checkAdminPolicy.check(command.actor());
 
         if (majorQuestionRepositoryPort.existsById(command.questionId())) {
-            throw new MajorQuestionNotFoundException(command.questionId());
+            throw new MajorQuestionNotFoundException();
         }
 
         majorQuestionRepositoryPort.deleteById(command.questionId());
