@@ -1,7 +1,7 @@
 package com.process.clash.application.user.user.exception.exception.notfound;
 
 import com.process.clash.application.common.exception.exception.NotFoundException;
-import com.process.clash.application.user.user.exception.status.UserStatusCode;
+import com.process.clash.application.user.user.exception.statuscode.UserStatusCode;
 
 public class UserNotFoundException extends NotFoundException {
     public UserNotFoundException() {

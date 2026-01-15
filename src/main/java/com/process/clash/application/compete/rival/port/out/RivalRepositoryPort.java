@@ -1,4 +1,4 @@
-package com.process.clash.application.rival.port.out;
+package com.process.clash.application.compete.rival.port.out;
 
 import com.process.clash.domain.rival.entity.Rival;
 

@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.rival;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
-import com.process.clash.application.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.compete.rival.port.out.RivalRepositoryPort;
 import com.process.clash.domain.rival.entity.Rival;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
