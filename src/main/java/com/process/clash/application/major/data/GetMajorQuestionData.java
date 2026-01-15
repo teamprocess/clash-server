@@ -5,9 +5,7 @@ import java.util.List;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.major.entity.MajorQuestion;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 public class GetMajorQuestionData {
 
@@ -16,11 +14,9 @@ public class GetMajorQuestionData {
 		Actor actor;
 	}
 
-	@Getter
-	@AllArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class Result {
-
-		private final List<MajorQuestionVo> majorQuestionVos;
+	public record Result(
+			List<MajorQuestionVo> majorQuestionVos
+	) {
 
 		public static Result from(List<MajorQuestion> domainModels) {
 			return new Result(
@@ -30,12 +26,11 @@ public class GetMajorQuestionData {
 			);
 		}
 
-		@Getter
-		@AllArgsConstructor(access = AccessLevel.PRIVATE)
-		public static class MajorQuestionVo {
-			private final Long id;
-			private final String content;
-			private final WeightVo weightVo;
+		public record MajorQuestionVo(
+				Long id,
+				String content,
+				WeightVo weightVo
+		) {
 
 			public static MajorQuestionVo from(MajorQuestion domain) {
 				return new MajorQuestionVo(
@@ -45,14 +40,13 @@ public class GetMajorQuestionData {
 				);
 			}
 
-			@Getter
-			@AllArgsConstructor(access = AccessLevel.PRIVATE)
-			public static class WeightVo {
-				private final Integer web;
-				private final Integer app;
-				private final Integer server;
-				private final Integer ai;
-				private final Integer game;
+			public record WeightVo(
+					Integer web,
+					Integer app,
+					Integer server,
+					Integer ai,
+					Integer game
+			) {
 
 				public static WeightVo from(MajorQuestion.WeightVo domainWeight) {
 					return new WeightVo(

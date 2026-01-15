@@ -43,16 +43,16 @@ public class UpdateMajorQuestionDto {
     ) {
         public static Response from(UpdateMajorQuestionData.Result result) {
             return new Response(
-                    result.getQuestionId(),
-                    result.getContent(),
+                    result.questionId(),
+                    result.content(),
                     new MajorWeightVo(
-                            result.getWeight().getWeb(),
-                            result.getWeight().getApp(),
-                            result.getWeight().getServer(),
-                            result.getWeight().getAi(),
-                            result.getWeight().getGame()
+                            result.weight().web(),
+                            result.weight().app(),
+                            result.weight().server(),
+                            result.weight().ai(),
+                            result.weight().game()
                     ),
-                    result.getUpdatedAt()
+                    result.updatedAt()
             );
         }
     }
