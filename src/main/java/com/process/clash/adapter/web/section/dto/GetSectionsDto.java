@@ -8,7 +8,7 @@ public class GetSectionsDto {
             List<SectionVo> sections,
             List<String> categories
     ) {
-        // TODO: Implement from() method when Result is available
+        // TODO: Result 사용 가능 시 from() 메서드 구현 필요
         // public static Response from(GetSectionsData.Result result) { ... }
     }
 

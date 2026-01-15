@@ -23,7 +23,7 @@ public class AuthEventJpaEntity {
     private String username;
 
     @Column(nullable = false)
-    private String eventType; // LOGIN or LOGOUT
+    private String eventType; // SESSION_EXPIRE, LOGIN or LOGOUT
 
     private String ipAddress;
 

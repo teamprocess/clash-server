@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminSectionController {
 
-    // TODO: Inject use cases when implemented
+    // TODO: 구현 시 유스케이스 주입 필요
     // private final CreateSectionUseCase createSectionUseCase;
     // private final UpdateSectionUseCase updateSectionUseCase;
     // private final DeleteSectionUseCase deleteSectionUseCase;
@@ -24,13 +24,13 @@ public class AdminSectionController {
             @AuthenticatedActor Actor actor,
             @Valid @RequestBody CreateSectionDto.Request request
     ) {
-        // TODO: Implement use case
+        // TODO: 유스케이스 구현 필요
         // CreateSectionData.Command command = request.toCommand(actor);
         // CreateSectionData.Result result = createSectionUseCase.execute(command);
         // CreateSectionDto.Response response = CreateSectionDto.Response.from(result);
         // return ApiResponse.created(response, "로드맵 생성을 성공했습니다.");
 
-        // Temporary response
+        // 임시 응답
         CreateSectionDto.Response response = new CreateSectionDto.Response(
                 null,
                 request.major().name(),
@@ -49,13 +49,13 @@ public class AdminSectionController {
             @PathVariable Long sectionId,
             @Valid @RequestBody UpdateSectionDto.Request request
     ) {
-        // TODO: Implement use case
+        // TODO: 유스케이스 구현 필요
         // UpdateSectionData.Command command = request.toCommand(actor, sectionId);
         // UpdateSectionData.Result result = updateSectionUseCase.execute(command);
         // UpdateSectionDto.Response response = UpdateSectionDto.Response.from(result);
         // return ApiResponse.success(response, "로드맵 수정을 성공했습니다.");
 
-        // Temporary response
+        // 임시 응답
         UpdateSectionDto.Response response = new UpdateSectionDto.Response(
                 sectionId,
                 request.title(),
@@ -72,12 +72,12 @@ public class AdminSectionController {
             @AuthenticatedActor Actor actor,
             @PathVariable Long sectionId
     ) {
-        // TODO: Implement use case
+        // TODO: 유스케이스 구현 필요
         // DeleteSectionData.Command command = new DeleteSectionData.Command(actor, sectionId);
         // deleteSectionUseCase.execute(command);
         // return ApiResponse.success("로드맵 삭제를 성공했습니다. (연관된 챕터, 미션, 질문도 함께 삭제됩니다)");
 
-        // Temporary response
+        // 임시 응답
         return ApiResponse.success("로드맵 삭제를 성공했습니다. (연관된 챕터, 미션, 질문도 함께 삭제됩니다)");
     }
 }

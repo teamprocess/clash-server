@@ -19,7 +19,7 @@ public class SessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
-        // no-op
+        // 아무 작업도 수행하지 않음
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SessionListener implements HttpSessionListener {
             SecurityContext context = (SecurityContext) contextObject;
             if (context.getAuthentication() != null) {
                 String username = context.getAuthentication().getName();
-                // session destroyed (expired or invalidated elsewhere)
+                // 세션 종료됨 (만료되었거나 다른 곳에서 무효화됨)
                 authEventRepositoryPort.recordSessionExpired(username, null, null);
             }
         }

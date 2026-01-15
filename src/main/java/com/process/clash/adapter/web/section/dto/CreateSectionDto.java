@@ -24,7 +24,7 @@ public class CreateSectionDto {
             @NotNull(message = "keyPoints는 필수 입력값입니다.")
             List<String> keyPoints
     ) {
-        // TODO: Implement toCommand() method when Command is available
+        // TODO: Command 사용 가능 시 toCommand() 메서드 구현 필요
         // public CreateSectionData.Command toCommand(Actor actor) { ... }
     }
 
@@ -37,7 +37,7 @@ public class CreateSectionDto {
             List<String> keyPoints,
             String createdAt
     ) {
-        // TODO: Implement from() method when Result is available
+        // TODO: Result 사용 가능 시 from() 메서드 구현 필요
         // public static Response from(CreateSectionData.Result result) { ... }
     }
 }

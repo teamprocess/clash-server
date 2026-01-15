@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SectionController {
 
-    // TODO: Inject use cases when implemented
+    // TODO: 구현 시 유스케이스 주입 필요
     // private final GetSectionsUseCase getSectionsUseCase;
     // private final GetSectionPreviewUseCase getSectionPreviewUseCase;
     // private final GetSectionDetailsUseCase getSectionDetailsUseCase;
@@ -27,13 +27,13 @@ public class SectionController {
             @AuthenticatedActor Actor actor,
             @RequestParam Major major
     ) {
-        // TODO: Implement use case
+        // TODO: 유스케이스 구현 필요
         // GetSectionsData.Command command = new GetSectionsData.Command(actor, major);
         // GetSectionsData.Result result = getSectionsUseCase.execute(command);
         // GetSectionsDto.Response response = GetSectionsDto.Response.from(result);
         // return ApiResponse.success(response, "로드맵 목록 조회를 성공했습니다.");
 
-        // Temporary response
+        // 임시 응답
         GetSectionsDto.Response response = new GetSectionsDto.Response(
                 List.of(),
                 List.of()
@@ -46,13 +46,13 @@ public class SectionController {
             @AuthenticatedActor Actor actor,
             @PathVariable Long sectionId
     ) {
-        // TODO: Implement use case
+        // TODO: 유스케이스 구현 필요
         // GetSectionPreviewData.Command command = new GetSectionPreviewData.Command(actor, sectionId);
         // GetSectionPreviewData.Result result = getSectionPreviewUseCase.execute(command);
         // GetSectionPreviewDto.Response response = GetSectionPreviewDto.Response.from(result);
         // return ApiResponse.success(response, "로드맵 미리보기 조회를 성공했습니다.");
 
-        // Temporary response
+        // 임시 응답
         GetSectionPreviewDto.Response response = new GetSectionPreviewDto.Response(
                 null,
                 null,
@@ -69,13 +69,13 @@ public class SectionController {
             @AuthenticatedActor Actor actor,
             @PathVariable Long sectionId
     ) {
-        // TODO: Implement use case
+        // TODO: 유스케이스 구현 필요
         // GetSectionDetailsData.Command command = new GetSectionDetailsData.Command(actor, sectionId);
         // GetSectionDetailsData.Result result = getSectionDetailsUseCase.execute(command);
         // GetSectionDetailsDto.Response response = GetSectionDetailsDto.Response.from(result);
         // return ApiResponse.success(response, "로드맵 상세 조회를 성공했습니다.");
 
-        // Temporary response
+        // 임시 응답
         GetSectionDetailsDto.Response response = new GetSectionDetailsDto.Response(
                 null,
                 null,
