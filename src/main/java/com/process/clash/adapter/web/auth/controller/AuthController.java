@@ -12,6 +12,8 @@ import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +59,30 @@ public class AuthController {
 		AccessContext context = extractAccessContext(httpRequest);
 		signOutUseCase.execute(context);
 		return ApiResponse.success("로그아웃 되었습니다.");
+	}
+
+	@PostMapping("/signin")
+	public ResponseEntity<Void> signinRedirect() {
+		return ResponseEntity
+				.status(HttpStatus.PERMANENT_REDIRECT) // 308
+				.header("Location", "/api/auth/sign-in")
+				.build();
+	}
+
+	@PostMapping("/signup")
+	public ResponseEntity<Void> signupRedirect() {
+		return ResponseEntity
+				.status(HttpStatus.PERMANENT_REDIRECT) // 308
+				.header("Location", "/api/auth/sign-up")
+				.build();
+	}
+
+	@PostMapping("/signout")
+	public ResponseEntity<Void> signoutRedirect() {
+		return ResponseEntity
+				.status(HttpStatus.PERMANENT_REDIRECT) // 308
+				.header("Location", "/api/auth/sign-out")
+				.build();
 	}
 
 	private AccessContext extractAccessContext(HttpServletRequest request) {
