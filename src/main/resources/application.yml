@@ -19,3 +19,8 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+server:
+  servlet:
+    session:
+      timeout: 3d
