@@ -27,7 +27,7 @@ public class GetMajorQuestionDto {
             String content,
             MajorWeightVo weight
     ) {
-        // Result 내부의 개별 Vo를 인자로 받아 변환
+        // Result 내부의 개별 VO를 인자로 받아 변환
         public static MajorQuestionVo from(GetMajorQuestionData.Result.MajorQuestionVo vo) {
 
             return new MajorQuestionVo(

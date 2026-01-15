@@ -1,5 +1,7 @@
 package com.process.clash.adapter.web.section.dto;
 
+import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.roadmap.section.data.CreateSectionData;
 import com.process.clash.domain.common.enums.Major;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -25,8 +27,9 @@ public class CreateSectionDto {
             @NotEmpty(message = "keyPoints는 비어있을 수 없습니다.")
             List<String> keyPoints
     ) {
-        // TODO: Implement toCommand() method when Command is available
-        // public CreateSectionData.Command toCommand(Actor actor) { ... }
+        public CreateSectionData.Command toCommand(Actor actor) {
+            return new CreateSectionData.Command(actor, major, title, category, description, keyPoints);
+        }
     }
 
     public record Response(
@@ -38,7 +41,16 @@ public class CreateSectionDto {
             List<String> keyPoints,
             String createdAt
     ) {
-        // TODO: Implement from() method when Result is available
-        // public static Response from(CreateSectionData.Result result) { ... }
+        public static Response from(CreateSectionData.Result result) {
+            return new Response(
+                    result.sectionId(),
+                    result.major(),
+                    result.title(),
+                    result.category(),
+                    result.description(),
+                    result.keyPoints(),
+                    result.createdAt()
+            );
+        }
     }
 }

@@ -17,8 +17,8 @@ public class MajorQuestionJpaMapper {
                         majorQuestion.getWeightVo().getAi(),
                         majorQuestion.getWeightVo().getGame()
                 ),
-                null, // createdAt은 @CreationTimestamp가 자동으로 설정
-                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
+                null, // createdAt은 @CreationTimestamp에 의해 자동으로 설정됨
+                null  // updatedAt은 @UpdateTimestamp에 의해 자동으로 설정됨
         );
     }
 

@@ -1,5 +1,7 @@
 package com.process.clash.adapter.web.section.dto;
 
+import com.process.clash.application.roadmap.section.data.GetSectionPreviewData;
+
 import java.util.List;
 
 public class GetSectionPreviewDto {
@@ -12,8 +14,19 @@ public class GetSectionPreviewDto {
             List<ChapterVo> chapters,
             List<String> keyPoints
     ) {
-        // TODO: Implement from() method when Result is available
-        // public static Response from(GetSectionPreviewData.Result result) { ... }
+        public static Response from(GetSectionPreviewData.Result result) {
+            List<ChapterVo> chapters = result.chapters().stream()
+                    .map(ChapterVo::from)
+                    .toList();
+            return new Response(
+                    result.id(),
+                    result.title(),
+                    result.description(),
+                    result.totalSteps(),
+                    chapters,
+                    result.keyPoints()
+            );
+        }
     }
 
     public record ChapterVo(
@@ -21,7 +34,8 @@ public class GetSectionPreviewDto {
             String title,
             String description
     ) {
-        // TODO: Implement from() method when Result.ChapterVo is available
-        // public static ChapterVo from(GetSectionPreviewData.Result.ChapterVo vo) { ... }
+        public static ChapterVo from(GetSectionPreviewData.Result.ChapterVo vo) {
+            return new ChapterVo(vo.id(), vo.title(), vo.description());
+        }
     }
 }
