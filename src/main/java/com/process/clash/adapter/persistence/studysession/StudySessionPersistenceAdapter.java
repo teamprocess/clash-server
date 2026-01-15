@@ -22,10 +22,18 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
 
     @Override
     public void save(StudySession studySession) {
-        UserJpaEntity user = userJpaRepository.getReferenceById(studySession.user().id());
-        TaskJpaEntity task = taskJpaRepository.getReferenceById(studySession.task().id());
-        StudySessionJpaEntity studySessionJpaEntity = studySessionJpaMapper.toJpaEntity(studySession, user, task);
-        studySessionJpaRepository.save(studySessionJpaEntity);
+        if (studySession.id() == null) {
+            UserJpaEntity user = userJpaRepository.getReferenceById(studySession.user().id());
+            TaskJpaEntity task = taskJpaRepository.getReferenceById(studySession.task().id());
+            StudySessionJpaEntity studySessionJpaEntity = studySessionJpaMapper.toJpaEntity(studySession, user, task);
+            studySessionJpaRepository.save(studySessionJpaEntity);
+            return;
+        }
+
+        StudySessionJpaEntity existing = studySessionJpaRepository.findById(studySession.id())
+            .orElseThrow(() -> new IllegalStateException("StudySession not found: " + studySession.id()));
+        existing.changeEndedAt(studySession.endedAt());
+        studySessionJpaRepository.save(existing);
     }
 
     @Override
@@ -47,6 +55,7 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
 
     @Override
     public Optional<StudySession> findActiveSessionByUserId(Long userId) {
-        return studySessionJpaRepository.findByUserIdAndEndedAtIsNull(userId);
+        return studySessionJpaRepository.findByUserIdAndEndedAtIsNull(userId)
+            .map(studySessionJpaMapper::toDomain);
     }
 }

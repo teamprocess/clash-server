@@ -6,6 +6,7 @@ import com.process.clash.application.record.port.in.StopRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.model.entity.StudySession;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +22,12 @@ public class StopRecordService implements StopRecordUseCase {
                 .findActiveSessionByUserId(command.actor().id())
                 .orElseThrow(ActiveSessionNotFound::new);
 
-        // TODO: set endedAt of StudySession and save
+        StudySession updatedSession = studySession.changeEndedAt(LocalDateTime.now());
+        studySessionRepositoryPort.save(updatedSession);
 
         return StopRecordData.Result.create(
-                studySession.task().id(),
-                studySession.endedAt()
+                updatedSession.task().id(),
+                updatedSession.endedAt()
         );
     }
 }

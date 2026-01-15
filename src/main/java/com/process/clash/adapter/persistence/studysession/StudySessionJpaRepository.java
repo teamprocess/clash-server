@@ -1,8 +1,5 @@
 package com.process.clash.adapter.persistence.studysession;
 
-import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.record.model.entity.StudySession;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -16,7 +13,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     List<StudySessionJpaEntity> findAllByUserId(Long userId);
 
     Boolean existsByUserIdAndEndedAtIsNull(Long userId);
-    Optional<StudySession> findByUserIdAndEndedAtIsNull(Long userId);
 
-    Long user(UserJpaEntity user);
+    @EntityGraph(attributePaths = {"user", "task"})
+    Optional<StudySessionJpaEntity> findByUserIdAndEndedAtIsNull(Long userId);
 }
