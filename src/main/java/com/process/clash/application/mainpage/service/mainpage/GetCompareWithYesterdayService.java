@@ -1,7 +1,7 @@
-package com.process.clash.application.mainpage.service;
+package com.process.clash.application.mainpage.service.mainpage;
 
-import com.process.clash.application.mainpage.data.GetCompareWithYesterdayData;
-import com.process.clash.application.mainpage.port.in.GetCompareWithYesterdayUseCase;
+import com.process.clash.application.mainpage.data.mainpage.GetCompareWithYesterdayData;
+import com.process.clash.application.mainpage.port.in.mainpage.GetCompareWithYesterdayUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

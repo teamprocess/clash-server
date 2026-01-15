@@ -1,7 +1,7 @@
-package com.process.clash.application.mainpage.service;
+package com.process.clash.application.mainpage.service.mainpage;
 
-import com.process.clash.application.mainpage.data.GetMyRivalActingData;
-import com.process.clash.application.mainpage.port.in.GetMyRivalActingUseCase;
+import com.process.clash.application.mainpage.data.mainpage.GetMyRivalActingData;
+import com.process.clash.application.mainpage.port.in.mainpage.GetMyRivalActingUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
