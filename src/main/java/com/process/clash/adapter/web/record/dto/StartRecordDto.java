@@ -12,7 +12,7 @@ public class StartRecordDto {
     ) {}
 
     public record Response(
-       Instant startedAt
+       Instant startedTime
     ) {
 
         public static Response from(StartRecordData.Result result) {
