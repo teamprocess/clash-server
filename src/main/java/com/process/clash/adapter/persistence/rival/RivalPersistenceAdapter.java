@@ -23,4 +23,16 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
         RivalJpaEntity savedEntity = rivalJpaRepository.save(rivalJpaMapper.toJpaEntity(rival, my, opponent));
         return rivalJpaMapper.toDomain(savedEntity);
     }
+
+    @Override
+    public int countAllByMy_Id(Long myId) {
+
+        return rivalJpaRepository.countAllByMy_Id(myId);
+    }
+
+    @Override
+    public int countAllByOpponent_Id(Long opponentId) {
+
+        return rivalJpaRepository.countAllByOpponent_Id(opponentId);
+    }
 }

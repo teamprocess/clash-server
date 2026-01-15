@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> {
 
+    int countAllByMy_Id(Long myId);
+    int countAllByOpponent_Id(Long opponentId);
 }

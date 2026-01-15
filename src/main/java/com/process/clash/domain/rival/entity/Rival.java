@@ -11,4 +11,17 @@ public record Rival(
         RivalStatus rivalStatus,
         Long myId,
         Long opponentId
-) {}
+) {
+
+    public static Rival createDefault(RivalStatus rivalStatus, Long myId, Long opponentId) {
+
+        return new Rival(
+                null,
+                null,
+                null,
+                RivalStatus.OFFLINE,
+                myId,
+                opponentId
+        );
+    }
+}

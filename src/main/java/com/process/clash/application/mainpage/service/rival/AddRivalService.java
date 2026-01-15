@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AddRivalService implements AddRivalUseCase {
 
+
     @Override
     public void execute(AddRivalData.Command command) {
+
 
     }
 }
