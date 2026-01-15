@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.service.compare;
+package com.process.clash.application.compete.my.service;
 
 import com.process.clash.application.compete.my.data.CompareGitHubData;
 import com.process.clash.application.compete.my.port.in.CompareGitHubUseCase;

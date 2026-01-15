@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.service.rival;
+package com.process.clash.application.compete.rival.service;
 
 import com.process.clash.application.compete.rival.data.AddRivalData;
 import com.process.clash.application.compete.rival.port.in.AddRivalUseCase;

@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.service.mainpage;
+package com.process.clash.application.mainpage.service;
 
 import com.process.clash.application.mainpage.data.GetUserProfileData;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;

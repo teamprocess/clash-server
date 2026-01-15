@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.service.mainpage;
+package com.process.clash.application.ranking.service;
 
 import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.port.in.GetRankingUseCase;
