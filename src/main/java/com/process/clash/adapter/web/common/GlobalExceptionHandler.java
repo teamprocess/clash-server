@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,20 @@ public class GlobalExceptionHandler {
             ApplicationException ex
     ) {
         StatusCode statusCode = ex.getStatusCode();
+        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+
+        return ApiResponse.error(
+                ErrorResponse.of(statusCode),
+                httpStatus
+        );
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ApiResponse<Void> handleNoResourceFound(
+            NoResourceFoundException ex) {
+        log.warn("Resource not found: {}", ex.getMessage());
+
+        StatusCode statusCode = CommonStatusCode.ENDPOINT_NOT_FOUND;
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
 
         return ApiResponse.error(

@@ -8,18 +8,14 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-public class PostMajorQuestionData {
+public class UpdateMajorQuestionData {
 
-    public record Command(Actor actor, String content, PostMajorQuestionData.Command.WeightVo weight) {
+    public record Command(Actor actor, Long questionId, String content, WeightVo weight) {
 
         public record WeightVo(Integer web, Integer app, Integer server, Integer ai, Integer game) {
             public MajorQuestion.WeightVo toDomain() {
                 return new MajorQuestion.WeightVo(web, app, server, ai, game);
             }
-        }
-
-        public MajorQuestion toDomain() {
-            return new MajorQuestion(null, content, weight.toDomain(), null, null);
         }
     }
 
@@ -29,14 +25,14 @@ public class PostMajorQuestionData {
         private final Long questionId;
         private final String content;
         private final WeightVo weight;
-        private final LocalDateTime createdAt;
+        private final LocalDateTime updatedAt;
 
         public static Result from(MajorQuestion domain) {
             return new Result(
                     domain.getId(),
                     domain.getContent(),
                     WeightVo.from(domain.getWeightVo()),
-                    domain.getCreatedAt()
+                    domain.getUpdatedAt()
             );
         }
 
