@@ -7,6 +7,8 @@ import java.util.List;
 
 public class GetAllTasksDto {
 
+    private static final String DEFAULT_ICON = "timer";
+
     public record Response(
         List<TaskSummary> tasks
     ) {
@@ -28,11 +30,11 @@ public class GetAllTasksDto {
     ) {
         public static TaskSummary from(Task task) {
             return new TaskSummary(
-                task.id(),
-                task.name(),
-                "timer",
-                task.color(),
-                task.studyTime()
+                    task.id(),
+                    task.name(),
+                    DEFAULT_ICON,
+                    task.color(),
+                    task.studyTime()
             );
         }
     }
