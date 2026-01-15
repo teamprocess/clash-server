@@ -22,7 +22,7 @@ public class MajorSubmitService implements MajorTestSubmitUseCase {
         User user = userRepositoryPort.findById(command.actor().id())
                 .orElseThrow(UserNotFoundException::new);
 
-        user.submitMajor(command.major());
+        user = user.submitMajor(command.major());
 
         userRepositoryPort.save(user);
 
