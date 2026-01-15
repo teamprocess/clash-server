@@ -21,7 +21,7 @@ public class DeleteMajorQuestionService implements DeleteMajorQuestionUseCase {
     public void execute(DeleteMajorQuestionData.Command command) {
         checkAdminPolicy.check(command.actor());
 
-        if (!majorQuestionRepositoryPort.findById(command.questionId()).isPresent()) {
+        if (majorQuestionRepositoryPort.existsById(command.questionId())) {
             throw new MajorQuestionNotFoundException(command.questionId());
         }
 

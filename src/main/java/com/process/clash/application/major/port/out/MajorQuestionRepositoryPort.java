@@ -10,4 +10,5 @@ public interface MajorQuestionRepositoryPort {
     Optional<MajorQuestion> findById(Long id);
     List<MajorQuestion> findAll();
     void deleteById(Long id);
+    boolean existsById(Long id);
 }
