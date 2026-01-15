@@ -13,9 +13,9 @@ public record User(
         String name,
         String password,
         Role role,
-        Boolean ableToAddRival,
+        boolean ableToAddRival,
         String profileImage,
-        Boolean pomodoroEnabled,
+        boolean pomodoroEnabled,
         Integer pomodoroStudyMinute,
         Integer pomodoroBreakMinute,
         Major major
@@ -29,12 +29,30 @@ public record User(
                 name,
                 password,
                 Role.USER,
-                null,
+                true,
                 "",
                 false,   // 기본 공부 시간 (기본값이 없다면 null)
                 25,
                 5,
                 Major.NONE
+        );
+    }
+
+    public User withPomodoroSettings(Boolean pomodoroEnabled, Integer studyMinute, Integer breakMinute) {
+        return new User(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(),
+                this.username,
+                this.name,
+                this.password,
+                this.role,
+                this.ableToAddRival,
+                this.profileImage,
+                pomodoroEnabled,
+                studyMinute,
+                breakMinute,
+                this.major
         );
     }
 }

@@ -29,7 +29,12 @@ public class ApiResponse<T> extends ResponseEntity<CommonResponse<T>> {
         return new ApiResponse<>(CommonResponse.success(data, message, HttpStatus.CREATED));
     }
 
-    // 5. 에러 응답 (GlobalExceptionHandler 등에서 사용)
+    // 5. 생성 성공 응답 (201 Created)
+    public static <T> ApiResponse<T> created(String message) {
+        return new ApiResponse<>(CommonResponse.success(message, HttpStatus.CREATED));
+    }
+
+    // 6. 에러 응답 (GlobalExceptionHandler 등에서 사용)
     public static ApiResponse<Void> error(ErrorResponse error, HttpStatus status) {
         return new ApiResponse<>(CommonResponse.error(error, status));
     }
