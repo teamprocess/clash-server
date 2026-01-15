@@ -1,5 +1,6 @@
 package com.process.clash.infrastructure.security;
 
+import com.process.clash.application.common.exception.exception.internalerror.ServletContextUnavailableException;
 import com.process.clash.application.user.user.data.AuthPrincipal;
 import com.process.clash.application.user.user.exception.exception.unauthorized.NotAuthenticatedException;
 import com.process.clash.application.user.user.port.out.SessionManager;
@@ -54,14 +55,14 @@ public class SpringSecuritySessionAdapter implements SessionManager {
 
         ServletRequestAttributes attrs = currentRequestAttributes();
         if (attrs == null) {
-            throw new IllegalStateException("No HttpServletRequest available for session creation");
+            throw new ServletContextUnavailableException();
         }
 
         HttpServletRequest req = attrs.getRequest();
         HttpServletResponse res = attrs.getResponse();
 
         if (res == null) {
-            throw new IllegalStateException("No HttpServletResponse available for session creation");
+            throw new ServletContextUnavailableException();
         }
 
         if (rememberMe) {
