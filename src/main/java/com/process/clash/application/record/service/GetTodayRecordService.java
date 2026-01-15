@@ -33,10 +33,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
         LocalDate today = LocalDate.now();
         LocalDateTime now = LocalDateTime.now();
 
-        List<StudySession> studySessions = studySessionRepositoryPort.findAllByUserId(user.id());
-        List<StudySession> todaySessions = studySessions.stream()
-            .filter(s -> s.startedAt().toLocalDate().equals(today))
-            .toList();
+        List<StudySession> todaySessions = studySessionRepositoryPort.findAllByUserIdAndStartedAtAfter(user.id(), today);
 
         long totalStudyTime = todaySessions.stream()
             .mapToLong(s -> ChronoUnit.MILLIS.between(

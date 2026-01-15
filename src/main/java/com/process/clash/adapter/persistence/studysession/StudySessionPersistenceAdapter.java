@@ -6,6 +6,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.model.entity.StudySession;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +58,10 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     public Optional<StudySession> findActiveSessionByUserId(Long userId) {
         return studySessionJpaRepository.findByUserIdAndEndedAtIsNull(userId)
             .map(studySessionJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<StudySession> findAllByUserIdAndStartedAtAfter(Long userId, LocalDate today) {
+        return studySessionJpaRepository.findByUserIdAndStartedAtAfter(userId, today.atTime(6, 0));
     }
 }
