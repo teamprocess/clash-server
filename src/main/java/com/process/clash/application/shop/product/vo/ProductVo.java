@@ -15,7 +15,7 @@ public record ProductVo(
         Long price,
         Integer discount,
         String description,
-        Integer popularity,
+        Long popularity,
         String season,
         Boolean isSeasonal,
         LocalDateTime createdAt

@@ -1,7 +1,6 @@
 package com.process.clash.adapter.persistence.shop.product;
 
 import com.process.clash.adapter.persistence.shop.season.SeasonJpaEntity;
-import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import jakarta.persistence.*;
@@ -57,7 +56,7 @@ public class ProductJpaEntity {
     private String description;
 
     @Column(nullable = false)
-    private Integer popularity;
+    private Long popularity;
 
     @JoinColumn(name = "fk_season_id")
     @ManyToOne(fetch = FetchType.LAZY)

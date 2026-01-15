@@ -15,7 +15,7 @@ public record Product(
         Long price,
         Integer discount,
         String description,
-        Integer popularity,
+        Long popularity,
         Long seasonId,
         Boolean isSeasonal
 ) {
@@ -52,7 +52,7 @@ public record Product(
                 price,
                 discount != null ? discount : 0,
                 description,
-                0,
+                0L,
                 seasonId,
                 false
         );

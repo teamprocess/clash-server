@@ -17,7 +17,6 @@ public class CreateProductService implements CreateProductUseCase {
     private final ProductRepositoryPort productRepositoryPort;
     private final CheckAdminPolicy checkAdminPolicy;
 
-
     @Override
     public CreateProductData.Result execute(CreateProductData.Command command) {
 

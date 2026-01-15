@@ -4,7 +4,7 @@ import com.process.clash.application.shop.product.port.out.ProductRepositoryPort
 import com.process.clash.domain.shop.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,5 +25,13 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     public Optional<Product> findById(Long productId) {
         return productJpaRepository.findById(productId)
                 .map(productJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Product> findTop10ByOrderByPopularityDesc() {
+        return productJpaRepository.findTop10ByOrderByPopularityDesc()
+                .stream()
+                .map(productJpaMapper::toDomain)
+                .toList();
     }
 }
