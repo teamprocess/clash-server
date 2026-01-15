@@ -29,6 +29,6 @@ public class ProductAdminController {
         CreateProductData.Command command = CreateProductData.Command.from(request, actor);
         CreateProductData.Result result = createProductUseCase.execute(command);
         CreateProductDto.Response response = CreateProductDto.Response.from(result.productId());
-        return ApiResponse.success(response, "상품 생성에 성공했습니다.");
+        return ApiResponse.created(response, "상품 생성에 성공했습니다.");
     }
 }
