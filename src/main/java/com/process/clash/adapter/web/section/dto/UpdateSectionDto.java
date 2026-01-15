@@ -16,6 +16,7 @@ public class UpdateSectionDto {
             @Size(min = 1, message = "description이 제공되는 경우 비워둘 수 없습니다.")
             String description,  // optional
 
+            @Size(min = 1, message = "keyPoints가 제공되는 경우 비워둘 수 없습니다.")
             List<String> keyPoints  // optional
     ) {
         // TODO: Implement toCommand() method when Command is available
