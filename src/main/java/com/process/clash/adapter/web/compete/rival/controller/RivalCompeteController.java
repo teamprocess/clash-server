@@ -2,17 +2,17 @@ package com.process.clash.adapter.web.compete.rival.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.compete.rival.dto.GetMyRivalActingDto;
-import com.process.clash.adapter.web.compete.rival.dto.AddRivalDto;
+import com.process.clash.adapter.web.compete.rival.dto.ApplyRivalDto;
 import com.process.clash.adapter.web.compete.rival.dto.GetAllAbleRivalsDto;
 import com.process.clash.adapter.web.compete.rival.dto.SearchRivalByKeywordDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.data.GetMyRivalActingData;
-import com.process.clash.application.compete.rival.data.AddRivalData;
+import com.process.clash.application.compete.rival.data.ApplyRivalData;
 import com.process.clash.application.compete.rival.data.GetAllAbleRivalsData;
 import com.process.clash.application.compete.rival.data.SearchRivalByKeywordData;
 import com.process.clash.application.compete.rival.port.in.GetMyRivalActingUseCase;
-import com.process.clash.application.compete.rival.port.in.AddRivalUseCase;
+import com.process.clash.application.compete.rival.port.in.ApplyRivalUseCase;
 import com.process.clash.application.compete.rival.port.in.GetAllAbleRivalsUseCase;
 import com.process.clash.application.compete.rival.port.in.SearchRivalByKeywordUseCase;
 import jakarta.validation.Valid;
@@ -27,7 +27,7 @@ public class RivalCompeteController {
     private final GetMyRivalActingUseCase getMyRivalActingUseCase;
     private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;
     private final SearchRivalByKeywordUseCase searchRivalByKeywordUseCase;
-    private final AddRivalUseCase addRivalUseCase;
+    private final ApplyRivalUseCase applyRivalUseCase;
 
     // 내 라이벌 정보 조회
     // TODO: 추가 구현 필요합니다
@@ -69,13 +69,13 @@ public class RivalCompeteController {
 
     // 라이벌 - 라이벌 추가
     @PostMapping("/apply")
-    public ApiResponse<Void> addRival(
+    public ApiResponse<Void> applyRival(
             @AuthenticatedActor Actor actor,
-            @Valid @RequestBody AddRivalDto.Request request
+            @Valid @RequestBody ApplyRivalDto.Request request
     ) {
 
-        AddRivalData.Command command = AddRivalData.Command.from(actor, request);
-        addRivalUseCase.execute(command);
+        ApplyRivalData.Command command = ApplyRivalData.Command.from(actor, request);
+        applyRivalUseCase.execute(command);
         return ApiResponse.created("라이벌을 성공적으로 추가했습니다.");
     }
 }

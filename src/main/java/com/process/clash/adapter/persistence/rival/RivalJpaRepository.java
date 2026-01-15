@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> {
 
+    // 내 현재 라이벌 수
     @Query("""
         select count(r)
         from RivalJpaEntity as r
@@ -18,6 +19,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
             @Param("myId") Long myId
     );
 
+    // 상대방 현재 라이벌 수
     @Query("""
         select count(r)
         from RivalJpaEntity as r
