@@ -3,6 +3,7 @@ package com.process.clash.application.record.service;
 import com.process.clash.application.record.dto.StartRecordData;
 import com.process.clash.application.record.exception.exception.conflict.StudySessionAlreadyStartedException;
 import com.process.clash.application.record.exception.exception.notfound.TaskNotFoundException;
+import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.StartRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
@@ -25,6 +26,7 @@ public class StartRecordService implements StartRecordUseCase {
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final TaskRepositoryPort taskRepositoryPort;
+    private final TaskPolicy taskPolicy;
 
     @Override
     public StartRecordData.Result execute(StartRecordData.Command command) {
@@ -34,6 +36,8 @@ public class StartRecordService implements StartRecordUseCase {
 
         Task task = taskRepositoryPort.findById(command.taskId())
                 .orElseThrow(TaskNotFoundException::new);
+
+        taskPolicy.validateOwnership(command.actor(), task);
 
         Boolean existsActiveSession = studySessionRepositoryPort.existsActiveSessionByUserId(
                 command.actor().id()
