@@ -15,15 +15,20 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
+	private static final Map<String, String> REDIRECT_MAP = Map.of(
+			"signin", "/api/auth/sign-in",
+			"signup", "/api/auth/sign-up",
+			"signout", "/api/auth/sign-out"
+	);
 
 	private final SignUpUseCase signUpUseCase;
 	private final SignInUseCase signInUseCase;
@@ -62,19 +67,9 @@ public class AuthController {
 		return ApiResponse.success("로그아웃 되었습니다.");
 	}
 
-	@PostMapping("/signin")
-	public void signinRedirect() {
-		throw new EndpointMovedException("/api/auth/sign-in");
-	}
-
-	@PostMapping("/signup")
-	public void signupRedirect() {
-		throw new EndpointMovedException("/api/auth/sign-up");
-	}
-
-	@PostMapping("/signout")
-	public void signoutRedirect() {
-		throw new EndpointMovedException("/api/auth/sign-out");
+	@PostMapping({"/{action:signin|signup|signout}"})
+	public void handleRedirect(@PathVariable String action) {
+		throw new EndpointMovedException(REDIRECT_MAP.get(action));
 	}
 
 	private AccessContext extractAccessContext(HttpServletRequest request) {

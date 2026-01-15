@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EndpointMovedException.class)
-    @ResponseStatus(HttpStatus.GONE)
     public ApiResponse<Void> handleEndpointMovedException(
             EndpointMovedException ex
     ) {

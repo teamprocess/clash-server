@@ -11,8 +11,4 @@ public abstract class GoneException extends ApplicationException {
     protected GoneException(StatusCode statusCode, Throwable cause) {
         super(statusCode, cause);
     }
-
-    public HttpStatus getHttpStatus() {
-        return HttpStatus.GONE;
-    }
 }
