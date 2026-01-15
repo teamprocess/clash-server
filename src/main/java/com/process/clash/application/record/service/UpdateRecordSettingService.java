@@ -22,20 +22,10 @@ public class UpdateRecordSettingService implements UpdateRecordSettingUseCase {
         User user = userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
-        User updatedUser = new User(
-            user.id(),
-            user.createdAt(),
-            LocalDateTime.now(),
-            user.username(),
-            user.name(),
-            user.password(),
-            user.role(),
-            user.ableToAddRival(),
-            user.profileImage(),
-            command.pomodoroEnabled(),
-            command.studyMinute(),
-            command.breakMinute(),
-            user.major()
+        User updatedUser = user.withPomodoroSettings(
+                command.pomodoroEnabled(),
+                command.studyMinute(),
+                command.breakMinute()
         );
 
         User savedUser = userRepositoryPort.save(updatedUser);

@@ -37,4 +37,22 @@ public record User(
                 Major.NONE
         );
     }
+
+    public User withPomodoroSettings(Boolean pomodoroEnabled, Integer studyMinute, Integer breakMinute) {
+        return new User(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(),
+                this.username,
+                this.name,
+                this.password,
+                this.role,
+                this.ableToAddRival,
+                this.profileImage,
+                pomodoroEnabled,
+                studyMinute,
+                breakMinute,
+                this.major
+        );
+    }
 }
