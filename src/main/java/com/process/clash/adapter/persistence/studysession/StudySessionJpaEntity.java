@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.session;
+package com.process.clash.adapter.persistence.studysession;
 
 import com.process.clash.adapter.persistence.task.TaskJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
@@ -20,11 +20,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "sessions")
+@Table(name = "study_sessions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class SessionJpaEntity {
+public class StudySessionJpaEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,8 +51,8 @@ public class SessionJpaEntity {
     @Column(nullable = true)
     private LocalDateTime endedAt;
 
-    public static SessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, LocalDateTime startedAt) {
-        return new SessionJpaEntity(
+    public static StudySessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, LocalDateTime startedAt) {
+        return new StudySessionJpaEntity(
             null,
             null,
             null,
