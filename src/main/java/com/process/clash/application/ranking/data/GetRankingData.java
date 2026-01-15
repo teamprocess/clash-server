@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.data.mainpage;
+package com.process.clash.application.ranking.data;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;

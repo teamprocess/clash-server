@@ -1,6 +1,6 @@
 package com.process.clash.application.mainpage.service.mainpage;
 
-import com.process.clash.application.mainpage.data.mainpage.GetRankingData;
+import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.mainpage.port.in.mainpage.GetRankingUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -4,7 +4,7 @@ import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.ranking.dto.GetRankingDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.mainpage.data.mainpage.GetRankingData;
+import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.mainpage.port.in.mainpage.GetRankingUseCase;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;

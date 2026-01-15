@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.data.mainpage;
+package com.process.clash.application.mainpage.data;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.user.user.entity.User;

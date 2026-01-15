@@ -1,6 +1,6 @@
 package com.process.clash.application.mainpage.port.in.mainpage;
 
-import com.process.clash.application.mainpage.data.mainpage.GetRankingData;
+import com.process.clash.application.ranking.data.GetRankingData;
 
 public interface GetRankingUseCase {
 

@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.compete.rival.dto;
 
-import com.process.clash.application.mainpage.data.rival.GetAllAbleRivalsData;
+import com.process.clash.application.compete.rival.data.GetAllAbleRivalsData;
 
 import java.util.List;
 

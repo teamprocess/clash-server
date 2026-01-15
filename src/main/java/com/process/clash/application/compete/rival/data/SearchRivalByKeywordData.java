@@ -1,4 +1,4 @@
-package com.process.clash.application.mainpage.data.rival;
+package com.process.clash.application.compete.rival.data;
 
 import com.process.clash.application.common.actor.Actor;
 

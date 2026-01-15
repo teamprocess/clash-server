@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.compete.my.dto;
 
-import com.process.clash.application.mainpage.data.mainpage.AnalyzeMyActivityData;
+import com.process.clash.application.compete.my.data.AnalyzeMyActivityData;
 import com.process.clash.domain.common.enums.TargetCategory;
 import com.process.clash.domain.common.enums.WeekCategory;
 

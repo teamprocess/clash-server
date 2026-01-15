@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.ranking.dto;
 
-import com.process.clash.application.mainpage.data.mainpage.GetRankingData;
+import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 

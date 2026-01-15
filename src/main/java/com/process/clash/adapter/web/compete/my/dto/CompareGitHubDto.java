@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.compete.my.dto;
 
-import com.process.clash.application.mainpage.data.compare.CompareGitHubData;
+import com.process.clash.application.compete.my.data.CompareGitHubData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

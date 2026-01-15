@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.compete.rival.dto;
 
-import com.process.clash.application.mainpage.data.rival.SearchRivalByKeywordData;
+import com.process.clash.application.compete.rival.data.SearchRivalByKeywordData;
 
 import java.util.List;
 

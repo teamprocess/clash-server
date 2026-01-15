@@ -4,7 +4,7 @@ import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.mainpage.dto.GetUserProfileDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.mainpage.data.mainpage.*;
+import com.process.clash.application.mainpage.data.GetUserProfileData;
 import com.process.clash.application.mainpage.port.in.mainpage.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

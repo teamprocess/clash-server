@@ -1,6 +1,6 @@
 package com.process.clash.application.mainpage.service.mainpage;
 
-import com.process.clash.application.mainpage.data.mainpage.GetUserProfileData;
+import com.process.clash.application.mainpage.data.GetUserProfileData;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.mainpage.port.in.mainpage.GetUserProfileUseCase;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
