@@ -3,8 +3,10 @@ package com.process.clash.application.roadmap.section.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.roadmap.entity.Section;
+import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class CreateSectionData {
 
@@ -17,7 +19,17 @@ public class CreateSectionData {
             List<String> keyPoints
     ) {
         public Section toDomain() {
-            return new Section(null, major, title, description, category, List.of(), List.of(), null, null);
+            // keyPoints를 SectionKeyPoint 엔티티 리스트로 변환
+            List<SectionKeyPoint> sectionKeyPoints = IntStream.range(0, keyPoints.size())
+                    .mapToObj(index -> new SectionKeyPoint(
+                            null,           // id는 JPA가 자동 생성
+                            null,           // sectionId는 Section 저장 시 자동 설정 (cascade)
+                            keyPoints.get(index),  // content
+                            index           // orderIndex
+                    ))
+                    .toList();
+
+            return new Section(null, major, title, description, category, List.of(), sectionKeyPoints, null, null);
         }
     }
 
