@@ -34,4 +34,9 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     public List<Section> findAllByMajor(Major major) {
         return sectionJpaRepository.findAllByMajor(major).stream().map(sectionJpaMapper::toDomain).toList();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        sectionJpaRepository.deleteById(id);
+    }
 }
