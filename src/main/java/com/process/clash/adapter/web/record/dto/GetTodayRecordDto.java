@@ -35,9 +35,9 @@ public class GetTodayRecordDto {
         Task task
     ) {
         public static Session from(GetTodayRecordData.Session session) {
-            Instant endedAt = session.endedAt() == null
-                ? null
-                : session.endedAt().atZone(ZoneOffset.UTC).toInstant();
+            Instant endedAt = java.util.Optional.ofNullable(session.endedAt())
+                .map(ldt -> ldt.atZone(ZoneOffset.UTC).toInstant())
+                .orElse(null);
             return new Session(
                 session.startedAt().atZone(ZoneOffset.UTC).toInstant(),
                 endedAt,
