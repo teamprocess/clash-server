@@ -30,7 +30,7 @@ public class MyCompeteController {
 
     // 어제와의 비교
     // TODO: 추가 구현 필요합니다
-    @GetMapping
+    @GetMapping("/compare/yesterday")
     public ApiResponse<GetCompareWithYesterdayDto.Response> getCompareWithYesterday(
             @AuthenticatedActor Actor actor
     ) {
@@ -41,9 +41,21 @@ public class MyCompeteController {
         return ApiResponse.success(response, "어제와의 비교 정보를 성공적으로 반환했습니다.");
     }
 
+    // 어제와 비교 - GitHub
+    @GetMapping("/compare/yesterday/github")
+    public ApiResponse<CompareGitHubDto.Response> compareGitHub(
+            @AuthenticatedActor Actor actor
+    ) {
+
+        CompareGitHubData.Command command = CompareGitHubData.Command.from(actor);
+        CompareGitHubData.Result result = compareGitHubUseCase.execute(command);
+        CompareGitHubDto.Response response = CompareGitHubDto.Response.from(result);
+        return ApiResponse.success(response, "어제와 비교한 유저의 깃허브 정보 조회를 성공적으로 완료 했습니다.");
+    }
+
     // 내 활동 분석
     // TODO: 추가 구현 필요합니다
-    @GetMapping("/analyze-my-activity/category/{category}")
+    @GetMapping("/analyze/category/{category]")
     public ApiResponse<AnalyzeMyActivityDto.Response> analyzeMyActivity(
             @AuthenticatedActor Actor actor,
             @PathVariable TargetCategory category
@@ -53,17 +65,5 @@ public class MyCompeteController {
         AnalyzeMyActivityData.Result result = analyzeMyActivityUseCase.execute(command);
         AnalyzeMyActivityDto.Response response = AnalyzeMyActivityDto.Response.from(result);
         return ApiResponse.success(response, "내 활동 분석 결과를 성공적으로 반환했습니다.");
-    }
-
-    // 어제와 비교 - GitHub
-    @GetMapping("/compare/github")
-    public ApiResponse<CompareGitHubDto.Response> compareGitHub(
-            @AuthenticatedActor Actor actor
-    ) {
-
-        CompareGitHubData.Command command = CompareGitHubData.Command.from(actor);
-        CompareGitHubData.Result result = compareGitHubUseCase.execute(command);
-        CompareGitHubDto.Response response = CompareGitHubDto.Response.from(result);
-        return ApiResponse.success(response, "어제와 비교한 유저의 깃허브 정보 조회를 성공적으로 완료 했습니다.");
     }
 }

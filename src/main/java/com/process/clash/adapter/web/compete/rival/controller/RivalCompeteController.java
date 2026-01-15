@@ -31,7 +31,7 @@ public class RivalCompeteController {
 
     // 내 라이벌 정보 조회
     // TODO: 추가 구현 필요합니다
-    @GetMapping("/my-rivals")
+    @GetMapping
     public ApiResponse<GetMyRivalActingDto.Response> getMyRivalActing(
             @AuthenticatedActor Actor actor
     ) {
@@ -43,7 +43,7 @@ public class RivalCompeteController {
     }
 
     // 라이벌 - 전체 유저 조회(내 라이벌 제외)
-    @GetMapping("/rival/fresh-user")
+    @GetMapping("/fresh-user")
     public ApiResponse<GetAllAbleRivalsDto.Response> getAllAbleRivals(
             @AuthenticatedActor Actor actor
     ) {
@@ -55,7 +55,7 @@ public class RivalCompeteController {
     }
 
     // 라이벌 - 키워드 검색
-    @GetMapping("/rival/keyword/{keyword}")
+    @GetMapping("/keyword/{keyword}")
     public ApiResponse<SearchRivalByKeywordDto.Response> searchRivalByKeyword(
             @AuthenticatedActor Actor actor,
             @PathVariable String keyword
@@ -68,7 +68,7 @@ public class RivalCompeteController {
     }
 
     // 라이벌 - 라이벌 추가
-    @GetMapping("/rival")
+    @PostMapping
     public ApiResponse<Void> addRival(
             @AuthenticatedActor Actor actor,
             @Valid @RequestBody AddRivalDto.Request request

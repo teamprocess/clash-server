@@ -23,7 +23,7 @@ public class RankingController {
 
     // 대소고 랭킹
     // TODO: 추가 구현 필요합니다
-    @GetMapping("/ranking/category/{category}/period/{period}")
+    @GetMapping("/category/{category}/period/{period}")
     public ApiResponse<GetRankingDto.Response> getRanking(
             @AuthenticatedActor Actor actor,
             @PathVariable TargetCategory category,
