@@ -4,6 +4,7 @@ import com.process.clash.adapter.persistence.task.TaskJpaEntity;
 import com.process.clash.adapter.persistence.task.TaskJpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.record.exception.exception.notfound.StudySessionNotFound;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.model.entity.StudySession;
 import java.time.LocalDate;
@@ -32,7 +33,7 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
         }
 
         StudySessionJpaEntity existing = studySessionJpaRepository.findById(studySession.id())
-            .orElseThrow(() -> new IllegalStateException("StudySession not found: " + studySession.id()));
+            .orElseThrow(StudySessionNotFound::new);
         existing.changeEndedAt(studySession.endedAt());
         studySessionJpaRepository.save(existing);
     }
