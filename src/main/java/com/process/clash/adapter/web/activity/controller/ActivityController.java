@@ -8,4 +8,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/activities")
 @RequiredArgsConstructor
 public class ActivityController {
+
 }
