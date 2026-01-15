@@ -14,6 +14,6 @@ public class DeleteSectionService implements DeleteSectionUseCase {
 
     @Override
     public void execute(DeleteSectionData.Command command) {
-
+        sectionRepository.deleteById(command.getSectionId());
     }
 }
