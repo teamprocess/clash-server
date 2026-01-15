@@ -24,11 +24,11 @@ public class PostMajorQuestionDto {
                     actor,
                     content,
                     new PostMajorQuestionData.Command.WeightVo(
-                            weight.getWeb(),
-                            weight.getApp(),
-                            weight.getServer(),
-                            weight.getAi(),
-                            weight.getGame()
+                            weight.web(),
+                            weight.app(),
+                            weight.server(),
+                            weight.ai(),
+                            weight.game()
                     )
             );
         }
@@ -42,37 +42,34 @@ public class PostMajorQuestionDto {
     ) {
         public static Response from(PostMajorQuestionData.Result result) {
             return new Response(
-                    result.getQuestionId(),
-                    result.getContent(),
+                    result.questionId(),
+                    result.content(),
                     new MajorWeightVo(
-                            result.getWeight().getWeb(),
-                            result.getWeight().getApp(),
-                            result.getWeight().getServer(),
-                            result.getWeight().getAi(),
-                            result.getWeight().getGame()
+                            result.weight().web(),
+                            result.weight().app(),
+                            result.weight().server(),
+                            result.weight().ai(),
+                            result.weight().game()
                     ),
-                    result.getCreatedAt()
+                    result.createdAt()
             );
         }
     }
 
-    @Getter
-    @AllArgsConstructor
-    public static class MajorWeightVo {
+    public record MajorWeightVo(
+            @NotNull(message = "web 가중치는 비워둘 수 없습니다.")
+            Integer web,
 
-        @NotNull(message = "web 가중치는 비워둘 수 없습니다.")
-        private final Integer web;
+            @NotNull(message = "app 가중치는 비워둘 수 없습니다.")
+            Integer app,
 
-        @NotNull(message = "app 가중치는 비워둘 수 없습니다.")
-        private final Integer app;
+            @NotNull(message = "server 가중치는 비워둘 수 없습니다.")
+            Integer server,
 
-        @NotNull(message = "server 가중치는 비워둘 수 없습니다.")
-        private final Integer server;
+            @NotNull(message = "ai 가중치는 비워둘 수 없습니다.")
+            Integer ai,
 
-        @NotNull(message = "ai 가중치는 비워둘 수 없습니다.")
-        private final Integer ai;
-
-        @NotNull(message = "game 가중치는 비워둘 수 없습니다.")
-        private final Integer game;
-    }
+            @NotNull(message = "game 가중치는 비워둘 수 없습니다.")
+            Integer game
+    ) {}
 }
