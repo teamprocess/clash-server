@@ -34,7 +34,8 @@ public class MajorQuestionJpaMapper {
                         majorQuestionJpaEntity.getWeightVo().getAi(),
                         majorQuestionJpaEntity.getWeightVo().getGame()
                 ),
-                majorQuestionJpaEntity.getCreatedAt()
+                majorQuestionJpaEntity.getCreatedAt(),
+                majorQuestionJpaEntity.getUpdatedAt()
         );
     }
 }

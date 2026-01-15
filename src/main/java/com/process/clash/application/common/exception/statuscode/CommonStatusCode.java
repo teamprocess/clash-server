@@ -19,6 +19,12 @@ public enum CommonStatusCode implements StatusCode {
             ErrorCategory.NOT_FOUND
     ),
 
+    METHOD_NOT_ALLOWED(
+            "METHOD_NOT_ALLOWED",
+            "지원하지 않는 HTTP 메서드입니다.",
+            ErrorCategory.METHOD_NOT_ALLOWED
+    ),
+
     UNAUTHORIZED(
             "UNAUTHORIZED",
             "인증이 필요한 서비스입니다.", // common으로 쓰기 모호한 느낌의 메세지

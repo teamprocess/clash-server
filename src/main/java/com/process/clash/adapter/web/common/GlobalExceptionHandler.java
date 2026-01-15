@@ -13,9 +13,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,35 @@ public class GlobalExceptionHandler {
         return ApiResponse.error(
                 ErrorResponse.of(statusCode),
                 httpStatus
+        );
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResponse<Void> handleNoResourceFoundException(
+            NoResourceFoundException ex) {
+        log.warn("Endpoint not found", ex);
+        StatusCode statusCode = CommonStatusCode.ENDPOINT_NOT_FOUND;
+        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+
+        return ApiResponse.error(
+                ErrorResponse.of(statusCode), httpStatus
+        );
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ApiResponse<Void> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException ex) {
+        log.warn("Http request method not supported: {}", ex.getMethod());
+
+        Map<String, String> errorMethod = new HashMap<>();
+        errorMethod.put("method", ex.getMethod());
+        StatusCode statusCode = CommonStatusCode.METHOD_NOT_ALLOWED;
+        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+
+        return ApiResponse.error(
+                ErrorResponse.of(statusCode, errorMethod), httpStatus
         );
     }
 

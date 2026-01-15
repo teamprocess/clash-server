@@ -17,6 +17,8 @@ public class MajorQuestion {
 
     private LocalDateTime createdAt;
 
+    private LocalDateTime updatedAt;
+
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
