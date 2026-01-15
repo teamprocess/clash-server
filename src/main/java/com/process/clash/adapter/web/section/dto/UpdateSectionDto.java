@@ -1,5 +1,7 @@
 package com.process.clash.adapter.web.section.dto;
 
+import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -17,10 +19,11 @@ public class UpdateSectionDto {
             String description,  // 선택사항
 
             @Size(min = 1, message = "keyPoints가 제공되는 경우 비워둘 수 없습니다.")
-            List<String> keyPoints  // optional
+            List<String> keyPoints  // 선택사항
     ) {
-        // TODO: Command 사용 가능 시 toCommand() 메서드 구현 필요
-        // public UpdateSectionData.Command toCommand(Actor actor, Long sectionId) { ... }
+        public UpdateSectionData.Command toCommand(Actor actor, Long sectionId) {
+            return new UpdateSectionData.Command(actor, sectionId, title, category, description, keyPoints);
+        }
     }
 
     public record Response(
@@ -31,7 +34,15 @@ public class UpdateSectionDto {
             List<String> keyPoints,
             String updatedAt
     ) {
-        // TODO: Result 사용 가능 시 from() 메서드 구현 필요
-        // public static Response from(UpdateSectionData.Result result) { ... }
+        public static Response from(UpdateSectionData.Result result) {
+            return new Response(
+                    result.sectionId(),
+                    result.title(),
+                    result.category(),
+                    result.description(),
+                    result.keyPoints(),
+                    result.updatedAt()
+            );
+        }
     }
 }

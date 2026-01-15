@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
-import com.process.clash.application.roadmap.port.out.SectionRepositoryPort;
+import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.roadmap.entity.Section;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,10 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     private final SectionJpaMapper sectionJpaMapper;
 
     @Override
-    public void save(Section section) {
-        sectionJpaRepository.save(sectionJpaMapper.toJpaEntity(section));
+    public Section save(Section section) {
+        SectionJpaEntity entity = sectionJpaMapper.toJpaEntity(section);
+        SectionJpaEntity saved = sectionJpaRepository.save(entity);
+        return sectionJpaMapper.toDomain(saved);
     }
 
     @Override

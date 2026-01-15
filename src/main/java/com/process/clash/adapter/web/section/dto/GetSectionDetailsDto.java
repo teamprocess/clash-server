@@ -1,5 +1,7 @@
 package com.process.clash.adapter.web.section.dto;
 
+import com.process.clash.application.roadmap.section.data.GetSectionDetailsData;
+
 import java.util.List;
 
 public class GetSectionDetailsDto {
@@ -11,8 +13,18 @@ public class GetSectionDetailsDto {
             Integer currentChapters,
             List<ChapterVo> chapters
     ) {
-        // TODO: Result 사용 가능 시 from() 메서드 구현 필요
-        // public static Response from(GetSectionDetailsData.Result result) { ... }
+        public static Response from(GetSectionDetailsData.Result result) {
+            List<ChapterVo> chapters = result.chapters().stream()
+                    .map(ChapterVo::from)
+                    .toList();
+            return new Response(
+                    result.sectionId(),
+                    result.sectionTitle(),
+                    result.totalChapters(),
+                    result.currentChapters(),
+                    chapters
+            );
+        }
     }
 
     public record ChapterVo(
@@ -21,8 +33,12 @@ public class GetSectionDetailsDto {
             Integer difficulty,
             List<MissionVo> missions
     ) {
-        // TODO: Implement from() method when Result.ChapterVo is available
-        // public static ChapterVo from(GetSectionDetailsData.Result.ChapterVo vo) { ... }
+        public static ChapterVo from(GetSectionDetailsData.Result.ChapterVo vo) {
+            List<MissionVo> missions = vo.missions().stream()
+                    .map(MissionVo::from)
+                    .toList();
+            return new ChapterVo(vo.id(), vo.title(), vo.difficulty(), missions);
+        }
     }
 
     public record MissionVo(
@@ -30,8 +46,12 @@ public class GetSectionDetailsDto {
             String title,
             List<QuestionVo> questions
     ) {
-        // TODO: Implement from() method when Result.MissionVo is available
-        // public static MissionVo from(GetSectionDetailsData.Result.MissionVo vo) { ... }
+        public static MissionVo from(GetSectionDetailsData.Result.MissionVo vo) {
+            List<QuestionVo> questions = vo.questions().stream()
+                    .map(QuestionVo::from)
+                    .toList();
+            return new MissionVo(vo.id(), vo.title(), questions);
+        }
     }
 
     public record QuestionVo(
@@ -39,15 +59,20 @@ public class GetSectionDetailsDto {
             String title,
             List<ChoiceVo> choices
     ) {
-        // TODO: Implement from() method when Result.QuestionVo is available
-        // public static QuestionVo from(GetSectionDetailsData.Result.QuestionVo vo) { ... }
+        public static QuestionVo from(GetSectionDetailsData.Result.QuestionVo vo) {
+            List<ChoiceVo> choices = vo.choices().stream()
+                    .map(ChoiceVo::from)
+                    .toList();
+            return new QuestionVo(vo.id(), vo.title(), choices);
+        }
     }
 
     public record ChoiceVo(
             Long id,
             String content
     ) {
-        // TODO: Implement from() method when Result.ChoiceVo is available
-        // public static ChoiceVo from(GetSectionDetailsData.Result.ChoiceVo vo) { ... }
+        public static ChoiceVo from(GetSectionDetailsData.Result.ChoiceVo vo) {
+            return new ChoiceVo(vo.id(), vo.content());
+        }
     }
 }

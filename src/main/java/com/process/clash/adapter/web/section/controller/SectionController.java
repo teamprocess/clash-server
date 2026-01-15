@@ -6,6 +6,12 @@ import com.process.clash.adapter.web.section.dto.GetSectionPreviewDto;
 import com.process.clash.adapter.web.section.dto.GetSectionsDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.roadmap.section.data.GetSectionDetailsData;
+import com.process.clash.application.roadmap.section.data.GetSectionPreviewData;
+import com.process.clash.application.roadmap.section.data.GetSectionsData;
+import com.process.clash.application.roadmap.section.port.in.GetSectionDetailsUseCase;
+import com.process.clash.application.roadmap.section.port.in.GetSectionPreviewUseCase;
+import com.process.clash.application.roadmap.section.port.in.GetSectionsUseCase;
 import com.process.clash.domain.common.enums.Major;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,27 +23,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SectionController {
 
-    // TODO: 구현 시 유스케이스 주입 필요
-    // private final GetSectionsUseCase getSectionsUseCase;
-    // private final GetSectionPreviewUseCase getSectionPreviewUseCase;
-    // private final GetSectionDetailsUseCase getSectionDetailsUseCase;
+    private final GetSectionsUseCase getSectionsUseCase;
+    private final GetSectionPreviewUseCase getSectionPreviewUseCase;
+    private final GetSectionDetailsUseCase getSectionDetailsUseCase;
 
     @GetMapping
     public ApiResponse<GetSectionsDto.Response> getSections(
             @AuthenticatedActor Actor actor,
             @RequestParam Major major
     ) {
-        // TODO: 유스케이스 구현 필요
-        // GetSectionsData.Command command = new GetSectionsData.Command(actor, major);
-        // GetSectionsData.Result result = getSectionsUseCase.execute(command);
-        // GetSectionsDto.Response response = GetSectionsDto.Response.from(result);
-        // return ApiResponse.success(response, "로드맵 목록 조회를 성공했습니다.");
-
-        // 임시 응답
-        GetSectionsDto.Response response = new GetSectionsDto.Response(
-                List.of(),
-                List.of()
-        );
+        GetSectionsData.Command command = new GetSectionsData.Command(actor, major);
+        GetSectionsData.Result result = getSectionsUseCase.execute(command);
+        GetSectionsDto.Response response = GetSectionsDto.Response.from(result);
         return ApiResponse.success(response, "로드맵 목록 조회를 성공했습니다.");
     }
 
@@ -46,21 +43,9 @@ public class SectionController {
             @AuthenticatedActor Actor actor,
             @PathVariable Long sectionId
     ) {
-        // TODO: 유스케이스 구현 필요
-        // GetSectionPreviewData.Command command = new GetSectionPreviewData.Command(actor, sectionId);
-        // GetSectionPreviewData.Result result = getSectionPreviewUseCase.execute(command);
-        // GetSectionPreviewDto.Response response = GetSectionPreviewDto.Response.from(result);
-        // return ApiResponse.success(response, "로드맵 미리보기 조회를 성공했습니다.");
-
-        // 임시 응답
-        GetSectionPreviewDto.Response response = new GetSectionPreviewDto.Response(
-                null,
-                null,
-                null,
-                null,
-                List.of(),
-                List.of()
-        );
+        GetSectionPreviewData.Command command = new GetSectionPreviewData.Command(actor, sectionId);
+        GetSectionPreviewData.Result result = getSectionPreviewUseCase.execute(command);
+        GetSectionPreviewDto.Response response = GetSectionPreviewDto.Response.from(result);
         return ApiResponse.success(response, "로드맵 미리보기 조회를 성공했습니다.");
     }
 
@@ -69,20 +54,9 @@ public class SectionController {
             @AuthenticatedActor Actor actor,
             @PathVariable Long sectionId
     ) {
-        // TODO: 유스케이스 구현 필요
-        // GetSectionDetailsData.Command command = new GetSectionDetailsData.Command(actor, sectionId);
-        // GetSectionDetailsData.Result result = getSectionDetailsUseCase.execute(command);
-        // GetSectionDetailsDto.Response response = GetSectionDetailsDto.Response.from(result);
-        // return ApiResponse.success(response, "로드맵 상세 조회를 성공했습니다.");
-
-        // 임시 응답
-        GetSectionDetailsDto.Response response = new GetSectionDetailsDto.Response(
-                null,
-                null,
-                null,
-                null,
-                List.of()
-        );
+        GetSectionDetailsData.Command command = new GetSectionDetailsData.Command(actor, sectionId);
+        GetSectionDetailsData.Result result = getSectionDetailsUseCase.execute(command);
+        GetSectionDetailsDto.Response response = GetSectionDetailsDto.Response.from(result);
         return ApiResponse.success(response, "로드맵 상세 조회를 성공했습니다.");
     }
 }

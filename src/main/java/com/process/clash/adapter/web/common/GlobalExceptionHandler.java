@@ -48,11 +48,13 @@ public class GlobalExceptionHandler {
     public ApiResponse<Void> handleApplicationException(
             ApplicationException ex
     ) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
         StatusCode statusCode = ex.getStatusCode();
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
 
         return ApiResponse.error(
-                ErrorResponse.of(statusCode),
+                ErrorResponse.of(statusCode, errors),
                 httpStatus
         );
     }
@@ -116,11 +118,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Void> handleInvalidArgumentExceptions(Exception ex) {
         log.warn("Invalid argument exception: {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
         StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
 
         return ApiResponse.error(
-                ErrorResponse.of(statusCode),
+                ErrorResponse.of(statusCode, errors),
                 httpStatus
         );
     }
@@ -133,11 +137,13 @@ public class GlobalExceptionHandler {
     ) {
         log.error("Unhandled exception occurred", ex);
 
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
         StatusCode statusCode = CommonStatusCode.INTERNAL_SERVER_ERROR;
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
 
         return ApiResponse.error(
-                ErrorResponse.of(statusCode),
+                ErrorResponse.of(statusCode, errors),
                 httpStatus
         );
     }

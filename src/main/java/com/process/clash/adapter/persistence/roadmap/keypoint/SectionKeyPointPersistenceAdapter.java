@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.keypoint;
 
-import com.process.clash.application.roadmap.port.out.SectionKeyPointRepositoryPort;
+import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;

@@ -29,8 +29,8 @@ public class SectionJpaMapper {
                 section.getCategory(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                null, // createdAt은 @CreationTimestamp에 의해 자동으로 설정됨
-                null  // updatedAt은 @UpdateTimestamp에 의해 자동으로 설정됨
+                section.getCreatedAt(), // createdAt
+                section.getUpdatedAt()  // updatedAt
         );
 
         // null 안전성: section.getChapters()가 null이면 빈 리스트로 처리
@@ -64,7 +64,9 @@ public class SectionJpaMapper {
                 (entity.getKeyPoints() != null)
                         ? entity.getKeyPoints().stream()
                         .map(sectionKeyPointJpaMapper::toDomain).toList() :
-                        new ArrayList<>()
+                        new ArrayList<>(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }
