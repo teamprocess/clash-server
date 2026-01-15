@@ -7,6 +7,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CommonStatusCode implements StatusCode {
 
+    ENTITY_REFRESH_FAILED(
+            "ENTITY_REFRESH_FAILED",
+            "엔티티 새로고침에 실패했습니다.",
+            ErrorCategory.INTERNAL_ERROR
+    ),
+
+    SERVLET_CONTEXT_UNAVAILABLE(
+            "SERVLET_CONTEXT_UNAVAILABLE",
+            "서블릿 컨텍스트를 사용할 수 없습니다.",
+            ErrorCategory.INTERNAL_ERROR
+    ),
+
     INVALID_ARGUMENT(
             "INVALID_ARGUMENT",
             "유효하지 않은 인자입니다.",
