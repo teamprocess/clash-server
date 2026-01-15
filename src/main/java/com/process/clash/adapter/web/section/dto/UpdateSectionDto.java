@@ -1,15 +1,21 @@
 package com.process.clash.adapter.web.section.dto;
 
-import com.process.clash.application.common.actor.Actor;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 public class UpdateSectionDto {
 
     public record Request(
+            @Size(min = 1, message = "title이 제공되는 경우 비워둘 수 없습니다.")
             String title,        // optional
+
+            @Size(min = 1, message = "category가 제공되는 경우 비워둘 수 없습니다.")
             String category,     // optional
+
+            @Size(min = 1, message = "description이 제공되는 경우 비워둘 수 없습니다.")
             String description,  // optional
+
             List<String> keyPoints  // optional
     ) {
         // TODO: Implement toCommand() method when Command is available

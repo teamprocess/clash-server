@@ -1,7 +1,5 @@
 package com.process.clash.adapter.web.section.dto;
 
-import com.process.clash.domain.common.enums.Major;
-
 import java.util.List;
 
 public class GetSectionsDto {

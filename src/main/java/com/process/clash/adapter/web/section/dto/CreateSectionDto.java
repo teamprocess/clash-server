@@ -1,6 +1,5 @@
 package com.process.clash.adapter.web.section.dto;
 
-import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.Major;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
