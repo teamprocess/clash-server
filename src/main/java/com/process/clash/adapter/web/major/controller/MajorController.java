@@ -6,12 +6,10 @@ import com.process.clash.adapter.web.major.dto.MajorTestSubmitDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.major.data.GetMajorQuestionData;
-import com.process.clash.application.major.data.MajorTestSubmitData;
+import com.process.clash.application.major.data.MajorSubmitData;
 import com.process.clash.application.major.port.in.GetMajorQuestionUseCase;
 import com.process.clash.application.major.port.in.MajorTestSubmitUseCase;
-import com.process.clash.infrastructure.principle.AuthUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,7 +30,7 @@ public class MajorController {
 
     @PostMapping("/test/submit")
     public ApiResponse<Void> testResultSubmit(@AuthenticatedActor Actor actor, @RequestBody MajorTestSubmitDto.Request request) {
-        MajorTestSubmitData.Command command = new MajorTestSubmitData.Command(actor, request.major());
+        MajorSubmitData.Command command = new MajorSubmitData.Command(actor, request.major());
         majorTestSubmitUseCase.execute(command);
         return ApiResponse.success("전공 성향 검사 결과 저장을 성공했습니다.");
     }
