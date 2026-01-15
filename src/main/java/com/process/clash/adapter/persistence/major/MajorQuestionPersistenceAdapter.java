@@ -33,4 +33,14 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
                 .map(majorQuestionJpaMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        majorQuestionJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return majorQuestionJpaRepository.existsById(id);
+    }
 }
