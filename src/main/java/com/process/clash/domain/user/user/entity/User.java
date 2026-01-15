@@ -13,9 +13,9 @@ public record User(
         String name,
         String password,
         Role role,
-        Boolean ableToAddRival,
+        boolean ableToAddRival,
         String profileImage,
-        Boolean pomodoroEnabled,
+        boolean pomodoroEnabled,
         Integer pomodoroStudyMinute,
         Integer pomodoroBreakMinute,
         Major major

@@ -8,7 +8,7 @@ public record UserNotice(
         Long id,
         LocalDateTime createdAt,
         NoticeCategory noticeCategory,
-        Boolean isRead,
+        boolean isRead,
         Long senderId,
         Long receiverId
 ) {

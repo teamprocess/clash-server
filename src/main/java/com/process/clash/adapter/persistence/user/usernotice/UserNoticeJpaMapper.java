@@ -23,9 +23,9 @@ public class UserNoticeJpaMapper {
 
         return new UserNotice(
                 userNoticeJpaEntity.getId(),
-                userNoticeJpaEntity.getCreationAt(),
+                userNoticeJpaEntity.getCreatedAt(),
                 userNoticeJpaEntity.getNoticeCategory(),
-                userNoticeJpaEntity.getIsRead(),
+                userNoticeJpaEntity.isRead(),
                 userNoticeJpaEntity.getSender().getId(),
                 userNoticeJpaEntity.getReceiver().getId()
         );

@@ -19,19 +19,19 @@ import java.time.LocalDateTime;
 public class UserNoticeJpaEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @CreationTimestamp
     @Column(nullable = false)
-    private LocalDateTime creationAt;
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private NoticeCategory noticeCategory;
 
     @Column(nullable = false)
-    private Boolean isRead;
+    private boolean isRead;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_sender_id", nullable = false)
