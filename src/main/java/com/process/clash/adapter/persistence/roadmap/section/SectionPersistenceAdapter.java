@@ -22,10 +22,10 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
         SectionJpaEntity saved = sectionJpaRepository.save(entity);
         sectionJpaRepository.flush();
 
-        sectionJpaRepository.findById(saved.getId()).
+        SectionJpaEntity refreshed = sectionJpaRepository.findById(saved.getId()).
                 orElseThrow(EntityRefreshFailedException::new);
 
-        return sectionJpaMapper.toDomain(saved);
+        return sectionJpaMapper.toDomain(refreshed);
     }
 
     @Override
