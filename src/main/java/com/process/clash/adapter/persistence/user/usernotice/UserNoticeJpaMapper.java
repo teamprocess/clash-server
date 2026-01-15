@@ -12,6 +12,7 @@ public class UserNoticeJpaMapper {
         return new UserNoticeJpaEntity(
                 userNotice.id(),
                 userNotice.createdAt(),
+                userNotice.updatedAt(),
                 userNotice.noticeCategory(),
                 userNotice.isRead(),
                 sender,
@@ -24,6 +25,7 @@ public class UserNoticeJpaMapper {
         return new UserNotice(
                 userNoticeJpaEntity.getId(),
                 userNoticeJpaEntity.getCreatedAt(),
+                userNoticeJpaEntity.getUpdatedAt(),
                 userNoticeJpaEntity.getNoticeCategory(),
                 userNoticeJpaEntity.isRead(),
                 userNoticeJpaEntity.getSender().getId(),

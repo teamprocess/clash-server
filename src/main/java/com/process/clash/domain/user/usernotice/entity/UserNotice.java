@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record UserNotice(
         Long id,
         LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         NoticeCategory noticeCategory,
         boolean isRead,
         Long senderId,
