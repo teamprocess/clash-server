@@ -18,7 +18,7 @@ public class CreateSectionData {
             String description,
             List<String> keyPoints
     ) {
-        public Section toDomain() {
+        public Section toDomain(Integer orderIndex) {
             // keyPoints를 SectionKeyPoint 엔티티 리스트로 변환
             List<SectionKeyPoint> sectionKeyPoints = IntStream.range(0, keyPoints.size())
                     .mapToObj(index -> new SectionKeyPoint(
@@ -29,7 +29,7 @@ public class CreateSectionData {
                     ))
                     .toList();
 
-            return new Section(null, major, title, description, category, List.of(), sectionKeyPoints, null, null);
+            return new Section(null, major, title, description, category, orderIndex, List.of(), sectionKeyPoints, null, null);
         }
     }
 

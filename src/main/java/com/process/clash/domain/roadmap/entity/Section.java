@@ -26,6 +26,8 @@ public class Section {
 
     private String category;
 
+    private Integer orderIndex;
+
     private List<Chapter> chapters;
 
     private List<SectionKeyPoint> keyPoints;

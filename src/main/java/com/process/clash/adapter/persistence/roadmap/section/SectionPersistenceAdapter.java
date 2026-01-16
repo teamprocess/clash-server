@@ -40,7 +40,7 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
 
     @Override
     public List<Section> findAllByMajor(Major major) {
-        return sectionJpaRepository.findAllByMajor(major).stream().map(sectionJpaMapper::toDomain).toList();
+        return sectionJpaRepository.findAllByMajorOrderByOrderIndexAsc(major).stream().map(sectionJpaMapper::toDomain).toList();
     }
 
     @Override

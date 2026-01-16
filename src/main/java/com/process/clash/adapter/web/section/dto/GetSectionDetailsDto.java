@@ -10,7 +10,7 @@ public class GetSectionDetailsDto {
             Long sectionId,
             String sectionTitle,
             Integer totalChapters,
-            Integer currentChapters,
+            Long currentChapterId,
             List<ChapterVo> chapters
     ) {
         public static Response from(GetSectionDetailsData.Result result) {
@@ -21,7 +21,7 @@ public class GetSectionDetailsDto {
                     result.sectionId(),
                     result.sectionTitle(),
                     result.totalChapters(),
-                    result.currentChapters(),
+                    result.currentChapterId(),
                     chapters
             );
         }

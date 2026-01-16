@@ -15,7 +15,7 @@ public class GetSectionPreviewData {
             Long id,
             String title,
             String description,
-            Long totalSteps,
+            Long totalChapters,
             List<ChapterVo> chapters,
             List<String> keyPoints
     ) {

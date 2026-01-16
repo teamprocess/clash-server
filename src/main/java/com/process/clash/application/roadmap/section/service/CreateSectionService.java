@@ -24,7 +24,11 @@ public class CreateSectionService implements CreateSectionUseCase {
     public CreateSectionData.Result execute(CreateSectionData.Command command) {
         checkAdminPolicy.check(command.actor());
 
-        Section section = command.toDomain();
+        // 같은 Major의 Section 개수를 조회하여 마지막 순서로 orderIndex 할당
+        List<Section> existingSections = sectionRepositoryPort.findAllByMajor(command.major());
+        int nextOrderIndex = existingSections.size();  // 0부터 시작 (0, 1, 2, ...)
+
+        Section section = command.toDomain(nextOrderIndex);
 
         Section savedSection = sectionRepositoryPort.save(section);
 
