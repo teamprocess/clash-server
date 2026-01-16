@@ -13,6 +13,7 @@ public class UpdateSectionData {
             String title,
             String category,
             String description,
+            Integer orderIndex,
             List<String> keyPoints
     ) {}
 

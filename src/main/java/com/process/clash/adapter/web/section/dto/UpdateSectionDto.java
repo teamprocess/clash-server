@@ -18,11 +18,13 @@ public class UpdateSectionDto {
             @Size(min = 1, message = "description이 제공되는 경우 비워둘 수 없습니다.")
             String description,  // 선택사항
 
+            Integer orderIndex,  // 선택사항
+
             @Size(min = 1, message = "keyPoints가 제공되는 경우 비워둘 수 없습니다.")
             List<String> keyPoints  // 선택사항
     ) {
         public UpdateSectionData.Command toCommand(Actor actor, Long sectionId) {
-            return new UpdateSectionData.Command(actor, sectionId, title, category, description, keyPoints);
+            return new UpdateSectionData.Command(actor, sectionId, title, category, description, orderIndex, keyPoints);
         }
     }
 

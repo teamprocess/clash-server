@@ -46,6 +46,9 @@ public class Section {
         if (command.description() != null) {
             this.description = command.description();
         }
+        if (command.orderIndex() != null) {
+            this.orderIndex = command.orderIndex();
+        }
         if (command.keyPoints() != null) {
             // keyPoints를 SectionKeyPoint 엔티티 리스트로 변환
             this.keyPoints = IntStream.range(0, command.keyPoints().size())
@@ -58,5 +61,9 @@ public class Section {
                     .toList();
         }
         return this;
+    }
+
+    public void updateOrderIndex(Integer newOrderIndex) {
+        this.orderIndex = newOrderIndex;
     }
 }

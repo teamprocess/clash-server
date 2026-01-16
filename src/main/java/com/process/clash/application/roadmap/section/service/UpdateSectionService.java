@@ -30,6 +30,11 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         Section section = sectionRepository.findById(command.sectionId())
                 .orElseThrow(SectionNotFoundException::new);
 
+        // orderIndex 변경이 요청된 경우, 다른 Section들 재정렬 (Insert & Shift)
+        if (command.orderIndex() != null && !command.orderIndex().equals(section.getOrderIndex())) {
+            reorderSections(section, command.orderIndex());
+        }
+
         section.update(command);
 
         // 업데이트된 Section 업데이트/저장
@@ -43,5 +48,33 @@ public class UpdateSectionService implements UpdateSectionUseCase {
                 : List.of();
 
         return UpdateSectionData.Result.from(updatedSection, keyPointContents);
+    }
+
+    private void reorderSections(Section targetSection, int newOrderIndex) {
+        // 같은 Major의 모든 Section 조회
+        List<Section> sections = sectionRepository.findAllByMajor(targetSection.getMajor());
+        int oldOrderIndex = targetSection.getOrderIndex();
+
+        for (Section section : sections) {
+            // 대상 Section은 건너뜀 (나중에 update()에서 처리)
+            if (section.getId().equals(targetSection.getId())) {
+                continue;
+            }
+
+            int currentIndex = section.getOrderIndex();
+
+            // 앞으로 이동하는 경우: 기존 위치의 Section들을 뒤로 밀기
+            // 예: C(2)를 1로 이동 → B(1)는 2로, C(2)는 1로
+            if (newOrderIndex <= currentIndex && currentIndex < oldOrderIndex) {
+                section.updateOrderIndex(currentIndex + 1);
+                sectionRepository.save(section);
+            }
+            // 뒤로 이동하는 경우: 새 위치까지의 Section들을 앞으로 당기기
+            // 예: A(0)를 2로 이동 → B(1)는 0으로, C(2)는 1로, A(0)는 2로
+            else if (oldOrderIndex < currentIndex && currentIndex <= newOrderIndex) {
+                section.updateOrderIndex(currentIndex - 1);
+                sectionRepository.save(section);
+            }
+        }
     }
 }
