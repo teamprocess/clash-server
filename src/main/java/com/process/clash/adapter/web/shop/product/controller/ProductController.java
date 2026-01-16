@@ -3,10 +3,13 @@ package com.process.clash.adapter.web.shop.product.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.shop.product.dto.GetPopularProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetProductDetailDto;
+import com.process.clash.adapter.web.shop.product.dto.GetRecommendedProductsDto;
 import com.process.clash.application.shop.product.data.GetPopularProductsData;
 import com.process.clash.application.shop.product.data.GetProductDetailData;
 import com.process.clash.application.shop.product.port.in.GetPopularProductsUseCase;
 import com.process.clash.application.shop.product.port.in.GetProductDetailUseCase;
+import com.process.clash.application.shop.recommendedproduct.data.GetRecommendedProductsData;
+import com.process.clash.application.shop.recommendedproduct.port.in.GetRecommendedProductsUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +23,7 @@ public class ProductController {
 
     private final GetProductDetailUseCase getProductDetailUseCase;
     private final GetPopularProductsUseCase getPopularProductsUseCase;
+    private final GetRecommendedProductsUseCase getRecommendedProductsUseCase;
 
     @GetMapping("/{productId}")
     public ApiResponse<GetProductDetailDto.Response> getProductDetail(
@@ -28,13 +32,20 @@ public class ProductController {
         GetProductDetailData.Command command = new GetProductDetailData.Command(productId);
         GetProductDetailData.Result result = getProductDetailUseCase.execute(command);
         GetProductDetailDto.Response response = GetProductDetailDto.Response.from(result);
-        return ApiResponse.success(response, "상품 상세 정보 조회에 성공했습니다.");
+        return ApiResponse.success(response, "상품 상세 정보 조회를 성공했습니다.");
     }
 
     @GetMapping("/popular")
     public ApiResponse<GetPopularProductsDto.Response> getPopularProducts() {
         GetPopularProductsData.Result result = getPopularProductsUseCase.execute();
         GetPopularProductsDto.Response response = GetPopularProductsDto.Response.from(result);
-        return ApiResponse.success(response, "인기 상품 목록 조회에 성공했습니다");
+        return ApiResponse.success(response, "인기 상품 목록 조회를 성공했습니다");
+    }
+
+    @GetMapping("/recommended")
+    public ApiResponse<GetRecommendedProductsDto.Response> getRecommendedProducts() {
+        GetRecommendedProductsData.Result result = getRecommendedProductsUseCase.execute();
+        GetRecommendedProductsDto.Response response = GetRecommendedProductsDto.Response.from(result);
+        return ApiResponse.success(response, "추천 상품 목록 조회를 성공했습니다.");
     }
 }
