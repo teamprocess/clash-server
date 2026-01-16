@@ -38,7 +38,11 @@ public class SectionJpaEntity { // 로드맵
 
     private String category;
 
+    @Column(nullable = false)
+    private Integer orderIndex;
+
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orderIndex ASC")
     private List<ChapterJpaEntity> chapters = new ArrayList<>();
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -27,6 +27,7 @@ public class SectionJpaMapper {
                 section.getTitle(),
                 section.getDescription(),
                 section.getCategory(),
+                section.getOrderIndex(),
                 new ArrayList<>(),
                 new ArrayList<>(),
                 section.getCreatedAt(), // createdAt
@@ -56,6 +57,7 @@ public class SectionJpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getCategory(),
+                entity.getOrderIndex(),
                 // null 안전성: entity.getChapters()가 null이면 빈 리스트로 처리
                 (entity.getChapters() != null)
                         ? entity.getChapters().stream()

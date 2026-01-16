@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface SectionJpaRepository extends JpaRepository<SectionJpaEntity, Long> {
 
-    List<SectionJpaEntity> findAllByMajor(Major major);
+    List<SectionJpaEntity> findAllByMajorOrderByOrderIndexAsc(Major major);
 }
