@@ -35,7 +35,7 @@ public class RecommendedProductPersistenceAdapter implements RecommendedProductR
 
     @Override
     public List<RecommendedProduct> findTop10ByIsActiveTrueOrderByDisplayOrder() {
-        return recommendedProductJpaRepository.findTop10ByIsActiveTrueOrderByDisplayOrder()
+        return recommendedProductJpaRepository.findTop10ByIsActiveTrueOrderByDisplayOrderAsc()
                 .stream()
                 .map(recommendedProductJpaMapper::toDomain)
                 .toList();
