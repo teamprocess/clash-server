@@ -49,7 +49,6 @@ public class SectionJpaEntity { // 로드맵
     private List<ChapterJpaEntity> chapters = new ArrayList<>();
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
-    @BatchSize(size = 50)
     private List<SectionKeyPointJpaEntity> keyPoints = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
