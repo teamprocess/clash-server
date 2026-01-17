@@ -28,6 +28,7 @@ public class AdminRecommendedProductController {
     private final DeleteRecommendedProductUseCase deleteRecommendedProductUseCase;
     private final UpdateRecommendedProductOrderUseCase updateRecommendedProductOrderUseCase;
 
+    // 추천 상품 등록
     @PostMapping
     public ApiResponse<CreateRecommendedProductDto.Response> createRecommendedProduct(
             @AuthenticatedActor Actor actor,
@@ -39,6 +40,7 @@ public class AdminRecommendedProductController {
         return ApiResponse.created(response, "추천 상품 등록을 성공했습니다.");
     }
 
+    // 추천 상품 수정
     @PutMapping("/{recommendedProductId}")
     public ApiResponse<UpdateRecommendedProductDto.Response> updateRecommendedProduct(
             @AuthenticatedActor Actor actor,
@@ -51,6 +53,7 @@ public class AdminRecommendedProductController {
         return ApiResponse.success(response, "추천 상품 수정을 성공했습니다.");
     }
 
+    // 추천 상품 삭제
     @DeleteMapping("/{recommendedProductId}")
     public ApiResponse<Void> deleteRecommendedProduct(
             @AuthenticatedActor Actor actor,
@@ -61,6 +64,7 @@ public class AdminRecommendedProductController {
         return ApiResponse.success("추천 상품 삭제를 성공했습니다.");
     }
 
+    // 추천 상품 순서 변경
     @PatchMapping("/{recommendedProductId}/order")
     public ApiResponse<UpdateRecommendedProductOrderDto.Response> updateRecommendedProductOrder(
             @AuthenticatedActor Actor actor,

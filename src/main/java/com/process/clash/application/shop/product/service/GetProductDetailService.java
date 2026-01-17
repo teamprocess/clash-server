@@ -34,7 +34,4 @@ public class GetProductDetailService implements GetProductDetailUseCase {
 
         return GetProductDetailData.Result.from(product, seasonTitle);
     }
-
-
-
 }

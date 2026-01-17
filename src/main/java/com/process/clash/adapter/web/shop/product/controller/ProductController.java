@@ -26,7 +26,7 @@ public class ProductController {
     private final GetRecommendedProductsUseCase getRecommendedProductsUseCase;
     private final GetAllProductsUseCase getAllProductsUseCase;
 
-
+    // 전체 상품 목록 조회
     @GetMapping
     public ApiResponse<GetAllProductsDto.Response> getAllProducts(
             @ModelAttribute GetAllProductsDto.Request request
@@ -37,6 +37,7 @@ public class ProductController {
         return ApiResponse.success(response, "전체 상품 목록 조회를 성공했습니다.");
     }
 
+    // 상품 상세 조회
     @GetMapping("/{productId}")
     public ApiResponse<GetProductDetailDto.Response> getProductDetail(
             @PathVariable Long productId
@@ -47,6 +48,7 @@ public class ProductController {
         return ApiResponse.success(response, "상품 상세 정보 조회를 성공했습니다.");
     }
 
+    // 인기 상품 목록 조회 (10개)
     @GetMapping("/popular")
     public ApiResponse<GetPopularProductsDto.Response> getPopularProducts() {
         GetPopularProductsData.Result result = getPopularProductsUseCase.execute();
@@ -54,6 +56,7 @@ public class ProductController {
         return ApiResponse.success(response, "인기 상품 목록 조회를 성공했습니다");
     }
 
+    // 추천 상품 목록 조회 (10개)
     @GetMapping("/recommended")
     public ApiResponse<GetRecommendedProductsDto.Response> getRecommendedProducts() {
         GetRecommendedProductsData.Result result = getRecommendedProductsUseCase.execute();
