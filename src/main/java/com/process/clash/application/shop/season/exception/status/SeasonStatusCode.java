@@ -9,7 +9,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SeasonStatusCode implements StatusCode {
+    // 409
     SEASON_ALREADY_EXISTS("SEASON_ALREADY_EXISTS", "이미 존재하는 시즌명입니다.", ErrorCategory.CONFLICT),
+
+    // 404
+    SEASON_NOT_FOUND("SEASON_NOT_FOUND", "존재하지 않는 시즌입니다.", ErrorCategory.NOT_FOUND),
     ;
 
     private final String code;

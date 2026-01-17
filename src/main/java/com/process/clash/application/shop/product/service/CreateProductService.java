@@ -3,6 +3,7 @@ package com.process.clash.application.shop.product.service;
 import com.process.clash.application.shop.product.data.CreateProductData;
 import com.process.clash.application.shop.product.port.in.CreateProductUseCase;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
+import com.process.clash.application.shop.season.exception.exception.notfound.SeasonNotFoundException;
 import com.process.clash.application.shop.season.port.out.SeasonRepositoryPort;
 import com.process.clash.domain.common.policy.CheckAdminPolicy;
 import com.process.clash.domain.shop.product.entity.Product;
@@ -26,7 +27,8 @@ public class CreateProductService implements CreateProductUseCase {
 
         Season season = null;
         if (command.seasonId() != null) {
-            season = seasonRepositoryPort.findById(command.seasonId()).orElse(null);
+            season = seasonRepositoryPort.findById(command.seasonId())
+                    .orElseThrow(SeasonNotFoundException::new);
         }
 
         Product product = Product.create(
