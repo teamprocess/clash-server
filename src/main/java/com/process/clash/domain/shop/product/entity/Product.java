@@ -55,7 +55,7 @@ public record Product(
                 description,
                 0L,
                 season,
-                false
+                season != null
         );
     }
 }
