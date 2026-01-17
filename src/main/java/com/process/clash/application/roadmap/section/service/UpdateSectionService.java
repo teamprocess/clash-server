@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,6 +61,9 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         List<Section> sections = sectionRepository.findAllByMajor(targetSection.getMajor());
         int oldOrderIndex = targetSection.getOrderIndex();
 
+        // 성능 최적화: 수정할 Section들을 모아서 한 번에 저장
+        List<Section> sectionsToUpdate = new ArrayList<>();
+
         for (Section section : sections) {
             // 대상 Section은 건너뜀 (나중에 update()에서 처리)
             if (section.getId().equals(targetSection.getId())) {
@@ -72,14 +76,19 @@ public class UpdateSectionService implements UpdateSectionUseCase {
             // 예: C(2)를 1로 이동 → B(1)는 2로, C(2)는 1로
             if (newOrderIndex <= currentIndex && currentIndex < oldOrderIndex) {
                 section.updateOrderIndex(currentIndex + 1);
-                sectionRepository.save(section);
+                sectionsToUpdate.add(section);
             }
             // 뒤로 이동하는 경우: 새 위치까지의 Section들을 앞으로 당기기
             // 예: A(0)를 2로 이동 → B(1)는 0으로, C(2)는 1로, A(0)는 2로
             else if (oldOrderIndex < currentIndex && currentIndex <= newOrderIndex) {
                 section.updateOrderIndex(currentIndex - 1);
-                sectionRepository.save(section);
+                sectionsToUpdate.add(section);
             }
+        }
+
+        // Batch Update: 한 번에 저장
+        if (!sectionsToUpdate.isEmpty()) {
+            sectionRepository.saveAll(sectionsToUpdate);
         }
     }
 
@@ -87,11 +96,14 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         // 기존 prerequisites 초기화
         section.getPrerequisites().clear();
 
-        // 새로운 prerequisite Section들을 로드하여 추가
-        for (Long prerequisiteId : prerequisiteSectionIds) {
-            Section prerequisiteSection = sectionRepository.findById(prerequisiteId)
-                    .orElseThrow(SectionNotFoundException::new);
-            section.addPrerequisite(prerequisiteSection);
+        // 한 번에 모든 prerequisite Section 조회
+        List<Section> prerequisiteSections = sectionRepository.findAllById(prerequisiteSectionIds);
+
+        // 요청한 ID가 모두 존재하는지 확인
+        if (prerequisiteSections.size() != prerequisiteSectionIds.size()) {
+            throw new SectionNotFoundException();
         }
+
+        prerequisiteSections.forEach(section::addPrerequisite);
     }
 }

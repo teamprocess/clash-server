@@ -29,8 +29,28 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     }
 
     @Override
+    public List<Section> saveAll(List<Section> sections) {
+        List<SectionJpaEntity> entities = sections.stream()
+                .map(sectionJpaMapper::toJpaEntity)
+                .toList();
+        List<SectionJpaEntity> saved = sectionJpaRepository.saveAll(entities);
+        sectionJpaRepository.flush();
+
+        return saved.stream()
+                .map(sectionJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public Optional<Section> findById(Long id) {
         return sectionJpaRepository.findById(id).map(sectionJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Section> findAllById(List<Long> ids) {
+        return sectionJpaRepository.findAllById(ids).stream()
+                .map(sectionJpaMapper::toDomain)
+                .toList();
     }
 
     @Override
