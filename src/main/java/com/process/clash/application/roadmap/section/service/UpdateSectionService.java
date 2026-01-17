@@ -114,7 +114,7 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         List<Section> prerequisiteSections = sectionRepository.findAllById(prerequisiteSectionIds);
 
         // 요청한 ID가 모두 존재하는지 확인
-        if (prerequisiteSections.size() != prerequisiteSectionIds.size()) {
+        if (prerequisiteSections.size() != distinctIds.size()) {
             throw new SectionNotFoundException();
         }
 
