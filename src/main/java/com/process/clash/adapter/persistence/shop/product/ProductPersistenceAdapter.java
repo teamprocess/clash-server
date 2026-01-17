@@ -2,7 +2,13 @@ package com.process.clash.adapter.persistence.shop.product;
 
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.domain.shop.product.entity.Product;
+import com.process.clash.domain.shop.product.enums.ProductCategory;
+import com.process.clash.domain.shop.product.enums.ProductSortType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
@@ -33,5 +39,36 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 .stream()
                 .map(productJpaMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public PageResult findAll(Integer page, Integer size, ProductSortType sort, ProductCategory category) {
+
+        Sort sortCondition = createSort(sort);
+
+        Pageable pageable = PageRequest.of(page - 1, size, sortCondition);
+
+        Page<ProductJpaEntity> pageResult;
+        if (category == null) {
+            pageResult = productJpaRepository.findAll(pageable);
+        } else {
+            pageResult = productJpaRepository.findByCategory(category, pageable);
+        }
+
+        List<Product> products = pageResult.getContent()
+                .stream()
+                .map(productJpaMapper::toDomain)
+                .toList();
+
+        return new PageResult(products, pageResult.getTotalElements());
+    }
+
+    private Sort createSort(ProductSortType sortType) {
+        return switch (sortType) {
+            case LATEST -> Sort.by(Sort.Direction.DESC, "createdAt");
+            case POPULAR -> Sort.by(Sort.Direction.DESC, "popularity");
+            case EXPENSIVE -> Sort.by(Sort.Direction.DESC, "price");
+            case CHEAPEST -> Sort.by(Sort.Direction.ASC, "price");
+        };
     }
 }

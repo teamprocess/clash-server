@@ -1,20 +1,22 @@
 package com.process.clash.adapter.web.shop.product.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.shop.product.dto.GetAllProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetPopularProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetProductDetailDto;
 import com.process.clash.adapter.web.shop.product.dto.GetRecommendedProductsDto;
+import com.process.clash.application.shop.product.data.GetAllProductsData;
 import com.process.clash.application.shop.product.data.GetPopularProductsData;
 import com.process.clash.application.shop.product.data.GetProductDetailData;
+import com.process.clash.application.shop.product.port.in.GetAllProductsUseCase;
 import com.process.clash.application.shop.product.port.in.GetPopularProductsUseCase;
 import com.process.clash.application.shop.product.port.in.GetProductDetailUseCase;
 import com.process.clash.application.shop.recommendedproduct.data.GetRecommendedProductsData;
 import com.process.clash.application.shop.recommendedproduct.port.in.GetRecommendedProductsUseCase;
+import com.process.clash.domain.shop.product.enums.ProductCategory;
+import com.process.clash.domain.shop.product.enums.ProductSortType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/shop/products")
@@ -24,6 +26,31 @@ public class ProductController {
     private final GetProductDetailUseCase getProductDetailUseCase;
     private final GetPopularProductsUseCase getPopularProductsUseCase;
     private final GetRecommendedProductsUseCase getRecommendedProductsUseCase;
+    private final GetAllProductsUseCase getAllProductsUseCase;
+
+
+    @GetMapping
+    public ApiResponse<GetAllProductsDto.Response> getAllProducts(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "40") Integer size,
+            @RequestParam(defaultValue = "LATEST") ProductSortType sort,
+            @RequestParam(required = false) String category
+    ) {
+
+        ProductCategory productCategory = null;
+        if (category != null && !category.equals("ALL")) {
+            productCategory = ProductCategory.valueOf(category);
+        }
+
+        GetAllProductsData.Command command = new GetAllProductsData.Command(
+                page, size, sort, productCategory
+        );
+
+        GetAllProductsData.Result result = getAllProductsUseCase.execute(command);
+
+        GetAllProductsDto.Response response = GetAllProductsDto.Response.from(result);
+        return ApiResponse.success(response, "전체 상품 목록 조회를 성공했습니다.");
+    }
 
     @GetMapping("/{productId}")
     public ApiResponse<GetProductDetailDto.Response> getProductDetail(

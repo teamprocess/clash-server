@@ -1,6 +1,9 @@
 package com.process.clash.application.shop.product.port.out;
 
 import com.process.clash.domain.shop.product.entity.Product;
+import com.process.clash.domain.shop.product.enums.ProductCategory;
+import com.process.clash.domain.shop.product.enums.ProductSortType;
+import org.hibernate.id.IncrementGenerator;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,4 +13,13 @@ public interface ProductRepositoryPort {
     Optional<Product> findById(Long productId);
 
     List<Product> findTop10ByOrderByPopularityDesc();
+
+    record PageResult(List<Product> products, long totalCount) {}
+
+    PageResult findAll(
+            Integer page,
+            Integer size,
+            ProductSortType sort,
+            ProductCategory category
+    );
 }
