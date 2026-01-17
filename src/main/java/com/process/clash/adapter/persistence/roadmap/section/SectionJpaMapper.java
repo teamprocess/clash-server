@@ -31,6 +31,7 @@ public class SectionJpaMapper {
                 section.getOrderIndex(),
                 new ArrayList<>(),
                 new ArrayList<>(),
+                new HashSet<>(),
                 section.getCreatedAt(), // createdAt
                 section.getUpdatedAt()  // updatedAt
         );

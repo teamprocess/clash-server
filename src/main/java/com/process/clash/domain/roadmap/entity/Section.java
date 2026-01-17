@@ -38,12 +38,6 @@ public class Section {
 
     private List<SectionKeyPoint> keyPoints;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "section_prerequisites",
-            joinColumns = @JoinColumn(name = "section_id"),       // 현재 섹션
-            inverseJoinColumns = @JoinColumn(name = "prerequisite_id") // 선수 섹션
-    )
     private Set<Section> prerequisites = new HashSet<>();
 
     private LocalDateTime createdAt;
