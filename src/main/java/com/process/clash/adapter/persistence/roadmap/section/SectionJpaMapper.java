@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -67,6 +68,7 @@ public class SectionJpaMapper {
                         ? entity.getKeyPoints().stream()
                         .map(sectionKeyPointJpaMapper::toDomain).toList() :
                         new ArrayList<>(),
+                new HashSet<>(), // prerequisites는 현재 사용하지 않으므로 빈 Set
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
