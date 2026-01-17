@@ -2,17 +2,14 @@ package com.process.clash.application.roadmap.section.service;
 
 import com.process.clash.application.roadmap.port.out.UserSectionProgressRepositoryPort;
 import com.process.clash.application.roadmap.section.common.SectionCompleteChecker;
-import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
-import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.application.roadmap.section.data.GetSectionDetailsData;
+import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.port.in.GetSectionDetailsUseCase;
-import com.process.clash.application.roadmap.sectionprogress.exception.exception.notfound.UserSectionProgressNotFoundException;
+import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

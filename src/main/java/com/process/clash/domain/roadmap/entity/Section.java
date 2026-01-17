@@ -2,14 +2,10 @@ package com.process.clash.domain.roadmap.entity;
 
 import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import com.process.clash.domain.common.enums.Major;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
