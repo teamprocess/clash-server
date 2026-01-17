@@ -20,8 +20,8 @@ public class CreateRecommendedProductData {
                     actor,
                     request.productId(),
                     request.displayOrder(),
-                    LocalDate.parse(request.startDate()),
-                    LocalDate.parse(request.endDate())
+                    request.startDate(),
+                    request.endDate()
             );
         }
     }
