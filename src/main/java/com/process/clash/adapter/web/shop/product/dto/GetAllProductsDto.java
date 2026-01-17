@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.shop.product.dto;
 
+import com.process.clash.application.common.exception.exception.ValidationException;
 import com.process.clash.application.shop.product.data.GetAllProductsData;
 import com.process.clash.application.shop.product.vo.ProductVo;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
@@ -17,7 +18,11 @@ public class GetAllProductsDto {
         public GetAllProductsData.Command toCommand() {
             ProductCategory productCategory = null;
             if (category != null && !category.equals("ALL")) {
-                productCategory = ProductCategory.valueOf(category);
+                try {
+                    productCategory = ProductCategory.valueOf(category.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new ValidationException(e);
+                }
             }
             return new GetAllProductsData.Command(page, size, sort, productCategory);
         }
