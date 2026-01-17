@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface ProductRepositoryPort {
     Product save(Product product);
     Optional<Product> findById(Long productId);
+    List<Product> findAllByIdIn(List<Long> productIds);
 
     List<Product> findTop10ByOrderByPopularityDesc();
 

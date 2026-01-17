@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +23,11 @@ public class GetRecommendedProductsService implements GetRecommendedProductsUseC
     public GetRecommendedProductsData.Result execute() {
         List<RecommendedProduct> recommendations = recommendedProductRepositoryPort.findTop10ByIsActiveTrueOrderByDisplayOrder();
 
-        List<Product> products = recommendations.stream()
-                .map(recommendedProduct -> productRepositoryPort.findById(recommendedProduct.productId()).orElse(null))
-                .filter(Objects::nonNull)
+        List<Long> productIds = recommendations.stream()
+                .map(RecommendedProduct::productId)
                 .toList();
+
+        List<Product> products = productRepositoryPort.findAllByIdIn(productIds);
 
         return GetRecommendedProductsData.Result.from(products);
     }
