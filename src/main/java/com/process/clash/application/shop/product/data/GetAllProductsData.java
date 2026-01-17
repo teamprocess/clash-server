@@ -1,11 +1,9 @@
 package com.process.clash.application.shop.product.data;
 
 import com.process.clash.application.shop.product.vo.ProductVo;
-import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductSortType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GetAllProductsData {
@@ -32,21 +30,7 @@ public class GetAllProductsData {
     public record Result(
             List<ProductVo> products,
             PaginationInfo pagination
-    ) {
-        public static Result from(List<Product> domains, List<String> seasonTitles, Integer page, Integer size, Long totalItems) {
-
-            // Product -> ProductVo 변환
-            List<ProductVo> products = new ArrayList<>();
-            for (int i = 0; i < domains.size(); i++) {
-                String seasonTitle = seasonTitles.get(i);
-                products.add(ProductVo.from(domains.get(i), seasonTitle));
-            }
-
-            PaginationInfo pagination = PaginationInfo.from(page, size, totalItems);
-
-            return new Result(products, pagination);
-        }
-    }
+    ) {}
 
     public record PaginationInfo(
             Integer currentPage,
