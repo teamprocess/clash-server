@@ -43,6 +43,9 @@ public class UserSectionProgressJpaEntity {
     @Column(nullable = false)
     private Integer completedChapters;
 
+    @Column(nullable = false)
+    private Boolean isCompleted;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

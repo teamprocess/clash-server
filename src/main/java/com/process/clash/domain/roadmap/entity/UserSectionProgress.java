@@ -19,4 +19,6 @@ public class UserSectionProgress {
     private Long currentChapterId;
 
     private Integer completedChapters;
+
+    private Boolean isCompleted;
 }

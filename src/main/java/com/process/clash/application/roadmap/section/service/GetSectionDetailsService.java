@@ -24,7 +24,7 @@ public class GetSectionDetailsService implements GetSectionDetailsUseCase {
 
         UserSectionProgress userSectionProgress = userSectionProgressRepository
                 .findByUserIdAndSectionId(command.actor().id(), command.sectionId())
-                .orElse(new UserSectionProgress(null, command.actor().id(), command.sectionId(), null, 0));
+                .orElse(new UserSectionProgress(null, command.actor().id(), command.sectionId(), null, 0, false));
 
         Long currentChapterId = userSectionProgress.getCurrentChapterId();
 
