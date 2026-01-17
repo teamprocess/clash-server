@@ -13,8 +13,6 @@ import com.process.clash.application.shop.product.port.in.GetPopularProductsUseC
 import com.process.clash.application.shop.product.port.in.GetProductDetailUseCase;
 import com.process.clash.application.shop.recommendedproduct.data.GetRecommendedProductsData;
 import com.process.clash.application.shop.recommendedproduct.port.in.GetRecommendedProductsUseCase;
-import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductSortType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,23 +29,10 @@ public class ProductController {
 
     @GetMapping
     public ApiResponse<GetAllProductsDto.Response> getAllProducts(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "40") Integer size,
-            @RequestParam(defaultValue = "LATEST") ProductSortType sort,
-            @RequestParam(required = false) String category
+            @ModelAttribute GetAllProductsDto.Request request
     ) {
-
-        ProductCategory productCategory = null;
-        if (category != null && !category.equals("ALL")) {
-            productCategory = ProductCategory.valueOf(category);
-        }
-
-        GetAllProductsData.Command command = new GetAllProductsData.Command(
-                page, size, sort, productCategory
-        );
-
+        GetAllProductsData.Command command = request.toCommand();
         GetAllProductsData.Result result = getAllProductsUseCase.execute(command);
-
         GetAllProductsDto.Response response = GetAllProductsDto.Response.from(result);
         return ApiResponse.success(response, "전체 상품 목록 조회를 성공했습니다.");
     }

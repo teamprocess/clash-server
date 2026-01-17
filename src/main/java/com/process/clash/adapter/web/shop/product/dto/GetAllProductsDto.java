@@ -2,10 +2,26 @@ package com.process.clash.adapter.web.shop.product.dto;
 
 import com.process.clash.application.shop.product.data.GetAllProductsData;
 import com.process.clash.application.shop.product.vo.ProductVo;
-
+import com.process.clash.domain.shop.product.enums.ProductCategory;
+import com.process.clash.domain.shop.product.enums.ProductSortType;
 import java.util.List;
 
 public class GetAllProductsDto {
+
+    public record Request(
+            Integer page,
+            Integer size,
+            ProductSortType sort,
+            String category
+    ) {
+        public GetAllProductsData.Command toCommand() {
+            ProductCategory productCategory = null;
+            if (category != null && !category.equals("ALL")) {
+                productCategory = ProductCategory.valueOf(category);
+            }
+            return new GetAllProductsData.Command(page, size, sort, productCategory);
+        }
+    }
 
     public record Response(
             List<Product> products,
