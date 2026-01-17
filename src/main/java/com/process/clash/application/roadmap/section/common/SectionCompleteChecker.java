@@ -30,15 +30,12 @@ public class SectionCompleteChecker {
         List<UserSectionProgress> userSectionProgresses =
                 userSectionProgressRepository.findAllByUserIdAndSectionIdIn(actor.id(), prerequisiteIds);
 
-        // 선행 로드맵을 시작하지 않은 경우
-        if (prerequisites.size() != userSectionProgresses.size()) {
-            throw new SectionAccessDeniedException();
-        }
+        // 완료한 개수와 선행 로드맵 개수를 비교함
+        long completedCount = userSectionProgresses.stream()
+                .filter(UserSectionProgress::getIsCompleted)
+                .count();
 
-        // 선행 로드맵을 모두 완료하지 않은 경우
-        boolean allCompleted = userSectionProgresses.stream()
-                .allMatch(UserSectionProgress::getIsCompleted);
-        if (!allCompleted) {
+        if (completedCount != prerequisites.size()) {
             throw new SectionAccessDeniedException();
         }
     }
