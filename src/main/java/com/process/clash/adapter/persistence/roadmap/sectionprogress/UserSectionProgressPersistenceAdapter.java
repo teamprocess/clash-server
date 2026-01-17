@@ -54,4 +54,11 @@ public class UserSectionProgressPersistenceAdapter implements UserSectionProgres
                 .map(userSectionProgressJpaMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public List<UserSectionProgress> findAllByUserIdAndSectionIdIn(Long userId, List<Long> sectionIds) {
+        return userSectionProgressJpaRepository.findAllByUser_IdAndSection_IdIn(userId, sectionIds).stream()
+                .map(userSectionProgressJpaMapper::toDomain)
+                .toList();
+    }
 }
