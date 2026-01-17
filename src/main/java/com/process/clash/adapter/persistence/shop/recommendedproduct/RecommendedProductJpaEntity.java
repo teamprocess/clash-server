@@ -32,7 +32,7 @@ public class RecommendedProductJpaEntity {
     private LocalDateTime updatedAt;
 
     @JoinColumn(name = "fk_product_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private ProductJpaEntity product;
 
     @Column(nullable = false)
