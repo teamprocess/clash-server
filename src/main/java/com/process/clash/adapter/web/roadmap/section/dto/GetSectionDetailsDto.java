@@ -1,4 +1,4 @@
-package com.process.clash.adapter.web.section.dto;
+package com.process.clash.adapter.web.roadmap.section.dto;
 
 import com.process.clash.application.roadmap.section.data.GetSectionDetailsData;
 
