@@ -29,47 +29,15 @@ public class GetAllProductsDto {
     }
 
     public record Response(
-            List<Product> products,
+            List<CommonProductDto> products,
             Pagination pagination
     ) {
         public static Response from(GetAllProductsData.Result result) {
-            List<Product> products = result.products().stream()
-                    .map(Product::from)
+            List<CommonProductDto> products = result.products().stream()
+                    .map(CommonProductDto::from)
                     .toList();
             Pagination pagination = Pagination.from(result.pagination());
             return new Response(products, pagination);
-        }
-    }
-
-    public record Product(
-            Long id,
-            String title,
-            String category,
-            String image,
-            String type,
-            Long price,
-            Integer discount,
-            String description,
-            Long popularity,
-            String seasonName,
-            Boolean isSeasonal,
-            String createdAt
-    ) {
-        public static Product from(ProductVo product) {
-            return new Product(
-                    product.id(),
-                    product.title(),
-                    product.category().name(),
-                    product.image(),
-                    product.type().name(),
-                    product.price(),
-                    product.discount(),
-                    product.description(),
-                    product.popularity(),
-                    product.seasonName(),
-                    product.isSeasonal(),
-                    product.createdAt().toString()
-            );
         }
     }
 
