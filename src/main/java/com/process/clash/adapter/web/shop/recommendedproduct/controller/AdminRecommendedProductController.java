@@ -58,7 +58,7 @@ public class AdminRecommendedProductController {
     ) {
         DeleteRecommendedProductData.Command command = new DeleteRecommendedProductData.Command(actor, recommendedProductId);
         deleteRecommendedProductUseCase.execute(command);
-        return ApiResponse.success(null, "추천 상품 삭제를 성공했습니다.");
+        return ApiResponse.success("추천 상품 삭제를 성공했습니다.");
     }
 
     @PatchMapping("/{recommendedProductId}/order")
