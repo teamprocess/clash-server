@@ -2,8 +2,8 @@ package com.process.clash.adapter.web.shop.recommendedproduct.dto;
 
 import com.process.clash.application.shop.recommendedproduct.data.UpdateRecommendedProductData;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 public class UpdateRecommendedProductDto {
 
@@ -11,10 +11,10 @@ public class UpdateRecommendedProductDto {
             @NotNull(message = "진열 순서는 필수 입력값입니다.")
             @Min(value = 0, message = "진열 순서는 0 이상이어야 합니다.")
             Integer displayOrder,
-            @NotBlank(message = "시작일은 필수 입력값입니다.")
-            String startDate,
-            @NotBlank(message = "종료일은 필수 입력값입니다.")
-            String endDate,
+            @NotNull(message = "시작일은 필수 입력값입니다.")
+            LocalDate startDate,
+            @NotNull(message = "종료일은 필수 입력값입니다.")
+            LocalDate endDate,
             @NotNull(message = "활성화 상태는 필수 입력값입니다.")
             Boolean isActive
     ) {}

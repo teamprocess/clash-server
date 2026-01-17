@@ -21,8 +21,8 @@ public class UpdateRecommendedProductData {
                     actor,
                     recommendedProductId,
                     request.displayOrder(),
-                    LocalDate.parse(request.startDate()),
-                    LocalDate.parse(request.endDate()),
+                    request.startDate(),
+                    request.endDate(),
                     request.isActive()
             );
         }
