@@ -22,8 +22,9 @@ public class DeleteRecommendedProductService implements DeleteRecommendedProduct
 
         checkAdminPolicy.check(command.actor());
 
-        recommendedProductRepositoryPort.findById(command.recommendedProductId())
-                .orElseThrow(RecommendedProductNotFoundException::new);
+        if (!recommendedProductRepositoryPort.existsById(command.recommendedProductId())) {
+            throw new RecommendedProductNotFoundException();
+        }
 
         recommendedProductRepositoryPort.deleteById(command.recommendedProductId());
     }

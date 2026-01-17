@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface RecommendedProductRepositoryPort {
     RecommendedProduct save(RecommendedProduct recommendation);
     Optional<RecommendedProduct> findById(Long id);
+    boolean existsById(Long id);
     void deleteById(Long id);
     List<RecommendedProduct> findTop10ByIsActiveTrueOrderByDisplayOrder();
 }

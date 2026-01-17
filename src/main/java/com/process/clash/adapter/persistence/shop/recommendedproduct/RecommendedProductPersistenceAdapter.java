@@ -29,6 +29,11 @@ public class RecommendedProductPersistenceAdapter implements RecommendedProductR
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return recommendedProductJpaRepository.existsById(id);
+    }
+
+    @Override
     public void deleteById(Long id) {
         recommendedProductJpaRepository.deleteById(id);
     }
