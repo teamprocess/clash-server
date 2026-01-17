@@ -3,6 +3,8 @@ package com.process.clash.adapter.persistence.roadmap.section;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -49,6 +51,13 @@ public class SectionJpaMapper {
         sectionEntity.getChapters().addAll(chapters);
         sectionEntity.getKeyPoints().addAll(keyPoints);
 
+        if (section.getPrerequisites() != null) {
+            Set<SectionJpaEntity> prerequisites = section.getPrerequisites().stream()
+                    .map(this::toPrerequisiteEntity) // 재귀 방지
+                    .collect(Collectors.toSet());
+            sectionEntity.getPrerequisites().addAll(prerequisites);
+        }
+
         return sectionEntity;
     }
 
@@ -69,9 +78,45 @@ public class SectionJpaMapper {
                         ? entity.getKeyPoints().stream()
                         .map(sectionKeyPointJpaMapper::toDomain).toList() :
                         new ArrayList<>(),
-                new HashSet<>(), // prerequisites는 현재 사용하지 않으므로 빈 Set
+                (entity.getPrerequisites() != null)
+                        ? entity.getPrerequisites().stream()
+                        .map(this::toPrerequisiteDomain) // 깊이 제한 매핑 메서드 호출
+                        .collect(Collectors.toSet())
+                        : new HashSet<>(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
+        );
+    }
+
+    private Section toPrerequisiteDomain(SectionJpaEntity entity) {
+        return new Section(
+                entity.getId(),
+                entity.getMajor(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getCategory(),
+                entity.getOrderIndex(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new HashSet<>(), // 선수 로드맵의 선수 로드맵은 더 이상 가져오지 않음
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
+    }
+
+    private SectionJpaEntity toPrerequisiteEntity(Section domain) {
+        return new SectionJpaEntity(
+                domain.getId(),
+                domain.getMajor(),
+                domain.getTitle(),
+                domain.getDescription(),
+                domain.getCategory(),
+                domain.getOrderIndex(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new HashSet<>(), // 여기도 비워둠
+                domain.getCreatedAt(),
+                domain.getUpdatedAt()
         );
     }
 }
