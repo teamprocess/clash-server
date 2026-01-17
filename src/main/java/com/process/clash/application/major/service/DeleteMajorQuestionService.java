@@ -4,7 +4,7 @@ import com.process.clash.application.major.data.DeleteMajorQuestionData;
 import com.process.clash.application.major.exception.exception.notfound.MajorQuestionNotFoundException;
 import com.process.clash.application.major.port.in.DeleteMajorQuestionUseCase;
 import com.process.clash.application.major.port.out.MajorQuestionRepositoryPort;
-import com.process.clash.domain.common.policy.CheckAdminPolicy;
+import com.process.clash.application.common.policy.CheckAdminPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

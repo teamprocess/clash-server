@@ -5,7 +5,7 @@ import com.process.clash.application.roadmap.section.exception.exception.notfoun
 import com.process.clash.application.roadmap.section.exception.exception.unprocessableentity.SectionCircularDependencyException;
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
-import com.process.clash.domain.common.policy.CheckAdminPolicy;
+import com.process.clash.application.common.policy.CheckAdminPolicy;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
