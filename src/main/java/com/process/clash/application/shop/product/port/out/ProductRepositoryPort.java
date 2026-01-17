@@ -15,7 +15,7 @@ public interface ProductRepositoryPort {
 
     record PageResult(List<Product> products, long totalCount) {}
 
-    PageResult findAll(
+    PageResult findAllByPage(
             Integer page,
             Integer size,
             ProductSortType sort,

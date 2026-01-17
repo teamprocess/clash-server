@@ -42,10 +42,8 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     }
 
     @Override
-    public PageResult findAll(Integer page, Integer size, ProductSortType sort, ProductCategory category) {
-
+    public PageResult findAllByPage(Integer page, Integer size, ProductSortType sort, ProductCategory category) {
         Sort sortCondition = createSort(sort);
-
         Pageable pageable = PageRequest.of(page - 1, size, sortCondition);
 
         Page<ProductJpaEntity> pageResult;

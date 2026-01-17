@@ -17,8 +17,7 @@ public class GetAllProductsService implements GetAllProductsUseCase {
 
     @Override
     public GetAllProductsData.Result execute(GetAllProductsData.Command command) {
-
-        ProductRepositoryPort.PageResult pageResult = productRepositoryPort.findAll(
+        ProductRepositoryPort.PageResult pageResult = productRepositoryPort.findAllByPage(
                 command.page(),
                 command.size(),
                 command.sort(),
