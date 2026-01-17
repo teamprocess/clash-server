@@ -21,7 +21,7 @@ public record ProductVo(
         LocalDateTime createdAt
 ) {
     public static ProductVo from(Product domain) {
-        String seasonName = domain.season() != null ? domain.season().title() : null;
+        String seasonName = domain.season() != null ? domain.season().name() : null;
 
         return new ProductVo(
                 domain.id(),

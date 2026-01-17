@@ -8,7 +8,7 @@ public record Season(
         Long id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String title,
+        String name,
         LocalDate startDate,
         LocalDate endDate
 ) {
@@ -18,12 +18,12 @@ public record Season(
         }
     }
 
-    public static Season createDefault(String title, LocalDate startDate, LocalDate endDate) {
+    public static Season createDefault(String name, LocalDate startDate, LocalDate endDate) {
         return new Season(
                 null,
                 null,
                 null,
-                title,
+                name,
                 startDate,
                 endDate
         );

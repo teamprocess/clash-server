@@ -37,7 +37,7 @@ public class CreateRecommendedProductService implements CreateRecommendedProduct
 
         RecommendedProduct savedRecommendedProduct = recommendedProductRepositoryPort.save(recommendedProduct);
 
-        String seasonName = product.season() != null ? product.season().title() : null;
+        String seasonName = product.season() != null ? product.season().name() : null;
 
         return CreateRecommendedProductData.Result.from(savedRecommendedProduct, seasonName);
     }

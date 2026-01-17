@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SeasonJpaRepository extends JpaRepository<SeasonJpaEntity, Long> {
+    boolean existsByName(String title);
 }

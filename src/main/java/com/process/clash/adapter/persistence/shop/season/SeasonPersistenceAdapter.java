@@ -26,4 +26,9 @@ public class SeasonPersistenceAdapter implements SeasonRepositoryPort {
         return seasonJpaRepository.findById(seasonId)
                 .map(seasonJpaMapper::toDomain);
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        return seasonJpaRepository.existsByName(name);
+    }
 }

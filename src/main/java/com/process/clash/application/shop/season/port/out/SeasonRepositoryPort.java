@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface SeasonRepositoryPort {
     Season save(Season season);
     Optional<Season> findById(Long seasonId);
+    boolean existsByName(String name);
 }
