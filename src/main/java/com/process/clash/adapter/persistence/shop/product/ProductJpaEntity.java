@@ -59,7 +59,7 @@ public class ProductJpaEntity {
     private Long popularity;
 
     @JoinColumn(name = "fk_season_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private SeasonJpaEntity season;
 
     @Column(nullable = false)
