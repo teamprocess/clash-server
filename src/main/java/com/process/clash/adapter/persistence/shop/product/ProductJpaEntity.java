@@ -56,7 +56,7 @@ public class ProductJpaEntity {
     private String description;
 
     @Column(nullable = false)
-    private Long popularity;
+    private Integer popularity;
 
     @JoinColumn(name = "fk_season_id")
     @ManyToOne(fetch = FetchType.LAZY)

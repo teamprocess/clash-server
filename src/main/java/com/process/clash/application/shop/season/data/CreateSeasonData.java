@@ -9,14 +9,14 @@ public class CreateSeasonData {
 
     public record Command(
             Actor actor,
-            String name,
+            String title,
             LocalDate startDate,
             LocalDate endDate
     ) {
         public static CreateSeasonData.Command from(CreateSeasonDto.Request request, Actor actor) {
             return new CreateSeasonData.Command(
                     actor,
-                    request.name(),
+                    request.title(),
                     request.startDate(),
                     request.endDate()
             );
