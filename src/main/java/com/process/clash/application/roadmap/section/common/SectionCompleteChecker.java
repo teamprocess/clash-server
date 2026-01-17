@@ -17,7 +17,7 @@ public class SectionCompleteChecker {
 
     private final UserSectionProgressRepositoryPort userSectionProgressRepository;
 
-    protected void check(Actor actor, Section section) {
+    public void check(Actor actor, Section section) {
         Set<Section> prerequisites = section.getPrerequisites();
         if (prerequisites.isEmpty()) {
             return;
