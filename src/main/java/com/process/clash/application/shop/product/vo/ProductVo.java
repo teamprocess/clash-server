@@ -20,7 +20,9 @@ public record ProductVo(
         Boolean isSeasonal,
         LocalDateTime createdAt
 ) {
-    public static ProductVo from(Product domain, String seasonTitle) {
+    public static ProductVo from(Product domain) {
+        String seasonTitle = domain.season() != null ? domain.season().title() : null;
+
         return new ProductVo(
                 domain.id(),
                 domain.title(),

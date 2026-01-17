@@ -3,7 +3,6 @@ package com.process.clash.application.shop.recommendedproduct.data;
 import com.process.clash.application.shop.product.vo.ProductVo;
 import com.process.clash.domain.shop.product.entity.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GetRecommendedProductsData {
@@ -11,12 +10,10 @@ public class GetRecommendedProductsData {
     public record Result(
             List<ProductVo> products
     ) {
-        public static Result from(List<Product> domains, List<String> seasonTitles) {
-            List<ProductVo> products = new ArrayList<>();
-            for (int i = 0; i < domains.size(); i++) {
-                String seasonTitle = seasonTitles.get(i);
-                products.add(ProductVo.from(domains.get(i), seasonTitle));
-            }
+        public static Result from(List<Product> domains) {
+            List<ProductVo> products = domains.stream()
+                    .map(ProductVo::from)
+                    .toList();
             return new Result(products);
         }
     }

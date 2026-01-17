@@ -2,8 +2,8 @@ package com.process.clash.adapter.web.shop.recommendedproduct.dto;
 
 import com.process.clash.application.shop.recommendedproduct.data.CreateRecommendedProductData;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 public class CreateRecommendedProductDto {
 
@@ -13,9 +13,9 @@ public class CreateRecommendedProductDto {
             @NotNull(message = "진열 순서는 필수 입력값입니다.")
             @Min(value = 0, message = "진열 순서는 0 이상이어야 합니다.")
             Integer displayOrder,
-            @NotBlank(message = "시작일은 필수 입력값입니다.")
+            @NotNull(message = "시작일은 필수 입력값입니다.")
             LocalDate startDate, // 기본적으로 yyyy-mm-dd 형식으로 입력받습니다.
-            @NotBlank(message = "종료일은 필수 입력값입니다.")
+            @NotNull(message = "종료일은 필수 입력값입니다.")
             LocalDate endDate
     ) {}
 

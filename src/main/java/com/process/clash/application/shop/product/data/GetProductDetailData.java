@@ -12,8 +12,8 @@ public class GetProductDetailData {
     public record Result(
             ProductVo product
     ) {
-        public static Result from(Product domain, String seasonTitle) {
-            return new Result(ProductVo.from(domain, seasonTitle));
+        public static Result from(Product domain) {
+            return new Result(ProductVo.from(domain));
         }
     }
 }

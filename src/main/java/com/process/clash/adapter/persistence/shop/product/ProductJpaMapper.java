@@ -1,10 +1,16 @@
 package com.process.clash.adapter.persistence.shop.product;
 
+import com.process.clash.adapter.persistence.shop.season.SeasonJpaMapper;
 import com.process.clash.domain.shop.product.entity.Product;
+import com.process.clash.domain.shop.season.entity.Season;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ProductJpaMapper {
+
+    private final SeasonJpaMapper seasonJpaMapper;
 
     public ProductJpaEntity toJpaEntity(Product product) {
         return new ProductJpaEntity(
@@ -19,12 +25,16 @@ public class ProductJpaMapper {
                 product.discount(),
                 product.description(),
                 product.popularity(),
-                null,
+                product.season() != null ? seasonJpaMapper.toJpaEntity(product.season()) : null,
                 product.isSeasonal()
         );
     }
 
     public Product toDomain(ProductJpaEntity productJpaEntity) {
+        Season season = productJpaEntity.getSeason() != null
+                ? seasonJpaMapper.toDomain(productJpaEntity.getSeason())
+                : null;
+
         return new Product(
                 productJpaEntity.getId(),
                 productJpaEntity.getCreatedAt(),
@@ -37,7 +47,7 @@ public class ProductJpaMapper {
                 productJpaEntity.getDiscount(),
                 productJpaEntity.getDescription(),
                 productJpaEntity.getPopularity(),
-                productJpaEntity.getSeason() != null ? productJpaEntity.getSeason().getId() : null,
+                season,
                 productJpaEntity.getIsSeasonal()
         );
     }

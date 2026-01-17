@@ -2,6 +2,7 @@ package com.process.clash.domain.shop.product.entity;
 
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductGoodsType;
+import com.process.clash.domain.shop.season.entity.Season;
 import java.time.LocalDateTime;
 
 public record Product(
@@ -16,7 +17,7 @@ public record Product(
         Integer discount,
         String description,
         Long popularity,
-        Long seasonId,
+        Season season,
         Boolean isSeasonal
 ) {
     public Product {
@@ -39,7 +40,7 @@ public record Product(
             Long price,
             Integer discount,
             String description,
-            Long seasonId
+            Season season
     ) {
         return new Product(
                 null,
@@ -53,7 +54,7 @@ public record Product(
                 discount != null ? discount : 0,
                 description,
                 0L,
-                seasonId,
+                season,
                 false
         );
     }

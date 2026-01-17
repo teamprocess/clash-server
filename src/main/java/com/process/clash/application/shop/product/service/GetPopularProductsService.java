@@ -4,9 +4,7 @@ import com.process.clash.application.shop.product.data.GetPopularProductsData;
 import com.process.clash.application.shop.product.port.in.GetPopularProductsUseCase;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.application.shop.product.vo.ProductVo;
-import com.process.clash.application.shop.season.port.out.SeasonRepositoryPort;
 import com.process.clash.domain.shop.product.entity.Product;
-import com.process.clash.domain.shop.season.entity.Season;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,24 +17,15 @@ import java.util.List;
 public class GetPopularProductsService implements GetPopularProductsUseCase {
 
     private final ProductRepositoryPort productRepositoryPort;
-    private final SeasonRepositoryPort seasonRepositoryPort;
 
     @Override
     public GetPopularProductsData.Result execute() {
-
         List<Product> products = productRepositoryPort.findTop10ByOrderByPopularityDesc();
 
         List<ProductVo> productVos = products.stream()
-                .map(product -> {
-                    String seasonTitle = null;
-                    if (product.seasonId() != null) {
-                        seasonTitle = seasonRepositoryPort.findById(product.seasonId())
-                                .map(Season::title)
-                                .orElse(null);
-                    }
-                    return ProductVo.from(product, seasonTitle);
-                })
+                .map(ProductVo::from)
                 .toList();
+
         return new GetPopularProductsData.Result(productVos);
     }
 }
