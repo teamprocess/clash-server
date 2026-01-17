@@ -2,6 +2,7 @@ package com.process.clash.application.roadmap.section.service;
 
 import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
+import com.process.clash.application.roadmap.section.exception.exception.unprocessableentity.SectionCircularDependencyException;
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.policy.CheckAdminPolicy;
@@ -38,6 +39,9 @@ public class UpdateSectionService implements UpdateSectionUseCase {
 
         // prerequisiteSectionIds가 제공된 경우, 선행 로드맵 설정
         if (command.prerequisiteSectionIds() != null) {
+            if (command.prerequisiteSectionIds().contains(command.sectionId())) {
+                throw new SectionCircularDependencyException();
+            }
             updatePrerequisites(section, command.prerequisiteSectionIds());
         }
 
