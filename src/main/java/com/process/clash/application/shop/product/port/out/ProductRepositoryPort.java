@@ -3,7 +3,6 @@ package com.process.clash.application.shop.product.port.out;
 import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductSortType;
-import org.hibernate.id.IncrementGenerator;
 
 import java.util.List;
 import java.util.Optional;
