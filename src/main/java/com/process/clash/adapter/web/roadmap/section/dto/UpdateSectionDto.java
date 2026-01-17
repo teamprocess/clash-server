@@ -21,10 +21,12 @@ public class UpdateSectionDto {
             Integer orderIndex,  // 선택사항
 
             @Size(min = 1, message = "keyPoints가 제공되는 경우 비워둘 수 없습니다.")
-            List<String> keyPoints  // 선택사항
+            List<String> keyPoints,  // 선택사항
+
+            List<Long> prerequisiteSectionIds  // 선택사항: 선행 로드맵 ID 목록
     ) {
         public UpdateSectionData.Command toCommand(Actor actor, Long sectionId) {
-            return new UpdateSectionData.Command(actor, sectionId, title, category, description, orderIndex, keyPoints);
+            return new UpdateSectionData.Command(actor, sectionId, title, category, description, orderIndex, keyPoints, prerequisiteSectionIds);
         }
     }
 

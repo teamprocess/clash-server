@@ -35,6 +35,11 @@ public class UpdateSectionService implements UpdateSectionUseCase {
             reorderSections(section, command.orderIndex());
         }
 
+        // prerequisiteSectionIds가 제공된 경우, 선행 로드맵 설정
+        if (command.prerequisiteSectionIds() != null) {
+            updatePrerequisites(section, command.prerequisiteSectionIds());
+        }
+
         section.update(command);
 
         // 업데이트된 Section 업데이트/저장
@@ -75,6 +80,18 @@ public class UpdateSectionService implements UpdateSectionUseCase {
                 section.updateOrderIndex(currentIndex - 1);
                 sectionRepository.save(section);
             }
+        }
+    }
+
+    private void updatePrerequisites(Section section, List<Long> prerequisiteSectionIds) {
+        // 기존 prerequisites 초기화
+        section.getPrerequisites().clear();
+
+        // 새로운 prerequisite Section들을 로드하여 추가
+        for (Long prerequisiteId : prerequisiteSectionIds) {
+            Section prerequisiteSection = sectionRepository.findById(prerequisiteId)
+                    .orElseThrow(() -> new SectionNotFoundException());
+            section.addPrerequisite(prerequisiteSection);
         }
     }
 }
