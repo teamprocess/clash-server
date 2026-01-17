@@ -17,7 +17,7 @@ public class SectionLockedBooleanClassifier {
 
     private final UserSectionProgressRepositoryPort userSectionProgressRepository;
 
-    protected boolean check(Actor actor, Section section) {
+    public boolean check(Actor actor, Section section) {
         Set<Section> prerequisites = section.getPrerequisites();
         if (prerequisites.isEmpty()) {
             return false;

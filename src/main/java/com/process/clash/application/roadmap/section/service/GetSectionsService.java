@@ -1,5 +1,6 @@
 package com.process.clash.application.roadmap.section.service;
 
+import com.process.clash.application.roadmap.section.common.SectionLockedBooleanClassifier;
 import com.process.clash.application.roadmap.section.data.GetSectionsData;
 import com.process.clash.application.roadmap.section.port.in.GetSectionsUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
@@ -14,6 +15,7 @@ import java.util.List;
 public class GetSectionsService implements GetSectionsUseCase {
 
     private final SectionRepositoryPort sectionRepository;
+    private final SectionLockedBooleanClassifier sectionLockedBooleanClassifier;
 
     @Override
     public GetSectionsData.Result execute(GetSectionsData.Command command) {
@@ -26,8 +28,15 @@ public class GetSectionsService implements GetSectionsUseCase {
                 .distinct()
                 .toList();
 
-        // TODO: completed, locked 계산 로직 추가 필요
-        // 현재는 false, false로 하드코딩
-        return GetSectionsData.Result.from(sections, categories);
+        // 각 Section에 대해 locked 여부 판단
+        List<GetSectionsData.Result.SectionVo> sectionVos = sections.stream()
+                .map(section -> {
+                    boolean locked = sectionLockedBooleanClassifier.check(command.actor(), section);
+                    // TODO: completed 계산 로직 추가 필요
+                    return GetSectionsData.Result.SectionVo.from(section, false, locked);
+                })
+                .toList();
+
+        return new GetSectionsData.Result(sectionVos, categories);
     }
 }
