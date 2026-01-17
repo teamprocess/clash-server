@@ -90,7 +90,7 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         // 새로운 prerequisite Section들을 로드하여 추가
         for (Long prerequisiteId : prerequisiteSectionIds) {
             Section prerequisiteSection = sectionRepository.findById(prerequisiteId)
-                    .orElseThrow(() -> new SectionNotFoundException());
+                    .orElseThrow(SectionNotFoundException::new);
             section.addPrerequisite(prerequisiteSection);
         }
     }
