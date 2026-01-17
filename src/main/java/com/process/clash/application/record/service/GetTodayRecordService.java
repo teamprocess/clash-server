@@ -5,7 +5,7 @@ import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
-import com.process.clash.common.DateUtil;
+import com.process.clash.application.common.util.DateUtil;
 import com.process.clash.domain.record.model.entity.StudySession;
 import com.process.clash.domain.user.user.entity.User;
 import java.time.Instant;
