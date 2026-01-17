@@ -16,7 +16,7 @@ public class CreateProductData {
             Long price,
             Integer discount,
             String description,
-            String season
+            Long seasonId
     ) {
         public static CreateProductData.Command from(CreateProductDto.Request request, Actor actor) {
             return new CreateProductData.Command(
@@ -28,7 +28,7 @@ public class CreateProductData {
                     request.price(),
                     request.discount(),
                     request.description(),
-                    request.season()
+                    request.seasonId()
             );
         }
     }

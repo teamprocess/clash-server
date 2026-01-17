@@ -25,9 +25,8 @@ public class CreateProductService implements CreateProductUseCase {
         checkAdminPolicy.check(command.actor());
 
         Season season = null;
-        if (command.season() != null) {
-            Long seasonId = Long.parseLong(command.season());
-            season = seasonRepositoryPort.findById(seasonId).orElse(null);
+        if (command.seasonId() != null) {
+            season = seasonRepositoryPort.findById(command.seasonId()).orElse(null);
         }
 
         Product product = Product.create(

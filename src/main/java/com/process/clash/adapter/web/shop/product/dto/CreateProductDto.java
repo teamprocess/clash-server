@@ -26,7 +26,7 @@ public class CreateProductDto {
             @Max(value = 100, message = "할인율은 100 이하여야 합니다.")
             Integer discount,
             String description,
-            String season  // 시즌 상품이 아니면 null
+            Long seasonId  // 시즌 상품이 아니면 null
     ) {}
 
     public record Response(
