@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +41,6 @@ public class UpdateSectionService implements UpdateSectionUseCase {
 
         // prerequisiteSectionIds가 제공된 경우, 선행 로드맵 설정
         if (command.prerequisiteSectionIds() != null) {
-            if (command.prerequisiteSectionIds().contains(command.sectionId())) {
-                throw new SectionCircularDependencyException();
-            }
             updatePrerequisites(section, command.prerequisiteSectionIds());
         }
 
@@ -97,8 +96,19 @@ public class UpdateSectionService implements UpdateSectionUseCase {
     }
 
     private void updatePrerequisites(Section section, List<Long> prerequisiteSectionIds) {
+
+        if (prerequisiteSectionIds.contains(section.getId())) {
+            throw new SectionCircularDependencyException();
+        }
+
+        Set<Long> distinctIds = new HashSet<>(prerequisiteSectionIds);
+
         // 기존 prerequisites 초기화
         section.getPrerequisites().clear();
+
+        if (distinctIds.isEmpty()) {
+            return;
+        }
 
         // 한 번에 모든 prerequisite Section 조회
         List<Section> prerequisiteSections = sectionRepository.findAllById(prerequisiteSectionIds);
