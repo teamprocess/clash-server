@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.shop.product.dto;
 
+import com.process.clash.application.shop.product.data.CreateProductData;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import jakarta.validation.constraints.Max;
@@ -31,8 +32,8 @@ public class CreateProductDto {
     public record Response(
             Long productId
     ) {
-        public static Response from(Long productId) {
-            return new Response(productId);
+        public static Response from(CreateProductData.Result result) {
+            return new Response(result.productId());
         }
     }
 }
