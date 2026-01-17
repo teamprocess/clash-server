@@ -10,7 +10,7 @@ public class CreateSeasonDto {
 
     public record Request(
             @NotBlank(message = "시즌명은 필수 입력값입니다.")
-            String title,
+            String name,
             @NotNull(message = "시작일은 필수 입력값입니다.")
             LocalDate startDate,
             @NotNull(message = "종료일은 필수 입력값입니다.")

@@ -1,5 +1,6 @@
 package com.process.clash.application.shop.season.data;
 
+import com.process.clash.adapter.web.shop.season.dto.CreateSeasonDto;
 import com.process.clash.application.common.actor.Actor;
 
 import java.time.LocalDate;
