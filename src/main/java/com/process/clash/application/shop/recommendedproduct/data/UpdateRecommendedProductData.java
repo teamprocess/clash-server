@@ -31,17 +31,17 @@ public class UpdateRecommendedProductData {
     public record Result(
             Long id,
             Long productId,
-            String season,
+            String seasonName,
             Integer displayOrder,
             String startDate,
             String endDate,
             Boolean isActive
     ) {
-        public static Result from(RecommendedProduct recommendedProduct, String season) {
+        public static Result from(RecommendedProduct recommendedProduct, String seasonName) {
             return new Result(
                     recommendedProduct.id(),
                     recommendedProduct.productId(),
-                    season,
+                    seasonName,
                     recommendedProduct.displayOrder(),
                     recommendedProduct.startDate().toString(),
                     recommendedProduct.endDate().toString(),

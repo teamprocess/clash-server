@@ -38,8 +38,8 @@ public class UpdateRecommendedProductService implements UpdateRecommendedProduct
         RecommendedProduct savedRecommendedProduct = recommendedProductRepositoryPort.save(updatedRecommendedProduct);
 
         Product product = productRepositoryPort.findById(savedRecommendedProduct.productId()).orElse(null);
-        String seasonTitle = product != null && product.season() != null ? product.season().title() : null;
+        String seasonName = product != null && product.season() != null ? product.season().title() : null;
 
-        return UpdateRecommendedProductData.Result.from(savedRecommendedProduct, seasonTitle);
+        return UpdateRecommendedProductData.Result.from(savedRecommendedProduct, seasonName);
     }
 }

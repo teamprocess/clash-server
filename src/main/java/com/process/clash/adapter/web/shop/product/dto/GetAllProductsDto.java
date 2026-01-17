@@ -46,7 +46,7 @@ public class GetAllProductsDto {
             Integer discount,
             String description,
             Long popularity,
-            String season,
+            String seasonName,
             Boolean isSeasonal,
             String createdAt
     ) {
@@ -61,7 +61,7 @@ public class GetAllProductsDto {
                     product.discount(),
                     product.description(),
                     product.popularity(),
-                    product.season(),
+                    product.seasonName(),
                     product.isSeasonal(),
                     product.createdAt().toString()
             );

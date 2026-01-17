@@ -16,12 +16,12 @@ public record ProductVo(
         Integer discount,
         String description,
         Long popularity,
-        String season,
+        String seasonName,
         Boolean isSeasonal,
         LocalDateTime createdAt
 ) {
     public static ProductVo from(Product domain) {
-        String seasonTitle = domain.season() != null ? domain.season().title() : null;
+        String seasonName = domain.season() != null ? domain.season().title() : null;
 
         return new ProductVo(
                 domain.id(),
@@ -33,7 +33,7 @@ public record ProductVo(
                 domain.discount(),
                 domain.description(),
                 domain.popularity(),
-                seasonTitle,
+                seasonName,
                 domain.isSeasonal(),
                 domain.createdAt()
         );

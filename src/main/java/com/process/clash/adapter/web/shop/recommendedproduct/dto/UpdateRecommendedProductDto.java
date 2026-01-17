@@ -22,7 +22,7 @@ public class UpdateRecommendedProductDto {
     public record Response(
             Long id,
             Long productId,
-            String season,
+            String seasonName,
             Integer displayOrder,
             String startDate,
             String endDate,
@@ -32,7 +32,7 @@ public class UpdateRecommendedProductDto {
             return new Response(
                     result.id(),
                     result.productId(),
-                    result.season(),
+                    result.seasonName(),
                     result.displayOrder(),
                     result.startDate(),
                     result.endDate(),
