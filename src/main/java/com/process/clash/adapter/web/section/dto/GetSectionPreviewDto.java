@@ -10,7 +10,7 @@ public class GetSectionPreviewDto {
             Long id,
             String title,
             String description,
-            Long totalSteps,
+            Long totalChapters,
             List<ChapterVo> chapters,
             List<String> keyPoints
     ) {
@@ -22,7 +22,7 @@ public class GetSectionPreviewDto {
                     result.id(),
                     result.title(),
                     result.description(),
-                    result.totalSteps(),
+                    result.totalChapters(),
                     chapters,
                     result.keyPoints()
             );

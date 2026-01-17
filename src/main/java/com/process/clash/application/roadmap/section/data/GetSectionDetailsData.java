@@ -13,10 +13,10 @@ public class GetSectionDetailsData {
             Long sectionId,
             String sectionTitle,
             Integer totalChapters,
-            Integer currentChapters,
+            Long currentChapterId,
             List<ChapterVo> chapters
     ) {
-        public static Result from(Section section, Integer currentChapters) {
+        public static Result from(Section section, Long currentChapterId) {
             List<ChapterVo> chapterVos = section.getChapters() != null
                     ? section.getChapters().stream()
                             .map(chapter -> ChapterVo.from(chapter, 1)) // difficulty는 서비스에서 계산 필요
@@ -27,7 +27,7 @@ public class GetSectionDetailsData {
                     section.getId(),
                     section.getTitle(),
                     chapterVos.size(),
-                    currentChapters,
+                    currentChapterId,
                     chapterVos
             );
         }
