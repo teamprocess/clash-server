@@ -14,9 +14,9 @@ public class CreateRecommendedProductDto {
             @Min(value = 0, message = "진열 순서는 0 이상이어야 합니다.")
             Integer displayOrder,
             @NotBlank(message = "시작일은 필수 입력값입니다.")
-            String startDate,
+            LocalDate startDate, // 기본적으로 yyyy-mm-dd 형식으로 입력받습니다.
             @NotBlank(message = "종료일은 필수 입력값입니다.")
-            String endDate
+            LocalDate endDate
     ) {}
 
     public record Response(
