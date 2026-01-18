@@ -162,6 +162,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
 
             entity.getKeyPoints().clear();
 
+            /*
+            toJpaEntity 메서드는 id를 그대로 가져와 객체를 만듭니다.
+            이러면 clear() 후 다시 id가 같은 객체가 와서 save()를 하는데, 이러면 JPA가 지우라고 했는데 왜 save해 하면서 혼란에 빠집니다.
+            반드시 ID가 null이어야 JPA가 "아, 이건 완전히 새로운 데이터구나!" 하고 깨끗하게 INSERT 쿼리를 날립니다.
+            따라서 아래에 생성자로 id에 null을 직접 넣었습니다.
+             */
             List<SectionKeyPointJpaEntity> newKeyPoints = domain.getKeyPoints().stream()
                     .map(kp -> new SectionKeyPointJpaEntity(
                             null,             // ID를 강제로 null로 설정 (그래야 INSERT 쿼리가 나감)
