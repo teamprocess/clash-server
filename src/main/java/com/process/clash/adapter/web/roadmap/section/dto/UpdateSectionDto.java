@@ -13,7 +13,6 @@ public class UpdateSectionDto {
             @Size(min = 1, message = "title이 제공되는 경우 비워둘 수 없습니다.")
             String title,        // 선택사항
 
-            @Size(min = 1, message = "category가 제공되는 경우 비워둘 수 없습니다.")
             Long categoryId,     // 선택사항
 
             @Size(min = 1, message = "description이 제공되는 경우 비워둘 수 없습니다.")
