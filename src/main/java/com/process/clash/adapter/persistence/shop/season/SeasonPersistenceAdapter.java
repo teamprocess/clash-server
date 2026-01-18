@@ -5,6 +5,8 @@ import com.process.clash.domain.shop.season.entity.Season;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class SeasonPersistenceAdapter implements SeasonRepositoryPort {
@@ -17,5 +19,16 @@ public class SeasonPersistenceAdapter implements SeasonRepositoryPort {
         SeasonJpaEntity seasonJpaEntity = seasonJpaMapper.toJpaEntity(season);
         SeasonJpaEntity savedEntity = seasonJpaRepository.save(seasonJpaEntity);
         return seasonJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<Season> findById(Long seasonId) {
+        return seasonJpaRepository.findById(seasonId)
+                .map(seasonJpaMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return seasonJpaRepository.existsByName(name);
     }
 }

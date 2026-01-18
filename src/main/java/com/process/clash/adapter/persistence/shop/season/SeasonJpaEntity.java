@@ -29,7 +29,7 @@ public class SeasonJpaEntity {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false, unique = true)
-    private String title;
+    private String name;
 
     @Column(nullable = false)
     private LocalDate startDate;
