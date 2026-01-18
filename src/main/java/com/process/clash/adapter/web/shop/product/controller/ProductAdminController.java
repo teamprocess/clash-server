@@ -26,7 +26,7 @@ public class ProductAdminController {
             @AuthenticatedActor Actor actor,
             @Valid @RequestBody CreateProductDto.Request request
     ) {
-        CreateProductData.Command command = CreateProductData.Command.from(request, actor);
+        CreateProductData.Command command = request.toCommand(actor);
         CreateProductData.Result result = createProductUseCase.execute(command);
         CreateProductDto.Response response = CreateProductDto.Response.from(result);
         return ApiResponse.created(response, "상품 생성에 성공했습니다.");

@@ -1,4 +1,4 @@
-package com.process.clash.domain.common.policy;
+package com.process.clash.application.common.policy;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.user.user.exception.exception.forbidden.RequiredUserRoleException;

@@ -1,6 +1,5 @@
 package com.process.clash.domain.roadmap.entity;
 
-import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import com.process.clash.domain.common.enums.Major;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -45,26 +44,26 @@ public class Section {
         this.prerequisites.add(prerequisiteSection);
     }
 
-    public Section update(UpdateSectionData.Command command) {
-        if (command.title() != null) {
-            this.title = command.title();
+    public Section update(String title, String category, String description, Integer orderIndex, List<String> keyPoints) {
+        if (title != null) {
+            this.title = title;
         }
-        if (command.category() != null) {
-            this.category = command.category();
+        if (category != null) {
+            this.category = category;
         }
-        if (command.description() != null) {
-            this.description = command.description();
+        if (description != null) {
+            this.description = description;
         }
-        if (command.orderIndex() != null) {
-            this.orderIndex = command.orderIndex();
+        if (orderIndex != null) {
+            this.orderIndex = orderIndex;
         }
-        if (command.keyPoints() != null) {
+        if (keyPoints != null) {
             // keyPoints를 SectionKeyPoint 엔티티 리스트로 변환
-            this.keyPoints = IntStream.range(0, command.keyPoints().size())
+            this.keyPoints = IntStream.range(0, keyPoints.size())
                     .mapToObj(index -> new SectionKeyPoint(
                             null,                           // id는 JPA가 자동 생성 (새 keyPoint인 경우)
                             this.id,                        // sectionId는 현재 Section의 id
-                            command.keyPoints().get(index), // content
+                            keyPoints.get(index), // content
                             index                           // orderIndex
                     ))
                     .toList();

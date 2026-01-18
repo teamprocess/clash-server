@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.shop.recommendedproduct.dto;
 
+import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.shop.recommendedproduct.data.CreateRecommendedProductData;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,17 @@ public class CreateRecommendedProductDto {
             LocalDate startDate, // 기본적으로 yyyy-mm-dd 형식으로 입력받습니다.
             @NotNull(message = "종료일은 필수 입력값입니다.")
             LocalDate endDate
-    ) {}
+    ) {
+        public CreateRecommendedProductData.Command toCommand(Actor actor) {
+            return new CreateRecommendedProductData.Command(
+                    actor,
+                    productId,
+                    displayOrder,
+                    startDate,
+                    endDate
+            );
+        }
+    }
 
     public record Response(
             Long id,

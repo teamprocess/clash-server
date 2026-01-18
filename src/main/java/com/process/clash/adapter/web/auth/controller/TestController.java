@@ -3,7 +3,7 @@ package com.process.clash.adapter.web.auth.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.common.policy.CheckAdminPolicy;
+import com.process.clash.application.common.policy.CheckAdminPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

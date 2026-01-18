@@ -74,7 +74,7 @@ public class RivalCompeteController {
             @Valid @RequestBody ApplyRivalDto.Request request
     ) {
 
-        ApplyRivalData.Command command = ApplyRivalData.Command.from(actor, request);
+        ApplyRivalData.Command command = request.toCommand(actor);
         applyRivalUseCase.execute(command);
         return ApiResponse.created("라이벌을 성공적으로 추가했습니다.");
     }

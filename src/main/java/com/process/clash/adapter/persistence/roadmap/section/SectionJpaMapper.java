@@ -20,6 +20,7 @@ public class SectionJpaMapper {
 
     private final ChapterJpaMapper chapterJpaMapper;
     private final SectionKeyPointJpaMapper sectionKeyPointJpaMapper;
+    private final SectionJpaRepository sectionJpaRepository;
 
     public SectionJpaEntity toJpaEntity(Section section) {
         SectionJpaEntity sectionEntity = new SectionJpaEntity(
@@ -49,11 +50,13 @@ public class SectionJpaMapper {
         sectionEntity.getChapters().addAll(chapters);
         sectionEntity.getKeyPoints().addAll(keyPoints);
 
-        if (section.getPrerequisites() != null) {
-            Set<SectionJpaEntity> prerequisites = section.getPrerequisites().stream()
-                    .map(this::toPrerequisiteEntity) // 재귀 방지
-                    .collect(Collectors.toSet());
-            sectionEntity.getPrerequisites().addAll(prerequisites);
+        if (section.getPrerequisites() != null && !section.getPrerequisites().isEmpty()) {
+            // DB에서 managed 엔티티를 가져와서 사용 (transient 엔티티 생성 방지)
+            List<Long> prerequisiteIds = section.getPrerequisites().stream()
+                    .map(Section::getId)
+                    .toList();
+            List<SectionJpaEntity> managedPrerequisites = sectionJpaRepository.findAllById(prerequisiteIds);
+            sectionEntity.getPrerequisites().addAll(managedPrerequisites);
         }
 
         return sectionEntity;
@@ -99,22 +102,6 @@ public class SectionJpaMapper {
                 new HashSet<>(), // 선수 로드맵의 선수 로드맵은 더 이상 가져오지 않음
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
-        );
-    }
-
-    private SectionJpaEntity toPrerequisiteEntity(Section domain) {
-        return new SectionJpaEntity(
-                domain.getId(),
-                domain.getMajor(),
-                domain.getTitle(),
-                domain.getDescription(),
-                domain.getCategory(),
-                domain.getOrderIndex(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new HashSet<>(), // 여기도 비워둠
-                domain.getCreatedAt(),
-                domain.getUpdatedAt()
         );
     }
 }

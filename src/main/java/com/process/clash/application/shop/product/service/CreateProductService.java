@@ -5,7 +5,7 @@ import com.process.clash.application.shop.product.port.in.CreateProductUseCase;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.application.shop.season.exception.exception.notfound.SeasonNotFoundException;
 import com.process.clash.application.shop.season.port.out.SeasonRepositoryPort;
-import com.process.clash.domain.common.policy.CheckAdminPolicy;
+import com.process.clash.application.common.policy.CheckAdminPolicy;
 import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.season.entity.Season;
 import lombok.RequiredArgsConstructor;
