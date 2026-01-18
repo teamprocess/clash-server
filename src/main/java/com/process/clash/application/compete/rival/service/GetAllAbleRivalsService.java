@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +27,12 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
 
         List<Rival> rivals = rivalRepositoryPort.findAllByMy_Id(command.actor().id());
 
-        List<Long> opponentIds = rivals.stream()
-                .map(Rival::opponentId)
-                .toList();
+        List<Long> excludedUserIds = Stream.concat(
+                rivals.stream().map(Rival::opponentId),
+                Stream.of(command.actor().id())
+        ).toList();
 
-        List<UserGitHub> userGitHubs = userGitHubRepositoryPort.findByIdNotIn(opponentIds);
+        List<UserGitHub> userGitHubs = userGitHubRepositoryPort.findByUser_IdNotIn(excludedUserIds);
 
         List<User> users = userRepositoryPort.findByIdIn(
                 userGitHubs.stream().map(UserGitHub::userId).toList()

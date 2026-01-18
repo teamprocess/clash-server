@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,6 +28,27 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
         UserJpaEntity opponent = userJpaRepository.getReferenceById(rival.opponentId());
         RivalJpaEntity savedEntity = rivalJpaRepository.save(rivalJpaMapper.toJpaEntity(rival, my, opponent));
         return rivalJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public void saveAll(List<Rival> rivals) {
+        Set<Long> allUserIds = rivals.stream()
+                .flatMap(rival -> Stream.of(rival.myId(), rival.opponentId()))
+                .collect(Collectors.toSet());
+
+        Map<Long, UserJpaEntity> userMap = userJpaRepository.findAllById(allUserIds)
+                .stream()
+                .collect(Collectors.toMap(UserJpaEntity::getId, user -> user));
+
+        List<RivalJpaEntity> entities = rivals.stream()
+                .map(rival -> {
+                    UserJpaEntity my = userMap.get(rival.myId());
+                    UserJpaEntity opponent = userMap.get(rival.opponentId());
+                    return rivalJpaMapper.toJpaEntity(rival, my, opponent);
+                })
+                .toList();
+
+        rivalJpaRepository.saveAll(entities);
     }
 
     @Override

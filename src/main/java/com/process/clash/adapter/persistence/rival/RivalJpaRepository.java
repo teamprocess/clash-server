@@ -34,6 +34,4 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     );
 
     List<RivalJpaEntity> findAllByMy_Id(Long myId);
-
-    Long my(UserJpaEntity my);
 }

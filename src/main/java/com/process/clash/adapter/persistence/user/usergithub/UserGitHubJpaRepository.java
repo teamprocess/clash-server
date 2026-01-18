@@ -8,5 +8,5 @@ import java.util.List;
 @Repository
 public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEntity, Long> {
 
-    List<UserGitHubJpaEntity> findByIdNotIn(List<Long> ids);
+    List<UserGitHubJpaEntity> findByUser_IdNotIn(List<Long> ids);
 }

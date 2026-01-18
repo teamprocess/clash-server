@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ApplyRivalService implements ApplyRivalUseCase {
@@ -22,10 +24,10 @@ public class ApplyRivalService implements ApplyRivalUseCase {
 
         applyRivalPolicy.check(command);
 
-        for (int i = 0; i < command.ids().size(); i++) {
-            Rival rival = Rival.createDefault(command.actor().id(), command.ids().get(i).id());
+        List<Rival> rivals = command.ids().stream()
+                .map(opponentId -> Rival.createDefault(command.actor().id(), opponentId.id()))
+                .toList();
 
-            rivalRepositoryPort.save(rival);
-        }
+        rivalRepositoryPort.saveAll(rivals);
     }
 }

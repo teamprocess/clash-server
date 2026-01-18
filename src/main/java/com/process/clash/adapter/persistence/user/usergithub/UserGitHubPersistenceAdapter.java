@@ -20,16 +20,16 @@ public class UserGitHubPersistenceAdapter implements UserGitHubRepositoryPort {
     @Override
     public UserGitHub save(UserGitHub userGitHub) {
 
-        UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(userGitHub.id());
+        UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(userGitHub.userId());
         UserGitHubJpaEntity savedEntity =
                 userGitHubJpaRepository.save(userGitHubJpaMapper.toJpaEntity(userGitHub, userJpaEntity));
         return userGitHubJpaMapper.toDomain(savedEntity);
     }
 
     @Override
-    public List<UserGitHub> findByIdNotIn(List<Long> ids) {
+    public List<UserGitHub> findByUser_IdNotIn(List<Long> ids) {
 
-        List<UserGitHubJpaEntity> userGitHubJpaEntities = userGitHubJpaRepository.findByIdNotIn(ids);
+        List<UserGitHubJpaEntity> userGitHubJpaEntities = userGitHubJpaRepository.findByUser_IdNotIn(ids);
 
         return userGitHubJpaEntities.stream()
                 .map(userGitHubJpaMapper::toDomain)

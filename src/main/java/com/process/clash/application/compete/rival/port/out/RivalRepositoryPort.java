@@ -7,6 +7,7 @@ import java.util.List;
 public interface RivalRepositoryPort {
 
     Rival save(Rival rival);
+    void saveAll(List<Rival> rivals);
     List<Rival> findAllByMy_Id(Long myId);
     int countAllByMy_Id(Long myId);
     int countAllByOpponent_Id(Long opponentId);

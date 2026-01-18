@@ -11,17 +11,18 @@ import org.springframework.stereotype.Component;
 public class ApplyRivalPolicy {
 
     private final RivalRepositoryPort rivalRepositoryPort;
+    private static final int MAX_RIVAL_COUNT = 4;
 
     public void check(ApplyRivalData.Command command) {
 
         int myRivalCount = rivalRepositoryPort.countAllByMy_Id(command.actor().id());
 
-        if (myRivalCount + command.ids().size() > 4) {
+        if (myRivalCount + command.ids().size() > MAX_RIVAL_COUNT) {
             throw new TooMuchRivalsException();
         }
 
         boolean hasOverLimitRival = command.ids().stream()
-                .anyMatch(id -> rivalRepositoryPort.countAllByOpponent_Id(id.id()) >= 4);
+                .anyMatch(id -> rivalRepositoryPort.countAllByOpponent_Id(id.id()) >= MAX_RIVAL_COUNT);
 
         if (hasOverLimitRival) {
             throw new TooMuchRivalsException();
