@@ -1,8 +1,11 @@
 package com.process.clash.adapter.web.compete.my.dto;
 
 import com.process.clash.application.compete.my.data.GetCompareWithYesterdayData;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetCompareWithYesterdayDto {
+
+    @Schema(name = "GetCompareWithYesterdayDtoResponse")
 
     public record Response(
             ActiveTime activeTime,

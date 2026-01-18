@@ -4,8 +4,11 @@ import com.process.clash.application.compete.my.data.CompareGitHubData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CompareGitHubDto {
+
+    @Schema(name = "CompareGitHubDtoResponse")
 
     public record Response(
             OneDayStats yesterday,
