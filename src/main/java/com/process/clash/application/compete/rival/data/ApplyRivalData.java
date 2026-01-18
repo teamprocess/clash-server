@@ -4,7 +4,7 @@ import com.process.clash.application.common.actor.Actor;
 
 import java.util.List;
 
-public class AddRivalData {
+public class ApplyRivalData {
 
     public record Command(
             Actor actor,

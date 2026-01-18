@@ -1,7 +1,7 @@
 package com.process.clash.application.user.user.exception.exception.badrequest;
 
 import com.process.clash.application.common.exception.exception.BadRequestException;
-import com.process.clash.application.user.user.exception.status.UserStatusCode;
+import com.process.clash.application.user.user.exception.statuscode.UserStatusCode;
 
 public class InvalidTargetCategoryException extends BadRequestException {
     public InvalidTargetCategoryException() {
