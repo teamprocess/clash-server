@@ -11,11 +11,14 @@ import java.util.Optional;
 @Repository
 public interface SectionJpaRepository extends JpaRepository<SectionJpaEntity, Long> {
 
-    @EntityGraph(attributePaths = {"prerequisites"})
+    @EntityGraph(attributePaths = {"chapters", "keyPoints", "prerequisites"})
     Optional<SectionJpaEntity> findById(Long id);
 
-    @EntityGraph(attributePaths = {"prerequisites"})
+    @EntityGraph(attributePaths = {"chapters", "keyPoints", "prerequisites"})
     List<SectionJpaEntity> findAll();
+
+    @EntityGraph(attributePaths = {"chapters", "keyPoints", "prerequisites"})
+    List<SectionJpaEntity> findAllById(Iterable<Long> ids);
 
     List<SectionJpaEntity> findAllByMajorOrderByOrderIndexAsc(Major major);
 }
