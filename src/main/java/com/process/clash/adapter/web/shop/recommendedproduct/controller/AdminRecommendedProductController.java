@@ -34,7 +34,7 @@ public class AdminRecommendedProductController {
             @AuthenticatedActor Actor actor,
             @Valid @RequestBody CreateRecommendedProductDto.Request request
     ) {
-        CreateRecommendedProductData.Command command = CreateRecommendedProductData.Command.from(request, actor);
+        CreateRecommendedProductData.Command command = request.toCommand(actor);
         CreateRecommendedProductData.Result result = createRecommendedProductUseCase.execute(command);
         CreateRecommendedProductDto.Response response = CreateRecommendedProductDto.Response.from(result);
         return ApiResponse.created(response, "추천 상품 등록을 성공했습니다.");
@@ -47,7 +47,7 @@ public class AdminRecommendedProductController {
             @PathVariable Long recommendedProductId,
             @Valid @RequestBody UpdateRecommendedProductDto.Request request
     ) {
-        UpdateRecommendedProductData.Command command = UpdateRecommendedProductData.Command.from(recommendedProductId, request, actor);
+        UpdateRecommendedProductData.Command command = request.toCommand(recommendedProductId, actor);
         UpdateRecommendedProductData.Result result = updateRecommendedProductUseCase.execute(command);
         UpdateRecommendedProductDto.Response response = UpdateRecommendedProductDto.Response.from(result);
         return ApiResponse.success(response, "추천 상품 수정을 성공했습니다.");
@@ -71,7 +71,7 @@ public class AdminRecommendedProductController {
             @PathVariable Long recommendedProductId,
             @Valid @RequestBody UpdateRecommendedProductOrderDto.Request request
     ) {
-        UpdateRecommendedProductOrderData.Command command = UpdateRecommendedProductOrderData.Command.from(recommendedProductId, request, actor);
+        UpdateRecommendedProductOrderData.Command command = request.toCommand(recommendedProductId, actor);
         UpdateRecommendedProductOrderData.Result result = updateRecommendedProductOrderUseCase.execute(command);
         UpdateRecommendedProductOrderDto.Response response = UpdateRecommendedProductOrderDto.Response.from(result);
         return ApiResponse.success(response, "추천 상품 순서를 변경했습니다.");

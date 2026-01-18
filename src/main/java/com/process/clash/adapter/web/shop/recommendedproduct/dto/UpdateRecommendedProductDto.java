@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.shop.recommendedproduct.dto;
 
+import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.shop.recommendedproduct.data.UpdateRecommendedProductData;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,18 @@ public class UpdateRecommendedProductDto {
             LocalDate endDate,
             @NotNull(message = "활성화 상태는 필수 입력값입니다.")
             Boolean isActive
-    ) {}
+    ) {
+        public UpdateRecommendedProductData.Command toCommand(Long recommendedProductId, Actor actor) {
+            return new UpdateRecommendedProductData.Command(
+                    actor,
+                    recommendedProductId,
+                    displayOrder,
+                    startDate,
+                    endDate,
+                    isActive
+            );
+        }
+    }
 
     public record Response(
             Long id,

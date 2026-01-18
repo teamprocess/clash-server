@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.shop.product.dto;
 
+import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.shop.product.data.CreateProductData;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductGoodsType;
@@ -27,7 +28,21 @@ public class CreateProductDto {
             Integer discount,
             String description,
             Long seasonId  // 시즌 상품이 아니면 null
-    ) {}
+    ) {
+        public CreateProductData.Command toCommand(Actor actor) {
+            return new CreateProductData.Command(
+                    actor,
+                    title,
+                    category,
+                    image,
+                    type,
+                    price,
+                    discount,
+                    description,
+                    seasonId
+            );
+        }
+    }
 
     public record Response(
             Long productId
