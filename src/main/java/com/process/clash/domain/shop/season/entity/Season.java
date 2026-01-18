@@ -1,6 +1,6 @@
 package com.process.clash.domain.shop.season.entity;
 
-import jakarta.validation.ValidationException;
+import com.process.clash.application.shop.season.exception.exception.badrequest.InvalidDateRangeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -14,7 +14,7 @@ public record Season(
 ) {
     public Season {
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
-            throw new ValidationException("종료일은 시작일보다 이전일 수 없습니다.");
+            throw new InvalidDateRangeException();
         }
     }
 
