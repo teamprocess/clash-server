@@ -33,7 +33,6 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-ghkdrudals/
 
 ### VS Code ###
 .vscode/
