@@ -2,7 +2,7 @@ name: Docker Compose CI/CD
 
 on:
   pull_request:
-    branches: [ "ddong-branch" ]
+    branches: [ "main" ]
     types: [ closed ]
 
 jobs:
