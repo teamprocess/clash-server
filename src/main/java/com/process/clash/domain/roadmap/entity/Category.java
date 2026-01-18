@@ -19,4 +19,8 @@ public class Category {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }

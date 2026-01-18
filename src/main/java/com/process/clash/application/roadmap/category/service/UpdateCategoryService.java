@@ -34,13 +34,8 @@ public class UpdateCategoryService implements UpdateCategoryUseCase {
                     });
         }
 
-        Category updatedCategory = new Category(
-                category.getId(),
-                command.name(),
-                category.getCreatedAt(),
-                null // updatedAt은 JPA가 처리
-        );
-        Category savedCategory = categoryRepository.save(updatedCategory);
+        category.updateName(command.name());
+        Category savedCategory = categoryRepository.save(category);
         return UpdateCategoryData.Result.from(savedCategory);
     }
 }

@@ -37,7 +37,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
         SectionJpaEntity entity = sectionJpaRepository.findById(section.getId())
                 .orElseThrow(SectionNotFoundException::new);
 
-        updateSectionDetails(entity, section);
+        // 카테고리 조회
+        CategoryJpaEntity categoryEntity = categoryJpaRepository.findById(section.getCategory().getId())
+                .orElseThrow(CategoryNotFoundException::new);
+        Map<Long, CategoryJpaEntity> categoryMap = Map.of(section.getCategory().getId(), categoryEntity);
+
+        updateSectionDetails(entity, section, categoryMap);
 
         sectionJpaRepository.flush(); // 즉시 DB 반영 -> updatedAt 갱신 용도
 
@@ -56,7 +61,14 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
                 .filter(Objects::nonNull)
                 .toList();
 
-        // 2. Bulk Fetch (성능 최적화)
+        // 2. 카테고리 ID 추출 및 Bulk Fetch
+        Set<Long> categoryIds = sections.stream()
+                .map(section -> section.getCategory().getId())
+                .collect(Collectors.toSet());
+        Map<Long, CategoryJpaEntity> categoryMap = categoryJpaRepository.findAllById(categoryIds).stream()
+                .collect(Collectors.toMap(CategoryJpaEntity::getId, c -> c));
+
+        // 3. Bulk Fetch (섹션 엔티티)
         Map<Long, SectionJpaEntity> entityMap = sectionJpaRepository.findAllById(ids).stream()
                 .collect(Collectors.toMap(SectionJpaEntity::getId, e -> e));
 
@@ -67,7 +79,7 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
             if (domain.getId() != null && entityMap.containsKey(domain.getId())) {
                 // 기존 영속 객체 - Dirty Checking으로 자동 저장
                 SectionJpaEntity entity = entityMap.get(domain.getId());
-                updateSectionDetails(entity, domain);
+                updateSectionDetails(entity, domain, categoryMap);
                 allEntities.add(entity);
             } else {
                 // 신규 객체만 saveAll로 저장
@@ -125,10 +137,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     3. 추가 혹은 수정
     4. 키포인트, 선수 로드맵도 비슷하게 진행
      */
-    private void updateSectionDetails(SectionJpaEntity entity, Section domain) {
+    private void updateSectionDetails(SectionJpaEntity entity, Section domain, Map<Long, CategoryJpaEntity> categoryMap) {
         // 1. 기본 필드 업데이트
-        CategoryJpaEntity categoryEntity = categoryJpaRepository.findById(domain.getCategory().getId())
-                .orElseThrow(CategoryNotFoundException::new);
+        CategoryJpaEntity categoryEntity = categoryMap.get(domain.getCategory().getId());
+        if (categoryEntity == null) {
+            throw new CategoryNotFoundException();
+        }
         entity.updateFields(
                 domain.getMajor(),
                 domain.getTitle(),
