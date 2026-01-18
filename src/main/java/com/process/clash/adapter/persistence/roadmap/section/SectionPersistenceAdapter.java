@@ -4,6 +4,7 @@ import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaRepository;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
+import com.process.clash.application.roadmap.category.exception.exception.notfound.CategoryNotFoundException;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -121,8 +122,8 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
      */
     private void updateSectionDetails(SectionJpaEntity entity, Section domain) {
         // 1. 기본 필드 업데이트
-        CategoryJpaEntity categoryEntity = categoryJpaRepository.findByName(domain.getCategory().getName())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + domain.getCategory().getName()));
+        CategoryJpaEntity categoryEntity = categoryJpaRepository.findById(domain.getCategory().getId())
+                .orElseThrow(CategoryNotFoundException::new);
         entity.updateFields(
                 domain.getMajor(),
                 domain.getTitle(),
