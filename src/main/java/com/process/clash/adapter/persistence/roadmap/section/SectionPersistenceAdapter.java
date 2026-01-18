@@ -57,26 +57,30 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
         Map<Long, SectionJpaEntity> entityMap = sectionJpaRepository.findAllById(ids).stream()
                 .collect(Collectors.toMap(SectionJpaEntity::getId, e -> e));
 
-        List<SectionJpaEntity> resultEntities = new ArrayList<>();
+        List<SectionJpaEntity> newEntities = new ArrayList<>();
+        List<SectionJpaEntity> allEntities = new ArrayList<>();
 
         for (Section domain : sections) {
             if (domain.getId() != null && entityMap.containsKey(domain.getId())) {
-                // 기존 영속 객체를 가져와서 동기화
+                // 기존 영속 객체 - Dirty Checking으로 자동 저장
                 SectionJpaEntity entity = entityMap.get(domain.getId());
                 updateSectionDetails(entity, domain);
-                resultEntities.add(entity);
+                allEntities.add(entity);
             } else {
-                // 신규 객체는 바로 생성
+                // 신규 객체만 saveAll로 저장
                 SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(domain);
-                resultEntities.add(newEntity);
+                newEntities.add(newEntity);
+                allEntities.add(newEntity);
             }
         }
 
-        // 3. 저장 및 Flush
-        List<SectionJpaEntity> savedEntities = sectionJpaRepository.saveAll(resultEntities);
+        // 3. 신규 엔티티만 저장 후 Flush (영속 엔티티는 Dirty Checking으로 자동 저장)
+        if (!newEntities.isEmpty()) {
+            sectionJpaRepository.saveAll(newEntities);
+        }
         sectionJpaRepository.flush();
 
-        return savedEntities.stream()
+        return allEntities.stream()
                 .map(sectionJpaMapper::toDomain)
                 .toList();
     }
