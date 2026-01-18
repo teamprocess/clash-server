@@ -110,6 +110,11 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     }
 
     @Override
+    public boolean existsByCategoryId(Long categoryId) {
+        return sectionJpaRepository.existsByCategoryId(categoryId);
+    }
+
+    @Override
     public void deleteById(Long id) {
         sectionJpaRepository.deleteById(id);
     }

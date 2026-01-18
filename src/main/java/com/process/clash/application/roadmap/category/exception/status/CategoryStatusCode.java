@@ -19,6 +19,12 @@ public enum CategoryStatusCode implements StatusCode {
         "CATEGORY_ALREADY_EXISTS",
         "이미 존재하는 카테고리 이름입니다.",
         ErrorCategory.BAD_REQUEST
+    ),
+
+    CATEGORY_IN_USE(
+        "CATEGORY_IN_USE",
+        "해당 카테고리를 사용하는 로드맵이 있어 삭제할 수 없습니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;
