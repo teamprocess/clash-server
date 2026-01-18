@@ -3,6 +3,7 @@ package com.process.clash.application.compete.rival.port.out;
 import com.process.clash.domain.rival.entity.Rival;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RivalRepositoryPort {
 
@@ -10,5 +11,5 @@ public interface RivalRepositoryPort {
     void saveAll(List<Rival> rivals);
     List<Rival> findAllByMyId(Long myId);
     int countAllByMyId(Long myId);
-    int countAllByOpponentId(Long opponentId);
+    List<Map<String, Object>> countAllByOpponentIdsGrouped(List<Long> opponentIds);
 }
