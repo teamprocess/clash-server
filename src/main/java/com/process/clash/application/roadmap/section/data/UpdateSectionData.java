@@ -14,7 +14,6 @@ public class UpdateSectionData {
             String category,
             String description,
             Integer orderIndex,
-            List<String> keyPoints,
             List<Long> prerequisiteSectionIds
     ) {}
 
@@ -23,10 +22,9 @@ public class UpdateSectionData {
             String title,
             String category,
             String description,
-            List<String> keyPoints,
             String updatedAt
     ) {
-        public static Result from(Section section, List<String> keyPoints) {
+        public static Result from(Section section) {
             String updatedAtString = section.getUpdatedAt() != null
                     ? section.getUpdatedAt().toString()
                     : null;
@@ -36,7 +34,6 @@ public class UpdateSectionData {
                     section.getTitle(),
                     section.getCategory(),
                     section.getDescription(),
-                    keyPoints,
                     updatedAtString
             );
         }

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,7 +43,7 @@ public class Section {
         this.prerequisites.add(prerequisiteSection);
     }
 
-    public Section update(String title, String category, String description, Integer orderIndex, List<String> keyPoints) {
+    public Section update(String title, String category, String description, Integer orderIndex) {
         if (title != null) {
             this.title = title;
         }
@@ -56,17 +55,6 @@ public class Section {
         }
         if (orderIndex != null) {
             this.orderIndex = orderIndex;
-        }
-        if (keyPoints != null) {
-            // keyPoints를 SectionKeyPoint 엔티티 리스트로 변환
-            this.keyPoints = IntStream.range(0, keyPoints.size())
-                    .mapToObj(index -> new SectionKeyPoint(
-                            null,                           // id는 JPA가 자동 생성 (새 keyPoint인 경우)
-                            this.id,                        // sectionId는 현재 Section의 id
-                            keyPoints.get(index), // content
-                            index                           // orderIndex
-                    ))
-                    .toList();
         }
         return this;
     }
