@@ -25,14 +25,14 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
     @Override
     public GetAllAbleRivalsData.Result execute(GetAllAbleRivalsData.Command command) {
 
-        List<Rival> rivals = rivalRepositoryPort.findAllByMy_Id(command.actor().id());
+        List<Rival> rivals = rivalRepositoryPort.findAllByMyId(command.actor().id());
 
         List<Long> excludedUserIds = Stream.concat(
                 rivals.stream().map(Rival::opponentId),
                 Stream.of(command.actor().id())
         ).toList();
 
-        List<UserGitHub> userGitHubs = userGitHubRepositoryPort.findByUser_IdNotIn(excludedUserIds);
+        List<UserGitHub> userGitHubs = userGitHubRepositoryPort.findByUserIdNotIn(excludedUserIds);
 
         List<User> users = userRepositoryPort.findByIdIn(
                 userGitHubs.stream().map(UserGitHub::userId).toList()

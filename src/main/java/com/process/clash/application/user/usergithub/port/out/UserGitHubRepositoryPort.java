@@ -7,5 +7,5 @@ import java.util.List;
 public interface UserGitHubRepositoryPort {
 
     UserGitHub save(UserGitHub userGitHub);
-    List<UserGitHub> findByUser_IdNotIn(List<Long> ids);
+    List<UserGitHub> findByUserIdNotIn(List<Long> ids);
 }

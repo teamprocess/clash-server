@@ -15,14 +15,14 @@ public class ApplyRivalPolicy {
 
     public void check(ApplyRivalData.Command command) {
 
-        int myRivalCount = rivalRepositoryPort.countAllByMy_Id(command.actor().id());
+        int myRivalCount = rivalRepositoryPort.countAllByMyId(command.actor().id());
 
         if (myRivalCount + command.ids().size() > MAX_RIVAL_COUNT) {
             throw new TooMuchRivalsException();
         }
 
         boolean hasOverLimitRival = command.ids().stream()
-                .anyMatch(id -> rivalRepositoryPort.countAllByOpponent_Id(id.id()) >= MAX_RIVAL_COUNT);
+                .anyMatch(id -> rivalRepositoryPort.countAllByOpponentId(id.id()) >= MAX_RIVAL_COUNT);
 
         if (hasOverLimitRival) {
             throw new TooMuchRivalsException();

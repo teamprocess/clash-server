@@ -52,21 +52,21 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
-    public int countAllByMy_Id(Long myId) {
+    public int countAllByMyId(Long myId) {
 
-        return rivalJpaRepository.countAllByMy_Id(myId);
+        return rivalJpaRepository.countAllByMyId(myId);
     }
 
     @Override
-    public int countAllByOpponent_Id(Long opponentId) {
+    public int countAllByOpponentId(Long opponentId) {
 
-        return rivalJpaRepository.countAllByOpponent_Id(opponentId);
+        return rivalJpaRepository.countAllByOpponentId(opponentId);
     }
 
     @Override
-    public List<Rival> findAllByMy_Id(Long myId) {
+    public List<Rival> findAllByMyId(Long myId) {
 
-        return rivalJpaRepository.findAllByMy_Id(myId)
+        return rivalJpaRepository.findAllByMyId(myId)
                 .stream()
                 .map(rivalJpaMapper::toDomain)
                 .toList();

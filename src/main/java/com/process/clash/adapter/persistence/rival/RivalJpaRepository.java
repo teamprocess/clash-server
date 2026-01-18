@@ -1,6 +1,5 @@
 package com.process.clash.adapter.persistence.rival;
 
-import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +17,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
         where r.my.id = :myId
             and r.rivalLinkingStatus = 'ACCEPTED'
     """)
-    int countAllByMy_Id(
+    int countAllByMyId(
             @Param("myId") Long myId
     );
 
@@ -29,9 +28,9 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
         where r.opponent.id = :opponentId
             and r.rivalLinkingStatus = 'ACCEPTED'
     """)
-    int countAllByOpponent_Id(
+    int countAllByOpponentId(
             @Param("opponentId") Long opponentId
     );
 
-    List<RivalJpaEntity> findAllByMy_Id(Long myId);
+    List<RivalJpaEntity> findAllByMyId(Long myId);
 }
