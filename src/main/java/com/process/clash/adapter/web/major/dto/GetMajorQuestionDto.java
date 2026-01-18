@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetMajorQuestionDto {
+
+    @Schema(name = "GetMajorQuestionDtoResponse")
 
     public record Response(
             List<MajorQuestionVo> majorQuestions
