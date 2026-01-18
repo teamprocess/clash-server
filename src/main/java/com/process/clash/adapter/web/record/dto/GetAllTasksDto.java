@@ -4,10 +4,13 @@ import com.process.clash.application.record.dto.GetAllTasksData;
 import com.process.clash.domain.record.model.entity.Task;
 import com.process.clash.domain.record.model.enums.TaskColor;
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetAllTasksDto {
 
     private static final String DEFAULT_ICON = "timer";
+
+    @Schema(name = "GetAllTasksDtoResponse")
 
     public record Response(
         List<TaskSummary> tasks
