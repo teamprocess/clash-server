@@ -85,7 +85,7 @@ public class UpdateSectionServiceIntegrationTest {
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                categoryResult.name(),
+                categoryResult.categoryId(),
                 "Test Description",
                 List.of("point1", "point2", "point3")
         );
@@ -152,7 +152,7 @@ public class UpdateSectionServiceIntegrationTest {
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                categoryResult.name(),
+                categoryResult.categoryId(),
                 "Test Description",
                 List.of("point1", "point2", "point3")
         );
@@ -194,7 +194,7 @@ public class UpdateSectionServiceIntegrationTest {
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                categoryResult.name(),
+                categoryResult.categoryId(),
                 "Test Description",
                 List.of("point1", "point2", "point3")
         );
@@ -243,7 +243,7 @@ public class UpdateSectionServiceIntegrationTest {
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                categoryResult.name(),
+                categoryResult.categoryId(),
                 "Test Description",
                 initialKeyPoints
         );

@@ -31,7 +31,7 @@ public class CreateSectionService implements CreateSectionUseCase {
         List<Section> existingSections = sectionRepositoryPort.findAllByMajor(command.major());
         int nextOrderIndex = existingSections.size();  // 0부터 시작 (0, 1, 2, ...)
 
-        Category category = categoryRepositoryPort.findByName(command.category())
+        Category category = categoryRepositoryPort.findById(command.categoryId())
                 .orElseThrow(CategoryNotFoundException::new);
 
         Section section = command.toDomain(nextOrderIndex, category);

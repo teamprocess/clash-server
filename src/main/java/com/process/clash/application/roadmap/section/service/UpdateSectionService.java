@@ -50,8 +50,8 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         }
 
         Category categoryToUpdate = null;
-        if (command.category() != null) {
-            categoryToUpdate = categoryRepository.findByName(command.category())
+        if (command.categoryId() != null) {
+            categoryToUpdate = categoryRepository.findById(command.categoryId())
                     .orElseThrow(CategoryNotFoundException::new);
         }
 

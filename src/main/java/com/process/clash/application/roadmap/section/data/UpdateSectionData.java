@@ -11,7 +11,7 @@ public class UpdateSectionData {
             Actor actor,
             Long sectionId,
             String title,
-            String category,
+            Long categoryId,
             String description,
             Integer orderIndex,
             List<String> keyPoints,

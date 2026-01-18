@@ -16,7 +16,7 @@ public class CreateSectionData {
             Actor actor,
             Major major,
             String title,
-            String category,
+            Long categoryId,
             String description,
             List<String> keyPoints
     ) {

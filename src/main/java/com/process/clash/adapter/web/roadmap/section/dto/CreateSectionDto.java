@@ -18,8 +18,8 @@ public class CreateSectionDto {
             @NotBlank(message = "title은 필수 입력값입니다.")
             String title,
 
-            @NotBlank(message = "category는 필수 입력값입니다.")
-            String category,
+            @NotNull(message = "categoryId는 필수 입력값입니다.")
+            Long categoryId,
 
             @NotBlank(message = "description은 필수 입력값입니다.")
             String description,
@@ -28,7 +28,7 @@ public class CreateSectionDto {
             List<String> keyPoints
     ) {
         public CreateSectionData.Command toCommand(Actor actor) {
-            return new CreateSectionData.Command(actor, major, title, category, description, keyPoints);
+            return new CreateSectionData.Command(actor, major, title, categoryId, description, keyPoints);
         }
     }
 
