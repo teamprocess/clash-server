@@ -13,8 +13,7 @@ public class UpdateSectionDto {
             @Size(min = 1, message = "title이 제공되는 경우 비워둘 수 없습니다.")
             String title,        // 선택사항
 
-            @Size(min = 1, message = "category가 제공되는 경우 비워둘 수 없습니다.")
-            String category,     // 선택사항
+            Long categoryId,     // 선택사항
 
             @Size(min = 1, message = "description이 제공되는 경우 비워둘 수 없습니다.")
             String description,  // 선택사항
@@ -28,7 +27,7 @@ public class UpdateSectionDto {
             List<Long> prerequisiteSectionIds  // 선택사항: 선행 로드맵 ID 목록
     ) {
         public UpdateSectionData.Command toCommand(Actor actor, Long sectionId) {
-            return new UpdateSectionData.Command(actor, sectionId, title, category, description, orderIndex, keyPoints, prerequisiteSectionIds);
+            return new UpdateSectionData.Command(actor, sectionId, title, categoryId, description, orderIndex, keyPoints, prerequisiteSectionIds);
         }
     }
 

@@ -58,9 +58,9 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
-    public int countAllByOpponentId(Long opponentId) {
+    public List<Map<String, Object>> countAllByOpponentIdsGrouped(List<Long> opponentIds) {
 
-        return rivalJpaRepository.countAllByOpponentId(opponentId);
+        return rivalJpaRepository.countAllByOpponentIdsGrouped(opponentIds);
     }
 
     @Override
