@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.shop.season.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.shop.season.docs.controller.SeasonAdminControllerDocument;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.adapter.web.shop.season.dto.CreateSeasonDto;
 import com.process.clash.application.common.actor.Actor;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/admin/shop/season")
 @RequiredArgsConstructor
-public class SeasonAdminController {
+public class SeasonAdminController implements SeasonAdminControllerDocument {
 
     private final CreateSeasonUseCase createSeasonUseCase;
 

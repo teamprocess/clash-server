@@ -1,0 +1,173 @@
+package com.process.clash.adapter.web.shop.product.docs.controller;
+
+import com.process.clash.adapter.web.shop.product.docs.response.GetAllProductsResponseDoc;
+import com.process.clash.adapter.web.shop.product.docs.response.GetPopularProductsResponseDoc;
+import com.process.clash.adapter.web.shop.product.docs.response.GetProductDetailResponseDoc;
+import com.process.clash.adapter.web.shop.product.docs.response.GetRecommendedProductsResponseDoc;
+import com.process.clash.adapter.web.shop.product.dto.GetAllProductsDto;
+import com.process.clash.adapter.web.shop.product.dto.GetPopularProductsDto;
+import com.process.clash.adapter.web.shop.product.dto.GetProductDetailDto;
+import com.process.clash.adapter.web.shop.product.dto.GetRecommendedProductsDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.web.bind.annotation.PathVariable;
+
+@Tag(name = "상품 조회 API", description = "상품 조회")
+public interface ProductControllerDocument {
+
+    @Operation(summary = "전체 상품 목록 조회", description = "조건에 따라 상품 목록을 조회합니다.")
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호", example = "0"),
+            @Parameter(name = "size", description = "페이지 크기", example = "20"),
+            @Parameter(name = "sort", description = "정렬 기준", example = "POPULARITY"),
+            @Parameter(name = "category", description = "카테고리 (예: ALL, BOOK)", example = "ALL")
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetAllProductsResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "전체 상품 목록 조회를 성공했습니다.",
+                                      "data": {
+                                        "products": [
+                                          {
+                                            "id": 100,
+                                            "title": "스프링 완전 정복",
+                                            "category": "BOOK",
+                                            "image": "https://cdn.example.com/products/100.png",
+                                            "type": "COIN",
+                                            "price": 12000,
+                                            "discount": 10,
+                                            "description": "스프링 입문부터 실전까지",
+                                            "popularity": 300,
+                                            "seasonName": "2025 봄 시즌",
+                                            "isSeasonal": true,
+                                            "createdAt": "2025-01-01T12:00:00"
+                                          }
+                                        ],
+                                        "pagination": {
+                                          "currentPage": 0,
+                                          "totalPages": 3,
+                                          "totalItems": 45,
+                                          "pageSize": 20,
+                                          "hasNext": true,
+                                          "hasPrevious": false
+                                        }
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetAllProductsDto.Response> getAllProducts(
+            @ParameterObject GetAllProductsDto.Request request
+    );
+
+    @Operation(summary = "상품 상세 조회", description = "상품 상세 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetProductDetailResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "상품 상세 정보 조회를 성공했습니다.",
+                                      "data": {
+                                        "product": {
+                                          "id": 100,
+                                          "title": "스프링 완전 정복",
+                                          "category": "BOOK",
+                                          "image": "https://cdn.example.com/products/100.png",
+                                          "type": "COIN",
+                                          "price": 12000,
+                                          "discount": 10,
+                                          "description": "스프링 입문부터 실전까지",
+                                          "popularity": 300,
+                                          "seasonName": "2025 봄 시즌",
+                                          "isSeasonal": true,
+                                          "createdAt": "2025-01-01T12:00:00"
+                                        }
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetProductDetailDto.Response> getProductDetail(
+            @Parameter(description = "상품 ID", example = "1") @PathVariable Long productId
+    );
+
+    @Operation(summary = "인기 상품 목록", description = "인기 상품 10개를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetPopularProductsResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "인기 상품 목록 조회를 성공했습니다",
+                                      "data": {
+                                        "products": [
+                                          {
+                                            "id": 100,
+                                            "title": "스프링 완전 정복",
+                                            "category": "BOOK",
+                                            "image": "https://cdn.example.com/products/100.png",
+                                            "type": "COIN",
+                                            "price": 12000,
+                                            "discount": 10,
+                                            "description": "스프링 입문부터 실전까지",
+                                            "popularity": 300,
+                                            "seasonName": "2025 봄 시즌",
+                                            "isSeasonal": true,
+                                            "createdAt": "2025-01-01T12:00:00"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetPopularProductsDto.Response> getPopularProducts();
+
+    @Operation(summary = "추천 상품 목록", description = "추천 상품 10개를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetRecommendedProductsResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "추천 상품 목록 조회를 성공했습니다.",
+                                      "data": {
+                                        "products": [
+                                          {
+                                            "id": 101,
+                                            "title": "알고리즘 스터디",
+                                            "category": "BOOK",
+                                            "image": "https://cdn.example.com/products/101.png",
+                                            "type": "COIN",
+                                            "price": 15000,
+                                            "discount": 0,
+                                            "description": "알고리즘 문제 풀이",
+                                            "popularity": 120,
+                                            "seasonName": null,
+                                            "isSeasonal": false,
+                                            "createdAt": "2025-01-02T12:00:00"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetRecommendedProductsDto.Response> getRecommendedProducts();
+}

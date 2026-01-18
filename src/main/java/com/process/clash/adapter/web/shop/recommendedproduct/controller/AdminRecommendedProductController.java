@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.shop.recommendedproduct.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.controller.AdminRecommendedProductControllerDocument;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.adapter.web.shop.recommendedproduct.dto.CreateRecommendedProductDto;
 import com.process.clash.adapter.web.shop.recommendedproduct.dto.UpdateRecommendedProductDto;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin/shop/products/recommendations")
 @RequiredArgsConstructor
-public class AdminRecommendedProductController {
+public class AdminRecommendedProductController implements AdminRecommendedProductControllerDocument {
 
     private final CreateRecommendedProductUseCase createRecommendedProductUseCase;
     private final UpdateRecommendedProductUseCase updateRecommendedProductUseCase;

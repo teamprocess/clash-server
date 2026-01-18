@@ -5,8 +5,11 @@ import com.process.clash.application.shop.recommendedproduct.data.UpdateRecommen
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UpdateRecommendedProductDto {
+
+    @Schema(name = "UpdateRecommendedProductDtoRequest")
 
     public record Request(
             @NotNull(message = "진열 순서는 필수 입력값입니다.")
@@ -30,6 +33,8 @@ public class UpdateRecommendedProductDto {
             );
         }
     }
+
+    @Schema(name = "UpdateRecommendedProductDtoResponse")
 
     public record Response(
             Long id,
