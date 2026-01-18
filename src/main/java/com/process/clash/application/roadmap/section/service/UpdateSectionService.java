@@ -1,11 +1,11 @@
 package com.process.clash.application.roadmap.section.service;
 
+import com.process.clash.application.common.policy.CheckAdminPolicy;
 import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.exception.exception.unprocessableentity.SectionCircularDependencyException;
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
-import com.process.clash.application.common.policy.CheckAdminPolicy;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,13 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         Section section = sectionRepository.findById(command.sectionId())
                 .orElseThrow(SectionNotFoundException::new);
 
+        section.update(
+                command.title(),
+                command.category(),
+                command.description(),
+                command.orderIndex()
+        );
+
         // orderIndex 변경이 요청된 경우, 다른 Section들 재정렬 (Insert & Shift)
         if (command.orderIndex() != null && !command.orderIndex().equals(section.getOrderIndex())) {
             reorderSections(section, command.orderIndex());
@@ -42,13 +49,6 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         if (command.prerequisiteSectionIds() != null) {
             updatePrerequisites(section, command.prerequisiteSectionIds());
         }
-
-        section.update(
-                command.title(),
-                command.category(),
-                command.description(),
-                command.orderIndex()
-        );
 
         if (command.keyPoints() != null) {
             section.updateKeyPoints(command.keyPoints());

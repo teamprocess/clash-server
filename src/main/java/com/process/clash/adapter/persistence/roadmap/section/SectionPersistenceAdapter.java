@@ -3,16 +3,13 @@ package com.process.clash.adapter.persistence.roadmap.section;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
-import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaMapper;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.roadmap.entity.Section;
-import com.process.clash.domain.roadmap.entity.Chapter;        // Domain Chapter import
-import com.process.clash.domain.roadmap.entity.SectionKeyPoint; // Domain KeyPoint import
+import com.process.clash.domain.roadmap.entity.Chapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +20,6 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     private final SectionJpaRepository sectionJpaRepository;
     private final SectionJpaMapper sectionJpaMapper;
     private final ChapterJpaMapper chapterJpaMapper;
-    private final SectionKeyPointJpaMapper sectionKeyPointJpaMapper;
 
     @Override
     public Section save(Section section) {
@@ -34,7 +30,7 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
             return sectionJpaMapper.toDomain(saved);
         }
 
-        // [UPDATE] 조회 -> 변경 -> Flush
+        // 조회 -> 변경 -> Flush
         SectionJpaEntity entity = sectionJpaRepository.findById(section.getId())
                 .orElseThrow(SectionNotFoundException::new);
 
@@ -65,12 +61,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
 
         for (Section domain : sections) {
             if (domain.getId() != null && entityMap.containsKey(domain.getId())) {
-                // [UPDATE] 기존 영속 객체를 가져와서 동기화
+                // 기존 영속 객체를 가져와서 동기화
                 SectionJpaEntity entity = entityMap.get(domain.getId());
                 updateSectionDetails(entity, domain);
                 resultEntities.add(entity);
             } else {
-                // [CREATE] 신규 객체는 바로 생성
+                // 신규 객체는 바로 생성
                 SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(domain);
                 resultEntities.add(newEntity);
             }
