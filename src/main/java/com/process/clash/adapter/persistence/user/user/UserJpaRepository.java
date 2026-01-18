@@ -12,5 +12,5 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 
 	boolean existsByUsername(String username);
 
-	List<UserJpaEntity> findByIdNotIn(List<Long> ids);
+	List<UserJpaEntity> findByIdIn(List<Long> ids);
 }

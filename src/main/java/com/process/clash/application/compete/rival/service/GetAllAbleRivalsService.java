@@ -4,8 +4,10 @@ import com.process.clash.application.compete.rival.data.GetAllAbleRivalsData;
 import com.process.clash.application.compete.rival.port.in.GetAllAbleRivalsUseCase;
 import com.process.clash.application.compete.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.application.user.usergithub.port.out.UserGitHubRepositoryPort;
 import com.process.clash.domain.rival.entity.Rival;
 import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.usergithub.entity.UserGitHub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.List;
 public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
+    private final UserGitHubRepositoryPort userGitHubRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
 
     @Override
@@ -27,8 +30,12 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
                 .map(Rival::opponentId)
                 .toList();
 
-        List<User> users = userRepositoryPort.findByIdNotIn(opponentIds);
+        List<UserGitHub> userGitHubs = userGitHubRepositoryPort.findByIdNotIn(opponentIds);
 
-        return ;
+        List<User> users = userRepositoryPort.findByIdIn(
+                userGitHubs.stream().map(UserGitHub::userId).toList()
+        );
+
+        return GetAllAbleRivalsData.Result.from(users, userGitHubs);
     }
 }

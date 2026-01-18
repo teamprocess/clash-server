@@ -7,6 +7,8 @@ import com.process.clash.domain.user.usergithub.entity.UserGitHub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class UserGitHubPersistenceAdapter implements UserGitHubRepositoryPort {
@@ -22,5 +24,15 @@ public class UserGitHubPersistenceAdapter implements UserGitHubRepositoryPort {
         UserGitHubJpaEntity savedEntity =
                 userGitHubJpaRepository.save(userGitHubJpaMapper.toJpaEntity(userGitHub, userJpaEntity));
         return userGitHubJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public List<UserGitHub> findByIdNotIn(List<Long> ids) {
+
+        List<UserGitHubJpaEntity> userGitHubJpaEntities = userGitHubJpaRepository.findByIdNotIn(ids);
+
+        return userGitHubJpaEntities.stream()
+                .map(userGitHubJpaMapper::toDomain)
+                .toList();
     }
 }

@@ -38,8 +38,8 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public List<User> findByIdNotIn(List<Long> ids) {
-        return userJpaRepository.findByIdNotIn(ids)
+    public List<User> findByIdIn(List<Long> ids) {
+        return userJpaRepository.findByIdIn(ids)
                 .stream()
                 .map(userJpaMapper::toDomain)
                 .toList();
