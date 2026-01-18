@@ -1,6 +1,5 @@
 package com.process.clash.application.shop.recommendedproduct.data;
 
-import com.process.clash.adapter.web.shop.recommendedproduct.dto.UpdateRecommendedProductDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.shop.recommendedproduct.entity.RecommendedProduct;
 
@@ -15,18 +14,7 @@ public class UpdateRecommendedProductData {
             LocalDate startDate,
             LocalDate endDate,
             Boolean isActive
-    ) {
-        public static Command from(Long recommendedProductId, UpdateRecommendedProductDto.Request request, Actor actor) {
-            return new Command(
-                    actor,
-                    recommendedProductId,
-                    request.displayOrder(),
-                    request.startDate(),
-                    request.endDate(),
-                    request.isActive()
-            );
-        }
-    }
+    ) {}
 
     public record Result(
             Long id,
