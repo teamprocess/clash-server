@@ -1,9 +1,9 @@
 package com.process.clash.domain.roadmap.entity;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package com.process.clash.adapter.web.section.controller;
+package com.process.clash.adapter.web.roadmap.section.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.section.dto.GetSectionDetailsDto;
-import com.process.clash.adapter.web.section.dto.GetSectionPreviewDto;
-import com.process.clash.adapter.web.section.dto.GetSectionsDto;
+import com.process.clash.adapter.web.roadmap.section.dto.GetSectionDetailsDto;
+import com.process.clash.adapter.web.roadmap.section.dto.GetSectionPreviewDto;
+import com.process.clash.adapter.web.roadmap.section.dto.GetSectionsDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.section.data.GetSectionDetailsData;
@@ -15,8 +15,6 @@ import com.process.clash.application.roadmap.section.port.in.GetSectionsUseCase;
 import com.process.clash.domain.common.enums.Major;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/sections")

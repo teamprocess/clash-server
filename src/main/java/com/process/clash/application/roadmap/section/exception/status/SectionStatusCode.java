@@ -13,6 +13,18 @@ public enum SectionStatusCode implements StatusCode {
         "SECTION_NOT_FOUND",
         "로드맵을 찾을 수 없습니다.",
         ErrorCategory.NOT_FOUND
+    ),
+
+    SECTION_CIRCULAR_DEPENDENCY(
+            "SECTION_CIRCULAR_DEPENDENCY",
+            "로드맵은 본인을 선행 로드맵으로 지정할 수 없습니다.",
+            ErrorCategory.UNPROCESSABLE_ENTITY
+    ),
+
+    SECTION_PREREQUISITE_NOT_COMPLETED(
+            "SECTION_PREREQUISITE_NOT_COMPLETED",
+            "선행 로드맵을 먼저 완료해야 합니다.",
+            ErrorCategory.FORBIDDEN
     );
 
     private final String code;
