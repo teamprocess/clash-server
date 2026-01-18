@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface SectionKeyPointJpaRepository extends JpaRepository<SectionKeyPointJpaEntity, Long> {
 	List<SectionKeyPointJpaEntity> findAllBySectionId(Long sectionId);
+	void deleteAllBySectionId(Long sectionId);
 }

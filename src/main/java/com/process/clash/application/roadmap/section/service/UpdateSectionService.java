@@ -4,9 +4,11 @@ import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.exception.exception.unprocessableentity.SectionCircularDependencyException;
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
+import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.application.common.policy.CheckAdminPolicy;
 import com.process.clash.domain.roadmap.entity.Section;
+import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +17,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class UpdateSectionService implements UpdateSectionUseCase {
 
     private final SectionRepositoryPort sectionRepository;
+    private final SectionKeyPointRepositoryPort keyPointRepository;
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
@@ -49,10 +53,36 @@ public class UpdateSectionService implements UpdateSectionUseCase {
                 command.orderIndex()
         );
 
+        // keyPoints가 제공된 경우, 기존 것 삭제 후 새로 삽입 (bulk operation)
+        if (command.keyPoints() != null) {
+            // 1. 기존 keyPoints 삭제 (bulk delete)
+            keyPointRepository.deleteAllBySectionId(section.getId());
+
+            // 2. 새 keyPoints 삽입 (bulk insert)
+            List<SectionKeyPoint> newKeyPoints = IntStream.range(0, command.keyPoints().size())
+                    .mapToObj(i -> new SectionKeyPoint(
+                            null,
+                            section.getId(),
+                            command.keyPoints().get(i),
+                            i
+                    ))
+                    .toList();
+            keyPointRepository.saveAll(newKeyPoints);
+        }
+
         // 업데이트된 Section 저장
         Section updatedSection = sectionRepository.save(section);
 
-        return UpdateSectionData.Result.from(updatedSection);
+        // 저장된 Section에서 keyPoints 추출
+        List<String> keyPointContents = command.keyPoints() != null
+                ? command.keyPoints()
+                : (updatedSection.getKeyPoints() != null
+                        ? updatedSection.getKeyPoints().stream()
+                                .map(SectionKeyPoint::getContent)
+                                .toList()
+                        : List.of());
+
+        return UpdateSectionData.Result.from(updatedSection, keyPointContents);
     }
 
     private void reorderSections(Section targetSection, int newOrderIndex) {
