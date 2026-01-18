@@ -14,6 +14,9 @@ public enum SeasonStatusCode implements StatusCode {
 
     // 404
     SEASON_NOT_FOUND("SEASON_NOT_FOUND", "존재하지 않는 시즌입니다.", ErrorCategory.NOT_FOUND),
+
+    // 400
+    INVALID_DATE_RANGE("INVALID_DATE_RANGE", "종료일은 시작일보다 이전일 수 없습니다.", ErrorCategory.BAD_REQUEST),
     ;
 
     private final String code;

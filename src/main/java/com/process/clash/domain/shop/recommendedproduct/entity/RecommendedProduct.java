@@ -1,5 +1,8 @@
 package com.process.clash.domain.shop.recommendedproduct.entity;
 
+import com.process.clash.application.shop.recommendedproduct.exception.exception.badrequest.InvalidDateRangeException;
+import com.process.clash.application.shop.recommendedproduct.exception.exception.badrequest.InvalidDisplayOrderException;
+import com.process.clash.application.shop.recommendedproduct.exception.exception.badrequest.InvalidProductIdException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -15,13 +18,13 @@ public record RecommendedProduct(
 ) {
     public RecommendedProduct {
         if (productId == null) {
-            throw new IllegalArgumentException("상품 ID는 필수입니다.");
+            throw new InvalidProductIdException();
         }
         if (displayOrder == null || displayOrder < 0) {
-            throw new IllegalArgumentException("진열 순서는 0 이상이어야 합니다.");
+            throw new InvalidDisplayOrderException();
         }
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("종료일은 시작일보다 이전일 수 없습니다.");
+            throw new InvalidDateRangeException();
         }
     }
 
