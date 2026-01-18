@@ -42,6 +42,11 @@ public class CategoryPersistenceAdapter implements CategoryRepositoryPort {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return categoryJpaRepository.existsById(id);
+    }
+
+    @Override
     public void deleteById(Long id) {
         categoryJpaRepository.deleteById(id);
     }

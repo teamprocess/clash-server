@@ -7,7 +7,6 @@ import com.process.clash.application.roadmap.category.exception.exception.notfou
 import com.process.clash.application.roadmap.category.port.in.DeleteCategoryUseCase;
 import com.process.clash.application.roadmap.category.port.out.CategoryRepositoryPort;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
-import com.process.clash.domain.roadmap.entity.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +24,10 @@ public class DeleteCategoryService implements DeleteCategoryUseCase {
     public DeleteCategoryData.Result execute(DeleteCategoryData.Command command) {
         checkAdminPolicy.check(command.actor());
 
-        Category category = categoryRepository.findById(command.categoryId())
-                .orElseThrow(() -> new CategoryNotFoundException());
+        // 카테고리 존재 여부 확인
+        if (!categoryRepository.existsById(command.categoryId())) {
+            throw new CategoryNotFoundException();
+        }
 
         // 해당 카테고리를 사용하는 Section이 있는지 확인
         if (sectionRepository.existsByCategoryId(command.categoryId())) {

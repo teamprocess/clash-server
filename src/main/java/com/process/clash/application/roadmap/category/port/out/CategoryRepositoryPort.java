@@ -10,5 +10,6 @@ public interface CategoryRepositoryPort {
     List<Category> findAll();
     Optional<Category> findById(Long id);
     Optional<Category> findByName(String name);
+    boolean existsById(Long id);
     void deleteById(Long id);
 }
