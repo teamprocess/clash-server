@@ -28,7 +28,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     public Section save(Section section) {
         if (section.getId() == null) {
             // 생성: 완전 신규 생성 시에는 Mapper가 만든 객체를 바로 저장해도 됨 (ID가 없으므로)
-            SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(section);
+            // 카테고리 조회
+            CategoryJpaEntity categoryEntity = categoryJpaRepository.findById(section.getCategory().getId())
+                    .orElseThrow(CategoryNotFoundException::new);
+            Map<Long, CategoryJpaEntity> categoryMap = Map.of(section.getCategory().getId(), categoryEntity);
+
+            SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(section, categoryMap);
             SectionJpaEntity saved = sectionJpaRepository.save(newEntity);
             return sectionJpaMapper.toDomain(saved);
         }
@@ -83,7 +88,7 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
                 allEntities.add(entity);
             } else {
                 // 신규 객체만 saveAll로 저장
-                SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(domain);
+                SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(domain, categoryMap);
                 newEntities.add(newEntity);
                 allEntities.add(newEntity);
             }
