@@ -5,6 +5,7 @@ import com.process.clash.application.compete.rival.port.in.GetAllAbleRivalsUseCa
 import com.process.clash.application.compete.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.rival.entity.Rival;
+import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,12 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
 
         List<Rival> rivals = rivalRepositoryPort.findAllByMy_Id(command.actor().id());
 
-        return null;
+        List<Long> opponentIds = rivals.stream()
+                .map(Rival::opponentId)
+                .toList();
+
+        List<User> users = userRepositoryPort.findByIdNotIn(opponentIds);
+
+        return ;
     }
 }

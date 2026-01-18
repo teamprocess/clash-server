@@ -1,6 +1,7 @@
 package com.process.clash.application.compete.rival.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.domain.user.user.entity.User;
 
 import java.util.List;
 
@@ -19,15 +20,23 @@ public class GetAllAbleRivalsData {
     }
 
     public record Result(
-        List<User> users
+            List<UserInfo> users
     ) {
 
-//        public static Result from() {
-//
-//        }
+        public static Result from(List<User> users) {
+            List<UserInfo> userInfos = users.stream()
+                    .map(user -> new UserInfo(
+                            user.id(),
+                            user.name(),
+                            user.githubId()
+                    ))
+                    .toList();
+
+            return new Result(userInfos);
+        }
     }
 
-    public record User(
+    public record UserInfo(
             Long id,
             String name,
             String githubId
