@@ -26,7 +26,6 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     private final SectionKeyPointJpaMapper sectionKeyPointJpaMapper;
 
     @Override
-    @Transactional
     public Section save(Section section) {
         if (section.getId() == null) {
             // 생성: 완전 신규 생성 시에는 Mapper가 만든 객체를 바로 저장해도 됨 (ID가 없으므로)
@@ -47,7 +46,6 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     }
 
     @Override
-    @Transactional
     public List<Section> saveAll(List<Section> sections) {
         if (sections == null || sections.isEmpty()) {
             return List.of();

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -61,5 +62,19 @@ public class Section {
 
     public void updateOrderIndex(Integer newOrderIndex) {
         this.orderIndex = newOrderIndex;
+    }
+
+    public void updateKeyPoints(List<String> newKeyPoints) {
+        if (newKeyPoints == null) return;
+
+        // 문자열 리스트(DTO) -> 도메인 엔티티 리스트로 변환
+        this.keyPoints = IntStream.range(0, newKeyPoints.size())
+                .mapToObj(index -> new SectionKeyPoint(
+                        null,          // ID는 모름 (JPA가 저장할 때 생성)
+                        this.id,       // 현재 섹션 ID
+                        newKeyPoints.get(index),
+                        index
+                ))
+                .toList();
     }
 }
