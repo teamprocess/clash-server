@@ -24,7 +24,7 @@ public class UpdateCategoryService implements UpdateCategoryUseCase {
         checkAdminPolicy.check(command.actor());
 
         Category category = categoryRepository.findById(command.categoryId())
-                .orElseThrow(() -> new CategoryNotFoundException());
+                .orElseThrow(CategoryNotFoundException::new);
 
         // 이름 변경 시 중복 체크
         if (!category.getName().equals(command.name())) {
