@@ -15,7 +15,16 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+        jdbc:
+          batch_size: 50
+          order_updates: true
+          order_inserts: true
 
   flyway:
     enabled: true
     baseline-on-migrate: true
+
+server:
+  servlet:
+    session:
+      timeout: 3d

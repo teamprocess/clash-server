@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
+import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
 import com.process.clash.domain.common.enums.Major;
@@ -8,13 +9,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "sections")
@@ -36,14 +38,27 @@ public class SectionJpaEntity { // 로드맵
 
     private String description;
 
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryJpaEntity category;
+
+    @Column(nullable = false)
+    private Integer orderIndex;
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orderIndex ASC")
     private List<ChapterJpaEntity> chapters = new ArrayList<>();
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
-    @BatchSize(size = 50)
     private List<SectionKeyPointJpaEntity> keyPoints = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "section_prerequisites",
+            joinColumns = @JoinColumn(name = "section_id"),       // 현재 섹션
+            inverseJoinColumns = @JoinColumn(name = "prerequisite_id") // 선수 섹션
+    )
+    private Set<SectionJpaEntity> prerequisites = new HashSet<>();
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -52,5 +67,28 @@ public class SectionJpaEntity { // 로드맵
     @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    public void updateFields(Major major, String title, CategoryJpaEntity category, String description, Integer orderIndex) {
+        this.major = major;
+        this.title = title;
+        this.category = category;
+        this.description = description;
+        this.orderIndex = orderIndex;
+    }
+
+    public void updateChapters(List<ChapterJpaEntity> newChapters) {
+        this.chapters.clear(); // 기존 리스트를 비우고
+        this.chapters.addAll(newChapters); // 새 리스트를 채움 (고아 객체 자동 삭제됨)
+    }
+
+    public void updateKeyPoints(List<SectionKeyPointJpaEntity> newKeyPoints) {
+        this.keyPoints.clear();
+        this.keyPoints.addAll(newKeyPoints);
+    }
+
+    public void updatePrerequisites(Set<SectionJpaEntity> newPrerequisites) {
+        this.prerequisites.clear();
+        this.prerequisites.addAll(newPrerequisites);
+    }
 
 }

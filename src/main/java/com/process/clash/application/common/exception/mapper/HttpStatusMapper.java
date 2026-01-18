@@ -22,6 +22,7 @@ public final class HttpStatusMapper {
             case CONFLICT -> HttpStatus.CONFLICT;
             case GONE -> HttpStatus.GONE;
             case INTERNAL_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
+            case UNPROCESSABLE_ENTITY -> HttpStatus.UNPROCESSABLE_ENTITY;
         };
     }
 }

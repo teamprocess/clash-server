@@ -11,7 +11,7 @@ public class SeasonJpaMapper {
                 season.id(),
                 season.createdAt(),
                 season.updatedAt(),
-                season.title(),
+                season.name(),
                 season.startDate(),
                 season.endDate()
         );
@@ -22,7 +22,7 @@ public class SeasonJpaMapper {
                 seasonJpaEntity.getId(),
                 seasonJpaEntity.getCreatedAt(),
                 seasonJpaEntity.getUpdatedAt(),
-                seasonJpaEntity.getTitle(),
+                seasonJpaEntity.getName(),
                 seasonJpaEntity.getStartDate(),
                 seasonJpaEntity.getEndDate()
         );

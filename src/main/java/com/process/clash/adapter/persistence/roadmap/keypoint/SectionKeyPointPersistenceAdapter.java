@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.keypoint;
 
-import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
+import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -24,6 +24,18 @@ public class SectionKeyPointPersistenceAdapter implements SectionKeyPointReposit
     }
 
     @Override
+    public void saveAll(List<SectionKeyPoint> keyPoints) {
+        if (keyPoints.isEmpty()) {
+            return;
+        }
+        SectionJpaEntity sectionEntity = sectionJpaRepository.getReferenceById(keyPoints.get(0).getSectionId());
+        List<SectionKeyPointJpaEntity> entities = keyPoints.stream()
+                .map(kp -> sectionKeyPointJpaMapper.toJpaEntity(kp, sectionEntity))
+                .toList();
+        sectionKeyPointJpaRepository.saveAll(entities);
+    }
+
+    @Override
     public Optional<SectionKeyPoint> findById(Long id) {
         return sectionKeyPointJpaRepository.findById(id).map(sectionKeyPointJpaMapper::toDomain);
     }
@@ -36,5 +48,10 @@ public class SectionKeyPointPersistenceAdapter implements SectionKeyPointReposit
     @Override
     public List<SectionKeyPoint> findAllBySectionId(Long sectionId) {
         return sectionKeyPointJpaRepository.findAllBySectionId(sectionId).stream().map(sectionKeyPointJpaMapper::toDomain).toList();
+    }
+
+    @Override
+    public void deleteAllBySectionId(Long sectionId) {
+        sectionKeyPointJpaRepository.deleteAllBySectionId(sectionId);
     }
 }

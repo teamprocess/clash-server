@@ -26,7 +26,7 @@ public class SeasonAdminController {
             @AuthenticatedActor Actor actor,
             @Valid @RequestBody CreateSeasonDto.Request request
     ) {
-        CreateSeasonData.Command command = CreateSeasonData.Command.from(request, actor);
+        CreateSeasonData.Command command = request.toCommand(actor);
         createSeasonUseCase.execute(command);
         return ApiResponse.success("시즌 생성에 성공했습니다.");
     }

@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface SectionKeyPointRepositoryPort {
     void save(SectionKeyPoint keyPoint);
+    void saveAll(List<SectionKeyPoint> keyPoints);
     Optional<SectionKeyPoint> findById(Long id);
     List<SectionKeyPoint> findAll();
     List<SectionKeyPoint> findAllBySectionId(Long sectionId);
+    void deleteAllBySectionId(Long sectionId);
 }

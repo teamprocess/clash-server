@@ -7,14 +7,14 @@ import java.util.List;
 public class GetAllAbleRivalsDto {
 
     public record Response(
-        List<User> users
+        List<UserInfo> users
     ) {
 
         public static Response from(GetAllAbleRivalsData.Result result) {
 
             return new Response(
                     result.users().stream()
-                            .map(data -> new User(
+                            .map(data -> new UserInfo(
                                     data.id(),
                                     data.name(),
                                     data.githubId()
@@ -24,7 +24,7 @@ public class GetAllAbleRivalsDto {
         }
     }
 
-    private record User(
+    private record UserInfo(
             Long id,
             String name,
             String githubId

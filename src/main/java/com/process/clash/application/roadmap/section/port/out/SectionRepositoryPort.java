@@ -8,8 +8,11 @@ import java.util.Optional;
 
 public interface SectionRepositoryPort {
     Section save(Section section);
+    List<Section> saveAll(List<Section> sections);
     Optional<Section> findById(Long id);
     List<Section> findAll();
+    List<Section> findAllById(List<Long> ids);
     List<Section> findAllByMajor(Major major);
+    boolean existsByCategoryId(Long categoryId);
     void deleteById(Long id);
 }

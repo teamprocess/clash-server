@@ -1,7 +1,7 @@
 package com.process.clash.application.user.user.exception.exception.forbidden;
 
 import com.process.clash.application.common.exception.exception.ForbiddenException;
-import com.process.clash.application.user.user.exception.status.UserStatusCode;
+import com.process.clash.application.user.user.exception.statuscode.UserStatusCode;
 
 public class RequiredAdminRoleException extends ForbiddenException {
     public RequiredAdminRoleException() {

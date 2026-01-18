@@ -1,16 +1,14 @@
 package com.process.clash.adapter.persistence.roadmap.chapter;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Repository;
-
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
 import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
 import com.process.clash.domain.roadmap.entity.Chapter;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
