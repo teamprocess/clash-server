@@ -1,9 +1,12 @@
 package com.process.clash.adapter.persistence.rival;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> {
@@ -29,4 +32,8 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     int countAllByOpponent_Id(
             @Param("opponentId") Long opponentId
     );
+
+    List<RivalJpaEntity> findAllByMy_Id(Long myId);
+
+    Long my(UserJpaEntity my);
 }

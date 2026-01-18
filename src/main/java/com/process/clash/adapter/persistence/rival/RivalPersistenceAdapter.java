@@ -7,6 +7,8 @@ import com.process.clash.domain.rival.entity.Rival;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class RivalPersistenceAdapter implements RivalRepositoryPort {
@@ -34,5 +36,14 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     public int countAllByOpponent_Id(Long opponentId) {
 
         return rivalJpaRepository.countAllByOpponent_Id(opponentId);
+    }
+
+    @Override
+    public List<Rival> findAllByMy_Id(Long myId) {
+
+        return rivalJpaRepository.findAllByMy_Id(myId)
+                .stream()
+                .map(rivalJpaMapper::toDomain)
+                .toList();
     }
 }

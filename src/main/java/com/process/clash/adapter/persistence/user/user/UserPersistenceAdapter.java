@@ -5,6 +5,7 @@ import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -34,5 +35,13 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     @Override
     public boolean existsByUsername(String username) {
         return userJpaRepository.existsByUsername(username);
+    }
+
+    @Override
+    public List<User> findByIdNotIn(List<Long> ids) {
+        return userJpaRepository.findByIdNotIn(ids)
+                .stream()
+                .map(userJpaMapper::toDomain)
+                .toList();
     }
 }

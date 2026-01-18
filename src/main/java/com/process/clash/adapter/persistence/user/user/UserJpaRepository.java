@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.user.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,6 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 	Optional<UserJpaEntity> findByUsername(String username);
 
 	boolean existsByUsername(String username);
+
+	List<UserJpaEntity> findByIdNotIn(List<Long> ids);
 }
