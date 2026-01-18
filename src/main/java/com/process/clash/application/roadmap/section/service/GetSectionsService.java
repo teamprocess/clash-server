@@ -29,7 +29,7 @@ public class GetSectionsService implements GetSectionsUseCase {
 
         // Section의 category를 중복 제거하여 추출
         List<String> categories = sections.stream()
-                .map(Section::getCategory)
+                .map(s -> s.getCategory().getName())
                 .distinct()
                 .toList();
 

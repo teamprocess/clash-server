@@ -1,8 +1,10 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
+import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaRepository;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
-import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
+import com.process.clash.application.roadmap.category.exception.exception.notfound.CategoryNotFoundException;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SectionPersistenceAdapter implements SectionRepositoryPort {
     private final SectionJpaRepository sectionJpaRepository;
+    private final CategoryJpaRepository categoryJpaRepository;
     private final SectionJpaMapper sectionJpaMapper;
     private final ChapterJpaMapper chapterJpaMapper;
 
@@ -25,7 +28,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     public Section save(Section section) {
         if (section.getId() == null) {
             // 생성: 완전 신규 생성 시에는 Mapper가 만든 객체를 바로 저장해도 됨 (ID가 없으므로)
-            SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(section);
+            // 카테고리 조회
+            CategoryJpaEntity categoryEntity = categoryJpaRepository.findById(section.getCategory().getId())
+                    .orElseThrow(CategoryNotFoundException::new);
+            Map<Long, CategoryJpaEntity> categoryMap = Map.of(section.getCategory().getId(), categoryEntity);
+
+            SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(section, categoryMap);
             SectionJpaEntity saved = sectionJpaRepository.save(newEntity);
             return sectionJpaMapper.toDomain(saved);
         }
@@ -34,7 +42,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
         SectionJpaEntity entity = sectionJpaRepository.findById(section.getId())
                 .orElseThrow(SectionNotFoundException::new);
 
-        updateSectionDetails(entity, section);
+        // 카테고리 조회
+        CategoryJpaEntity categoryEntity = categoryJpaRepository.findById(section.getCategory().getId())
+                .orElseThrow(CategoryNotFoundException::new);
+        Map<Long, CategoryJpaEntity> categoryMap = Map.of(section.getCategory().getId(), categoryEntity);
+
+        updateSectionDetails(entity, section, categoryMap);
 
         sectionJpaRepository.flush(); // 즉시 DB 반영 -> updatedAt 갱신 용도
 
@@ -53,7 +66,14 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
                 .filter(Objects::nonNull)
                 .toList();
 
-        // 2. Bulk Fetch (성능 최적화)
+        // 2. 카테고리 ID 추출 및 Bulk Fetch
+        Set<Long> categoryIds = sections.stream()
+                .map(section -> section.getCategory().getId())
+                .collect(Collectors.toSet());
+        Map<Long, CategoryJpaEntity> categoryMap = categoryJpaRepository.findAllById(categoryIds).stream()
+                .collect(Collectors.toMap(CategoryJpaEntity::getId, c -> c));
+
+        // 3. Bulk Fetch (섹션 엔티티)
         Map<Long, SectionJpaEntity> entityMap = sectionJpaRepository.findAllById(ids).stream()
                 .collect(Collectors.toMap(SectionJpaEntity::getId, e -> e));
 
@@ -64,11 +84,11 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
             if (domain.getId() != null && entityMap.containsKey(domain.getId())) {
                 // 기존 영속 객체 - Dirty Checking으로 자동 저장
                 SectionJpaEntity entity = entityMap.get(domain.getId());
-                updateSectionDetails(entity, domain);
+                updateSectionDetails(entity, domain, categoryMap);
                 allEntities.add(entity);
             } else {
                 // 신규 객체만 saveAll로 저장
-                SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(domain);
+                SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(domain, categoryMap);
                 newEntities.add(newEntity);
                 allEntities.add(newEntity);
             }
@@ -107,6 +127,11 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     }
 
     @Override
+    public boolean existsByCategoryId(Long categoryId) {
+        return sectionJpaRepository.existsByCategoryId(categoryId);
+    }
+
+    @Override
     public void deleteById(Long id) {
         sectionJpaRepository.deleteById(id);
     }
@@ -117,12 +142,16 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     3. 추가 혹은 수정
     4. 키포인트, 선수 로드맵도 비슷하게 진행
      */
-    private void updateSectionDetails(SectionJpaEntity entity, Section domain) {
+    private void updateSectionDetails(SectionJpaEntity entity, Section domain, Map<Long, CategoryJpaEntity> categoryMap) {
         // 1. 기본 필드 업데이트
+        CategoryJpaEntity categoryEntity = categoryMap.get(domain.getCategory().getId());
+        if (categoryEntity == null) {
+            throw new CategoryNotFoundException();
+        }
         entity.updateFields(
                 domain.getMajor(),
                 domain.getTitle(),
-                domain.getCategory(),
+                categoryEntity,
                 domain.getDescription(),
                 domain.getOrderIndex()
         );

@@ -21,4 +21,6 @@ public interface SectionJpaRepository extends JpaRepository<SectionJpaEntity, Lo
     List<SectionJpaEntity> findAllById(Iterable<Long> ids);
 
     List<SectionJpaEntity> findAllByMajorOrderByOrderIndexAsc(Major major);
+
+    boolean existsByCategoryId(Long categoryId);
 }

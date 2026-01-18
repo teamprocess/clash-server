@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
+import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
 import com.process.clash.domain.common.enums.Major;
@@ -37,7 +38,9 @@ public class SectionJpaEntity { // 로드맵
 
     private String description;
 
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryJpaEntity category;
 
     @Column(nullable = false)
     private Integer orderIndex;
@@ -65,7 +68,7 @@ public class SectionJpaEntity { // 로드맵
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public void updateFields(Major major, String title, String category, String description, Integer orderIndex) {
+    public void updateFields(Major major, String title, CategoryJpaEntity category, String description, Integer orderIndex) {
         this.major = major;
         this.title = title;
         this.category = category;

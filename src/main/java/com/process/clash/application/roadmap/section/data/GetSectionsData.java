@@ -32,7 +32,7 @@ public class GetSectionsData {
                 return new SectionVo(
                         section.getId(),
                         section.getTitle(),
-                        section.getCategory(),
+                        section.getCategory().getName(),
                         completed,
                         locked
                 );

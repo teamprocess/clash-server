@@ -7,6 +7,9 @@ import com.process.clash.application.roadmap.section.exception.exception.unproce
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
+import com.process.clash.application.roadmap.category.port.out.CategoryRepositoryPort;
+import com.process.clash.application.roadmap.category.exception.exception.notfound.CategoryNotFoundException;
+import com.process.clash.domain.roadmap.entity.Category;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class UpdateSectionService implements UpdateSectionUseCase {
 
     private final SectionRepositoryPort sectionRepository;
     private final SectionKeyPointRepositoryPort keyPointRepository;
+    private final CategoryRepositoryPort categoryRepository;
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
@@ -45,9 +49,15 @@ public class UpdateSectionService implements UpdateSectionUseCase {
             updatePrerequisites(section, command.prerequisiteSectionIds());
         }
 
+        Category categoryToUpdate = null;
+        if (command.categoryId() != null) {
+            categoryToUpdate = categoryRepository.findById(command.categoryId())
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+
         section.update(
                 command.title(),
-                command.category(),
+                categoryToUpdate,
                 command.description(),
                 command.orderIndex()
         );

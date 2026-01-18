@@ -11,7 +11,7 @@ public class UpdateSectionData {
             Actor actor,
             Long sectionId,
             String title,
-            String category,
+            Long categoryId,
             String description,
             Integer orderIndex,
             List<String> keyPoints,
@@ -34,7 +34,7 @@ public class UpdateSectionData {
             return new Result(
                     section.getId(),
                     section.getTitle(),
-                    section.getCategory(),
+                    section.getCategory().getName(),
                     section.getDescription(),
                     keyPoints,
                     updatedAtString
