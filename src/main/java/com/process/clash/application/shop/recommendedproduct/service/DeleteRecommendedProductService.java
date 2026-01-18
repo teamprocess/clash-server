@@ -4,7 +4,7 @@ import com.process.clash.application.shop.recommendedproduct.data.DeleteRecommen
 import com.process.clash.application.shop.recommendedproduct.exception.exception.notfound.RecommendedProductNotFoundException;
 import com.process.clash.application.shop.recommendedproduct.port.in.DeleteRecommendedProductUseCase;
 import com.process.clash.application.shop.recommendedproduct.port.out.RecommendedProductRepositoryPort;
-import com.process.clash.domain.common.policy.CheckAdminPolicy;
+import com.process.clash.application.common.policy.CheckAdminPolicy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -19,7 +19,7 @@ public class CreateSeasonDto {
         public CreateSeasonData.Command toCommand(Actor actor) {
             return new CreateSeasonData.Command(
                     actor,
-                    title,
+                    name,
                     startDate,
                     endDate
             );

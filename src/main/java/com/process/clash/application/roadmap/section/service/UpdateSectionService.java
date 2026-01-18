@@ -44,7 +44,13 @@ public class UpdateSectionService implements UpdateSectionUseCase {
             updatePrerequisites(section, command.prerequisiteSectionIds());
         }
 
-        section.update(command);
+        section.update(
+                command.title(),
+                command.category(),
+                command.description(),
+                command.orderIndex(),
+                command.keyPoints()
+        );
 
         // 업데이트된 Section 업데이트/저장
         Section updatedSection = sectionRepository.save(section);
