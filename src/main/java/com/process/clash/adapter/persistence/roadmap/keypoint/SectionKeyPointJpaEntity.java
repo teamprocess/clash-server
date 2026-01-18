@@ -39,4 +39,8 @@ public class SectionKeyPointJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    public void update(String content) {
+        this.content = content;
+    }
+
 }
