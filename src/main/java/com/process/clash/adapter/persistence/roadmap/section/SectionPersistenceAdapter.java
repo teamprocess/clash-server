@@ -165,32 +165,21 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
 
         // 3. KeyPoints 리스트 동기화
         if (domain.getKeyPoints() != null) {
-            List<SectionKeyPointJpaEntity> existingKeyPoints = entity.getKeyPoints();
-            List<SectionKeyPoint> incomingKeyPoints = domain.getKeyPoints();
 
-            // 삭제할 대상 제거
-            Set<Long> incomingKeyIds = incomingKeyPoints.stream()
-                    .map(SectionKeyPoint::getId)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
+            entity.getKeyPoints().clear();
 
-            existingKeyPoints.removeIf(kp -> kp.getId() != null && !incomingKeyIds.contains(kp.getId()));
+            List<SectionKeyPointJpaEntity> newKeyPoints = domain.getKeyPoints().stream()
+                    .map(kp -> new SectionKeyPointJpaEntity(
+                            null,             // ID를 강제로 null로 설정 (그래야 INSERT 쿼리가 나감)
+                            entity,           // 부모(Section) 연결
+                            kp.getContent(),  // 내용
+                            kp.getOrderIndex() != null ? kp.getOrderIndex() : 0, // 순서
+                            null,             // createdAt (JPA 자동 생성)
+                            null              // updatedAt (JPA 자동 생성)
+                    ))
+                    .toList();
 
-            // 추가 혹은 수정
-            for (SectionKeyPoint incoming : incomingKeyPoints) {
-                if (incoming.getId() == null) {
-                    // 추가
-                    existingKeyPoints.add(sectionKeyPointJpaMapper.toJpaEntity(incoming, entity));
-                } else {
-                    // 수정
-                    existingKeyPoints.stream()
-                            .filter(kp -> kp.getId().equals(incoming.getId()))
-                            .findFirst()
-                            .ifPresent(kp -> {
-                                kp.update(incoming.getContent());
-                            });
-                }
-            }
+            entity.getKeyPoints().addAll(newKeyPoints);
         }
 
         // 4. Prerequisites (선수 로드맵) 교체
