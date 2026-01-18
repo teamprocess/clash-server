@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,13 +32,6 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         Section section = sectionRepository.findById(command.sectionId())
                 .orElseThrow(SectionNotFoundException::new);
 
-        section.update(
-                command.title(),
-                command.category(),
-                command.description(),
-                command.orderIndex()
-        );
-
         // orderIndex 변경이 요청된 경우, 다른 Section들 재정렬 (Insert & Shift)
         if (command.orderIndex() != null && !command.orderIndex().equals(section.getOrderIndex())) {
             reorderSections(section, command.orderIndex());
@@ -53,6 +45,13 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         if (command.keyPoints() != null) {
             section.updateKeyPoints(command.keyPoints());
         }
+
+        section.update(
+                command.title(),
+                command.category(),
+                command.description(),
+                command.orderIndex()
+        );
 
         // 업데이트된 Section 저장
         Section updatedSection = sectionRepository.save(section);
@@ -74,9 +73,6 @@ public class UpdateSectionService implements UpdateSectionUseCase {
         List<Section> sections = sectionRepository.findAllByMajor(targetSection.getMajor());
         int oldOrderIndex = targetSection.getOrderIndex();
 
-        // 성능 최적화: 수정할 Section들을 모아서 한 번에 저장
-        List<Section> sectionsToUpdate = new ArrayList<>();
-
         for (Section section : sections) {
             // 대상 Section은 건너뜀 (나중에 update()에서 처리)
             if (section.getId().equals(targetSection.getId())) {
@@ -89,19 +85,12 @@ public class UpdateSectionService implements UpdateSectionUseCase {
             // 예: C(2)를 1로 이동 → B(1)는 2로, C(2)는 1로
             if (newOrderIndex <= currentIndex && currentIndex < oldOrderIndex) {
                 section.updateOrderIndex(currentIndex + 1);
-                sectionsToUpdate.add(section);
             }
             // 뒤로 이동하는 경우: 새 위치까지의 Section들을 앞으로 당기기
             // 예: A(0)를 2로 이동 → B(1)는 0으로, C(2)는 1로, A(0)는 2로
             else if (oldOrderIndex < currentIndex && currentIndex <= newOrderIndex) {
                 section.updateOrderIndex(currentIndex - 1);
-                sectionsToUpdate.add(section);
             }
-        }
-
-        // Batch Update: 한 번에 저장
-        if (!sectionsToUpdate.isEmpty()) {
-            sectionRepository.saveAll(sectionsToUpdate);
         }
     }
 
