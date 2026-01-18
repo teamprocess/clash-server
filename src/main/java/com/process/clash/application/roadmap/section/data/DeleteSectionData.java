@@ -1,8 +1,6 @@
 package com.process.clash.application.roadmap.section.data;
 
 import com.process.clash.application.common.actor.Actor;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 public class DeleteSectionData {
 

@@ -2,13 +2,15 @@ package com.process.clash.domain.roadmap.entity;
 
 import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import com.process.clash.domain.common.enums.Major;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 @Getter
@@ -32,9 +34,16 @@ public class Section {
 
     private List<SectionKeyPoint> keyPoints;
 
+    private Set<Section> prerequisites = new HashSet<>();
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    // 편의 메서드: 선수 과목 추가
+    public void addPrerequisite(Section prerequisiteSection) {
+        this.prerequisites.add(prerequisiteSection);
+    }
 
     public Section update(UpdateSectionData.Command command) {
         if (command.title() != null) {
@@ -45,6 +54,9 @@ public class Section {
         }
         if (command.description() != null) {
             this.description = command.description();
+        }
+        if (command.orderIndex() != null) {
+            this.orderIndex = command.orderIndex();
         }
         if (command.keyPoints() != null) {
             // keyPoints를 SectionKeyPoint 엔티티 리스트로 변환
@@ -58,5 +70,9 @@ public class Section {
                     .toList();
         }
         return this;
+    }
+
+    public void updateOrderIndex(Integer newOrderIndex) {
+        this.orderIndex = newOrderIndex;
     }
 }

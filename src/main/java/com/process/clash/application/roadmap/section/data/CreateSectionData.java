@@ -5,6 +5,7 @@ import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -29,7 +30,7 @@ public class CreateSectionData {
                     ))
                     .toList();
 
-            return new Section(null, major, title, description, category, orderIndex, List.of(), sectionKeyPoints, null, null);
+            return new Section(null, major, title, description, category, orderIndex, List.of(), sectionKeyPoints, new HashSet<>(), null, null);
         }
     }
 

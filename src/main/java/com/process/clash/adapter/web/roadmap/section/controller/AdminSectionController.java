@@ -1,8 +1,8 @@
-package com.process.clash.adapter.web.section.controller;
+package com.process.clash.adapter.web.roadmap.section.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.section.dto.CreateSectionDto;
-import com.process.clash.adapter.web.section.dto.UpdateSectionDto;
+import com.process.clash.adapter.web.roadmap.section.dto.CreateSectionDto;
+import com.process.clash.adapter.web.roadmap.section.dto.UpdateSectionDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.section.data.CreateSectionData;

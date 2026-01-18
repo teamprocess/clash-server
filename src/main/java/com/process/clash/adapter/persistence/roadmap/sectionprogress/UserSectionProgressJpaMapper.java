@@ -22,6 +22,7 @@ public class UserSectionProgressJpaMapper {
                 sectionEntity,
                 currentChapterEntity,
                 progress.getCompletedChapters(),
+                progress.getIsCompleted(),
                 null, // createdAt은 @CreationTimestamp가 자동으로 설정
                 null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
@@ -33,7 +34,8 @@ public class UserSectionProgressJpaMapper {
                 entity.getUser() != null ? entity.getUser().getId() : null,
                 entity.getSection() != null ? entity.getSection().getId() : null,
                 entity.getCurrentChapter() != null ? entity.getCurrentChapter().getId() : null,
-                entity.getCompletedChapters()
+                entity.getCompletedChapters(),
+                entity.getIsCompleted()
         );
     }
 }

@@ -13,7 +13,9 @@ public class UpdateSectionData {
             String title,
             String category,
             String description,
-            List<String> keyPoints
+            Integer orderIndex,
+            List<String> keyPoints,
+            List<Long> prerequisiteSectionIds
     ) {}
 
     public record Result(

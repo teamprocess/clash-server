@@ -8,13 +8,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "sections")
@@ -46,8 +47,15 @@ public class SectionJpaEntity { // 로드맵
     private List<ChapterJpaEntity> chapters = new ArrayList<>();
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL, orphanRemoval = true)
-    @BatchSize(size = 50)
     private List<SectionKeyPointJpaEntity> keyPoints = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "section_prerequisites",
+            joinColumns = @JoinColumn(name = "section_id"),       // 현재 섹션
+            inverseJoinColumns = @JoinColumn(name = "prerequisite_id") // 선수 섹션
+    )
+    private Set<SectionJpaEntity> prerequisites = new HashSet<>();
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

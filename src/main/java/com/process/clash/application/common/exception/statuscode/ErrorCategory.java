@@ -8,5 +8,6 @@ public enum ErrorCategory {
     METHOD_NOT_ALLOWED,
     CONFLICT,
     GONE,
-    INTERNAL_ERROR
+    INTERNAL_ERROR,
+    UNPROCESSABLE_ENTITY
 }

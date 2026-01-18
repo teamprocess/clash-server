@@ -10,4 +10,5 @@ public interface UserSectionProgressRepositoryPort {
     Optional<UserSectionProgress> findById(Long id);
     Optional<UserSectionProgress> findByUserIdAndSectionId(Long userId, Long sectionId);
     List<UserSectionProgress> findAllByUserId(Long userId);
+    List<UserSectionProgress> findAllByUserIdAndSectionIdIn(Long userId, List<Long> sectionIds);
 }
