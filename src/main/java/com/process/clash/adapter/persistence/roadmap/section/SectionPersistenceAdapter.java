@@ -1,8 +1,9 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
+import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaRepository;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
-import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SectionPersistenceAdapter implements SectionRepositoryPort {
     private final SectionJpaRepository sectionJpaRepository;
+    private final CategoryJpaRepository categoryJpaRepository;
     private final SectionJpaMapper sectionJpaMapper;
     private final ChapterJpaMapper chapterJpaMapper;
 
@@ -119,10 +121,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
      */
     private void updateSectionDetails(SectionJpaEntity entity, Section domain) {
         // 1. 기본 필드 업데이트
+        CategoryJpaEntity categoryEntity = categoryJpaRepository.findByName(domain.getCategory().getName())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + domain.getCategory().getName()));
         entity.updateFields(
                 domain.getMajor(),
                 domain.getTitle(),
-                domain.getCategory(),
+                categoryEntity,
                 domain.getDescription(),
                 domain.getOrderIndex()
         );

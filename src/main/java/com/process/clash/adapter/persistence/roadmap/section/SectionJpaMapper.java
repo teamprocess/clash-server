@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.section;
 
+import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaEntity;
@@ -19,6 +20,7 @@ public class SectionJpaMapper {
 
     private final ChapterJpaMapper chapterJpaMapper;
     private final SectionKeyPointJpaMapper sectionKeyPointJpaMapper;
+    private final CategoryJpaMapper categoryJpaMapper;
     private final SectionJpaRepository sectionJpaRepository;
 
     public SectionJpaEntity toJpaEntity(Section section) {
@@ -27,7 +29,7 @@ public class SectionJpaMapper {
                 section.getMajor(),
                 section.getTitle(),
                 section.getDescription(),
-                section.getCategory(),
+                categoryJpaMapper.toJpaEntity(section.getCategory()),
                 section.getOrderIndex(),
                 new ArrayList<>(),
                 new ArrayList<>(),
@@ -67,7 +69,7 @@ public class SectionJpaMapper {
                 entity.getMajor(),
                 entity.getTitle(),
                 entity.getDescription(),
-                entity.getCategory(),
+                categoryJpaMapper.toDomain(entity.getCategory()),
                 entity.getOrderIndex(),
                 // null 안전성: entity.getChapters()가 null이면 빈 리스트로 처리
                 (entity.getChapters() != null)
@@ -94,7 +96,7 @@ public class SectionJpaMapper {
                 entity.getMajor(),
                 entity.getTitle(),
                 entity.getDescription(),
-                entity.getCategory(),
+                categoryJpaMapper.toDomain(entity.getCategory()),
                 entity.getOrderIndex(),
                 new ArrayList<>(),
                 new ArrayList<>(),

@@ -2,8 +2,11 @@ package com.process.clash.application.roadmap.section.service;
 
 import com.process.clash.application.roadmap.section.data.CreateSectionData;
 import com.process.clash.application.roadmap.section.port.in.CreateSectionUseCase;
+import com.process.clash.application.roadmap.category.exception.exception.notfound.CategoryNotFoundException;
+import com.process.clash.application.roadmap.category.port.out.CategoryRepositoryPort;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.application.common.policy.CheckAdminPolicy;
+import com.process.clash.domain.roadmap.entity.Category;
 import com.process.clash.domain.roadmap.entity.Section;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,7 @@ import java.util.List;
 public class CreateSectionService implements CreateSectionUseCase {
 
     private final SectionRepositoryPort sectionRepositoryPort;
+    private final CategoryRepositoryPort categoryRepositoryPort;
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
@@ -27,7 +31,10 @@ public class CreateSectionService implements CreateSectionUseCase {
         List<Section> existingSections = sectionRepositoryPort.findAllByMajor(command.major());
         int nextOrderIndex = existingSections.size();  // 0부터 시작 (0, 1, 2, ...)
 
-        Section section = command.toDomain(nextOrderIndex);
+        Category category = categoryRepositoryPort.findByName(command.category())
+                .orElseThrow(CategoryNotFoundException::new);
+
+        Section section = command.toDomain(nextOrderIndex, category);
 
         Section savedSection = sectionRepositoryPort.save(section);
 

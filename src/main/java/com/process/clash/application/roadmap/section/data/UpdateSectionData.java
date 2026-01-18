@@ -34,7 +34,7 @@ public class UpdateSectionData {
             return new Result(
                     section.getId(),
                     section.getTitle(),
-                    section.getCategory(),
+                    section.getCategory().getName(),
                     section.getDescription(),
                     keyPoints,
                     updatedAtString

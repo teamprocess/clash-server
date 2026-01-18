@@ -2,6 +2,7 @@ package com.process.clash.application.roadmap.section.data;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.Major;
+import com.process.clash.domain.roadmap.entity.Category;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 
@@ -19,7 +20,7 @@ public class CreateSectionData {
             String description,
             List<String> keyPoints
     ) {
-        public Section toDomain(Integer orderIndex) {
+        public Section toDomain(Integer orderIndex, Category category) {
             // keyPoints를 SectionKeyPoint 엔티티 리스트로 변환
             List<SectionKeyPoint> sectionKeyPoints = IntStream.range(0, keyPoints.size())
                     .mapToObj(index -> new SectionKeyPoint(
@@ -52,7 +53,7 @@ public class CreateSectionData {
                     section.getId(),
                     section.getMajor().name(),
                     section.getTitle(),
-                    section.getCategory(),
+                    section.getCategory().getName(),
                     section.getDescription(),
                     keyPoints,
                     createdAtString

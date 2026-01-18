@@ -24,7 +24,7 @@ public class Section {
 
     private String description;
 
-    private String category;
+    private Category category;
 
     private Integer orderIndex;
 
@@ -43,7 +43,7 @@ public class Section {
         this.prerequisites.add(prerequisiteSection);
     }
 
-    public Section update(String title, String category, String description, Integer orderIndex) {
+    public Section update(String title, Category category, String description, Integer orderIndex) {
         if (title != null) {
             this.title = title;
         }

@@ -1,6 +1,8 @@
 package com.process.clash.application.roadmap.section.service;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.roadmap.category.data.CreateCategoryData;
+import com.process.clash.application.roadmap.category.port.in.CreateCategoryUseCase;
 import com.process.clash.application.roadmap.section.data.CreateSectionData;
 import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import com.process.clash.application.roadmap.section.port.in.CreateSectionUseCase;
@@ -40,6 +42,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class UpdateSectionServiceIntegrationTest {
 
     @Autowired
+    private CreateCategoryUseCase createCategoryUseCase;
+
+    @Autowired
     private CreateSectionUseCase createSectionUseCase;
 
     @Autowired
@@ -70,12 +75,17 @@ public class UpdateSectionServiceIntegrationTest {
     @Test
     @DisplayName("KeyPoints 업데이트 시 orphanRemoval과 명시적 bulk delete가 충돌하지 않는지 확인")
     void updateKeyPoints_shouldNotConflictWithOrphanRemoval() {
+        // Given: Category 생성
+        CreateCategoryData.Result categoryResult = createCategoryUseCase.execute(
+                new CreateCategoryData.Command(adminActor, "BASIC")
+        );
+
         // Given: Section 생성 (keyPoints 3개)
         CreateSectionData.Command createCommand = new CreateSectionData.Command(
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                "Test Category",
+                categoryResult.name(),
                 "Test Description",
                 List.of("point1", "point2", "point3")
         );
@@ -132,12 +142,17 @@ public class UpdateSectionServiceIntegrationTest {
     @Test
     @DisplayName("KeyPoints를 빈 리스트로 업데이트하면 모든 keyPoints가 삭제되는지 확인")
     void updateKeyPoints_withEmptyList_shouldDeleteAllKeyPoints() {
+        // Given: Category 생성
+        CreateCategoryData.Result categoryResult = createCategoryUseCase.execute(
+                new CreateCategoryData.Command(adminActor, "BASIC")
+        );
+
         // Given: Section 생성 (keyPoints 3개)
         CreateSectionData.Command createCommand = new CreateSectionData.Command(
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                "Test Category",
+                categoryResult.name(),
                 "Test Description",
                 List.of("point1", "point2", "point3")
         );
@@ -169,12 +184,17 @@ public class UpdateSectionServiceIntegrationTest {
     @Test
     @DisplayName("KeyPoints를 null로 업데이트하면 기존 keyPoints가 유지되는지 확인")
     void updateKeyPoints_withNull_shouldKeepExistingKeyPoints() {
+        // Given: Category 생성
+        CreateCategoryData.Result categoryResult = createCategoryUseCase.execute(
+                new CreateCategoryData.Command(adminActor, "BASIC")
+        );
+
         // Given: Section 생성 (keyPoints 3개)
         CreateSectionData.Command createCommand = new CreateSectionData.Command(
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                "Test Category",
+                categoryResult.name(),
                 "Test Description",
                 List.of("point1", "point2", "point3")
         );
@@ -212,13 +232,18 @@ public class UpdateSectionServiceIntegrationTest {
     @Test
     @DisplayName("KeyPoints 대량 업데이트 시 성능 확인 (10개 -> 10개)")
     void updateKeyPoints_bulkUpdate_performanceTest() {
+        // Given: Category 생성
+        CreateCategoryData.Result categoryResult = createCategoryUseCase.execute(
+                new CreateCategoryData.Command(adminActor, "BASIC")
+        );
+
         // Given: Section 생성 (keyPoints 10개)
         List<String> initialKeyPoints = List.of("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10");
         CreateSectionData.Command createCommand = new CreateSectionData.Command(
                 adminActor,
                 Major.SERVER,
                 "Test Section",
-                "Test Category",
+                categoryResult.name(),
                 "Test Description",
                 initialKeyPoints
         );
