@@ -54,6 +54,7 @@ jobs:
           script_stop: true
           script: |
             cd /home/ubuntu/clash
+            ls -al
             
             echo "DOCKER_IMAGE=${{ secrets.DOCKER_IMAGE }}" > .deploy.env
             echo "IMAGE_TAG=${{ github.sha }}" >> .deploy.env
