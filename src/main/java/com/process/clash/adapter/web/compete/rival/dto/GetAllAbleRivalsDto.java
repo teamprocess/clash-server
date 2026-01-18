@@ -17,7 +17,8 @@ public class GetAllAbleRivalsDto {
                             .map(data -> new UserInfo(
                                     data.id(),
                                     data.name(),
-                                    data.githubId()
+                                    data.githubId(),
+                                    data.profileImage()
                             ))
                     .toList()
             );
@@ -27,6 +28,7 @@ public class GetAllAbleRivalsDto {
     private record UserInfo(
             Long id,
             String name,
-            String githubId
+            String githubId,
+            String profileImage
     ) {}
 }

@@ -36,7 +36,8 @@ public class GetAllAbleRivalsData {
                         return new UserInfo(
                                 user.id(),
                                 user.name(),
-                                userGitHub.gitHubId()
+                                userGitHub.gitHubId(),
+                                user.profileImage()
                         );
                     })
                     .toList();
@@ -48,6 +49,7 @@ public class GetAllAbleRivalsData {
     public record UserInfo(
             Long id,
             String name,
-            String githubId
+            String githubId,
+            String profileImage
     ) {}
 }
