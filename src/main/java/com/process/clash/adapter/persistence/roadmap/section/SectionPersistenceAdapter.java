@@ -157,30 +157,8 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
             }
         }
 
-        // 3. KeyPoints 리스트 동기화
-        if (domain.getKeyPoints() != null) {
-
-            entity.getKeyPoints().clear();
-
-            /*
-            toJpaEntity 메서드는 id를 그대로 가져와 객체를 만듭니다.
-            이러면 clear() 후 다시 id가 같은 객체가 와서 save()를 하는데, 이러면 JPA가 지우라고 했는데 왜 save해 하면서 혼란에 빠집니다.
-            반드시 ID가 null이어야 JPA가 "아, 이건 완전히 새로운 데이터구나!" 하고 깨끗하게 INSERT 쿼리를 날립니다.
-            따라서 아래에 생성자로 id에 null을 직접 넣었습니다.
-             */
-            List<SectionKeyPointJpaEntity> newKeyPoints = domain.getKeyPoints().stream()
-                    .map(kp -> new SectionKeyPointJpaEntity(
-                            null,             // ID를 강제로 null로 설정 (그래야 INSERT 쿼리가 나감)
-                            entity,           // 부모(Section) 연결
-                            kp.getContent(),  // 내용
-                            kp.getOrderIndex() != null ? kp.getOrderIndex() : 0, // 순서
-                            null,             // createdAt (JPA 자동 생성)
-                            null              // updatedAt (JPA 자동 생성)
-                    ))
-                    .toList();
-
-            entity.getKeyPoints().addAll(newKeyPoints);
-        }
+        // 3. KeyPoints 관리는 UpdateSectionService에서 명시적으로 처리하므로 여기서는 건너뜀
+        // CreateSection은 toJpaEntity()에서 cascade로 처리됨
 
         // 4. Prerequisites (선수 로드맵) 교체
         // ManyToMany는 관계 테이블만 관리하므로, 보통 ID 조회 후 Set 교체 방식을 써도 무방함
