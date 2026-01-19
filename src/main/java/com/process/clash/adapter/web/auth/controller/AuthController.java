@@ -5,7 +5,6 @@ import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.application.common.data.AccessContext;
-import com.process.clash.application.common.exception.exception.EndpointMovedException;
 import com.process.clash.application.user.user.data.SignInData;
 import com.process.clash.application.user.user.port.in.SignOutUseCase;
 import com.process.clash.application.user.user.data.SignUpData;
@@ -14,6 +13,7 @@ import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,8 +69,14 @@ public class AuthController implements AuthControllerDocument {
 	}
 
 	@PostMapping({"/{action:signin|signup|signout}"})
-	public void handleRedirect(@PathVariable String action) {
-		throw new EndpointMovedException(REDIRECT_MAP.get(action));
+	public ResponseEntity<?> handleRedirect(@PathVariable String action) {
+
+		String newLocation = REDIRECT_MAP.get(action);
+
+		return ResponseEntity
+				.status(HttpStatus.PERMANENT_REDIRECT) // 308
+				.header(HttpHeaders.LOCATION, newLocation)
+				.build();
 	}
 
 	private AccessContext extractAccessContext(HttpServletRequest request) {
