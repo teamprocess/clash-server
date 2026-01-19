@@ -13,4 +13,17 @@ public record UserNotice(
         Long senderId,
         Long receiverId
 ) {
+
+    public static UserNotice createDefault(NoticeCategory noticeCategory, Long senderId, Long receiverId) {
+
+        return new UserNotice(
+                null,
+                null,
+                null,
+                noticeCategory,
+                false,
+                senderId,
+                receiverId
+        );
+    }
 }
