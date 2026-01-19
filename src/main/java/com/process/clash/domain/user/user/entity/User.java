@@ -2,6 +2,7 @@ package com.process.clash.domain.user.user.entity;
 
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.common.enums.Role;
+import com.process.clash.domain.user.user.enums.UserStatus;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,8 @@ public record User(
         boolean pomodoroEnabled,
         Integer pomodoroStudyMinute,
         Integer pomodoroBreakMinute,
-        Major major
+        Major major,
+        UserStatus userStatus
 ) {
     public static User createDefault(String username, String name, String password) {
         return new User(
@@ -34,7 +36,8 @@ public record User(
                 false,   // 기본 공부 시간 (기본값이 없다면 null)
                 25,
                 5,
-                Major.NONE
+                Major.NONE,
+                UserStatus.PENDING
         );
 
     }
@@ -54,7 +57,8 @@ public record User(
                 this.pomodoroEnabled,
                 this.pomodoroStudyMinute,
                 this.pomodoroBreakMinute,
-                major // 변경점
+                major, // 변경점
+                this.userStatus
         );
     }
 
@@ -72,7 +76,8 @@ public record User(
                 pomodoroEnabled,
                 studyMinute,
                 breakMinute,
-                this.major
+                this.major,
+                this.userStatus
         );
     }
 }
