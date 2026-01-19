@@ -13,6 +13,8 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 
 	boolean existsByUsername(String username);
 
+	boolean existsByEmail(String email);
+
 	List<UserJpaEntity> findByIdIn(List<Long> ids);
 
 	Optional<UserJpaEntity> findByEmail(String email);

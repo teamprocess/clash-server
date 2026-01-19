@@ -31,6 +31,7 @@ public enum UserStatusCode implements StatusCode {
 
     // 409
     USERNAME_ALREADY_EXIST("USERNAME_ALREADY_EXIST", "이미 존재하는 username입니다.", ErrorCategory.CONFLICT),
+    EMAIL_ALREADY_EXIST("EMAIL_ALREADY_EXIST", "이미 존재하는 email입니다.", ErrorCategory.CONFLICT),
     ;
 
     private final String code;

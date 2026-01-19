@@ -2,6 +2,7 @@ package com.process.clash.application.user.user.service;
 
 import com.process.clash.application.mail.port.out.SendVerificationEmailPort;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
+import com.process.clash.application.user.user.exception.exception.conflict.EmailAlreadyExistException;
 import com.process.clash.application.user.user.exception.exception.conflict.UsernameAlreadyExistException;
 import com.process.clash.domain.user.user.entity.User;
 import org.springframework.mail.MailSender;
@@ -31,6 +32,10 @@ public class SignUpService implements SignUpUseCase {
 
 		if (userRepositoryPort.existsByUsername(command.username())) {
 			throw new UsernameAlreadyExistException();
+		}
+
+		if (userRepositoryPort.existsByEmail(command.email())) {
+			throw new EmailAlreadyExistException();
 		}
 
 		String encoded = passwordEncoder.encode(command.password());
