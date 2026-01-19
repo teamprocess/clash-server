@@ -69,7 +69,7 @@ public class AuthController implements AuthControllerDocument {
 	}
 
 	@PostMapping({"/{action:signin|signup|signout}"})
-	public ResponseEntity<?> handleRedirect(@PathVariable String action) {
+	public ResponseEntity<Void> handleRedirect(@PathVariable String action) {
 
 		String newLocation = REDIRECT_MAP.get(action);
 
