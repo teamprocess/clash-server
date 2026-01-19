@@ -104,4 +104,29 @@ public record User(
                 UserStatus.ACTIVE
         );
     }
+
+    public boolean isActive() {
+        return UserStatus.ACTIVE.equals(this.userStatus);
+    }
+
+    public User updateSignupInfo(String username, String email, String name, String encodedPassword) {
+        // 모든 필드를 그대로 가져오되, 회원가입 정보만 교체한 새 객체 생성
+        return new User(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(), // 수정 시간 갱신
+                username,            // 변경
+                email,               // 변경
+                name,                // 변경
+                encodedPassword,     // 변경
+                this.role,
+                this.ableToAddRival,
+                this.profileImage,
+                this.pomodoroEnabled,
+                this.pomodoroStudyMinute,
+                this.pomodoroBreakMinute,
+                this.major,
+                this.userStatus
+        );
+    }
 }
