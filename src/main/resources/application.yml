@@ -31,6 +31,13 @@ spring:
           auth: true
           starttls:
             enable: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+      password: ${REDIS_PW}
+
 server:
   servlet:
     session:
