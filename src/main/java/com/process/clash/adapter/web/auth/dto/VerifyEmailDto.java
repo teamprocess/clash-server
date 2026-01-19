@@ -16,8 +16,8 @@ public class VerifyEmailDto {
             @Size(min = 6, max = 6, message = "인증 코드는 6자리입니다.")
             String code
     ) {
-        public VerifyEmailData.Command toCommand(Request request) {
-            return new VerifyEmailData.Command(request.email, request.code);
+        public VerifyEmailData.Command toCommand() {
+            return new VerifyEmailData.Command(this.email, this.code);
         }
     }
 }
