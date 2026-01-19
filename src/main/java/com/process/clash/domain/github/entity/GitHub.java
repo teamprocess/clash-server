@@ -1,9 +1,9 @@
-package com.process.clash.domain.user.github.usergithubinfo.entity;
+package com.process.clash.domain.github.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record UserGitHubInfo(
+public record GitHub(
         Long id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
