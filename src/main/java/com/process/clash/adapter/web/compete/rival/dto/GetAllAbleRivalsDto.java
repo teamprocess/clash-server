@@ -10,13 +10,13 @@ public class GetAllAbleRivalsDto {
     @Schema(name = "GetAllAbleRivalsDtoResponse")
 
     public record Response(
-        List<UserInfo> users
+        List<UserInfo> userInfos
     ) {
 
         public static Response from(GetAllAbleRivalsData.Result result) {
 
             return new Response(
-                    result.users().stream()
+                    result.userInfos().stream()
                             .map(data -> new UserInfo(
                                     data.id(),
                                     data.name(),

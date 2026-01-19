@@ -21,7 +21,7 @@ public class SearchRivalByKeywordData {
     }
 
     public record Result(
-            List<User> users
+            List<UserInfo> userInfos
     ) {
 
 //        public static Result from() {
@@ -29,9 +29,10 @@ public class SearchRivalByKeywordData {
 //        }
     }
 
-    public record User(
+    public record UserInfo(
             Long id,
             String name,
-            String githubId
+            String githubId,
+            String profileImage
     ) {}
 }
