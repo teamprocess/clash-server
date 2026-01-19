@@ -28,7 +28,7 @@ public interface ProductControllerDocument {
             @Parameter(name = "page", description = "페이지 번호", example = "0"),
             @Parameter(name = "size", description = "페이지 크기", example = "20"),
             @Parameter(name = "sort", description = "정렬 기준", example = "POPULARITY"),
-            @Parameter(name = "category", description = "카테고리 (예: ALL, BOOK)", example = "ALL")
+            @Parameter(name = "category", description = "카테고리 (INSIGNIA, NAMEPLATE, BANNER)", example = "INSIGNIA")
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
@@ -42,14 +42,14 @@ public interface ProductControllerDocument {
                                         "products": [
                                           {
                                             "id": 100,
-                                            "title": "스프링 완전 정복",
-                                            "category": "BOOK",
+                                            "title": "1개월 휴가권",
+                                            "category": "INSIGNIA",
                                             "image": "https://cdn.example.com/products/100.png",
-                                            "type": "COIN",
+                                            "type": "COOKIE",
                                             "price": 12000,
                                             "discount": 10,
-                                            "description": "스프링 입문부터 실전까지",
-                                            "popularity": 300,
+                                            "description": "프로세스 1개월 휴가권",
+                                            "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "createdAt": "2025-01-01T12:00:00"
@@ -83,19 +83,19 @@ public interface ProductControllerDocument {
                                       "message": "상품 상세 정보 조회를 성공했습니다.",
                                       "data": {
                                         "product": {
-                                          "id": 100,
-                                          "title": "스프링 완전 정복",
-                                          "category": "BOOK",
-                                          "image": "https://cdn.example.com/products/100.png",
-                                          "type": "COIN",
-                                          "price": 12000,
-                                          "discount": 10,
-                                          "description": "스프링 입문부터 실전까지",
-                                          "popularity": 300,
-                                          "seasonName": "2025 봄 시즌",
-                                          "isSeasonal": true,
-                                          "createdAt": "2025-01-01T12:00:00"
-                                        }
+                                            "id": 100,
+                                            "title": "1개월 휴가권",
+                                            "category": "INSIGNIA",
+                                            "image": "https://cdn.example.com/products/100.png",
+                                            "type": "COOKIE",
+                                            "price": 12000,
+                                            "discount": 10,
+                                            "description": "프로세스 1개월 휴가권",
+                                            "popularity": 2,
+                                            "seasonName": "2025 봄 시즌",
+                                            "isSeasonal": true,
+                                            "createdAt": "2025-01-01T12:00:00"
+                                          }
                                       }
                                     }
                                     """)
@@ -118,19 +118,19 @@ public interface ProductControllerDocument {
                                         "products": [
                                           {
                                             "id": 100,
-                                            "title": "스프링 완전 정복",
-                                            "category": "BOOK",
+                                            "title": "1개월 휴가권",
+                                            "category": "INSIGNIA",
                                             "image": "https://cdn.example.com/products/100.png",
-                                            "type": "COIN",
+                                            "type": "COOKIE",
                                             "price": 12000,
                                             "discount": 10,
-                                            "description": "스프링 입문부터 실전까지",
-                                            "popularity": 300,
+                                            "description": "프로세스 1개월 휴가권",
+                                            "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "createdAt": "2025-01-01T12:00:00"
                                           }
-                                        ]
+                                        ],
                                       }
                                     }
                                     """)
@@ -150,20 +150,20 @@ public interface ProductControllerDocument {
                                       "data": {
                                         "products": [
                                           {
-                                            "id": 101,
-                                            "title": "알고리즘 스터디",
-                                            "category": "BOOK",
-                                            "image": "https://cdn.example.com/products/101.png",
-                                            "type": "COIN",
-                                            "price": 15000,
-                                            "discount": 0,
-                                            "description": "알고리즘 문제 풀이",
-                                            "popularity": 120,
-                                            "seasonName": null,
-                                            "isSeasonal": false,
-                                            "createdAt": "2025-01-02T12:00:00"
+                                            "id": 100,
+                                            "title": "1개월 휴가권",
+                                            "category": "INSIGNIA",
+                                            "image": "https://cdn.example.com/products/100.png",
+                                            "type": "COOKIE",
+                                            "price": 12000,
+                                            "discount": 10,
+                                            "description": "프로세스 1개월 휴가권",
+                                            "popularity": 2,
+                                            "seasonName": "2025 봄 시즌",
+                                            "isSeasonal": true,
+                                            "createdAt": "2025-01-01T12:00:00"
                                           }
-                                        ]
+                                        ],
                                       }
                                     }
                                     """)

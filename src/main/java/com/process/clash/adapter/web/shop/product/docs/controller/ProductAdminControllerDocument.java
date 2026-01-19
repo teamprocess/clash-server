@@ -40,13 +40,13 @@ public interface ProductAdminControllerDocument {
                             schema = @Schema(implementation = CreateProductRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "title": "스프링 완전 정복",
-                                      "category": "BOOK",
+                                      "title": "프로세스 삼겹살 헌터",
+                                      "category": "NAMEPLATE",
                                       "image": "https://cdn.example.com/products/100.png",
-                                      "type": "COIN",
+                                      "type": "COOKIE",
                                       "price": 12000,
                                       "discount": 10,
-                                      "description": "스프링 입문부터 실전까지",
+                                      "description": "프로세스 삼겹살 헌터",
                                       "seasonId": 1
                                     }
                                     """)
