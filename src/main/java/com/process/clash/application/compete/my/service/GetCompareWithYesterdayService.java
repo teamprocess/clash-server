@@ -2,11 +2,12 @@ package com.process.clash.application.compete.my.service;
 
 import com.process.clash.application.compete.my.data.GetCompareWithYesterdayData;
 import com.process.clash.application.compete.my.port.in.GetCompareWithYesterdayUseCase;
+import com.process.clash.application.github.exception.exception.notfound.GithubDailyStatsNotFoundException;
+import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
+import com.process.clash.domain.github.entity.GithubDailyStats;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.application.user.usergithub.port.out.UserGitHubRepositoryPort;
-import com.process.clash.application.user.userstudytime.exception.exception.UserStudyTimeNotFoundException;
+import com.process.clash.application.user.userstudytime.exception.exception.notfound.UserStudyTimeNotFoundException;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
-import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
 
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
-    private final UserGitHubRepositoryPort userGitHubRepositoryPort;
+    private final GithubDailyStatsQueryPort githubDailyStatsQueryPort;
 
     @Override
     public GetCompareWithYesterdayData.Result execute(GetCompareWithYesterdayData.Command command) {
@@ -28,9 +29,10 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
 
         LocalDate yesterday = today.minusDays(1);
 
-        UserStudyTime yesterdayUserStudyTime =
+        Long yesterdayActiveTime =
                 userStudyTimeRepositoryPort.findByUserIdAndDate(command.actor().id(), yesterday)
-                        .orElseThrow(UserStudyTimeNotFoundException::new);
+                        .orElseThrow(UserStudyTimeNotFoundException::new)
+                        .totalStudyTimeSeconds();
 
         LocalDateTime startOfDay = today.atTime(6, 0, 0);
         LocalDateTime endOfDay = today.plusDays(1).atTime(6, 0, 0);
@@ -41,6 +43,23 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
                 endOfDay
         );
 
-        return null;
+        GithubDailyStats yesterdayStats = githubDailyStatsQueryPort
+                .findByUserIdAndStudyDate(command.actor().id(), yesterday)
+                .orElseThrow(GithubDailyStatsNotFoundException::new);
+        GithubDailyStats todayStats = githubDailyStatsQueryPort
+                .findByUserIdAndStudyDate(command.actor().id(), today)
+                .orElseThrow(GithubDailyStatsNotFoundException::new);
+
+        Integer yesterdayContributions = toContributionCount(yesterdayStats);
+        Integer todayContributions = toContributionCount(todayStats);
+
+        return GetCompareWithYesterdayData.Result.from(yesterdayActiveTime, todayActiveTime, yesterdayContributions, todayContributions);
+    }
+
+    private int toContributionCount(GithubDailyStats stats) {
+        return stats.commitCount()
+                + stats.prCount()
+                + stats.issueCount()
+                + stats.reviewedPrCount();
     }
 }
