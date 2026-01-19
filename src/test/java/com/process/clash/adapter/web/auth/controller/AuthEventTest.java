@@ -3,6 +3,9 @@ package com.process.clash.adapter.web.auth.controller;
 import com.process.clash.adapter.persistence.auth.AuthEventJpaEntity;
 import com.process.clash.adapter.persistence.auth.AuthEventJpaRepository;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
+import com.process.clash.application.mail.port.out.SendVerificationEmailPort;
+import com.process.clash.application.mail.port.out.VerificationCodePort;
+import com.process.clash.application.user.user.port.out.SessionManager;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +21,18 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.mockito.Mockito;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.mockito.Mockito;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.boot.test.context.TestConfiguration;
 
 // RANDOM_PORT를 사용하면 실제 서블릿 컨테이너(Tomcat)가 구동됩니다.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,13 +54,34 @@ class AuthEventTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private String uniqueUsername;
+
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public VerificationCodePort verificationCodePort() {
+            return Mockito.mock(VerificationCodePort.class);
+        }
+
+        @Bean
+        public SendVerificationEmailPort sendVerificationEmailPort() {
+            return Mockito.mock(SendVerificationEmailPort.class);
+        }
+
+        @Bean
+        public SessionManager sessionManager() {
+            return Mockito.mock(SessionManager.class);
+        }
+    }
+
     @BeforeEach
     void setUp() {
         authEventRepository.deleteAll();
 
         // 테스트 유저 저장
         String encodedPassword = passwordEncoder.encode("password123");
-        userRepository.save(User.createDefault("testuser", "test@example.com", "테스터", encodedPassword));
+        uniqueUsername = "testuser" + System.nanoTime();
+        userRepository.save(User.createDefault(uniqueUsername, "test" + System.nanoTime() + "@example.com", "테스터", encodedPassword));
     }
 
     @Test
@@ -56,7 +91,7 @@ class AuthEventTest {
         String url = "http://localhost:" + port + "/api/auth/sign-in";
         String realUserAgent = "test";
 
-        SignInDto.Request body = new SignInDto.Request("testuser", "password123", false);
+        SignInDto.Request body = new SignInDto.Request(uniqueUsername, "password123", false);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
