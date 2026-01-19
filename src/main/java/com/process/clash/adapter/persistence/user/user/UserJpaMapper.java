@@ -12,6 +12,7 @@ public class UserJpaMapper {
                 user.createdAt(),
                 user.updatedAt(),
                 user.username(),
+                user.email(),
                 user.name(),
                 user.password(),
                 user.role(),
@@ -20,7 +21,8 @@ public class UserJpaMapper {
                 user.pomodoroEnabled(),
                 user.pomodoroStudyMinute(),
                 user.pomodoroBreakMinute(),
-                user.major()
+                user.major(),
+                user.userStatus()
         );
     }
 
@@ -30,6 +32,7 @@ public class UserJpaMapper {
                 userJpaEntity.getCreatedAt(),
                 userJpaEntity.getUpdatedAt(),
                 userJpaEntity.getUsername(),
+                userJpaEntity.getEmail(),
                 userJpaEntity.getName(),
                 userJpaEntity.getPassword(),
                 userJpaEntity.getRole(),
@@ -38,7 +41,8 @@ public class UserJpaMapper {
                 userJpaEntity.isPomodoroEnabled(),
                 userJpaEntity.getPomodoroStudyMinute(),
                 userJpaEntity.getPomodoroBreakMinute(),
-                userJpaEntity.getMajor()
+                userJpaEntity.getMajor(),
+                userJpaEntity.getUserStatus()
         );
     }
 }

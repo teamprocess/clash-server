@@ -24,7 +24,30 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
+  mail:
+    host: email-smtp.ap-northeast-2.amazonaws.com # 서울 리전 기준
+    port: 587
+    username: ${AWS_SES_SMTP_USERNAME} # AWS에서 생성한 SMTP 아이디
+    password: ${AWS_SES_SMTP_PASSWORD} # AWS에서 생성한 SMTP 비밀번호
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+      password: ${REDIS_PASSWORD}
+
 server:
   servlet:
     session:
       timeout: 3d
+
+mail:
+  sender:
+    address: ${MAIL_SENDER_ADDRESS:no-reply@clash.kr}
+    name: ${MAIL_SENDER_NAME:Clash}

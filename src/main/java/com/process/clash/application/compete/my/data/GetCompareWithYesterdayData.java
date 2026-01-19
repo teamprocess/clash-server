@@ -19,18 +19,46 @@ public class GetCompareWithYesterdayData {
             Contributors contributors
     ) {
 
-//        public static GetCompareWithYesterdayData.Result from() {
-//
-//        }
+        public static Result from(Long yesterdayActiveTime, Long todayActiveTime, Integer yesterdayContributions, Integer todayContributions) {
+
+            return new Result(
+                    ActiveTime.from(
+                            yesterdayActiveTime,
+                            todayActiveTime
+                    ),
+                    Contributors.from(
+                            yesterdayContributions,
+                            todayContributions
+                    )
+            );
+        }
     }
 
     public record ActiveTime(
-            Integer yesterdayActiveTime,
-            Integer todayActiveTime
-    ) {}
+            Long yesterdayActiveTime,
+            Long todayActiveTime
+    ) {
+
+        public static ActiveTime from(Long yesterdayActiveTime, Long todayActiveTime) {
+
+            return new ActiveTime(
+                    yesterdayActiveTime,
+                    todayActiveTime
+            );
+        }
+    }
 
     public record Contributors(
             Integer yesterdayContributors,
             Integer todayContributors
-    ) {}
+    ) {
+
+        public static Contributors from(Integer yesterdayContributors, Integer todayContributors) {
+
+            return new Contributors(
+                    yesterdayContributors,
+                    todayContributors
+            );
+        }
+    }
 }

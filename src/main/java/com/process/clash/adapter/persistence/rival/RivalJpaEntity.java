@@ -42,10 +42,6 @@ public class RivalJpaEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RivalCurrentStatus rivalCurrentStatus;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private RivalLinkingStatus rivalLinkingStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)

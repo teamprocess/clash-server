@@ -3,6 +3,7 @@ CREATE TABLE users (
   created_at TIMESTAMP,
   updated_at TIMESTAMP,
   username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
   role VARCHAR(50),
@@ -11,7 +12,8 @@ CREATE TABLE users (
   pomodoro_enabled BOOLEAN,
   pomodoro_study_minute INTEGER,
   pomodoro_break_minute INTEGER,
-  major VARCHAR(50)
+  major VARCHAR(50),
+  user_status VARCHAR(50)
 );
 
 CREATE TABLE categories (

@@ -43,6 +43,7 @@ public class MyCompeteController implements MyCompeteControllerDocument {
     }
 
     // 어제와 비교 - GitHub
+    // TODO: 추가 구현 필요합니다
     @GetMapping("/compare/yesterday/github")
     public ApiResponse<CompareGitHubDto.Response> compareGitHub(
             @AuthenticatedActor Actor actor
