@@ -20,7 +20,8 @@ public class UserJpaMapper {
                 user.pomodoroEnabled(),
                 user.pomodoroStudyMinute(),
                 user.pomodoroBreakMinute(),
-                user.major()
+                user.major(),
+                user.userStatus()
         );
     }
 
@@ -38,7 +39,8 @@ public class UserJpaMapper {
                 userJpaEntity.isPomodoroEnabled(),
                 userJpaEntity.getPomodoroStudyMinute(),
                 userJpaEntity.getPomodoroBreakMinute(),
-                userJpaEntity.getMajor()
+                userJpaEntity.getMajor(),
+                userJpaEntity.getUserStatus()
         );
     }
 }

@@ -18,6 +18,7 @@ public enum UserStatusCode implements StatusCode {
     // 401
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "유효하지 않은 자격 증명입니다.", ErrorCategory.UNAUTHORIZED),
     NOT_AUTHENTICATED("NOT_AUTHENTICATED", "인증된 사용자가 아닙니다.", ErrorCategory.UNAUTHORIZED),
+    UNVERIFIED_EMAIL("UNVERIFIED_EMAIL", "이메일이 인증되지 않앗습니다.", ErrorCategory.UNAUTHORIZED),
 
     // 403
     REQUIRED_ADMIN_ROLE("REQUIRED_ADMIN_ROLE", "어드민 권한이 요구됩니다.", ErrorCategory.FORBIDDEN),
