@@ -3,7 +3,7 @@ package com.process.clash.adapter.web.auth.docs.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "이메일 인증")
-public class VerifyEmailDoc {
+public class VerifyEmailRequestDoc {
 
     @Schema(description = "이메일")
     public String email;

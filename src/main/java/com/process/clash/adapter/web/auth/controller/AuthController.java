@@ -6,6 +6,7 @@ import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.application.common.data.AccessContext;
+import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.user.user.data.SignInData;
 import com.process.clash.application.user.user.port.in.SignOutUseCase;
 import com.process.clash.application.user.user.data.SignUpData;
@@ -74,6 +75,10 @@ public class AuthController implements AuthControllerDocument {
 	@PostMapping("/verify-email")
 	public ApiResponse<Void> verifyEmail(@Valid @RequestBody VerifyEmailDto.Request request) {
 
+
+		VerifyEmailData.Command command = request.toCommand(request);
+		verifyEmailUseCase.execute(command);
+		return ApiResponse.success("이메일 인증을 성공했습니다.");
 
 	}
 
