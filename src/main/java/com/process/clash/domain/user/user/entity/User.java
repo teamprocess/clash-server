@@ -11,6 +11,7 @@ public record User(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String username,
+        String email,
         String name,
         String password,
         Role role,
@@ -22,12 +23,13 @@ public record User(
         Major major,
         UserStatus userStatus
 ) {
-    public static User createDefault(String username, String name, String password) {
+    public static User createDefault(String username, String email, String name, String password) {
         return new User(
                 null,
                 null,
                 null,
                 username,
+                email,
                 name,
                 password,
                 Role.USER,
@@ -49,6 +51,7 @@ public record User(
                 this.createdAt,
                 LocalDateTime.now(),
                 this.username,
+                this.email,
                 this.name,
                 this.password,
                 this.role,
@@ -68,6 +71,7 @@ public record User(
                 this.createdAt,
                 LocalDateTime.now(),
                 this.username,
+                this.email,
                 this.name,
                 this.password,
                 this.role,
@@ -78,6 +82,26 @@ public record User(
                 breakMinute,
                 this.major,
                 this.userStatus
+        );
+    }
+
+    public User active() {
+        return new User(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                this.ableToAddRival,
+                this.profileImage,
+                this.pomodoroEnabled,
+                this.pomodoroStudyMinute,
+                this.pomodoroBreakMinute,
+                this.major,
+                UserStatus.ACTIVE
         );
     }
 }

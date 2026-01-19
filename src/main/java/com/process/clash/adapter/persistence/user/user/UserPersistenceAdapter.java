@@ -44,4 +44,9 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
                 .map(userJpaMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userJpaRepository.findByEmail(email).map(userJpaMapper::toDomain);
+    }
 }
