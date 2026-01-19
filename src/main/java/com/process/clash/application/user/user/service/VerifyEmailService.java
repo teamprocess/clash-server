@@ -1,5 +1,6 @@
 package com.process.clash.application.user.user.service;
 
+import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeExpiredOrWrongEmailException;
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeMismatchException;
@@ -18,19 +19,19 @@ public class VerifyEmailService implements VerifyEmailUseCase {
     private final UserRepositoryPort userRepositoryPort;
 
     @Override
-    public void execute(String email, String code) {
-        String savedCode = verificationCodePort.getCode(email)
+    public void execute(VerifyEmailData.Command command) {
+        String savedCode = verificationCodePort.getCode(command.email())
                 .orElseThrow(VerificationCodeExpiredOrWrongEmailException::new);
 
-        if (!savedCode.equals(code)) {
+        if (!savedCode.equals(command.code())) {
             throw new VerificationCodeMismatchException();
         }
 
-        User user = userRepositoryPort.findByEmail(email).orElseThrow(UserNotFoundException::new);
+        User user = userRepositoryPort.findByEmail(command.email()).orElseThrow(UserNotFoundException::new);
 
         User activeUSer= user.active();
         userRepositoryPort.save(activeUSer);
 
-        verificationCodePort.deleteCode(email);
+        verificationCodePort.deleteCode(command.email());
     }
 }
