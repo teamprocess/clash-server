@@ -1,15 +1,17 @@
 package com.process.clash.adapter.web.auth.controller;
 
 import com.process.clash.adapter.web.auth.docs.controller.AuthControllerDocument;
+import com.process.clash.adapter.web.auth.dto.CheckDuplicateUsernameDto;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
+import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.application.common.data.AccessContext;
+import com.process.clash.application.user.user.data.CheckDuplicateUsernameData;
+import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.user.user.data.SignInData;
-import com.process.clash.application.user.user.port.in.SignOutUseCase;
+import com.process.clash.application.user.user.port.in.*;
 import com.process.clash.application.user.user.data.SignUpData;
-import com.process.clash.application.user.user.port.in.SignInUseCase;
-import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,8 @@ public class AuthController implements AuthControllerDocument {
 	private final SignUpUseCase signUpUseCase;
 	private final SignInUseCase signInUseCase;
 	private final SignOutUseCase signOutUseCase;
+	private final VerifyEmailUseCase verifyEmailUseCase;
+	private final CheckDuplicatedUsernameUseCase checkDuplicatedUsernameUseCase;
 
 	@PostMapping("/sign-up")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
@@ -66,6 +70,24 @@ public class AuthController implements AuthControllerDocument {
 		AccessContext context = extractAccessContext(httpRequest);
 		signOutUseCase.execute(context);
 		return ApiResponse.success("로그아웃 되었습니다.");
+	}
+
+	@GetMapping("/username-duplicate-check")
+	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(@Valid @RequestBody CheckDuplicateUsernameDto.Request request) {
+
+		CheckDuplicateUsernameData.Command command = request.toCommand();
+		boolean duplicate = checkDuplicatedUsernameUseCase.execute(command);
+		CheckDuplicateUsernameDto.Response response = new CheckDuplicateUsernameDto.Response(duplicate);
+		return ApiResponse.success(response);
+	}
+
+	@PostMapping("/verify-email")
+	public ApiResponse<Void> verifyEmail(@Valid @RequestBody VerifyEmailDto.Request request) {
+
+		VerifyEmailData.Command command = request.toCommand();
+		verifyEmailUseCase.execute(command);
+		return ApiResponse.success("이메일 인증을 성공했습니다.");
+
 	}
 
 	@PostMapping({"/{action:signin|signup|signout}"})

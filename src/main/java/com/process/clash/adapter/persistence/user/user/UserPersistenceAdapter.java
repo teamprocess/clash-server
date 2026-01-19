@@ -35,4 +35,14 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     public boolean existsByUsername(String username) {
         return userJpaRepository.existsByUsername(username);
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userJpaRepository.findByEmail(email).map(userJpaMapper::toDomain);
+    }
 }
