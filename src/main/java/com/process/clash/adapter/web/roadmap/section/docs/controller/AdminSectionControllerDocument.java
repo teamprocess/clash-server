@@ -91,7 +91,22 @@ public interface AdminSectionControllerDocument {
                                       }
                                     }
                                     """)
-                    ))
+                    )),
+            @ApiResponse(responseCode = "422", description = "로드맵은 본인을 선행 로드맵으로 지정할 수 없습니다.",
+                    content = @Content(
+                            schema = @Schema(implementation = com.process.clash.adapter.web.common.ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "SECTION_CIRCULAR_DEPENDENCY",
+                                        "message": "로드맵은 본인을 선행 로드맵으로 지정할 수 없습니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
+                                    }
+                                    """)
+                    )
+            )
     })
     com.process.clash.adapter.web.common.ApiResponse<UpdateSectionDto.Response> updateSection(
             @Parameter(hidden = true) Actor actor,
