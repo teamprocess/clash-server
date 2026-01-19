@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.auth.controller;
 
+import com.process.clash.adapter.web.auth.docs.controller.TestControllerDocument;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/test")
 @RequiredArgsConstructor
-public class TestController {
+public class TestController implements TestControllerDocument {
 
     private final CheckAdminPolicy checkAdminPolicy;
 

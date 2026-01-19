@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.shop.product.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.shop.product.docs.controller.ProductAdminControllerDocument;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.adapter.web.shop.product.dto.CreateProductDto;
 import com.process.clash.application.common.actor.Actor;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/admin/shop/products")
 @RequiredArgsConstructor
-public class ProductAdminController {
+public class ProductAdminController implements ProductAdminControllerDocument {
 
     private final CreateProductUseCase createProductUseCase;
 

@@ -8,8 +8,11 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CreateSectionDto {
+
+    @Schema(name = "CreateSectionDtoRequest")
 
     public record Request(
             @NotNull(message = "major는 필수 입력값입니다.")
@@ -31,6 +34,8 @@ public class CreateSectionDto {
             return new CreateSectionData.Command(actor, major, title, categoryId, description, keyPoints);
         }
     }
+
+    @Schema(name = "CreateSectionDtoResponse")
 
     public record Response(
             Long sectionId,

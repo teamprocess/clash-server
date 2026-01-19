@@ -6,8 +6,11 @@ import com.process.clash.domain.common.enums.WeekCategory;
 
 import java.time.LocalDate;
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AnalyzeMyActivityDto {
+
+    @Schema(name = "AnalyzeMyActivityDtoResponse")
 
     public record Response(
             TargetCategory category,

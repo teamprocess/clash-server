@@ -5,8 +5,11 @@ import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetRankingDto {
+
+    @Schema(name = "GetRankingDtoResponse")
 
     public record Response(
             TargetCategory category,

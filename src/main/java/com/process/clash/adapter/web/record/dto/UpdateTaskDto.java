@@ -3,13 +3,18 @@ package com.process.clash.adapter.web.record.dto;
 import com.process.clash.application.record.dto.UpdateTaskData;
 import com.process.clash.domain.record.model.entity.Task;
 import com.process.clash.domain.record.model.enums.TaskColor;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UpdateTaskDto {
+
+    @Schema(name = "UpdateTaskDtoRequest")
 
     public record Request(
         String name,
         TaskColor color
     ) {}
+
+    @Schema(name = "UpdateTaskDtoResponse")
 
     public record Response(
         Long id,

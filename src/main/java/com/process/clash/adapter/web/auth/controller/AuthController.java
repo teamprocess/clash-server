@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.auth.controller;
 
+import com.process.clash.adapter.web.auth.docs.controller.AuthControllerDocument;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.common.ApiResponse;
@@ -22,7 +23,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerDocument {
 
 	private static final Map<String, String> REDIRECT_MAP = Map.of(
 			"signin", "/api/auth/sign-in",

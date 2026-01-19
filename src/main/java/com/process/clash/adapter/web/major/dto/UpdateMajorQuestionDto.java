@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UpdateMajorQuestionDto {
+
+    @Schema(name = "UpdateMajorQuestionDtoRequest")
 
     public record Request(
             String content,
@@ -34,6 +37,8 @@ public class UpdateMajorQuestionDto {
             );
         }
     }
+
+    @Schema(name = "UpdateMajorQuestionDtoResponse")
 
     public record Response(
             Long questionId,

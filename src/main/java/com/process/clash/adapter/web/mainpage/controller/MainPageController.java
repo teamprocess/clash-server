@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.mainpage.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.mainpage.docs.controller.MainPageControllerDocument;
 import com.process.clash.adapter.web.mainpage.dto.GetUserProfileDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/main")
 @RequiredArgsConstructor
-public class MainPageController {
+public class MainPageController implements MainPageControllerDocument {
 
     private final GetUserProfileUseCase getUserProfileUseCase;
 

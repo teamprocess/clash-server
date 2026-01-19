@@ -6,8 +6,11 @@ import com.process.clash.application.shop.product.vo.ProductVo;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductSortType;
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetAllProductsDto {
+
+    @Schema(name = "GetAllProductsDtoRequest")
 
     public record Request(
             Integer page,
@@ -27,6 +30,8 @@ public class GetAllProductsDto {
             return new GetAllProductsData.Command(page, size, sort, productCategory);
         }
     }
+
+    @Schema(name = "GetAllProductsDtoResponse")
 
     public record Response(
             List<CommonProductDto> products,

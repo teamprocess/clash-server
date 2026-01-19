@@ -8,8 +8,11 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CreateProductDto {
+
+    @Schema(name = "CreateProductDtoRequest")
 
     public record Request(
             @NotBlank(message = "상품명은 필수 입력값입니다.")
@@ -43,6 +46,8 @@ public class CreateProductDto {
             );
         }
     }
+
+    @Schema(name = "CreateProductDtoResponse")
 
     public record Response(
             Long productId

@@ -4,8 +4,11 @@ import com.process.clash.application.compete.rival.data.AbleRivalInfo;
 import com.process.clash.application.compete.rival.data.SearchRivalByKeywordData;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class SearchRivalByKeywordDto {
+
+    @Schema(name = "SearchRivalByKeywordDtoResponse")
 
     public record Response(
             List<AbleRivalInfo> users

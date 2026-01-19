@@ -3,8 +3,11 @@ package com.process.clash.adapter.web.record.dto;
 import com.process.clash.application.record.dto.StopRecordData;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class StopRecordDto {
+
+    @Schema(name = "StopRecordDtoResponse")
 
     public record Response(
             Long taskId,

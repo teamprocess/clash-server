@@ -3,8 +3,11 @@ package com.process.clash.adapter.web.roadmap.section.dto;
 import com.process.clash.application.roadmap.section.data.GetSectionDetailsData;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetSectionDetailsDto {
+
+    @Schema(name = "GetSectionDetailsDtoResponse")
 
     public record Response(
             Long sectionId,
