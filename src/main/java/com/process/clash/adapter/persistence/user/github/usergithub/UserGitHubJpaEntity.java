@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.user.usergithub;
+package com.process.clash.adapter.persistence.user.github.usergithub;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ public class UserGitHubJpaEntity {
     @Column(nullable = false, unique = true)
     private String gitHubId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 }

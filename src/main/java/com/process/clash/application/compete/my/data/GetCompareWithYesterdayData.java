@@ -25,8 +25,8 @@ public class GetCompareWithYesterdayData {
     }
 
     public record ActiveTime(
-            Integer yesterdayActiveTime,
-            Integer todayActiveTime
+            Long yesterdayActiveTime,
+            Long todayActiveTime
     ) {}
 
     public record Contributors(
