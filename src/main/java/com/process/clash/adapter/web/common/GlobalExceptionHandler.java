@@ -98,7 +98,8 @@ public class GlobalExceptionHandler {
                         FieldError::getField,
                         error -> error.getDefaultMessage() != null
                                 ? error.getDefaultMessage()
-                                : "유효하지 않은 값입니다."
+                                : "유효하지 않은 값입니다.",
+                        (existing, replacement) -> existing + " / " +replacement
                 ));
         StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
         HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);

@@ -6,6 +6,7 @@ import com.process.clash.application.user.user.exception.exception.badrequest.Ve
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeMismatchException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.in.VerifyEmailUseCase;
+import com.process.clash.application.user.user.port.out.PendingUserCachePort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,13 @@ public class VerifyEmailService implements VerifyEmailUseCase {
 
     private final VerificationCodePort verificationCodePort;
     private final UserRepositoryPort userRepositoryPort;
+    private final PendingUserCachePort pendingUserCachePort;
 
     @Override
     @Transactional
     public void execute(VerifyEmailData.Command command) {
+
+        // 인증 코드 검증
         String savedCode = verificationCodePort.getCode(command.email())
                 .orElseThrow(VerificationCodeExpiredOrWrongEmailException::new);
 
@@ -29,11 +33,14 @@ public class VerifyEmailService implements VerifyEmailUseCase {
             throw new VerificationCodeMismatchException();
         }
 
-        User user = userRepositoryPort.findByEmail(command.email()).orElseThrow(UserNotFoundException::new);
+        User pendingUser = pendingUserCachePort.findByEmail(command.email()).orElseThrow(UserNotFoundException::new);
 
-        User activeUser = user.active();
-        userRepositoryPort.save(activeUser);
+        // 인증 완료 처리 후 DB 저장
+        User verifiedUser = pendingUser.active(); // isActive = true로 변경
+        userRepositoryPort.save(verifiedUser);
 
+        // Redis 정리
+        pendingUserCachePort.delete(command.email());
         verificationCodePort.deleteCode(command.email());
     }
 }

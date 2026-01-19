@@ -4,11 +4,12 @@ import com.process.clash.application.mail.port.out.VerificationCodePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class VerificationCodePersistenceAdapter implements VerificationCodePort {
 

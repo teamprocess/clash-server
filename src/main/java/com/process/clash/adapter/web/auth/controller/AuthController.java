@@ -43,7 +43,7 @@ public class AuthController implements AuthControllerDocument {
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
 		SignUpData.Command command = request.toCommand();
 		signUpUseCase.execute(command);
-		return ApiResponse.success("회원가입이 완료되었습니다.");
+		return ApiResponse.success("회원가입 요청/ 이메일 인증 코드 발송이 완료되었습니다.");
 	}
 
 	@PostMapping("/sign-in")
