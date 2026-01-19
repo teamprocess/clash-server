@@ -52,6 +52,6 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
                         .orElseThrow(GitHubInfoNotFoundException::new)
                         .contributionCount();
 
-        return null;
+        return GetCompareWithYesterdayData.Result.from(yesterdayActiveTime, todayActiveTime, yesterdayContributions, todayContributions);
     }
 }
