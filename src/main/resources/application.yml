@@ -40,9 +40,14 @@ spring:
     redis:
       host: ${REDIS_HOST:localhost}
       port: 6379
-      password: ${REDIS_PW}
+      password: ${REDIS_PASSWORD}
 
 server:
   servlet:
     session:
       timeout: 3d
+
+mail:
+  sender:
+    address: ${MAIL_SENDER_ADDRESS:no-reply@clash.kr}
+    name: ${MAIL_SENDER_NAME:Clash}
