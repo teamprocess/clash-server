@@ -3,6 +3,7 @@ package com.process.clash.adapter.web.auth.controller;
 import com.process.clash.adapter.web.auth.docs.controller.AuthControllerDocument;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
+import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.application.common.data.AccessContext;
 import com.process.clash.application.user.user.data.SignInData;
@@ -68,6 +69,12 @@ public class AuthController implements AuthControllerDocument {
 		AccessContext context = extractAccessContext(httpRequest);
 		signOutUseCase.execute(context);
 		return ApiResponse.success("로그아웃 되었습니다.");
+	}
+
+	@PostMapping("/verify-email")
+	public ApiResponse<Void> verifyEmail(@Valid @RequestBody VerifyEmailDto.Request request) {
+
+
 	}
 
 	@PostMapping({"/{action:signin|signup|signout}"})
