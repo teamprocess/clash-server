@@ -47,6 +47,11 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
                         .orElseThrow(GitHubInfoNotFoundException::new)
                         .contributionCount();
 
+        Integer todayContributions =
+                gitHubInfoRepositoryPort.findByUserIdAndDate(command.actor().id(), today)
+                        .orElseThrow(GitHubInfoNotFoundException::new)
+                        .contributionCount();
+
         return null;
     }
 }
