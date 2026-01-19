@@ -1,6 +1,5 @@
 package com.process.clash.adapter.persistence.user.user;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.process.clash.domain.user.user.entity.User;
@@ -14,8 +13,6 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 	boolean existsByUsername(String username);
 
 	boolean existsByEmail(String email);
-
-	List<UserJpaEntity> findByIdIn(List<Long> ids);
 
 	Optional<UserJpaEntity> findByEmail(String email);
 }

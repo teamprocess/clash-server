@@ -1,7 +1,7 @@
 package com.process.clash.infrastructure.principle;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.common.enums.Role;
+import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

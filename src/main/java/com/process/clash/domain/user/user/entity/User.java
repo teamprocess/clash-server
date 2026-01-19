@@ -1,7 +1,7 @@
 package com.process.clash.domain.user.user.entity;
 
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.common.enums.Role;
+import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 
 import java.time.LocalDateTime;

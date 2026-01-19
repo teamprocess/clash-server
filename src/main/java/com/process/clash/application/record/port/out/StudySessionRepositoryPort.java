@@ -1,7 +1,10 @@
 package com.process.clash.application.record.port.out;
 
 import com.process.clash.domain.record.model.entity.StudySession;
+import org.springframework.data.repository.query.Param;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,4 +15,5 @@ public interface StudySessionRepositoryPort {
     Boolean existsActiveSessionByUserId(Long userId);
     Optional<StudySession> findActiveSessionByUserId(Long userId);
     List<StudySession> findAllByUserIdAndStartedAtAfter(Long userId, LocalDate startedAt);
+    Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }
