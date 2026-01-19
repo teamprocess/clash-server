@@ -9,7 +9,6 @@ public record Rival(
         Long id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        RivalCurrentStatus rivalCurrentStatus,
         RivalLinkingStatus rivalLinkingStatus,
         Long myId,
         Long opponentId
@@ -21,7 +20,6 @@ public record Rival(
                 null,
                 null,
                 null,
-                RivalCurrentStatus.OFFLINE,
                 RivalLinkingStatus.PENDING,
                 myId,
                 opponentId

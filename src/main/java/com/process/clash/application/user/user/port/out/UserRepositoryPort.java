@@ -11,6 +11,4 @@ public interface UserRepositoryPort {
     Optional<User> findByUsername(String username);
 
     boolean existsByUsername(String username);
-
-    List<User> findByIdIn(List<Long> ids);
 }

@@ -1,6 +1,6 @@
 package com.process.clash.application.common.actor;
 
-import com.process.clash.domain.common.enums.Role;
+import com.process.clash.domain.user.user.enums.Role;
 
 public class Actor {
     private final Long id;

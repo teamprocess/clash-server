@@ -11,6 +11,7 @@ public class UserStudyTimeJpaMapper {
         return new UserStudyTimeJpaEntity(
                 userStudyTime.id(),
                 userStudyTime.date(),
+                userStudyTime.totalStudyTimeSeconds(),
                 userJpaEntity
         );
     }
@@ -19,6 +20,7 @@ public class UserStudyTimeJpaMapper {
         return new UserStudyTime(
                 userStudyTimeJpaEntity.getId(),
                 userStudyTimeJpaEntity.getDate(),
+                userStudyTimeJpaEntity.getTotalStudyTimeSeconds(),
                 userStudyTimeJpaEntity.getUser().getId()
         );
     }

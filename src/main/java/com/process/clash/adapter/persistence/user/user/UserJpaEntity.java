@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.user.user;
 
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.common.enums.Role;
+import com.process.clash.domain.user.user.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

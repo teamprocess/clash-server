@@ -1,8 +1,6 @@
-package com.process.clash.adapter.persistence.rival;
+package com.process.clash.adapter.persistence.githubinfo;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.rival.enums.RivalCurrentStatus;
-import com.process.clash.domain.rival.enums.RivalLinkingStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,22 +9,23 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "rivals",
+        name = "github",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_rival_pair",
-                        columnNames = {"fk_my_id", "fk_opponent_id"}
+                        name = "uk_user_date",
+                        columnNames = {"fk_user_id", "date"}
                 )
         }
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class RivalJpaEntity {
+public class GitHubInfoJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,15 +39,13 @@ public class RivalJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RivalLinkingStatus rivalLinkingStatus;
+    private LocalDate date;
+
+    @Column(nullable = false)
+    private int contributionCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_my_id", nullable = false)
-    private UserJpaEntity my;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_opponent_id", nullable = false)
-    private UserJpaEntity opponent;
+    @JoinColumn(name = "fk_user_id", nullable = false)
+    private UserJpaEntity user;
 }

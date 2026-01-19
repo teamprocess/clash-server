@@ -8,6 +8,7 @@ import com.process.clash.application.record.exception.exception.notfound.StudySe
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.model.entity.StudySession;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -64,5 +65,10 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     @Override
     public List<StudySession> findAllByUserIdAndStartedAtAfter(Long userId, LocalDate today) {
         return studySessionJpaRepository.findByUserIdAndStartedAtAfter(userId, today.atTime(6, 0));
+    }
+
+    @Override
+    public Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        return studySessionJpaRepository.getTotalStudyTimeInSeconds(userId, startOfDay, endOfDay);
     }
 }
