@@ -8,6 +8,6 @@ public class VerifyEmailRequestDoc {
     @Schema(description = "이메일")
     public String email;
 
-    @Schema(description = "비밀번호")
+    @Schema(description = "인증 코드")
     public String code;
 }

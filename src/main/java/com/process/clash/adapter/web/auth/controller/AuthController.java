@@ -75,8 +75,7 @@ public class AuthController implements AuthControllerDocument {
 	@PostMapping("/verify-email")
 	public ApiResponse<Void> verifyEmail(@Valid @RequestBody VerifyEmailDto.Request request) {
 
-
-		VerifyEmailData.Command command = request.toCommand(request);
+		VerifyEmailData.Command command = request.toCommand();
 		verifyEmailUseCase.execute(command);
 		return ApiResponse.success("이메일 인증을 성공했습니다.");
 
