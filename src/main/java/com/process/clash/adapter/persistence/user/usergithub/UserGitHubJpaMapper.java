@@ -1,7 +1,7 @@
-package com.process.clash.adapter.persistence.user.github.usergithub;
+package com.process.clash.adapter.persistence.user.usergithub;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.user.github.usergithub.entity.UserGitHub;
+import com.process.clash.domain.user.usergithub.entity.UserGitHub;
 import org.springframework.stereotype.Component;
 
 @Component

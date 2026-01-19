@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.user.github.usergithubinfo;
+package com.process.clash.adapter.persistence.github;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "user_github_info",
+        name = "github",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_user_date",
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserGitHubInfoJpaEntity {
+public class GitHubJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

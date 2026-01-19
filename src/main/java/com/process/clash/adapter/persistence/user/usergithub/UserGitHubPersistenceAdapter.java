@@ -1,10 +1,10 @@
-package com.process.clash.adapter.persistence.user.github.usergithub;
+package com.process.clash.adapter.persistence.user.usergithub;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.compete.rival.data.AbleRivalInfo;
 import com.process.clash.application.user.usergithub.port.out.UserGitHubRepositoryPort;
-import com.process.clash.domain.user.github.usergithub.entity.UserGitHub;
+import com.process.clash.domain.user.usergithub.entity.UserGitHub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
