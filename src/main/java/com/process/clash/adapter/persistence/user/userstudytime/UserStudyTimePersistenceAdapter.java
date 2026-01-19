@@ -7,6 +7,9 @@ import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryPort {
@@ -21,5 +24,12 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
         UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(userStudyTime.userId());
         UserStudyTimeJpaEntity savedEntity = userStudyTimeJpaRepository.save(userStudyTimeJpaMapper.toJpaEntity(userStudyTime, userJpaEntity));
         return userStudyTimeJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<UserStudyTime> findByUserIdAndDate(Long userId, LocalDate date) {
+
+        return userStudyTimeJpaRepository.findByUserIdAndDate(userId, date)
+                .map(userStudyTimeJpaMapper::toDomain);
     }
 }

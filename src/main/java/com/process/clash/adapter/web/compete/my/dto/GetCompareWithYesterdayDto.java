@@ -20,8 +20,8 @@ public class GetCompareWithYesterdayDto {
     }
 
     public record ActiveTime(
-            Integer yesterdayActiveTime,
-            Integer todayActiveTime
+            Long yesterdayActiveTime,
+            Long todayActiveTime
     ) {
         public static ActiveTime from(GetCompareWithYesterdayData.ActiveTime data) {
             return new ActiveTime(

@@ -28,7 +28,7 @@ public class UserGitHubJpaEntity {
     @Column(name = "github_access_token")
     private String githubAccessToken;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 

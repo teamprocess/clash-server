@@ -3,6 +3,7 @@ package com.process.clash.infrastructure.security;
 import com.process.clash.application.user.user.data.AuthPrincipal;
 import com.process.clash.application.user.user.exception.exception.unauthorized.NotAuthenticatedException;
 import com.process.clash.application.user.user.exception.exception.internalserver.ServletContextUnavailableException;
+import com.process.clash.application.user.user.exception.exception.unauthorized.UnverifiedEmailException;
 import com.process.clash.application.user.user.port.out.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -41,6 +42,10 @@ public class SpringSecuritySessionAdapter implements SessionManager {
     @Override
     public void createSession(AuthPrincipal principal, boolean rememberMe) {
         UserDetails authUser = userDetailsService.loadUserByUsername(principal.username());
+
+        if (!authUser.isEnabled()) {
+            throw new UnverifiedEmailException();
+        }
 
         Authentication token = new UsernamePasswordAuthenticationToken(
             authUser,
@@ -100,7 +105,7 @@ public class SpringSecuritySessionAdapter implements SessionManager {
         }
 
         Object principal = auth.getPrincipal();
-        if (principal instanceof org.springframework.security.core.userdetails.UserDetails ud) {
+        if (principal instanceof UserDetails ud) {
             return ud.getUsername();
         }
         return auth.getName();
