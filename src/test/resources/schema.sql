@@ -12,7 +12,8 @@ CREATE TABLE users (
   pomodoro_enabled BOOLEAN,
   pomodoro_study_minute INTEGER,
   pomodoro_break_minute INTEGER,
-  major VARCHAR(50)
+  major VARCHAR(50),
+  user_status VARCHAR(50)
 );
 
 CREATE TABLE categories (

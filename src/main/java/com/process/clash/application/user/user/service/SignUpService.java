@@ -14,6 +14,7 @@ import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.Optional;
@@ -29,6 +30,7 @@ public class SignUpService implements SignUpUseCase {
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 	@Override
+	@Transactional
 	public void execute(SignUpData.Command command) {
 		// 1. 아이디 중복 체크 (이건 상태 상관없이 일단 체크)
 		if (userRepositoryPort.existsByUsername(command.username())) {
