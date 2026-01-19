@@ -21,10 +21,10 @@ public class ActorWebConfig implements WebMvcConfigurer {
                         "https://api.clash.kr",
                         "https://clash.kr",
                         "http://localhost:*",
-                        "file://*"
+                        "app://*"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedHeaders("*")
+                .allowedHeaders("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin", "Cookie")
                 .allowCredentials(true)
                 .maxAge(3600);
     }
