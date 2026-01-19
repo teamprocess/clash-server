@@ -9,7 +9,7 @@ import com.process.clash.application.roadmap.section.port.in.CreateSectionUseCas
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.common.enums.Role;
+import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
