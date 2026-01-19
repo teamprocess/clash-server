@@ -9,6 +9,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
@@ -25,6 +26,12 @@ public class EmailAdapter implements SendVerificationEmailPort {
 
     private final JavaMailSender javaMailSender;
 
+    @Value("${mail.sender.address}")
+    private String senderAddress;
+
+    @Value("${mail.sender.name}")
+    private String senderName;
+
     @Async
     @Override
     public void execute(String email, String verificationCode) {
@@ -33,7 +40,7 @@ public class EmailAdapter implements SendVerificationEmailPort {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            helper.setFrom(new InternetAddress("no-reply@clash.kr", "Clash", "UTF-8"));
+            helper.setFrom(new InternetAddress(senderAddress, senderName, "UTF-8"));
             helper.setTo(email);
             helper.setSubject("[Clash] 계정 활성화 이메일 인증 코드");
 
