@@ -46,7 +46,7 @@ public class AuthControllerTest {
         String name = "테스트유저";
 
         // signup
-        SignUpDto.Request signUpRequest = new SignUpDto.Request(username, password, name);
+        SignUpDto.Request signUpRequest = new SignUpDto.Request(username, "test@example.com", password, name);
         MockHttpServletRequestBuilder signupRequest = post("/api/auth/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(signUpRequest));

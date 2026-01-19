@@ -46,7 +46,7 @@ class AuthEventTest {
 
         // 테스트 유저 저장
         String encodedPassword = passwordEncoder.encode("password123");
-        userRepository.save(User.createDefault("testuser", "테스터", encodedPassword));
+        userRepository.save(User.createDefault("testuser", "test@example.com", "테스터", encodedPassword));
     }
 
     @Test

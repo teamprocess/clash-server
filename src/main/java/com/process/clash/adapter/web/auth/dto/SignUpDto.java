@@ -9,13 +9,15 @@ public class SignUpDto {
     public record Request(
             @NotBlank(message = "유저 아이디는 필수 입력값입니다.")
             String username,
+            @NotBlank(message = "이메일은 필수 입력값입니다.")
+            String email,
             @NotBlank(message = "비밀번호는 필수 입력값입니다.")
             String password,
             @NotBlank(message = "이름은 필수 입력값입니다.")
             String name
     ) {
         public SignUpData.Command toCommand() {
-            return new SignUpData.Command(username, password, name);
+            return new SignUpData.Command(username, email, password, name);
         }
     }
 }

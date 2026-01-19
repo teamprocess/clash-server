@@ -10,6 +10,7 @@ import com.process.clash.application.user.user.port.in.SignOutUseCase;
 import com.process.clash.application.user.user.data.SignUpData;
 import com.process.clash.application.user.user.port.in.SignInUseCase;
 import com.process.clash.application.user.user.port.in.SignUpUseCase;
+import com.process.clash.application.user.user.port.in.VerifyEmailUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class AuthController implements AuthControllerDocument {
 	private final SignUpUseCase signUpUseCase;
 	private final SignInUseCase signInUseCase;
 	private final SignOutUseCase signOutUseCase;
+	private final VerifyEmailUseCase verifyEmailUseCase;
 
 	@PostMapping("/sign-up")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
