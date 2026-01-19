@@ -1,5 +1,6 @@
 package com.process.clash.application.compete.rival.service;
 
+import com.process.clash.application.compete.rival.data.AbleRivalInfo;
 import com.process.clash.application.compete.rival.data.GetAllAbleRivalsData;
 import com.process.clash.application.compete.rival.port.in.GetAllAbleRivalsUseCase;
 import com.process.clash.application.compete.rival.port.out.RivalRepositoryPort;
@@ -32,12 +33,8 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
                 Stream.of(command.actor().id())
         ).toList();
 
-        List<UserGitHub> userGitHubs = userGitHubRepositoryPort.findByUserIdNotIn(excludedUserIds);
+        List<AbleRivalInfo> ableRivalInfos = userGitHubRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
 
-        List<User> users = userRepositoryPort.findByIdIn(
-                userGitHubs.stream().map(UserGitHub::userId).toList()
-        );
-
-        return GetAllAbleRivalsData.Result.from(users, userGitHubs);
+        return GetAllAbleRivalsData.Result.from(ableRivalInfos);
     }
 }
