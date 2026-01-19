@@ -25,7 +25,6 @@ public class UserStudyTimeJpaEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private LocalDate date;
 

@@ -26,13 +26,13 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     @Query(value = """
         select coalesce(sum(
             extract(epoch from (
-                coalesce(s.endedAt, current_timestamp) - s.startedAt
+                least(coalesce(s.endedAt, current_timestamp), cast(:endOfDay as timestamp)) - greatest(s.startedAt, cast(:startOfDay as timestamp))
             ))
         ), 0)
         from StudySessionJpaEntity s
         where s.user.id = :userId
-            and s.createdAt >= :startOfDay
-            and s.createdAt < :endOfDay
+            and s.startedAt < :endOfDay
+            and (s.endedAt is null or s.endedAt > :startOfDay)
     """, nativeQuery = true)
     Long getTotalStudyTimeInSeconds(
             @Param("userId") Long userId,
