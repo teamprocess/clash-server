@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.roadmap.section.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.roadmap.section.docs.controller.SectionControllerDocument;
 import com.process.clash.adapter.web.roadmap.section.dto.GetSectionDetailsDto;
 import com.process.clash.adapter.web.roadmap.section.dto.GetSectionPreviewDto;
 import com.process.clash.adapter.web.roadmap.section.dto.GetSectionsDto;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/sections")
 @RequiredArgsConstructor
-public class SectionController {
+public class SectionController implements SectionControllerDocument {
 
     private final GetSectionsUseCase getSectionsUseCase;
     private final GetSectionPreviewUseCase getSectionPreviewUseCase;

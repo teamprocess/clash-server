@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.record.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.record.docs.controller.TaskControllerDocument;
 import com.process.clash.adapter.web.record.dto.CreateTaskDto;
 import com.process.clash.adapter.web.record.dto.GetAllTasksDto;
 import com.process.clash.adapter.web.record.dto.UpdateTaskDto;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/record/tasks")
 @RequiredArgsConstructor
-public class TaskController {
+public class TaskController implements TaskControllerDocument {
 
     private final GetAllTasksUseCase getAllTasksUseCase;
     private final CreateTaskUseCase createTaskUseCase;

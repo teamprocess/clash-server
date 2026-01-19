@@ -5,8 +5,11 @@ import com.process.clash.application.shop.recommendedproduct.data.CreateRecommen
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CreateRecommendedProductDto {
+
+    @Schema(name = "CreateRecommendedProductDtoRequest")
 
     public record Request(
             @NotNull(message = "상품 ID는 필수 입력값입니다.")
@@ -29,6 +32,8 @@ public class CreateRecommendedProductDto {
             );
         }
     }
+
+    @Schema(name = "CreateRecommendedProductDtoResponse")
 
     public record Response(
             Long id,

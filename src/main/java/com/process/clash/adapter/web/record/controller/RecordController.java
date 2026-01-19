@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.record.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.record.docs.controller.RecordControllerDocument;
 import com.process.clash.adapter.web.record.dto.GetTodayRecordDto;
 import com.process.clash.adapter.web.record.dto.RecordSettingDto;
 import com.process.clash.adapter.web.record.dto.StartRecordDto;
@@ -29,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/record")
 @RequiredArgsConstructor
-public class RecordController {
+public class RecordController implements RecordControllerDocument {
 
     private final GetTodayRecordUseCase getTodayRecordUseCase;
     private final StartRecordUseCase startRecordUseCase;

@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.roadmap.section.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.roadmap.section.docs.controller.AdminSectionControllerDocument;
 import com.process.clash.adapter.web.roadmap.section.dto.CreateSectionDto;
 import com.process.clash.adapter.web.roadmap.section.dto.UpdateSectionDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin/sections")
 @RequiredArgsConstructor
-public class AdminSectionController {
+public class AdminSectionController implements AdminSectionControllerDocument {
 
     private final CreateSectionUseCase createSectionUseCase;
     private final UpdateSectionUseCase updateSectionUseCase;

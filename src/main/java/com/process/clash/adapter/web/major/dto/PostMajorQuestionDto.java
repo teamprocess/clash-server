@@ -9,8 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class PostMajorQuestionDto {
+
+    @Schema(name = "PostMajorQuestionDtoRequest")
 
     public record Request(
             @NotBlank(message = "질문 내용은 비워둘 수 없습니다.")
@@ -33,6 +36,8 @@ public class PostMajorQuestionDto {
             );
         }
     }
+
+    @Schema(name = "PostMajorQuestionDtoResponse")
 
     public record Response(
             Long questionId,

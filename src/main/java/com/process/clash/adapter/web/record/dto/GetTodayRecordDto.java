@@ -5,8 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetTodayRecordDto {
+
+    @Schema(name = "GetTodayRecordDtoResponse")
 
     public record Response(
         String date,

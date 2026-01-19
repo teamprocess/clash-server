@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.compete.rival.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.compete.rival.docs.controller.RivalCompeteControllerDocument;
 import com.process.clash.adapter.web.compete.rival.dto.GetMyRivalActingDto;
 import com.process.clash.adapter.web.compete.rival.dto.ApplyRivalDto;
 import com.process.clash.adapter.web.compete.rival.dto.GetAllAbleRivalsDto;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/compete/rivals")
 @RequiredArgsConstructor
-public class RivalCompeteController {
+public class RivalCompeteController implements RivalCompeteControllerDocument {
 
     private final GetMyRivalActingUseCase getMyRivalActingUseCase;
     private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;

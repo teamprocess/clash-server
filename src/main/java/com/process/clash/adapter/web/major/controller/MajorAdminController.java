@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.major.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.major.docs.controller.MajorAdminControllerDocument;
 import com.process.clash.adapter.web.major.dto.PostMajorQuestionDto;
 import com.process.clash.adapter.web.major.dto.UpdateMajorQuestionDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin/major")
 @RequiredArgsConstructor
-public class MajorAdminController {
+public class MajorAdminController implements MajorAdminControllerDocument {
 
     private final PostMajorQuestionUseCase postMajorQuestionUseCase;
     private final UpdateMajorQuestionUseCase updateMajorQuestionUseCase;

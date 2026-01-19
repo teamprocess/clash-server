@@ -2,8 +2,10 @@ package com.process.clash.adapter.web.auth.dto;
 
 import com.process.clash.application.user.user.data.SignUpData;
 import jakarta.validation.constraints.NotBlank;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class SignUpDto {
+    @Schema(name = "SignUpDtoRequest")
     public record Request(
             @NotBlank(message = "유저 아이디는 필수 입력값입니다.")
             String username,
