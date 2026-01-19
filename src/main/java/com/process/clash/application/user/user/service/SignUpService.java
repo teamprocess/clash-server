@@ -28,6 +28,7 @@ public class SignUpService implements SignUpUseCase {
 	private final VerificationCodePort verificationCodePort;
 	private final SendVerificationEmailPort sendVerificationEmailPort;
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L;
 
 	@Override
 	@Transactional
@@ -71,7 +72,7 @@ public class SignUpService implements SignUpUseCase {
 		// 이 코드는 위에서 신규 가입이든 덮어쓰기든 상관없이 공통으로 실행됩니다.
 		String verificationCode = generateVerificationCode();
 
-		verificationCodePort.saveCode(command.email(), verificationCode, 5 * 60 * 1000);
+		verificationCodePort.saveCode(command.email(), verificationCode, VERIFICATION_CODE_EXPIRATION_MS);
 
 		sendVerificationEmailPort.execute(command.email(), verificationCode);
 	}
