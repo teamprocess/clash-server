@@ -7,6 +7,8 @@ import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 @Repository
 @RequiredArgsConstructor
 public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryPort {
