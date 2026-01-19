@@ -106,7 +106,7 @@ public interface AuthControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "308", description = "신규 엔드포인트로 이동")
     })
-    ResponseEntity<?> handleRedirect(
+    ResponseEntity<Void> handleRedirect(
             @Parameter(description = "이전 액션", example = "signin", required = true)
             @PathVariable String action
     );
