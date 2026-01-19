@@ -24,7 +24,7 @@ public class ActorWebConfig implements WebMvcConfigurer {
                         "file://*"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedHeaders("*")
+                .allowedHeaders("Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin", "Cookie")
                 .allowCredentials(true)
                 .maxAge(3600);
     }
