@@ -29,6 +29,6 @@ public class SeasonAdminController implements SeasonAdminControllerDocument {
     ) {
         CreateSeasonData.Command command = request.toCommand(actor);
         createSeasonUseCase.execute(command);
-        return ApiResponse.success("시즌 생성에 성공했습니다.");
+        return ApiResponse.created("시즌 생성에 성공했습니다.");
     }
 }

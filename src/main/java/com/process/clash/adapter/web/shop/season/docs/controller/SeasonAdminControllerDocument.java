@@ -19,7 +19,7 @@ public interface SeasonAdminControllerDocument {
 
     @Operation(summary = "시즌 생성", description = "시즌 정보를 생성합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "생성 성공",
+            @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
                             schema = @Schema(implementation = CreateSeasonResponseDoc.class),
                             examples = @ExampleObject(value = """
