@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.user.usergithub;
+package com.process.clash.adapter.persistence.user.github.usergithub;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.user.usergithub.entity.UserGitHub;

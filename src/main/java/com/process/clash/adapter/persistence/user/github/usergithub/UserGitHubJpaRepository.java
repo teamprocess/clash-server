@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.user.usergithub;
+package com.process.clash.adapter.persistence.user.github.usergithub;
 
 import com.process.clash.application.compete.rival.data.AbleRivalInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
