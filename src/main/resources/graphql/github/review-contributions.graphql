@@ -1,0 +1,29 @@
+query (
+  $login: String!,
+  $from: DateTime!,
+  $to: DateTime!,
+  $first: Int!,
+  $after: String
+) {
+  user(login: $login) {
+    contributionsCollection(from: $from, to: $to) {
+      pullRequestReviewContributions(first: $first, after: $after) {
+        nodes {
+          occurredAt
+          pullRequest {
+            id
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+  rateLimit {
+    cost
+    remaining
+    resetAt
+  }
+}
