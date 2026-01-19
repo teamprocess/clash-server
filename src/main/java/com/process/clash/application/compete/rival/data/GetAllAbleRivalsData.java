@@ -23,7 +23,7 @@ public class GetAllAbleRivalsData {
     }
 
     public record Result(
-            List<UserInfo> users
+            List<UserInfo> userInfos
     ) {
 
         public static Result from(List<User> users, List<UserGitHub> userGitHubs) {

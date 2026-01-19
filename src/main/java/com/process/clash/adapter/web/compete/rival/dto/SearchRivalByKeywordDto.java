@@ -7,26 +7,28 @@ import java.util.List;
 public class SearchRivalByKeywordDto {
 
     public record Response(
-            List<User> users
+            List<UserInfo> userInfos
     ) {
 
         public static Response from(SearchRivalByKeywordData.Result result) {
 
             return new Response(
-                    result.users().stream()
-                            .map(data -> new User(
+                    result.userInfos().stream()
+                            .map(data -> new UserInfo(
                                     data.id(),
                                     data.name(),
-                                    data.githubId()
+                                    data.githubId(),
+                                    data.profileImage()
                             ))
                             .toList()
             );
         }
     }
 
-    private record User(
+    private record UserInfo(
             Long id,
             String name,
-            String githubId
+            String githubId,
+            String profileImage
     ) {}
 }
