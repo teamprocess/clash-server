@@ -21,18 +21,13 @@ public class SearchRivalByKeywordData {
     }
 
     public record Result(
-            List<UserInfo> userInfos
+            List<AbleRivalInfo> users
     ) {
 
-//        public static Result from() {
-//
-//        }
+        public static Result from(List<AbleRivalInfo> ableRivalInfos) {
+            return new Result(
+                    ableRivalInfos
+            );
+        }
     }
-
-    public record UserInfo(
-            Long id,
-            String name,
-            String githubId,
-            String profileImage
-    ) {}
 }

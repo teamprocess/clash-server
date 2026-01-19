@@ -9,4 +9,5 @@ public interface UserGitHubRepositoryPort {
 
     UserGitHub save(UserGitHub userGitHub);
     List<AbleRivalInfo> findAbleRivalsWithUserInfo(List<Long> ids);
+    List<AbleRivalInfo> findAbleRivalsWithUserInfoByKeyword(List<Long> ids, String keyword);
 }
