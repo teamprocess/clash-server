@@ -10,6 +10,7 @@ import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class VerifyEmailService implements VerifyEmailUseCase {
     private final UserRepositoryPort userRepositoryPort;
 
     @Override
+    @Transactional
     public void execute(VerifyEmailData.Command command) {
         String savedCode = verificationCodePort.getCode(command.email())
                 .orElseThrow(VerificationCodeExpiredOrWrongEmailException::new);
