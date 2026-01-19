@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserGitHubInfo {
+public class UserGitHubInfoJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
