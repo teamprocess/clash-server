@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "인증 API", description = "회원가입/로그인/로그아웃")
@@ -103,9 +104,9 @@ public interface AuthControllerDocument {
 
     @Operation(summary = "이전 엔드포인트 리다이렉트", description = "기존 엔드포인트 요청을 신규 경로로 이동합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "301", description = "신규 엔드포인트로 이동")
+            @ApiResponse(responseCode = "308", description = "신규 엔드포인트로 이동")
     })
-    void handleRedirect(
+    ResponseEntity<Void> handleRedirect(
             @Parameter(description = "이전 액션", example = "signin", required = true)
             @PathVariable String action
     );
