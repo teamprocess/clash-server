@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.shop.product.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.shop.product.docs.controller.ProductControllerDocument;
 import com.process.clash.adapter.web.shop.product.dto.GetAllProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetPopularProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetProductDetailDto;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/shop/products")
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductController implements ProductControllerDocument {
 
     private final GetProductDetailUseCase getProductDetailUseCase;
     private final GetPopularProductsUseCase getPopularProductsUseCase;

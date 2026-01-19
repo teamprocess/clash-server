@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.roadmap.category.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.roadmap.category.docs.controller.AdminCategoryControllerDocument;
 import com.process.clash.adapter.web.roadmap.category.dto.CreateCategoryDto;
 import com.process.clash.adapter.web.roadmap.category.dto.DeleteCategoryDto;
 import com.process.clash.adapter.web.roadmap.category.dto.GetCategoriesDto;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin/categories")
 @RequiredArgsConstructor
-public class AdminCategoryController {
+public class AdminCategoryController implements AdminCategoryControllerDocument {
 
     private final CreateCategoryUseCase createCategoryUseCase;
     private final GetCategoriesUseCase getCategoriesUseCase;

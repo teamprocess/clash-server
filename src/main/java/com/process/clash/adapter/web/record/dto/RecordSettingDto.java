@@ -3,8 +3,11 @@ package com.process.clash.adapter.web.record.dto;
 import com.process.clash.application.record.dto.GetRecordSettingData;
 import com.process.clash.application.record.dto.UpdateRecordSettingData;
 import jakarta.validation.constraints.NotNull;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RecordSettingDto {
+
+    @Schema(name = "RecordSettingDtoRequest")
 
     public record Request(
         @NotNull(message = "pomodoroEnabled는 필수 입력값입니다.")
@@ -14,6 +17,8 @@ public class RecordSettingDto {
         @NotNull(message = "breakMinute는 필수 입력값입니다.")
         Integer breakMinute
     ) {}
+
+    @Schema(name = "RecordSettingDtoResponse")
 
     public record Response(
         Boolean pomodoroEnabled,

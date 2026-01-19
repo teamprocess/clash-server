@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.ranking.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.ranking.docs.controller.RankingControllerDocument;
 import com.process.clash.adapter.web.ranking.dto.GetRankingDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/rankings")
 @RequiredArgsConstructor
-public class RankingController {
+public class RankingController implements RankingControllerDocument {
 
     private final GetRankingUseCase getRankingUseCase;
 

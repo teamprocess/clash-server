@@ -1,8 +1,10 @@
 package com.process.clash.adapter.web.mainpage.dto;
 
 import com.process.clash.application.mainpage.data.GetUserProfileData;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetUserProfileDto {
+    @Schema(name = "GetUserProfileDtoResponse")
     public record Response(
             Long id,
             String name,

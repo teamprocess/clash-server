@@ -6,8 +6,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UpdateSectionDto {
+
+    @Schema(name = "UpdateSectionDtoRequest")
 
     public record Request(
             @Size(min = 1, message = "title이 제공되는 경우 비워둘 수 없습니다.")
@@ -30,6 +33,8 @@ public class UpdateSectionDto {
             return new UpdateSectionData.Command(actor, sectionId, title, categoryId, description, orderIndex, keyPoints, prerequisiteSectionIds);
         }
     }
+
+    @Schema(name = "UpdateSectionDtoResponse")
 
     public record Response(
             Long sectionId,

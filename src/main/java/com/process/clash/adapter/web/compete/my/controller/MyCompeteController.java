@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.compete.my.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.compete.my.docs.controller.MyCompeteControllerDocument;
 import com.process.clash.adapter.web.compete.my.dto.CompareGitHubDto;
 import com.process.clash.adapter.web.compete.my.dto.AnalyzeMyActivityDto;
 import com.process.clash.adapter.web.compete.my.dto.GetCompareWithYesterdayDto;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/compete/my")
 @RequiredArgsConstructor
-public class MyCompeteController {
+public class MyCompeteController implements MyCompeteControllerDocument {
 
     private final GetCompareWithYesterdayUseCase getCompareWithYesterdayUseCase;
     private final AnalyzeMyActivityUseCase analyzeMyActivityUseCase;

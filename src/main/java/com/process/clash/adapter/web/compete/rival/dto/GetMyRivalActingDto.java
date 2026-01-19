@@ -4,8 +4,11 @@ import com.process.clash.application.compete.rival.data.GetMyRivalActingData;
 import com.process.clash.domain.rival.enums.RivalCurrentStatus;
 
 import java.util.List;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetMyRivalActingDto {
+
+    @Schema(name = "GetMyRivalActingDtoResponse")
 
     public record Response(
             List<MyRival> myRivals
