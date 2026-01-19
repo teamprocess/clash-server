@@ -56,7 +56,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     }
 
     // 라이벌 - 키워드 검색
-    @GetMapping("/search")
+    @GetMapping("/available/search")
     public ApiResponse<SearchRivalByKeywordDto.Response> searchRivalByKeyword(
             @AuthenticatedActor Actor actor,
             @RequestParam String keyword
