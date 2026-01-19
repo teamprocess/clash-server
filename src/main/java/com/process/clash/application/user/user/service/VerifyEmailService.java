@@ -31,7 +31,7 @@ public class VerifyEmailService implements VerifyEmailUseCase {
 
         User user = userRepositoryPort.findByEmail(command.email()).orElseThrow(UserNotFoundException::new);
 
-        User activeUSer= user.active();
+        User activeUser = user.active();
         userRepositoryPort.save(activeUSer);
 
         verificationCodePort.deleteCode(command.email());
