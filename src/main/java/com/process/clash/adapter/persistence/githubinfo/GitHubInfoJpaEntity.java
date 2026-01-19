@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.github;
+package com.process.clash.adapter.persistence.githubinfo;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class GitHubJpaEntity {
+public class GitHubInfoJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

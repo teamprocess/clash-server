@@ -1,4 +1,4 @@
-package com.process.clash.application.user.userstudytime.exception.exception;
+package com.process.clash.application.user.userstudytime.exception.exception.notfound;
 
 import com.process.clash.application.common.exception.exception.NotFoundException;
 import com.process.clash.application.user.userstudytime.exception.statuscode.UserStudyTimeStatusCode;
