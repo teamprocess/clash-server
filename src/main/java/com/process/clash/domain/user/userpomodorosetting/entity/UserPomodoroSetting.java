@@ -11,4 +11,17 @@ public record UserPomodoroSetting(
         int pomodoroBreakMinute,
         Long userId
 ) {
+
+    public UserPomodoroSetting createDefault(Long userId) {
+
+        return new UserPomodoroSetting(
+                null,
+                null,
+                null,
+                false,
+                25,
+                5,
+                userId
+        );
+    }
 }

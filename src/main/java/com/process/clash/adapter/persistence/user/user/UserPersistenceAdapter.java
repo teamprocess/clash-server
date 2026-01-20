@@ -22,6 +22,12 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public void saveAndFlush(User user) {
+
+        userJpaRepository.saveAndFlush(userJpaMapper.toJpaEntity(user));
+    }
+
+    @Override
     public Optional<User> findById(Long id) {
         return userJpaRepository.findById(id).map(userJpaMapper::toDomain);
     }

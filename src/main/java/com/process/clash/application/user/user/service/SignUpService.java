@@ -4,6 +4,7 @@ import com.process.clash.application.mail.port.out.SendVerificationEmailPort;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.exception.exception.conflict.EmailAlreadyExistException;
 import com.process.clash.application.user.user.exception.exception.conflict.UsernameAlreadyExistException;
+import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class SignUpService implements SignUpUseCase {
 	private final PasswordEncoder passwordEncoder;
 	private final VerificationCodePort verificationCodePort;
 	private final SendVerificationEmailPort sendVerificationEmailPort;
+	private final UserPomodoroSettingRepositoryPort userPomodoroSettingRepositoryPort;
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L;
 
