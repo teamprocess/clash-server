@@ -24,10 +24,19 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
 
         List<Rival> rivals = rivalRepositoryPort.findAllByUserId(command.actor().id());
 
+        Long myId = command.actor().id();
+
         List<Long> excludedUserIds = Stream.concat(
-                rivals.stream().map(Rival::opponentId),
-                Stream.of(command.actor().id())
-        ).toList();
+                rivals.stream()
+                        .map(rival -> {
+                            if (rival.firstUserId().equals(myId)) {
+                                return rival.secondUserId();
+                            }
+                            return rival.firstUserId();
+                        }),
+                Stream.of(myId)
+        ).distinct().toList();
+
 
         List<AbleRivalInfo> ableRivalInfos = userGitHubRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
 

@@ -22,15 +22,29 @@ public class SearchRivalByKeywordService implements SearchRivalByKeywordUseCase 
     @Override
     public SearchRivalByKeywordData.Result execute(SearchRivalByKeywordData.Command command) {
 
-        List<Rival> rivals = rivalRepositoryPort.findAllByUserId(command.actor().id());
+        Long myId = command.actor().id();
+
+        List<Rival> rivals = rivalRepositoryPort.findAllByUserId(myId);
 
         List<Long> excludedUserIds = Stream.concat(
-                rivals.stream().map(Rival::opponentId),
-                Stream.of(command.actor().id())
+                rivals.stream()
+                        .map(rival -> {
+                            if (rival.firstUserId().equals(myId)) {
+                                return rival.secondUserId();
+                            } else {
+                                return rival.firstUserId();
+                            }
+                        }),
+                Stream.of(myId)
         ).toList();
 
-        List<AbleRivalInfo> ableRivalInfos = userGitHubRepositoryPort.findAbleRivalsWithUserInfoByKeyword(excludedUserIds, command.keyword());
+        List<AbleRivalInfo> ableRivalInfos =
+                userGitHubRepositoryPort.findAbleRivalsWithUserInfoByKeyword(
+                        excludedUserIds,
+                        command.keyword()
+                );
 
         return SearchRivalByKeywordData.Result.from(ableRivalInfos);
     }
+
 }

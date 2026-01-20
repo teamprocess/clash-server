@@ -1,7 +1,7 @@
 package com.process.clash.application.compete.rival.policy;
 
 import com.process.clash.application.compete.rival.data.ApplyRivalData;
-import com.process.clash.application.compete.rival.exception.exception.TooMuchRivalsException;
+import com.process.clash.application.compete.rival.exception.exception.badrequet.TooMuchRivalsException;
 import com.process.clash.application.compete.rival.port.out.RivalRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
