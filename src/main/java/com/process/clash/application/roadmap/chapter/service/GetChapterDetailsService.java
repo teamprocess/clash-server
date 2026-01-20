@@ -7,10 +7,12 @@ import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
 import com.process.clash.domain.roadmap.entity.Chapter;
 import com.process.clash.domain.roadmap.entity.Mission;
+import com.process.clash.domain.roadmap.entity.MissionQuestion;
 import com.process.clash.domain.roadmap.entity.UserMissionHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -60,7 +62,7 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
                 totalQuestions = mission.getQuestions() != null ? mission.getQuestions().size() : 0;
                 if (mission.getQuestions() != null && !mission.getQuestions().isEmpty()) {
                     var questionId = mission.getQuestions().stream()
-                        .sorted(java.util.Comparator.comparing(com.process.clash.domain.roadmap.entity.MissionQuestion::getOrderIndex))
+                        .sorted(Comparator.comparing(MissionQuestion::getOrderIndex))
                         .skip(currentQuestionIndex)
                         .findFirst()
                         .map(q -> q.getId())
