@@ -12,6 +12,7 @@ import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CompareWithRivalsService implements CompareWithRivalsUseCase {
 
     private final GithubDailyStatsQueryPort githubDailyStatsQueryPort;
