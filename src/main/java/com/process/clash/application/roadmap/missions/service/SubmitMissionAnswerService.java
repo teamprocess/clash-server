@@ -139,7 +139,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
 
         // 챕터 완료 여부 확인 및 섹션 업데이트
         if (history.getCurrentQuestionIndex() >= history.getTotalCount()) {
-            updateSectionProgress(actor.id(), chapter, progress, isChapterCleared, missionMap);
+            updateSectionProgress(chapter, progress);
         }
 
         // 진행 상황 계산
@@ -193,23 +193,20 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         );
     }
 
-    private void updateSectionProgress(Long userId, Chapter chapter, UserSectionProgress progress, boolean isChapterCleared, Map<Long, Mission> missionMap) {
-        // 챕터 내 모든 미션이 완료되었다면 다음 단계로 진행
-        if (isChapterCleared) {
-            // 현재 섹션 내에서 다음 순서(OrderIndex)의 챕터를 찾음
-            List<Chapter> chaptersInSection = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
-            Optional<Chapter> nextChapterOpt = chaptersInSection.stream()
-                    .filter(c -> c.getOrderIndex() > chapter.getOrderIndex())
-                    .min((c1, c2) -> Integer.compare(c1.getOrderIndex(), c2.getOrderIndex()));
+    private void updateSectionProgress(Chapter chapter, UserSectionProgress progress) {
+        // 현재 섹션 내에서 다음 순서(OrderIndex)의 챕터를 찾음
+        List<Chapter> chaptersInSection = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
+        Optional<Chapter> nextChapterOpt = chaptersInSection.stream()
+                .filter(c -> c.getOrderIndex() > chapter.getOrderIndex())
+                .min((c1, c2) -> Integer.compare(c1.getOrderIndex(), c2.getOrderIndex()));
 
-            if (nextChapterOpt.isPresent()) {
-                // 다음 챕터가 있으면 currentChapterId를 갱신하고 완료 챕터 수 +1
-                progress.moveToNextChapter(nextChapterOpt.get().getId());
-            } else {
-                // 더 이상 다음 챕터가 없으면 섹션 전체 완료 처리
-                progress.completeSection();
-            }
-            userSectionProgressRepositoryPort.save(progress);
+        if (nextChapterOpt.isPresent()) {
+            // 다음 챕터가 있으면 currentChapterId를 갱신하고 완료 챕터 수 +1
+            progress.moveToNextChapter(nextChapterOpt.get().getId());
+        } else {
+            // 더 이상 다음 챕터가 없으면 섹션 전체 완료 처리
+            progress.completeSection();
         }
+        userSectionProgressRepositoryPort.save(progress);
     }
 }
