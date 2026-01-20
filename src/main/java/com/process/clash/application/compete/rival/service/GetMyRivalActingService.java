@@ -53,20 +53,16 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
         List<GetMyRivalActingData.MyRival> myRivals = rivals.stream()
                 .map(rival -> {
+                    User opponent = opponentMap.get(rival.opponentId());
+                    if (opponent == null) {
+                        throw new UserNotFoundException();
+                    }
 
-                    Long activeTime = studySessionRepositoryPort
-                            .getTotalStudyTimeInSeconds(
-                                    rival.opponentId(),
-                                    startOfDay,
-                                    endOfDay
-                            );
-
-                    User opponent = userRepositoryPort.findById(rival.opponentId())
-                            .orElseThrow(UserNotFoundException::new);
+                    Long activeTime = studyTimeMap.getOrDefault(rival.opponentId(), 0L);
 
                     return GetMyRivalActingData.MyRival.from(
                             opponent,
-                            activeTime == null ? 0L : activeTime,
+                            activeTime,
                             "Intellij IDEA", //TODO: 더미 수정 필요
                             RivalCurrentStatus.ONLINE //TODO: 더미 수정 필요
                     );
