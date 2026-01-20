@@ -38,7 +38,7 @@ public class ApplyRivalService implements ApplyRivalUseCase {
                 .map(rival -> UserNotice.createDefault(
                         NoticeCategory.APPLY_RIVAL,
                         rival.firstUserId(),
-                        rival.secondUser2Id()
+                        rival.secondUserId()
                 ))
                 .toList();
 

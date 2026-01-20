@@ -1,4 +1,4 @@
-package com.process.clash.application.compete.rival.exception.exception;
+package com.process.clash.application.compete.rival.exception.exception.badrequet;
 
 import com.process.clash.application.common.exception.exception.BadRequestException;
 import com.process.clash.application.compete.rival.exception.statuscode.RivalStatusCode;
