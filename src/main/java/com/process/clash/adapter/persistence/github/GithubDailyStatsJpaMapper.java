@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class GithubDailyStatsJpaMapper {
 
-    public GithubDailyStatsJpaEntity toJpaEntity(GithubDailyStats stat, Long id) {
+    public GithubDailyStatsJpaEntity toJpaEntity(GithubDailyStats stat) {
         return new GithubDailyStatsJpaEntity(
-                id,
+                stat.id(),
                 stat.userId(),
                 stat.studyDate(),
                 stat.commitCount(),
@@ -23,6 +23,7 @@ public class GithubDailyStatsJpaMapper {
 
     public GithubDailyStats toDomain(GithubDailyStatsJpaEntity entity) {
         return new GithubDailyStats(
+                entity.getId(),
                 entity.getUserId(),
                 entity.getStudyDate(),
                 entity.getCommitCount(),
