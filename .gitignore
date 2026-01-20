@@ -38,3 +38,4 @@ out/
 .vscode/
 db_data
 AGENTS.md
+src/main/resources/graphql/schema/
