@@ -1,8 +1,9 @@
-package com.process.clash.adapter.persistence.user.usercookiehistory;
+package com.process.clash.adapter.persistence.user.usergoodshistory;
 
 import com.process.clash.adapter.persistence.shop.product.ProductJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.common.enums.ActingCategory;
+import com.process.clash.domain.common.enums.GoodsType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,11 +14,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_cookie_history")
+@Table(name = "user_goods_history")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserCookieHistoryJpaEntity {
+public class UserGoodsHistoryJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,10 @@ public class UserCookieHistoryJpaEntity {
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GoodsType goodsType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
