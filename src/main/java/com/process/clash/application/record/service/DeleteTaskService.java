@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.DeleteTaskData;
+import com.process.clash.application.record.data.DeleteTaskData;
 import com.process.clash.application.record.exception.exception.notfound.TaskNotFoundException;
 import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.DeleteTaskUseCase;

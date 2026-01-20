@@ -7,7 +7,7 @@ import com.process.clash.domain.user.user.enums.UserStatus;
 import java.time.LocalDateTime;
 
 public record User(
-        Long  id,
+        Long id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         String username,
@@ -15,11 +15,10 @@ public record User(
         String name,
         String password,
         Role role,
-        boolean ableToAddRival,
         String profileImage,
-        boolean pomodoroEnabled,
-        Integer pomodoroStudyMinute,
-        Integer pomodoroBreakMinute,
+        int totalExp,
+        int totalCookie,
+        int totalToken,
         Major major,
         UserStatus userStatus
 ) {
@@ -33,19 +32,16 @@ public record User(
                 name,
                 password,
                 Role.USER,
-                true,
                 "",
-                false,   // 기본 공부 시간 (기본값이 없다면 null)
-                25,
-                5,
+                0,
+                0,
+                0,
                 Major.NONE,
                 UserStatus.PENDING
         );
-
     }
 
     public User submitMajor(Major major) {
-        // 모든 필드를 복사하되 major만 교체한 새 객체 반환
         return new User(
                 this.id,
                 this.createdAt,
@@ -55,32 +51,11 @@ public record User(
                 this.name,
                 this.password,
                 this.role,
-                this.ableToAddRival,
                 this.profileImage,
-                this.pomodoroEnabled,
-                this.pomodoroStudyMinute,
-                this.pomodoroBreakMinute,
-                major, // 변경점
-                this.userStatus
-        );
-    }
-
-    public User withPomodoroSettings(Boolean pomodoroEnabled, Integer studyMinute, Integer breakMinute) {
-        return new User(
-                this.id,
-                this.createdAt,
-                LocalDateTime.now(),
-                this.username,
-                this.email,
-                this.name,
-                this.password,
-                this.role,
-                this.ableToAddRival,
-                this.profileImage,
-                pomodoroEnabled,
-                studyMinute,
-                breakMinute,
-                this.major,
+                this.totalExp,
+                this.totalCookie,
+                this.totalToken,
+                major,
                 this.userStatus
         );
     }
@@ -95,13 +70,12 @@ public record User(
                 this.name,
                 this.password,
                 this.role,
-                this.ableToAddRival,
                 this.profileImage,
-                this.pomodoroEnabled,
-                this.pomodoroStudyMinute,
-                this.pomodoroBreakMinute,
+                this.totalExp,
+                this.totalCookie,
+                this.totalToken,
                 this.major,
-                UserStatus.ACTIVE
+                UserStatus.ACTIVE  // 상태를 ACTIVE로 변경
         );
     }
 
@@ -110,21 +84,19 @@ public record User(
     }
 
     public User updateSignupInfo(String username, String email, String name, String encodedPassword) {
-        // 모든 필드를 그대로 가져오되, 회원가입 정보만 교체한 새 객체 생성
         return new User(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(), // 수정 시간 갱신
-                username,            // 변경
-                email,               // 변경
-                name,                // 변경
-                encodedPassword,     // 변경
+                LocalDateTime.now(),
+                username,
+                email,
+                name,
+                encodedPassword,
                 this.role,
-                this.ableToAddRival,
                 this.profileImage,
-                this.pomodoroEnabled,
-                this.pomodoroStudyMinute,
-                this.pomodoroBreakMinute,
+                this.totalExp,
+                this.totalCookie,
+                this.totalToken,
                 this.major,
                 this.userStatus
         );

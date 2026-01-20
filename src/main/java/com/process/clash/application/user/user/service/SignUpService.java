@@ -6,13 +6,15 @@ import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.data.SignUpData;
 import com.process.clash.application.user.user.exception.exception.conflict.EmailAlreadyExistException;
 import com.process.clash.application.user.user.exception.exception.conflict.UsernameAlreadyExistException;
+import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;
+import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.userpomodorosetting.entity.UserPomodoroSetting;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import com.process.clash.application.user.user.port.out.PendingUserCachePort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
@@ -26,6 +28,7 @@ public class SignUpService implements SignUpUseCase {
 	private final PasswordEncoder passwordEncoder;
 	private final VerificationCodePort verificationCodePort;
 	private final SendVerificationEmailPort sendVerificationEmailPort;
+	private final UserPomodoroSettingRepositoryPort userPomodoroSettingRepositoryPort;
 	private final PendingUserCachePort pendingUserCachePort;
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L; // 인증 코드 만료: 5분
@@ -52,6 +55,13 @@ public class SignUpService implements SignUpUseCase {
 				encoded
 		);
 
+		User savedUser = userRepositoryPort.save(pendingUser);
+		// 뽀모도로 타이머에 사용하기 위한 userId를 위해서 flush
+		userRepositoryPort.flush();
+		// 뽀모도로 타이머 세팅 추가
+		UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(savedUser.id());
+		userPomodoroSettingRepositoryPort.save(userPomodoroSetting);
+
 		String token = tokenGenerator.generateCleanToken();
 
 		pendingUserCachePort.save(token, pendingUser, PENDING_USER_EXPIRATION_MS);
@@ -69,5 +79,4 @@ public class SignUpService implements SignUpUseCase {
 		int code = SECURE_RANDOM.nextInt(1000000);
 		return String.format("%06d", code);
 	}
-
 }

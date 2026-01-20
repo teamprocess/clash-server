@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.record.dto;
 
-import com.process.clash.application.record.dto.GetAllTasksData;
+import com.process.clash.application.record.data.GetAllTasksData;
 import com.process.clash.domain.record.model.entity.Task;
 import com.process.clash.domain.record.model.enums.TaskColor;
 import java.util.List;
