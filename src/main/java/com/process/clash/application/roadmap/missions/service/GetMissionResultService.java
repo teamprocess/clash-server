@@ -7,10 +7,8 @@ import com.process.clash.application.roadmap.missions.port.in.GetMissionResultUs
 import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
 import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
-import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.roadmap.entity.Chapter;
 import com.process.clash.domain.roadmap.entity.Mission;
-import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.UserMissionHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,6 @@ public class GetMissionResultService implements GetMissionResultUseCase {
     private final UserMissionHistoryRepositoryPort userMissionHistoryRepositoryPort;
     private final MissionRepositoryPort missionRepositoryPort;
     private final ChapterRepositoryPort chapterRepositoryPort;
-    private final SectionRepositoryPort sectionRepositoryPort;
 
     @Override
     public GetMissionResultData.Result execute(GetMissionResultData.Command command) {
@@ -38,9 +35,6 @@ public class GetMissionResultService implements GetMissionResultUseCase {
         Chapter chapter = chapterRepositoryPort.findById(mission.getChapterId())
                 .orElseThrow();
 
-        Section section = sectionRepositoryPort.findById(chapter.getSectionId())
-                .orElseThrow();
-
         Optional<UserMissionHistory> historyOpt = userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), missionId);
 
         UserMissionHistory history = historyOpt.orElseGet(() -> UserMissionHistory.create(
@@ -50,7 +44,31 @@ public class GetMissionResultService implements GetMissionResultUseCase {
         ));
 
         Long nextMissionId = null;
+        Integer nextMissionOrderIndex = null;
         Long nextChapterId = null;
+        Integer nextChapterOrderIndex = null;
+
+        if (history.isCleared()) {
+            List<Mission> missions = missionRepositoryPort.findAllByChapterId(mission.getChapterId());
+            Optional<Mission> nextMission = missions.stream()
+                    .filter(m -> m.getOrderIndex() > mission.getOrderIndex())
+                    .min((a, b) -> a.getOrderIndex().compareTo(b.getOrderIndex()));
+
+            if (nextMission.isPresent()) {
+                nextMissionId = nextMission.get().getId();
+                nextMissionOrderIndex = nextMission.get().getOrderIndex();
+            } else {
+                List<Chapter> chapters = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
+                Optional<Chapter> nextChapter = chapters.stream()
+                        .filter(c -> c.getOrderIndex() > chapter.getOrderIndex())
+                        .min((a, b) -> a.getOrderIndex().compareTo(b.getOrderIndex()));
+
+                if (nextChapter.isPresent()) {
+                    nextChapterId = nextChapter.get().getId();
+                    nextChapterOrderIndex = nextChapter.get().getOrderIndex();
+                }
+            }
+        }
 
         return new GetMissionResultData.Result(
                 missionId,
@@ -58,10 +76,9 @@ public class GetMissionResultService implements GetMissionResultUseCase {
                 history.getCorrectCount(),
                 history.getTotalCount(),
                 nextMissionId,
+                nextMissionOrderIndex,
                 nextChapterId,
-                section.getOrderIndex(),
-                chapter.getOrderIndex(),
-                mission.getOrderIndex()
+                nextChapterOrderIndex
         );
     }
 }

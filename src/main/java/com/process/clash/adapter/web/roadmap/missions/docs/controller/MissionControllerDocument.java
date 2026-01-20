@@ -65,10 +65,9 @@ public interface MissionControllerDocument {
                                           "correctCount": 5,
                                           "totalCount": 5,
                                           "nextMissionId": 2,
+                                          "nextMissionOrderIndex": 1,
                                           "nextChapterId": null,
-                                          "sectionOrderIndex": 0,
-                                          "chapterOrderIndex": 1,
-                                          "missionOrderIndex": 0
+                                          "nextChapterOrderIndex": null
                                       },
                                       "message": "미션 결과 조회를 성공했습니다.",
                                       "success": true
