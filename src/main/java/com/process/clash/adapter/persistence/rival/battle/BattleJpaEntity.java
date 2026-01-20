@@ -1,7 +1,8 @@
-package com.process.clash.adapter.persistence.rival.rival;
+package com.process.clash.adapter.persistence.rival.battle;
 
+import com.process.clash.adapter.persistence.rival.rival.RivalJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
+import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,22 +11,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "rivals",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_rival_pair",
-                        columnNames = {"fk_first_user_id", "fk_second_user_id"}
-                )
-        }
-)
+@Table(name = "matches")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class RivalJpaEntity {
+public class BattleJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,15 +33,21 @@ public class RivalJpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
+    private LocalDate startDate;
+
+    @Column(nullable = false)
+    private LocalDate endDate;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RivalLinkingStatus rivalLinkingStatus;
+    private BattleStatus battleStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_first_user_id", nullable = false)
-    private UserJpaEntity firstUser;
+    @JoinColumn(name = "fk_winner_id", nullable = true)
+    private UserJpaEntity winner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_second_user_id", nullable = false)
-    private UserJpaEntity secondUser;
+    @JoinColumn(name = "fk_rival_id", nullable = false)
+    private RivalJpaEntity rival;
 }
