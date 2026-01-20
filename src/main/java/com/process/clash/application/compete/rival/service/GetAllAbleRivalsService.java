@@ -8,12 +8,14 @@ import com.process.clash.application.user.usergithub.port.out.UserGitHubReposito
 import com.process.clash.domain.rival.entity.Rival;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
