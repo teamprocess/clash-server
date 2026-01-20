@@ -6,6 +6,7 @@ import com.process.clash.application.user.user.exception.exception.conflict.Emai
 import com.process.clash.application.user.user.exception.exception.conflict.UsernameAlreadyExistException;
 import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.userpomodorosetting.entity.UserPomodoroSetting;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +74,12 @@ public class SignUpService implements SignUpUseCase {
 			);
 		}
 
-		userRepositoryPort.save(userToSave);
+		// 뽀모도로 타이머에 사용하기 위한 userId를 위해서 flush
+		userRepositoryPort.saveAndFlush(userToSave);
+
+		// 뽀모도로 타이머 세팅 추가
+		UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(userToSave.id());
+		userPomodoroSettingRepositoryPort.save(userPomodoroSetting);
 
 		// 공통 로직 (인증 코드 저장 및 메일 발송)
 		// 이 코드는 위에서 신규 가입이든 덮어쓰기든 상관없이 공통으로 실행됩니다.
