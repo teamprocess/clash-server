@@ -24,4 +24,16 @@ public record Rival(
                 secondUser2Id
         );
     }
+
+    public Rival accept() {
+
+        return new Rival(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(),
+                RivalLinkingStatus.ACCEPTED,
+                this.firstUserId,
+                this.secondUserId
+        );
+    }
 }

@@ -4,6 +4,7 @@ import com.process.clash.domain.rival.entity.Rival;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface RivalRepositoryPort {
 
@@ -13,4 +14,5 @@ public interface RivalRepositoryPort {
     int countAllByUserId(Long myId);
     List<Map<String, Object>> countAllByOpponentIdsGrouped(List<Long> opponentIds);
     List<Long> findOpponentIdByUserId(Long myId);
+    Optional<Rival> findById(Long id);
 }

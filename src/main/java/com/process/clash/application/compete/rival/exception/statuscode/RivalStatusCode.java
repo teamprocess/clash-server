@@ -11,6 +11,9 @@ public enum RivalStatusCode implements StatusCode {
 
     // 400
     TOO_MUCH_RIVALS("TOO_MUCH_RIVALS", "라이벌이 너무 많습니다.", ErrorCategory.BAD_REQUEST),
+
+    // 404
+    RIVAL_NOT_FOUND("RIVAL_NOT_FOUND", "라이벌이 존재하지 않습니다..", ErrorCategory.NOT_FOUND),
     ;
 
     private final String code;
