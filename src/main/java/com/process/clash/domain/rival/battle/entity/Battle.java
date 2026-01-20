@@ -29,4 +29,24 @@ public record Battle(
                 rivalId
         );
     }
+
+    public Battle accept() {
+
+        BattleStatus status = BattleStatus.IN_PROGRESS;
+
+        if (LocalDate.now().isAfter(this.endDate)) {
+            status = BattleStatus.DONE;
+        }
+
+        return new Battle(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.startDate,
+                this.endDate,
+                status,
+                this.winnerId,
+                this.rivalId
+        );
+    }
 }
