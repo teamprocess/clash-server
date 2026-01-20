@@ -43,4 +43,10 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
 
         return userExpHistoryJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate);
     }
+
+    @Override
+    public double findAverageExpByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        return userExpHistoryJpaRepository.findAverageExpByUserIdAndPeriod(userId, startDate, endDate);
+    }
 }
