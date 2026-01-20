@@ -3,7 +3,6 @@ package com.process.clash.adapter.web.record.dto;
 import com.process.clash.application.record.data.GetTodayRecordData;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -37,12 +36,9 @@ public class GetTodayRecordDto {
         Task task
     ) {
         public static Session from(GetTodayRecordData.Session session) {
-            Instant endedAt = java.util.Optional.ofNullable(session.endedAt())
-                .map(ldt -> ldt.atZone(ZoneOffset.UTC).toInstant())
-                .orElse(null);
             return new Session(
-                session.startedAt().atZone(ZoneOffset.UTC).toInstant(),
-                endedAt,
+                session.startedAt(),
+                session.endedAt(),
                 new Task(session.taskId(), session.taskName())
             );
         }
