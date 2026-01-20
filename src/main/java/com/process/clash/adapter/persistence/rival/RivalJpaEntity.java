@@ -14,15 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "rivals",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_rival_pair",
-                        columnNames = {"fk_my_id", "fk_opponent_id"}
-                )
-        }
-)
+@Table(name = "rivals")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

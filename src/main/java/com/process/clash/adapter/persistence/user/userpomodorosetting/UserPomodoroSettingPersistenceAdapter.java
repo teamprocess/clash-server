@@ -7,6 +7,8 @@ import com.process.clash.domain.user.userpomodorosetting.entity.UserPomodoroSett
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class UserPomodoroSettingPersistenceAdapter implements UserPomodoroSettingRepositoryPort {
@@ -22,5 +24,12 @@ public class UserPomodoroSettingPersistenceAdapter implements UserPomodoroSettin
         UserPomodoroSettingJpaEntity savedEntity = userPomodoroSettingJpaRepository
                 .save(userPomodoroSettingJpaMapper.toJpaEntity(userPomodoroSetting, userJpaEntity));
         return userPomodoroSettingJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<UserPomodoroSetting> findByUserId(Long userId) {
+
+        return userPomodoroSettingJpaRepository.findByUserId(userId)
+                .map(userPomodoroSettingJpaMapper::toDomain);
     }
 }
