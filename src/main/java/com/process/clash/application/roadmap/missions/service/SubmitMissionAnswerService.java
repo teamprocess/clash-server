@@ -49,7 +49,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
                 .orElseThrow(ChapterNotFoundException::new);
         UserSectionProgress progress = userSectionProgressRepositoryPort.findByUserIdAndSectionId(actor.id(), chapter.getSectionId())
                 .orElse(null);
-        if (progress != null) {
+        if (progress != null && progress.getCurrentChapterId() != null) {
             Chapter currentChapter = chapterRepositoryPort.findById(progress.getCurrentChapterId())
                     .orElseThrow(ChapterNotFoundException::new);
             if (currentChapter.getOrderIndex() < chapter.getOrderIndex()) {
