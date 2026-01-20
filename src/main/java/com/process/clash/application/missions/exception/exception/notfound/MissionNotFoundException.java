@@ -8,8 +8,4 @@ public class MissionNotFoundException extends NotFoundException {
     public MissionNotFoundException() {
         super(MissionStatusCode.MISSION_NOT_FOUND);
     }
-
-    public MissionNotFoundException(Long missionId) {
-        super(MissionStatusCode.MISSION_NOT_FOUND);
-    }
 }

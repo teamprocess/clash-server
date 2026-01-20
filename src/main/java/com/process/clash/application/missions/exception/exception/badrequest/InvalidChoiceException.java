@@ -8,8 +8,4 @@ public class InvalidChoiceException extends BadRequestException {
     public InvalidChoiceException() {
         super(MissionStatusCode.INVALID_CHOICE);
     }
-
-    public InvalidChoiceException(Long choiceId) {
-        super(MissionStatusCode.INVALID_CHOICE);
-    }
 }

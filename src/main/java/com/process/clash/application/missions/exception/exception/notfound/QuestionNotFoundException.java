@@ -8,8 +8,4 @@ public class QuestionNotFoundException extends NotFoundException {
     public QuestionNotFoundException() {
         super(MissionStatusCode.QUESTION_NOT_FOUND);
     }
-
-    public QuestionNotFoundException(Long questionId) {
-        super(MissionStatusCode.QUESTION_NOT_FOUND);
-    }
 }
