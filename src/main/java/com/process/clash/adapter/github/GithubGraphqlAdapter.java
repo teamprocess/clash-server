@@ -62,15 +62,25 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         Map<LocalDate, CommitStats> commitStats = fetchCommitStats(target, rangeStart, rangeEndInclusive, statsByDate.keySet());
         mergeCommitStats(statsByDate, commitStats);
 
+        Map<LocalDate, Integer> prCounts = fetchSearchCountsByDate(
+                target,
+                "is:pr",
+                rangeStart,
+                rangeEndInclusive,
+                statsByDate.keySet()
+        );
+        Map<LocalDate, Integer> issueCounts = fetchSearchCountsByDate(
+                target,
+                "is:issue",
+                rangeStart,
+                rangeEndInclusive,
+                statsByDate.keySet()
+        );
+
         for (LocalDate studyDate : studyDates) {
-            Instant startUtc = studyDateCalculator.rangeStartUtc(studyDate);
-            Instant endUtcExclusive = studyDateCalculator.rangeEndExclusiveUtc(studyDate);
-            Instant endUtcInclusive = endUtcExclusive.minusMillis(1);
-            int prCount = fetchSearchCount(target, "is:pr", startUtc, endUtcInclusive);
-            int issueCount = fetchSearchCount(target, "is:issue", startUtc, endUtcInclusive);
             MutableStats mutable = statsByDate.get(studyDate);
-            mutable.prCount = prCount;
-            mutable.issueCount = issueCount;
+            mutable.prCount = prCounts.getOrDefault(studyDate, 0);
+            mutable.issueCount = issueCounts.getOrDefault(studyDate, 0);
         }
 
         Instant syncedAt = clock.instant();
@@ -111,6 +121,82 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         Map<String, Object> variables = Map.of("query", queryValue);
         JsonNode data = executeQuery(target, "search-issue-count", variables);
         return data.path("search").path("issueCount").asInt(0);
+    }
+
+    private Map<LocalDate, Integer> fetchSearchCountsByDate(
+            GithubSyncTarget target,
+            String typeQualifier,
+            Instant rangeStart,
+            Instant rangeEndInclusive,
+            Set<LocalDate> studyDates
+    ) {
+        Map<LocalDate, Integer> counts = new HashMap<>();
+        String queryValue = String.format(Locale.ROOT,
+                "%s author:%s created:%s..%s",
+                typeQualifier,
+                target.githubLogin(),
+                INSTANT_FORMATTER.format(rangeStart),
+                INSTANT_FORMATTER.format(rangeEndInclusive)
+        );
+
+        String cursor = null;
+        boolean hasNext = true;
+        boolean firstPage = true;
+
+        while (hasNext) {
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("query", queryValue);
+            variables.put("first", PAGE_SIZE);
+            variables.put("after", cursor);
+
+            JsonNode data = executeQuery(target, "search-issue-nodes", variables);
+            JsonNode search = data.path("search");
+
+            if (firstPage) {
+                firstPage = false;
+                int totalCount = search.path("issueCount").asInt(0);
+                if (totalCount > 1000) {
+                    return fetchSearchCountsByDateFallback(target, typeQualifier, studyDates);
+                }
+            }
+
+            JsonNode nodes = search.path("nodes");
+            if (nodes.isArray()) {
+                for (JsonNode node : nodes) {
+                    String createdAtRaw = node.path("createdAt").asText(null);
+                    if (createdAtRaw == null) {
+                        continue;
+                    }
+                    LocalDate studyDate = studyDateCalculator.toStudyDate(Instant.parse(createdAtRaw));
+                    if (!studyDates.contains(studyDate)) {
+                        continue;
+                    }
+                    counts.merge(studyDate, 1, Integer::sum);
+                }
+            }
+
+            JsonNode pageInfo = search.path("pageInfo");
+            hasNext = pageInfo.path("hasNextPage").asBoolean(false);
+            cursor = pageInfo.path("endCursor").asText(null);
+        }
+
+        return counts;
+    }
+
+    private Map<LocalDate, Integer> fetchSearchCountsByDateFallback(
+            GithubSyncTarget target,
+            String typeQualifier,
+            Set<LocalDate> studyDates
+    ) {
+        Map<LocalDate, Integer> counts = new HashMap<>();
+        for (LocalDate studyDate : studyDates) {
+            Instant startUtc = studyDateCalculator.rangeStartUtc(studyDate);
+            Instant endUtcExclusive = studyDateCalculator.rangeEndExclusiveUtc(studyDate);
+            Instant endUtcInclusive = endUtcExclusive.minusMillis(1);
+            int count = fetchSearchCount(target, typeQualifier, startUtc, endUtcInclusive);
+            counts.put(studyDate, count);
+        }
+        return counts;
     }
 
     private Map<LocalDate, Integer> fetchReviewCounts(GithubSyncTarget target, Instant rangeStart, Instant rangeEndInclusive) {
