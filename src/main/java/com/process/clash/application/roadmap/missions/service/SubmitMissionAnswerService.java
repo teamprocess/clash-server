@@ -59,15 +59,18 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
                 .orElse(null);
 
         // 사용자 미션 히스토리 조회 또는 생성
-        UserMissionHistory history = userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), command.missionId())
-                .orElseGet(() -> {
-                    UserMissionHistory newHistory = UserMissionHistory.create(
-                            actor.id(),
-                            command.missionId(),
-                            Optional.ofNullable(mission.getQuestions()).map(List::size).orElse(0)
-                    );
-                    return newHistory;
-                });
+        Optional<UserMissionHistory> historyOpt = userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), command.missionId());
+        UserMissionHistory history;
+        if (historyOpt.isPresent()) {
+            history = historyOpt.get();
+        } else {
+            history = UserMissionHistory.create(
+                    actor.id(),
+                    command.missionId(),
+                    Optional.ofNullable(mission.getQuestions()).map(List::size).orElse(0)
+            );
+            userMissionHistoryRepositoryPort.save(history);
+        }
 
         // 정답이면 correctCount 증가
         if (isCorrect) {
