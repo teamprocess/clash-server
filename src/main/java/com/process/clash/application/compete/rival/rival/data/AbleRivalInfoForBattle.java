@@ -1,9 +1,8 @@
 package com.process.clash.application.compete.rival.rival.data;
 
-public record AbleRivalInfo(
+public record AbleRivalInfoForBattle(
         Long userId,
         String userName,
-        String gitHubId,
         String profileImage
 ) {
 }

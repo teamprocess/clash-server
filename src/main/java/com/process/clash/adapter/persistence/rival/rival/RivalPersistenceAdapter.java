@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.rival.rival;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import lombok.RequiredArgsConstructor;
@@ -98,5 +99,11 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     public Long findOpponentIdByIdAndUserId(Long id, Long userId) {
 
         return rivalJpaRepository.findOpponentIdByIdAndUserId(id, userId);
+    }
+
+    @Override
+    public List<AbleRivalInfoForBattle> findAbleToBattleRivals(Long userId) {
+
+        return rivalJpaRepository.findAbleToBattleRivals(userId);
     }
 }

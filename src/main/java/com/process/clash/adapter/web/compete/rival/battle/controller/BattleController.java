@@ -2,13 +2,16 @@ package com.process.clash.adapter.web.compete.rival.battle.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.compete.rival.battle.dto.ApplyBattleDto;
+import com.process.clash.adapter.web.compete.rival.battle.dto.FindAbleRivalsDto;
 import com.process.clash.adapter.web.compete.rival.battle.dto.ModifyBattleDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.battle.data.ApplyBattleData;
+import com.process.clash.application.compete.rival.battle.data.FindAbleRivalsData;
 import com.process.clash.application.compete.rival.battle.data.ModifyBattleData;
 import com.process.clash.application.compete.rival.battle.port.in.AcceptBattleUseCase;
 import com.process.clash.application.compete.rival.battle.port.in.ApplyBattleUseCase;
+import com.process.clash.application.compete.rival.battle.port.in.FindAbleRivalsUseCase;
 import com.process.clash.application.compete.rival.battle.port.in.RejectBattleUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ public class BattleController {
     private final ApplyBattleUseCase applyBattleUseCase;
     private final AcceptBattleUseCase acceptBattleUseCase;
     private final RejectBattleUseCase rejectBattleUseCase;
+    private final FindAbleRivalsUseCase findAbleRivalsUseCase;
 
     // 라이벌과의 경쟁 - 배틀 신청
     @PostMapping("/apply")
@@ -36,7 +40,7 @@ public class BattleController {
     }
 
     // 라이벌과의 경쟁 - 배틀 승인
-    @PostMapping("/apply")
+    @PostMapping("/accept")
     public ApiResponse<Void> acceptBattle(
             @AuthenticatedActor Actor actor,
             @Valid @RequestBody ModifyBattleDto.Request request
@@ -57,5 +61,16 @@ public class BattleController {
         ModifyBattleData.Command command = request.toCommand(actor);
         rejectBattleUseCase.execute(command);
         return ApiResponse.success("라이벌과의 배틀 신청을 성공적으로 거절하였습니다.");
+    }
+
+    // 라이벌과의 경쟁 - 라이벌 조회
+    @GetMapping("/rivals")
+    public ApiResponse<FindAbleRivalsDto.Response> findAbleRivals(
+            @AuthenticatedActor Actor actor
+    ) {
+        FindAbleRivalsData.Command command = FindAbleRivalsData.Command.from(actor);
+        FindAbleRivalsData.Result result = findAbleRivalsUseCase.execute(command);
+        FindAbleRivalsDto.Response response = FindAbleRivalsDto.Response.from(result);
+        return ApiResponse.success(response, "배틀을 신청할 라이벌 목록을 성공적으로 반환하였습니다.");
     }
 }

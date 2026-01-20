@@ -1,10 +1,11 @@
-package com.process.clash.application.compete.rival.rival.data;
+package com.process.clash.application.compete.rival.battle.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle;
 
 import java.util.List;
 
-public class GetAllAbleRivalsData {
+public class FindAbleRivalsData {
 
     public record Command(
             Actor actor
@@ -19,12 +20,13 @@ public class GetAllAbleRivalsData {
     }
 
     public record Result(
-            List<AbleRivalInfoForRival> users
+            List<AbleRivalInfoForBattle> rivals
     ) {
 
-        public static Result from(List<AbleRivalInfoForRival> ableRivalInfoForRivals) {
+        public static Result from(List<AbleRivalInfoForBattle> rivals) {
+
             return new Result(
-                    ableRivalInfoForRivals
+                    rivals
             );
         }
     }

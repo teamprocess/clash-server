@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.user.usergithub;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
-import com.process.clash.application.compete.rival.rival.data.AbleRivalInfo;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import com.process.clash.application.user.usergithub.port.out.UserGitHubRepositoryPort;
 import com.process.clash.domain.user.usergithub.entity.UserGitHub;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ public class UserGitHubPersistenceAdapter implements UserGitHubRepositoryPort {
     }
 
     @Override
-    public List<AbleRivalInfo> findAbleRivalsWithUserInfo(List<Long> ids) {
+    public List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(List<Long> ids) {
 
         return userGitHubJpaRepository.findAbleRivalsWithUserInfo(ids);
     }
 
     @Override
-    public List<AbleRivalInfo> findAbleRivalsWithUserInfoByKeyword(List<Long> ids, String keyword) {
+    public List<AbleRivalInfoForRival> findAbleRivalsWithUserInfoByKeyword(List<Long> ids, String keyword) {
 
         return userGitHubJpaRepository.findAbleRivalsWithUserInfoByKeyword(ids, keyword);
     }
