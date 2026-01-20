@@ -1,6 +1,5 @@
 package com.process.clash.domain.rival.entity;
 
-import com.process.clash.domain.rival.enums.RivalCurrentStatus;
 import com.process.clash.domain.rival.enums.RivalLinkingStatus;
 
 import java.time.LocalDateTime;
@@ -11,7 +10,7 @@ public record Rival(
         LocalDateTime updatedAt,
         RivalLinkingStatus rivalLinkingStatus,
         Long firstUserId,
-        Long secondUser2Id
+        Long secondUserId
 ) {
 
     public static Rival createDefault(Long firstUserId, Long secondUser2Id) {

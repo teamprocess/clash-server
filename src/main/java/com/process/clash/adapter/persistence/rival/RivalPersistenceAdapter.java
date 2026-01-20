@@ -26,7 +26,7 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     public Rival save(Rival rival) {
 
         UserJpaEntity firstUser = userJpaRepository.getReferenceById(rival.firstUserId());
-        UserJpaEntity secondUser = userJpaRepository.getReferenceById(rival.secondUser2Id());
+        UserJpaEntity secondUser = userJpaRepository.getReferenceById(rival.secondUserId());
         RivalJpaEntity savedEntity = rivalJpaRepository.save(rivalJpaMapper.toJpaEntity(rival, firstUser, secondUser));
         return rivalJpaMapper.toDomain(savedEntity);
     }
@@ -34,7 +34,7 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     @Override
     public void saveAll(List<Rival> rivals) {
         Set<Long> allUserIds = rivals.stream()
-                .flatMap(rival -> Stream.of(rival.firstUserId(), rival.secondUser2Id()))
+                .flatMap(rival -> Stream.of(rival.firstUserId(), rival.secondUserId()))
                 .collect(Collectors.toSet());
 
         Map<Long, UserJpaEntity> userMap = userJpaRepository.findAllById(allUserIds)
@@ -44,7 +44,7 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
         List<RivalJpaEntity> entities = rivals.stream()
                 .map(rival -> {
                     UserJpaEntity my = userMap.get(rival.firstUserId());
-                    UserJpaEntity opponent = userMap.get(rival.secondUser2Id());
+                    UserJpaEntity opponent = userMap.get(rival.secondUserId());
                     return rivalJpaMapper.toJpaEntity(rival, my, opponent);
                 })
                 .toList();

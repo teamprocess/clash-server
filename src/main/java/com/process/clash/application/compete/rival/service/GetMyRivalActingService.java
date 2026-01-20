@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +41,17 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         LocalDateTime startOfDay = today.atTime(DAY_START_HOUR, 0);
         LocalDateTime endOfDay = today.plusDays(1).atTime(DAY_START_HOUR, 0);
 
-        List<Long> opponentIds = rivals.stream()
-                .map(Rival::opponentId)
-                .toList();
+        List<Long> opponentIds = Stream.concat(
+                rivals.stream()
+                        .map(rival -> {
+                            if (rival.firstUserId().equals(command.actor().id())) {
+                                return rival.secondUserId();
+                            }
+                            return rival.firstUserId();
+                        }),
+                Stream.of(command.actor().id())
+        ).distinct().toList();
+
 
         Map<Long, User> opponentMap = userRepositoryPort.findAllByIds(opponentIds)
                 .stream()
@@ -51,23 +60,34 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         Map<Long, Long> studyTimeMap = studySessionRepositoryPort
                 .getTotalStudyTimeInSecondsByUserIds(opponentIds, startOfDay, endOfDay);
 
+        Long myId = command.actor().id();
+
         List<GetMyRivalActingData.MyRival> myRivals = rivals.stream()
                 .map(rival -> {
-                    User opponent = opponentMap.get(rival.opponentId());
+
+                    Long opponentId;
+                    if (rival.firstUserId().equals(myId)) {
+                        opponentId = rival.secondUserId();
+                    } else {
+                        opponentId = rival.firstUserId();
+                    }
+
+                    User opponent = opponentMap.get(opponentId);
                     if (opponent == null) {
                         throw new UserNotFoundException();
                     }
 
-                    Long activeTime = studyTimeMap.getOrDefault(rival.opponentId(), 0L);
+                    Long activeTime = studyTimeMap.getOrDefault(opponentId, 0L);
 
                     return GetMyRivalActingData.MyRival.from(
                             opponent,
                             activeTime,
-                            "Intellij IDEA", //TODO: 더미 수정 필요
-                            RivalCurrentStatus.ONLINE //TODO: 더미 수정 필요
+                            "Intellij IDEA",      // TODO: 더미 수정 필요
+                            RivalCurrentStatus.ONLINE // TODO: 더미 수정 필요
                     );
                 })
                 .toList();
+
 
         return GetMyRivalActingData.Result.from(myRivals);
     }
