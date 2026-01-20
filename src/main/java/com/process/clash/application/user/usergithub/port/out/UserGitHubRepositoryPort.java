@@ -1,6 +1,6 @@
 package com.process.clash.application.user.usergithub.port.out;
 
-import com.process.clash.application.compete.rival.data.AbleRivalInfo;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfo;
 import com.process.clash.domain.user.usergithub.entity.UserGitHub;
 
 import java.util.List;
