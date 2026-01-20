@@ -15,6 +15,7 @@ import com.process.clash.application.record.port.in.CreateTaskUseCase;
 import com.process.clash.application.record.port.in.DeleteTaskUseCase;
 import com.process.clash.application.record.port.in.GetAllTasksUseCase;
 import com.process.clash.application.record.port.in.UpdateTaskUseCase;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +53,7 @@ public class TaskController implements TaskControllerDocument {
     @PostMapping
     public ApiResponse<Void> createTask(
         @AuthenticatedActor Actor actor,
-        @RequestBody CreateTaskDto.Request request
+        @Valid @RequestBody CreateTaskDto.Request request
     ) {
         CreateTaskData.Command command = new CreateTaskData.Command(
             actor,
@@ -68,7 +69,7 @@ public class TaskController implements TaskControllerDocument {
     public ApiResponse<UpdateTaskDto.Response> updateTask(
         @AuthenticatedActor Actor actor,
         @PathVariable Long taskId,
-        @RequestBody UpdateTaskDto.Request request
+        @Valid @RequestBody UpdateTaskDto.Request request
     ) {
         UpdateTaskData.Command command = new UpdateTaskData.Command(
             actor,
