@@ -27,7 +27,7 @@ public class GetMissionResultService implements GetMissionResultUseCase {
         Long missionId = command.missionId();
 
         // 미션 조회
-        Mission mission = missionRepositoryPort.findByIdWithQuestionsAndChoices(missionId)
+        Mission mission = missionRepositoryPort.findByIdWithQuestions(missionId)
                 .orElseThrow(MissionNotFoundException::new);
 
         // 사용자 미션 히스토리 조회

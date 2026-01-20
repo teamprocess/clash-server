@@ -15,5 +15,5 @@ public interface MissionJpaRepository extends JpaRepository<MissionJpaEntity, Lo
 	@Query("SELECT m FROM MissionJpaEntity m " +
 		   "LEFT JOIN FETCH m.questions q " +
 		   "WHERE m.id = :id")
-	Optional<MissionJpaEntity> findByIdWithQuestionsAndChoices(@Param("id") Long id);
+	Optional<MissionJpaEntity> findByIdWithQuestions(@Param("id") Long id);
 }

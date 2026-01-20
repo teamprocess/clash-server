@@ -39,7 +39,7 @@ public class MissionPersistenceAdapter implements MissionRepositoryPort {
     }
 
     @Override
-    public Optional<Mission> findByIdWithQuestionsAndChoices(Long id) {
-        return missionJpaRepository.findByIdWithQuestionsAndChoices(id).map(missionJpaMapper::toDomain);
+    public Optional<Mission> findByIdWithQuestions(Long id) {
+        return missionJpaRepository.findByIdWithQuestions(id).map(missionJpaMapper::toDomain);
     }
 }

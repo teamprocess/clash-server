@@ -31,7 +31,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
     public SubmitMissionAnswerData.Result execute(SubmitMissionAnswerData.Command command) {
         Actor actor = command.actor();
         // 미션 조회 (N+1 방지: questions와 choices 함께 fetch)
-        Mission mission = missionRepositoryPort.findByIdWithQuestionsAndChoices(command.missionId())
+        Mission mission = missionRepositoryPort.findByIdWithQuestions(command.missionId())
                 .orElseThrow(MissionNotFoundException::new);
 
         // 질문 조회
