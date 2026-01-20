@@ -1,7 +1,7 @@
 package com.process.clash.application.user.user.service;
 
-import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
+import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeExpiredOrWrongEmailException;
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeMismatchException;
 import com.process.clash.application.user.user.exception.exception.conflict.EmailAlreadyExistException;

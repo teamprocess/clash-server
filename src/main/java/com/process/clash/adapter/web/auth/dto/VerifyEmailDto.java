@@ -13,7 +13,7 @@ public class VerifyEmailDto {
             String code
     ) {
         public VerifyEmailData.Command toCommand(String token) {
-            return new VerifyEmailData.Command(this.code, token);
+            return new VerifyEmailData.Command(token, this.code);
         }
     }
 }
