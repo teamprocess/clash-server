@@ -7,16 +7,22 @@ import org.springframework.stereotype.Service;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
+import com.process.clash.application.roadmap.missions.exception.exception.badrequest.ChapterLockedException;
 import com.process.clash.application.roadmap.missions.exception.exception.badrequest.InvalidChoiceException;
+import com.process.clash.application.roadmap.missions.exception.exception.notfound.ChapterNotFoundException;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.MissionNotFoundException;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.QuestionNotFoundException;
 import com.process.clash.application.roadmap.missions.port.in.SubmitMissionAnswerUseCase;
+import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
 import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
-import com.process.clash.domain.roadmap.entity.UserMissionHistory;
+import com.process.clash.application.roadmap.port.out.UserSectionProgressRepositoryPort;
+import com.process.clash.domain.roadmap.entity.Chapter;
 import com.process.clash.domain.roadmap.entity.Choice;
 import com.process.clash.domain.roadmap.entity.Mission;
 import com.process.clash.domain.roadmap.entity.MissionQuestion;
+import com.process.clash.domain.roadmap.entity.UserMissionHistory;
+import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +32,8 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
 
     private final MissionRepositoryPort missionRepositoryPort;
     private final UserMissionHistoryRepositoryPort userMissionHistoryRepositoryPort;
+    private final ChapterRepositoryPort chapterRepositoryPort;
+    private final UserSectionProgressRepositoryPort userSectionProgressRepositoryPort;
 
     @Override
     public SubmitMissionAnswerData.Result execute(SubmitMissionAnswerData.Command command) {
@@ -33,6 +41,21 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 미션 조회 (N+1 방지: questions와 choices 함께 fetch)
         Mission mission = missionRepositoryPort.findByIdWithQuestions(command.missionId())
                 .orElseThrow(MissionNotFoundException::new);
+
+        // 챕터 접근 권한 확인
+        Chapter chapter = chapterRepositoryPort.findById(mission.getChapterId())
+                .orElseThrow(ChapterNotFoundException::new);
+        UserSectionProgress progress = userSectionProgressRepositoryPort.findByUserIdAndSectionId(actor.id(), chapter.getSectionId())
+                .orElse(null);
+        if (progress != null) {
+            Chapter currentChapter = chapterRepositoryPort.findById(progress.getCurrentChapterId())
+                    .orElseThrow(ChapterNotFoundException::new);
+            if (currentChapter.getOrderIndex() < chapter.getOrderIndex()) {
+                throw new ChapterLockedException();
+            }
+        } else {
+            throw new ChapterLockedException();
+        }
 
         // 질문 조회
         MissionQuestion question = Optional.ofNullable(mission.getQuestions())
