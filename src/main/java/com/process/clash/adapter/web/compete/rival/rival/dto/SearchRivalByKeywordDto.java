@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.compete.rival.rival.dto;
 
-import com.process.clash.application.compete.rival.rival.data.AbleRivalInfo;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import com.process.clash.application.compete.rival.rival.data.SearchRivalByKeywordData;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public class SearchRivalByKeywordDto {
     @Schema(name = "SearchRivalByKeywordDtoResponse")
 
     public record Response(
-            List<AbleRivalInfo> users
+            List<AbleRivalInfoForRival> users
     ) {
 
         public static Response from(SearchRivalByKeywordData.Result result) {

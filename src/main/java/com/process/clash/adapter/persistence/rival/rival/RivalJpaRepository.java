@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.rival.rival;
 
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -92,4 +94,44 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
             @Param("id") Long id,
             @Param("userId") Long userId
     );
+
+    @Query("""
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle(
+            case 
+                when r.firstUser.id = :userId then r.secondUser.id
+                else r.firstUser.id
+            end,
+            case 
+                when r.firstUser.id = :userId then r.secondUser.name
+                else r.firstUser.name
+            end,
+            case 
+                when r.firstUser.id = :userId then r.secondUser.profileImage
+                else r.firstUser.profileImage
+            end
+        )
+        from RivalJpaEntity r
+        where :userId in (r.firstUser.id, r.secondUser.id)
+          and not exists (
+              select 1
+              from BattleJpaEntity b
+              where b.battleStatus in (
+                  com.process.clash.domain.rival.battle.enums.BattleStatus.IN_PROGRESS,
+                  com.process.clash.domain.rival.battle.enums.BattleStatus.PENDING
+              )
+              and (
+                  (r.firstUser.id = :userId and (
+                        b.rival.firstUser.id = r.secondUser.id
+                     or b.rival.secondUser.id = r.secondUser.id
+                  ))
+                  or
+                  (r.secondUser.id = :userId and (
+                        b.rival.firstUser.id = r.firstUser.id
+                     or b.rival.secondUser.id = r.firstUser.id
+                  ))
+              )
+          )
+    """)
+    List<AbleRivalInfoForBattle> findAbleToBattleRivals(@Param("userId") Long userId);
+
 }
