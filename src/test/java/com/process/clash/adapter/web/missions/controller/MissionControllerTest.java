@@ -1,7 +1,8 @@
 package com.process.clash.adapter.web.missions.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
+import com.process.clash.adapter.web.roadmap.missions.controller.MissionController;
+import com.process.clash.adapter.web.roadmap.missions.dto.MissionSubmitDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;

@@ -69,7 +69,6 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
                     command.missionId(),
                     Optional.ofNullable(mission.getQuestions()).map(List::size).orElse(0)
             );
-            userMissionHistoryRepositoryPort.save(history);
         }
 
         // 정답이면 correctCount 증가

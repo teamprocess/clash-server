@@ -1,8 +1,8 @@
-package com.process.clash.adapter.web.missions.docs.controller;
+package com.process.clash.adapter.web.roadmap.missions.docs.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.missions.dto.MissionResultDto;
-import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
+import com.process.clash.adapter.web.roadmap.missions.dto.MissionResultDto;
+import com.process.clash.adapter.web.roadmap.missions.dto.MissionSubmitDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

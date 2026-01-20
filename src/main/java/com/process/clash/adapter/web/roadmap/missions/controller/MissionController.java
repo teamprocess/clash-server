@@ -1,9 +1,9 @@
-package com.process.clash.adapter.web.missions.controller;
+package com.process.clash.adapter.web.roadmap.missions.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
-import com.process.clash.adapter.web.missions.docs.controller.MissionControllerDocument;
-import com.process.clash.adapter.web.missions.dto.MissionResultDto;
-import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
+import com.process.clash.adapter.web.roadmap.missions.docs.controller.MissionControllerDocument;
+import com.process.clash.adapter.web.roadmap.missions.dto.MissionResultDto;
+import com.process.clash.adapter.web.roadmap.missions.dto.MissionSubmitDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.missions.data.GetMissionResultData;

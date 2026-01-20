@@ -1,4 +1,4 @@
-package com.process.clash.adapter.web.missions.dto;
+package com.process.clash.adapter.web.roadmap.missions.dto;
 
 import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
 
