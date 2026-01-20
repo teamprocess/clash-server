@@ -34,7 +34,7 @@ public class GetMyRivalActingDto {
             String name,
             String username,
             String profileImage,
-            String activeTime,
+            Long activeTime,
             String usingApp,
             RivalCurrentStatus status
     ) {}

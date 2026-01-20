@@ -10,7 +10,10 @@ import com.process.clash.domain.record.model.entity.StudySession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +37,7 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
         }
 
         StudySessionJpaEntity existing = studySessionJpaRepository.findById(studySession.id())
-            .orElseThrow(StudySessionNotFound::new);
+                .orElseThrow(StudySessionNotFound::new);
         existing.changeEndedAt(studySession.endedAt());
         studySessionJpaRepository.save(existing);
     }
@@ -47,8 +50,8 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     @Override
     public List<StudySession> findAllByUserId(Long userId) {
         return studySessionJpaRepository.findAllByUserId(userId).stream()
-            .map(studySessionJpaMapper::toDomain)
-            .toList();
+                .map(studySessionJpaMapper::toDomain)
+                .toList();
     }
 
     @Override
@@ -59,7 +62,7 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     @Override
     public Optional<StudySession> findActiveSessionByUserId(Long userId) {
         return studySessionJpaRepository.findByUserIdAndEndedAtIsNull(userId)
-            .map(studySessionJpaMapper::toDomain);
+                .map(studySessionJpaMapper::toDomain);
     }
 
     @Override
@@ -70,5 +73,24 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     @Override
     public Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
         return studySessionJpaRepository.getTotalStudyTimeInSeconds(userId, startOfDay, endOfDay);
+    }
+
+    @Override
+    public Map<Long, Long> getTotalStudyTimeInSecondsByUserIds(
+            List<Long> userIds,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    ) {
+        if (userIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return studySessionJpaRepository
+                .getTotalStudyTimeInSecondsByUserIds(userIds, startTime, endTime)
+                .stream()
+                .collect(Collectors.toMap(
+                        StudySessionJpaRepository.UserStudyTimeProjection::getUserId,
+                        StudySessionJpaRepository.UserStudyTimeProjection::getTotalSeconds
+                ));
     }
 }

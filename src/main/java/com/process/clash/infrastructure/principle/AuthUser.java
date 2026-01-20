@@ -41,4 +41,3 @@ public record AuthUser(
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return this.userStatus.equals(UserStatus.ACTIVE); }
 }
-

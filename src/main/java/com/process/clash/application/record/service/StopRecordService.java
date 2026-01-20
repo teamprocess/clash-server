@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.StopRecordData;
+import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
 import com.process.clash.application.record.port.in.StopRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;

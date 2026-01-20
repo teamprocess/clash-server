@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.StartRecordData;
+import com.process.clash.application.record.data.StartRecordData;
 import com.process.clash.application.record.exception.exception.conflict.StudySessionAlreadyStartedException;
 import com.process.clash.application.record.exception.exception.notfound.TaskNotFoundException;
 import com.process.clash.application.record.policy.TaskPolicy;

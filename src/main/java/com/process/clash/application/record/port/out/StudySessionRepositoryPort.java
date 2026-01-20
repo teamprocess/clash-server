@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface StudySessionRepositoryPort {
@@ -16,4 +17,5 @@ public interface StudySessionRepositoryPort {
     Optional<StudySession> findActiveSessionByUserId(Long userId);
     List<StudySession> findAllByUserIdAndStartedAtAfter(Long userId, LocalDate startedAt);
     Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    Map<Long, Long> getTotalStudyTimeInSecondsByUserIds(List<Long> userIds, LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -1,6 +1,6 @@
 package com.process.clash.application.record.port.in;
 
-import com.process.clash.application.record.dto.StartRecordData;
+import com.process.clash.application.record.data.StartRecordData;
 
 public interface StartRecordUseCase {
 

@@ -5,6 +5,7 @@ import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,6 +20,12 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
         UserJpaEntity userJpaEntity = userJpaMapper.toJpaEntity(user);
         UserJpaEntity savedEntity = userJpaRepository.save(userJpaEntity);
         return userJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public void saveAndFlush(User user) {
+
+        userJpaRepository.saveAndFlush(userJpaMapper.toJpaEntity(user));
     }
 
     @Override
@@ -44,5 +51,21 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     @Override
     public Optional<User> findByEmail(String email) {
         return userJpaRepository.findByEmail(email).map(userJpaMapper::toDomain);
+    }
+
+    @Override
+    public void flush() {
+
+        userJpaRepository.flush();
+    }
+
+    @Override
+    public List<User> findAllByIds(List<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+
+        return userJpaRepository.findAllById(ids).stream()
+                .map(userJpaMapper::toDomain).toList();
     }
 }
