@@ -43,37 +43,40 @@ public class GetSectionDetailsDto {
     public record ChapterVo(
             Long id,
             String title,
+            Integer orderIndex,
             Integer completedMissions,
             Integer totalMissions
     ) {
         public static ChapterVo from(GetSectionDetailsData.Result.ChapterVo vo) {
-            return new ChapterVo(vo.id(), vo.title(), vo.completedMissions(), vo.totalMissions());
+            return new ChapterVo(vo.id(), vo.title(), vo.orderIndex(), vo.completedMissions(), vo.totalMissions());
         }
     }
 
     public record MissionVo(
             Long id,
             String title,
+            Integer orderIndex,
             List<QuestionVo> questions
     ) {
         public static MissionVo from(GetSectionDetailsData.Result.MissionVo vo) {
             List<QuestionVo> questions = vo.questions().stream()
                     .map(QuestionVo::from)
                     .toList();
-            return new MissionVo(vo.id(), vo.title(), questions);
+            return new MissionVo(vo.id(), vo.title(), vo.orderIndex(), questions);
         }
     }
 
     public record QuestionVo(
             Long id,
             String title,
+            Integer orderIndex,
             List<ChoiceVo> choices
     ) {
         public static QuestionVo from(GetSectionDetailsData.Result.QuestionVo vo) {
             List<ChoiceVo> choices = vo.choices().stream()
                     .map(ChoiceVo::from)
                     .toList();
-            return new QuestionVo(vo.id(), vo.title(), choices);
+            return new QuestionVo(vo.id(), vo.title(), vo.orderIndex(), choices);
         }
     }
 

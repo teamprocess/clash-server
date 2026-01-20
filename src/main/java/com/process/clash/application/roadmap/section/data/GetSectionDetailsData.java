@@ -50,6 +50,7 @@ public class GetSectionDetailsData {
         public record ChapterVo(
                 Long id,
                 String title,
+                Integer orderIndex,
                 Integer completedMissions,
                 Integer totalMissions
         ) {
@@ -57,6 +58,7 @@ public class GetSectionDetailsData {
                 return new ChapterVo(
                         chapter.getId(),
                         chapter.getTitle(),
+                        chapter.getOrderIndex(),
                         completedMissions,
                         totalMissions
                 );
@@ -66,6 +68,7 @@ public class GetSectionDetailsData {
         public record MissionVo(
                 Long id,
                 String title,
+                Integer orderIndex,
                 List<QuestionVo> questions
         ) {
             public static MissionVo from(Mission mission) {
@@ -78,6 +81,7 @@ public class GetSectionDetailsData {
                 return new MissionVo(
                         mission.getId(),
                         mission.getTitle(),
+                        mission.getOrderIndex(),
                         questionVos
                 );
             }
@@ -86,6 +90,7 @@ public class GetSectionDetailsData {
         public record QuestionVo(
                 Long id,
                 String title,
+                Integer orderIndex,
                 List<ChoiceVo> choices
         ) {
             public static QuestionVo from(MissionQuestion question) {
@@ -98,6 +103,7 @@ public class GetSectionDetailsData {
                 return new QuestionVo(
                         question.getId(),
                         question.getContent(),
+                        question.getOrderIndex(),
                         choiceVos
                 );
             }
