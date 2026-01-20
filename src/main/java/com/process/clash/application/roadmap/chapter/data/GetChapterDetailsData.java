@@ -13,9 +13,14 @@ public class GetChapterDetailsData {
             Long chapterId,
             String title,
             String description,
+            Long currentMissionId,
+            Long currentQuestionId,
+            Integer currentQuestionIndex,
+            Integer currentQuestionNumber,
+            Integer totalQuestions,
             List<MissionVo> missions
     ) {
-        public static Result from(Chapter chapter) {
+        public static Result from(Chapter chapter, Long currentMissionId, Long currentQuestionId, Integer currentQuestionIndex, Integer currentQuestionNumber, Integer totalQuestions) {
             List<MissionVo> missionVos = chapter.getMissions() != null
                     ? chapter.getMissions().stream()
                             .map(MissionVo::from)
@@ -26,6 +31,11 @@ public class GetChapterDetailsData {
                     chapter.getId(),
                     chapter.getTitle(),
                     chapter.getDescription(),
+                    currentMissionId,
+                    currentQuestionId,
+                    currentQuestionIndex,
+                    currentQuestionNumber,
+                    totalQuestions,
                     missionVos
             );
         }

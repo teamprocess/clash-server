@@ -60,6 +60,10 @@ public class GetSectionsService implements GetSectionsUseCase {
                 })
                 .toList();
 
-        return new GetSectionsData.Result(sectionVos, categories);
+        // 완료된 섹션 수 계산
+        Integer completedSections = (int) sectionVos.stream().filter(GetSectionsData.Result.SectionVo::completed).count();
+        Integer totalSections = sections.size();
+
+        return new GetSectionsData.Result(sectionVos, categories, completedSections, totalSections);
     }
 }

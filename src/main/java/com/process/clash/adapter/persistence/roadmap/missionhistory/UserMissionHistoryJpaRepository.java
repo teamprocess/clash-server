@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface UserMissionHistoryJpaRepository extends JpaRepository<UserMissionHistoryJpaEntity, Long> {
 	List<UserMissionHistoryJpaEntity> findAllByUserId(Long userId);
 	Optional<UserMissionHistoryJpaEntity> findByUserIdAndMissionId(Long userId, Long missionId);
+	List<UserMissionHistoryJpaEntity> findAllByUserIdAndMissionIdIn(Long userId, List<Long> missionIds);
 }

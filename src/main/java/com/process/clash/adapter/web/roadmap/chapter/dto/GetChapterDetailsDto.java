@@ -13,6 +13,11 @@ public class GetChapterDetailsDto {
             Long chapterId,
             String title,
             String description,
+            Long currentMissionId,
+            Long currentQuestionId,
+            Integer currentQuestionIndex,
+            Integer currentQuestionNumber,
+            Integer totalQuestions,
             List<MissionVo> missions
     ) {
         public static Response from(GetChapterDetailsData.Result result) {
@@ -23,6 +28,11 @@ public class GetChapterDetailsDto {
                     result.chapterId(),
                     result.title(),
                     result.description(),
+                    result.currentMissionId(),
+                    result.currentQuestionId(),
+                    result.currentQuestionIndex(),
+                    result.currentQuestionNumber(),
+                    result.totalQuestions(),
                     missions
             );
         }
