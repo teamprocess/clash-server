@@ -28,6 +28,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
 
+	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L; // 인증 코드 만료: 5분
+
 	private static final Map<String, String> REDIRECT_MAP = Map.of(
 			"signin", "/api/auth/sign-in",
 			"signup", "/api/auth/sign-up",
@@ -48,7 +50,7 @@ public class AuthController {
 				.httpOnly(true)
 				.secure(true)
 				.path("/")
-				.maxAge(300)
+				.maxAge(VERIFICATION_CODE_EXPIRATION_MS)
 				.sameSite("Lax")
 				.build();
 		return ApiResponse.success("회원가입 요청 / 이메일 인증 코드 발송이 완료되었습니다.", cookie);
