@@ -22,6 +22,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;
     private final SearchRivalByKeywordUseCase searchRivalByKeywordUseCase;
     private final ApplyRivalUseCase applyRivalUseCase;
+    private final AcceptRivalUseCase acceptRivalUseCase;
     private final CompareWithRivalsUseCase compareWithRivalsUseCase;
 
     // 내 라이벌 정보 조회
@@ -81,8 +82,8 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     ) {
 
         AcceptRivalData.Command command = request.toCommand(actor);
-        applyRivalUseCase.execute(command);
-        return ApiResponse.created("라이벌을 성공적으로 추가했습니다.");
+        acceptRivalUseCase.execute(command);
+        return ApiResponse.success("라이벌을 성공적으로 승인했습니다.");
     }
 
     // 라이벌과의 경쟁 - 라이벌과의 비교
