@@ -34,13 +34,22 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
         rivalRepositoryPort.saveAndFlush(updatedRival);
 
-        UserNotice userNotice = UserNotice
+        UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(
                         NoticeCategory.ACCEPT_RIVAL,
                         command.actor().id(),
                         rivalRepositoryPort.findOpponentIdByIdAndUserId(rival.id(), command.actor().id())
                 );
 
-        userNoticeRepositoryPort.save(userNotice);
+        userNoticeRepositoryPort.save(userNoticeForReceiver);
+
+        UserNotice userNoticeForSender = UserNotice
+                .createDefault(
+                        NoticeCategory.SHOW_ACCEPT_RIVAL,
+                        command.actor().id(),
+                        command.actor().id()
+                );
+
+        userNoticeRepositoryPort.save(userNoticeForSender);
     }
 }
