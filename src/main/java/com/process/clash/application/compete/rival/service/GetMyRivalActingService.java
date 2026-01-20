@@ -11,6 +11,7 @@ import com.process.clash.domain.rival.enums.RivalCurrentStatus;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
