@@ -108,6 +108,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
     private Map<LocalDate, MutableStats> initializeStats(List<LocalDate> studyDates) {
         Map<LocalDate, MutableStats> statsByDate = new HashMap<>();
+        // 모든 날짜를 미리 등록해 누락 없이 집계될 수 있도록 초기화
         for (LocalDate date : studyDates) {
             statsByDate.put(date, new MutableStats());
         }
@@ -212,6 +213,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         String cursor = null;
         boolean hasNext = true;
 
+        // review-contributions는 pagination이 필수
         while (hasNext) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("login", target.githubLogin());
@@ -228,6 +230,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                 for (JsonNode node : nodes) {
                     String occurredAt = node.path("occurredAt").asText(null);
                     String prId = node.path("pullRequest").path("id").asText(null);
+                    // 리뷰가 발생한 시각과 PR ID로 중복 제거 집계
                     if (occurredAt != null && prId != null) {
                         contributions.add(new GithubReviewAggregator.ReviewContribution(
                                 Instant.parse(occurredAt), prId
@@ -251,6 +254,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             Set<LocalDate> studyDates
     ) {
         Map<LocalDate, CommitStats> stats = new HashMap<>();
+        // 기여한 레포 전체를 순회하며 커밋 히스토리를 집계
         List<RepoInfo> repos = fetchRepositories(target);
         for (RepoInfo repo : repos) {
             accumulateRepoCommits(target, repo, rangeStart, rangeEndInclusive, studyDates, stats);
@@ -263,6 +267,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         String cursor = null;
         boolean hasNext = true;
 
+        // repositoriesContributedTo 연결을 모두 순회
         while (hasNext) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("login", target.githubLogin());
@@ -297,6 +302,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             Map<LocalDate, CommitStats> stats
     ) {
         String[] parts = repo.nameWithOwner().split("/");
+        // nameWithOwner 형식이 아니면 스킵
         if (parts.length != 2) {
             return;
         }
@@ -305,6 +311,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
         String cursor = null;
         boolean hasNext = true;
+        // 레포별 커밋 히스토리를 모두 순회하며 날짜별 누적
         while (hasNext) {
             Map<String, Object> variables = new HashMap<>();
             variables.put("owner", owner);
@@ -330,6 +337,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                     }
                     Instant committedAt = Instant.parse(committedDateRaw);
                     LocalDate studyDate = studyDateCalculator.toStudyDate(committedAt);
+                    // 대상 기간 외 커밋은 제외
                     if (!studyDates.contains(studyDate)) {
                         continue;
                     }
@@ -348,6 +356,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
     private Map<String, Object> buildCommitAuthor(GithubSyncTarget target) {
         Map<String, Object> author = new HashMap<>();
+        // 가능한 식별 정보(id/emails)를 활용해 커밋 작성자 필터링
         if (target.githubUserNodeId() != null && !target.githubUserNodeId().isBlank()) {
             author.put("id", target.githubUserNodeId());
         }
@@ -358,6 +367,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     }
 
     private void mergeReviewCounts(Map<LocalDate, MutableStats> statsByDate, Map<LocalDate, Integer> reviewCounts) {
+        // 리뷰 집계를 기존 통계 버킷에 합산
         for (Map.Entry<LocalDate, Integer> entry : reviewCounts.entrySet()) {
             MutableStats mutable = statsByDate.get(entry.getKey());
             if (mutable != null) {
@@ -367,6 +377,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     }
 
     private void mergeCommitStats(Map<LocalDate, MutableStats> statsByDate, Map<LocalDate, CommitStats> commitStats) {
+        // 커밋 집계를 기존 통계 버킷에 합산
         for (Map.Entry<LocalDate, CommitStats> entry : commitStats.entrySet()) {
             MutableStats mutable = statsByDate.get(entry.getKey());
             if (mutable != null) {
@@ -384,6 +395,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         request.put("query", query);
         request.put("variables", variables);
 
+        // 네트워크/일시적 서버 오류만 제한적으로 재시도
         for (int attempt = 1; attempt <= 3; attempt++) {
             try {
                 String response = githubWebClient.post()
@@ -435,6 +447,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                 messages.add(message);
             }
             String combined = String.join(" | ", messages);
+            // Rate limit/abuse는 별도 예외로 분기
             if (combined.toLowerCase(Locale.ROOT).contains("rate limit") ||
                     combined.toLowerCase(Locale.ROOT).contains("abuse")) {
                 Instant resetAt = parseRateLimitResetAt(root.path("data"));
