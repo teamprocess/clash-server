@@ -58,8 +58,14 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
                 currentMissionId = mission.getId();
                 currentQuestionIndex = history != null ? history.getCurrentQuestionIndex() : 0;
                 totalQuestions = mission.getQuestions() != null ? mission.getQuestions().size() : 0;
-                if (mission.getQuestions() != null && currentQuestionIndex < mission.getQuestions().size()) {
-                    currentQuestionId = mission.getQuestions().get(currentQuestionIndex).getId();
+                if (mission.getQuestions() != null && !mission.getQuestions().isEmpty()) {
+                    var questionId = mission.getQuestions().stream()
+                        .sorted(java.util.Comparator.comparing(com.process.clash.domain.roadmap.entity.MissionQuestion::getOrderIndex))
+                        .skip(currentQuestionIndex)
+                        .findFirst()
+                        .map(q -> q.getId())
+                        .orElse(null);
+                    currentQuestionId = questionId;
                 }
                 break;
             }
