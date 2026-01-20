@@ -16,7 +16,6 @@ public class GetChapterDetailsDto {
             Long currentMissionId,
             Long currentQuestionId,
             Integer currentQuestionIndex,
-            Integer currentQuestionNumber,
             Integer totalQuestions,
             List<MissionVo> missions
     ) {
@@ -31,7 +30,6 @@ public class GetChapterDetailsDto {
                     result.currentMissionId(),
                     result.currentQuestionId(),
                     result.currentQuestionIndex(),
-                    result.currentQuestionNumber(),
                     result.totalQuestions(),
                     missions
             );

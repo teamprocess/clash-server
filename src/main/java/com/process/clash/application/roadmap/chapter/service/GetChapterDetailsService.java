@@ -40,7 +40,6 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
         Long currentMissionId = null;
         Long currentQuestionId = null;
         Integer currentQuestionIndex = 0;
-        Integer currentQuestionNumber = 0;
         Integer totalQuestions = 0;
 
         if (!histories.isEmpty()) {
@@ -60,7 +59,6 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
 
             if (currentMission.getQuestions() != null && currentQuestionIndex < currentMission.getQuestions().size()) {
                 currentQuestionId = currentMission.getQuestions().get(currentQuestionIndex).getId();
-                currentQuestionNumber = currentQuestionIndex + 1;
             }
         } else if (!missions.isEmpty()) {
             Mission firstMission = missions.get(0);
@@ -68,10 +66,9 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
             totalQuestions = firstMission.getQuestions() != null ? firstMission.getQuestions().size() : 0;
             if (firstMission.getQuestions() != null && !firstMission.getQuestions().isEmpty()) {
                 currentQuestionId = firstMission.getQuestions().get(0).getId();
-                currentQuestionNumber = 1;
             }
         }
 
-        return GetChapterDetailsData.Result.from(chapter, currentMissionId, currentQuestionId, currentQuestionIndex, currentQuestionNumber, totalQuestions);
+        return GetChapterDetailsData.Result.from(chapter, currentMissionId, currentQuestionId, currentQuestionIndex, totalQuestions);
     }
 }
