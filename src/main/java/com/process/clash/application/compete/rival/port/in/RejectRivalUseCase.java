@@ -1,8 +1,0 @@
-package com.process.clash.application.compete.rival.port.in;
-
-import com.process.clash.application.compete.rival.data.ModifyRivalData;
-
-public interface RejectRivalUseCase {
-
-    void execute(ModifyRivalData.Command command);
-}

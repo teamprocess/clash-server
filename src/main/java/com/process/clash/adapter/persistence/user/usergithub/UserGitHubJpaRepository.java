@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.user.usergithub;
 
-import com.process.clash.application.compete.rival.data.AbleRivalInfo;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +17,7 @@ public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEnti
     List<UserGitHubJpaEntity> findAllWithUserAndGitHubId();
 
     @Query("""
-        select new com.process.clash.application.compete.rival.data.AbleRivalInfo(
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfo(
             u.id,
             u.name,
             ug.gitHubId,
@@ -32,7 +32,7 @@ public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEnti
     );
 
     @Query("""
-        select new com.process.clash.application.compete.rival.data.AbleRivalInfo(
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfo(
             u.id,
             u.name,
             ug.gitHubId,
