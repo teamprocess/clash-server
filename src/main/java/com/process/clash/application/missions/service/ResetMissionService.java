@@ -29,9 +29,8 @@ public class ResetMissionService implements ResetMissionUseCase {
         // 기존 히스토리 삭제 또는 초기화
         userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), missionId)
                 .ifPresent(history -> {
-                    // 새로운 히스토리 생성 (초기화)
-                    UserMissionHistory newHistory = UserMissionHistory.create(actor.id(), missionId);
-                    userMissionHistoryRepositoryPort.save(newHistory);
+                    UserMissionHistory resetHistory = new UserMissionHistory(history.getId(), history.getUserId(), history.getMissionId(), false, 0, history.getTotalCount(), 0);
+                    userMissionHistoryRepositoryPort.save(resetHistory);
                 });
     }
 }
