@@ -2,6 +2,7 @@ package com.process.clash.application.roadmap.missions.service;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.missions.data.GetMissionResultData;
+import com.process.clash.application.roadmap.missions.exception.exception.notfound.ChapterNotFoundException;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.MissionNotFoundException;
 import com.process.clash.application.roadmap.missions.port.in.GetMissionResultUseCase;
 import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
@@ -33,7 +34,7 @@ public class GetMissionResultService implements GetMissionResultUseCase {
                 .orElseThrow(MissionNotFoundException::new);
 
         Chapter chapter = chapterRepositoryPort.findById(mission.getChapterId())
-                .orElseThrow();
+                .orElseThrow(ChapterNotFoundException::new);
 
         Optional<UserMissionHistory> historyOpt = userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), missionId);
 

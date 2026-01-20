@@ -42,15 +42,30 @@ public class GetSectionDetailsService implements GetSectionDetailsUseCase {
                 .findByUserIdAndSectionId(command.actor().id(), command.sectionId())
                 .orElse(new UserSectionProgress(null, command.actor().id(), command.sectionId(), null, 0, false));
 
-        Long currentChapterId = userSectionProgress.getCurrentChapterId();
+        Long progressChapterId = userSectionProgress.getCurrentChapterId();
 
         Integer currentOrderIndex = null;
-        if (currentChapterId != null && section.getChapters() != null) {
+        Long currentChapterId = null;
+
+        if (progressChapterId != null && section.getChapters() != null) {
             currentOrderIndex = section.getChapters().stream()
-                    .filter(chapter -> chapter.getId().equals(currentChapterId))
+                    .filter(chapter -> chapter.getId().equals(progressChapterId))
                     .findFirst()
                     .map(Chapter::getOrderIndex)
                     .orElse(null);
+            currentChapterId = progressChapterId;
+        }
+
+        if (currentChapterId == null && section.getChapters() != null) {
+            Chapter firstChapter = section.getChapters().stream()
+                    .filter(chapter -> chapter.getOrderIndex() != null && chapter.getOrderIndex() == 0)
+                    .findFirst()
+                    .orElse(null);
+
+            if (firstChapter != null) {
+                currentChapterId = firstChapter.getId();
+                currentOrderIndex = 0;
+            }
         }
 
         List<Long> chapterIds = section.getChapters() != null
