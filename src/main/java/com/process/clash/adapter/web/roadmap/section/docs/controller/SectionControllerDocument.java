@@ -105,29 +105,14 @@ public interface SectionControllerDocument {
                                         "totalChapters": 3,
                                         "currentChapterId": 1,
                                         "currentOrderIndex": 0,
+                                        "currentMissionIndex": 2,
                                         "chapters": [
                                           {
                                             "id": 1,
                                             "title": "스프링 기초",
-                                            "difficulty": 1,
-                                            "missions": [
-                                              {
-                                                "id": 1,
-                                                "title": "DI 이해",
-                                                "questions": [
-                                                  {
-                                                    "id": 1,
-                                                    "title": "DI란 무엇인가요?",
-                                                    "choices": [
-                                                      {
-                                                        "id": 1,
-                                                        "content": "의존성 주입"
-                                                      }
-                                                    ]
-                                                  }
-                                                ]
-                                              }
-                                            ]
+                                            "orderIndex": 0,
+                                            "completedMissions": 2,
+                                            "totalMissions": 5
                                           }
                                         ]
                                       }
