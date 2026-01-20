@@ -1,5 +1,6 @@
 package com.process.clash.application.user.user.service;
 
+import com.process.clash.application.common.util.TokenGenerator;
 import com.process.clash.application.mail.port.out.SendVerificationEmailPort;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.exception.exception.conflict.EmailAlreadyExistException;
@@ -23,18 +24,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SignUpService implements SignUpUseCase {
 
+	private final TokenGenerator tokenGenerator;
 	private final UserRepositoryPort userRepositoryPort;
 	private final PasswordEncoder passwordEncoder;
 	private final VerificationCodePort verificationCodePort;
 	private final SendVerificationEmailPort sendVerificationEmailPort;
 	private final PendingUserCachePort pendingUserCachePort;
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L;
-	private static final long PENDING_USER_EXPIRATION_MS = 30 * 60 * 1000L;
+	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L; // 인증 코드 만료: 5분
+	private static final long PENDING_USER_EXPIRATION_MS = 30 * 60 * 1000L; // PENDING USER 만료: 30분(추후 정보 유지 + 코드 재전송 가능 예정)
 
 	@Override
 	@Transactional
-	public void execute(SignUpData.Command command) {
+	public String execute(SignUpData.Command command) {
 
 		if (userRepositoryPort.existsByUsername(command.username())) {
 			throw new UsernameAlreadyExistException();
@@ -53,18 +55,22 @@ public class SignUpService implements SignUpUseCase {
 				encoded
 		);
 
-		pendingUserCachePort.save(command.email(), pendingUser, PENDING_USER_EXPIRATION_MS);
+		String token = tokenGenerator.generateCleanToken();
+
+		pendingUserCachePort.save(token, pendingUser, PENDING_USER_EXPIRATION_MS);
 
 		String verificationCode = generateVerificationCode();
 
-		verificationCodePort.saveCode(command.email(), verificationCode, VERIFICATION_CODE_EXPIRATION_MS);
+		verificationCodePort.saveCode(token, verificationCode, VERIFICATION_CODE_EXPIRATION_MS);
 
 		sendVerificationEmailPort.execute(command.email(), verificationCode);
 
+		return token;
 	}
 
 	private String generateVerificationCode() {
 		int code = SECURE_RANDOM.nextInt(1000000);
 		return String.format("%06d", code);
 	}
+
 }

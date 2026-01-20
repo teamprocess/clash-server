@@ -18,19 +18,19 @@ public class PendingUserPersistenceAdapter implements PendingUserCachePort {
 
 
     @Override
-    public void save(String email, User user, long ttlMs) {
+    public void save(String token, User user, long ttlMs) {
         PendingUserDto pendingUserDto = PendingUserDto.from(user);
-        redisTemplate.opsForValue().set(PENDING_USER_PREFIX + email, pendingUserDto, ttlMs, TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(PENDING_USER_PREFIX + token, pendingUserDto, ttlMs, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        PendingUserDto dto = redisTemplate.opsForValue().get(PENDING_USER_PREFIX + email);
+    public Optional<User> findByToken(String token) {
+        PendingUserDto dto = redisTemplate.opsForValue().get(PENDING_USER_PREFIX + token);
         return Optional.ofNullable(dto).map(PendingUserDto::toUser);
     }
 
     @Override
-    public void delete(String email) {
-        redisTemplate.delete(PENDING_USER_PREFIX + email);
+    public void delete(String token) {
+        redisTemplate.delete(PENDING_USER_PREFIX + token);
     }
 }

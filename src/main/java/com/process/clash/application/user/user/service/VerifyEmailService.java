@@ -4,6 +4,8 @@ import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeExpiredOrWrongEmailException;
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeMismatchException;
+import com.process.clash.application.user.user.exception.exception.conflict.EmailAlreadyExistException;
+import com.process.clash.application.user.user.exception.exception.conflict.UsernameAlreadyExistException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.in.VerifyEmailUseCase;
 import com.process.clash.application.user.user.port.out.PendingUserCachePort;
@@ -26,21 +28,29 @@ public class VerifyEmailService implements VerifyEmailUseCase {
     public void execute(VerifyEmailData.Command command) {
 
         // 인증 코드 검증
-        String savedCode = verificationCodePort.getCode(command.email())
+        String savedCode = verificationCodePort.getCode(command.token())
                 .orElseThrow(VerificationCodeExpiredOrWrongEmailException::new);
 
         if (!savedCode.equals(command.code())) {
             throw new VerificationCodeMismatchException();
         }
 
-        User pendingUser = pendingUserCachePort.findByEmail(command.email()).orElseThrow(UserNotFoundException::new);
+        User pendingUser = pendingUserCachePort.findByToken(command.token()).orElseThrow(UserNotFoundException::new);
+
+        if (userRepositoryPort.existsByUsername(pendingUser.username())) {
+            throw new UsernameAlreadyExistException();
+        }
+
+        if (userRepositoryPort.existsByEmail(pendingUser.email())) {
+            throw new EmailAlreadyExistException();
+        }
 
         // 인증 완료 처리 후 DB 저장
         User verifiedUser = pendingUser.active(); // isActive = true로 변경
         userRepositoryPort.save(verifiedUser);
 
         // Redis 정리
-        pendingUserCachePort.delete(command.email());
-        verificationCodePort.deleteCode(command.email());
+        pendingUserCachePort.delete(command.token());
+        verificationCodePort.deleteCode(command.token());
     }
 }
