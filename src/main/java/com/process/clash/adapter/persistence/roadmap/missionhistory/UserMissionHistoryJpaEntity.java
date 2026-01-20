@@ -35,8 +35,11 @@ public class UserMissionHistoryJpaEntity {
     @Column(name = "is_cleared", nullable = false)
     private boolean isCleared;
 
-    @Column(nullable = false)
-    private Integer score; // 0점과 미채점 구분
+    @Column(name = "correct_count", nullable = false)
+    private Integer correctCount;
+
+    @Column(name = "total_count", nullable = false)
+    private Integer totalCount;
 
     @Column(name = "current_question_index")
     private Integer currentQuestionIndex; // 현재 진행 중인 질문 인덱스

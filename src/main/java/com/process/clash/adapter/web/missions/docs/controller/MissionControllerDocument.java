@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.missions.docs.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.missions.dto.MissionResultDto;
 import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,5 +53,53 @@ public interface MissionControllerDocument {
                                     """)
                     )
             ) MissionSubmitDto.Request request
+    );
+
+    @Operation(summary = "미션 결과 조회", description = "특정 미션의 결과를 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "미션 결과 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "data": {
+                                        "mission_id": 1,
+                                        "is_cleared": true,
+                                        "correct_count": 5,
+                                        "total_count": 5,
+                                        "next_mission_id": 2,
+                                        "next_step_id": null
+                                      },
+                                      "message": "미션 결과 보기를 성공했습니다.",
+                                      "success": true
+                                    }
+                                    """)
+                    )
+            )
+    })
+    ApiResponse<MissionResultDto.Response> getResult(
+            @Parameter(description = "인증된 사용자") Actor actor,
+            @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId
+    );
+
+    @Operation(summary = "미션 초기화", description = "특정 미션의 진행 상황을 초기화합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "미션 초기화 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "message": "미션 진행 상황이 초기화되었습니다. 다시 시작합니다.",
+                                      "success": true
+                                    }
+                                    """)
+                    )
+            )
+    })
+    ApiResponse<Void> resetMission(
+            @Parameter(description = "인증된 사용자") Actor actor,
+            @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId
     );
 }

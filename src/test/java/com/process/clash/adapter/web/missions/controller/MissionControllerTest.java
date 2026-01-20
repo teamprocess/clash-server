@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.missions.data.SubmitMissionAnswerData;
 import com.process.clash.application.missions.port.in.SubmitMissionAnswerUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,11 +72,11 @@ public class MissionControllerTest {
         Long questionId = 1L;
         Long submittedChoiceId = 1L;
 
-        SubmitMissionAnswerUseCase.Result result = new SubmitMissionAnswerUseCase.Result(
+        SubmitMissionAnswerData.Result result = new SubmitMissionAnswerData.Result(
                 true, "정답입니다!", 1, 5, 1L
         );
 
-        when(submitMissionAnswerUseCase.execute(any(SubmitMissionAnswerUseCase.Command.class)))
+        when(submitMissionAnswerUseCase.execute(any(SubmitMissionAnswerData.Command.class)))
                 .thenReturn(result);
 
         MissionSubmitDto.Request request = new MissionSubmitDto.Request(submittedChoiceId);

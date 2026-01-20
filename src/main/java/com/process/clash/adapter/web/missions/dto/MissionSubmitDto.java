@@ -1,5 +1,7 @@
 package com.process.clash.adapter.web.missions.dto;
 
+import com.process.clash.application.missions.data.SubmitMissionAnswerData;
+
 public class MissionSubmitDto {
 
     public record Request(
@@ -14,5 +16,14 @@ public class MissionSubmitDto {
             Integer totalQuestion,
             Long correctChoiceId
     ) {
+        public static Response fromResult(SubmitMissionAnswerData.Result result) {
+            return new Response(
+                    result.isCorrect(),
+                    result.explanation(),
+                    result.currentProgress(),
+                    result.totalQuestion(),
+                    result.correctChoiceId()
+            );
+        }
     }
 }

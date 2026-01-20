@@ -16,7 +16,8 @@ public class UserMissionHistoryJpaMapper {
                 userEntity,
                 missionEntity,
                 history.isCleared(),
-                history.getScore(),
+                history.getCorrectCount(),
+                history.getTotalCount(),
                 history.getCurrentQuestionIndex(),
                 null, // createdAt은 @CreationTimestamp가 자동으로 설정
                 null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
@@ -29,7 +30,8 @@ public class UserMissionHistoryJpaMapper {
                 entity.getUser() != null ? entity.getUser().getId() : null,
                 entity.getMission() != null ? entity.getMission().getId() : null,
                 entity.isCleared(),
-                entity.getScore(),
+                entity.getCorrectCount(),
+                entity.getTotalCount(),
                 entity.getCurrentQuestionIndex()
         );
     }
