@@ -50,10 +50,10 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
         }
 
         double myAverageExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndPeriod(command.actor().id(), battle.startDate(), endDate);
+                .findAverageExpByUserIdAndCategoryAndPeriod(command.actor().id(), battle.startDate(), endDate);
 
         double enemyAverageExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndPeriod(rivalId, battle.startDate(), endDate);
+                .findAverageExpByUserIdAndCategoryAndPeriod(rivalId, battle.startDate(), endDate);
 
         double myOverallPercentage = myAverageExp / (myAverageExp + enemyAverageExp) * 100;
 
