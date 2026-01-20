@@ -74,8 +74,8 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
-    public List<RivalInfoForGraph> findRivalInfoForGraphByMyId(Long myId) {
+    public List<Long> findOpponentIdByMyId(Long myId) {
 
-        return rivalJpaRepository.findRivalInfoForGraphByMyId(myId);
+        return rivalJpaRepository.findOpponentIdByMyId(myId);
     }
 }

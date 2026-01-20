@@ -38,15 +38,12 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     List<RivalJpaEntity> findAllByMyId(Long myId);
 
     @Query("""
-        select new com.process.clash.application.compete.rival.data.RivalInfoForGraph(
-            r.opponent.id,
-            r.opponent.name
-        )
-        from RivalJpaEntity r
+        select r.opponent.id
+        from RivalJpaEntity as r
         where r.my.id = :myId
             and r.rivalLinkingStatus = 'ACCEPTED'
     """)
-    List<RivalInfoForGraph> findRivalInfoForGraphByMyId(
+    List<Long> findOpponentIdByMyId(
             @Param("myId") Long myId
     );
 }

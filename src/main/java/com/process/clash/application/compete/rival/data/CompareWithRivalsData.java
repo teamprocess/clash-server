@@ -2,20 +2,19 @@ package com.process.clash.application.compete.rival.data;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;
-import com.process.clash.domain.roadmap.entity.Category;
+import com.process.clash.domain.common.enums.TargetCategory;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class CompareWithRivalsData {
 
     public record Command(
             Actor actor,
-            Category category,
+            TargetCategory category,
             PeriodCategory period
     ) {
 
-        public static Command from(Actor actor, Category category, PeriodCategory period) {
+        public static Command from(Actor actor, TargetCategory category, PeriodCategory period) {
 
             return new Command(actor, category, period);
         }
@@ -25,17 +24,16 @@ public class CompareWithRivalsData {
             String category,
             String period,
             List<TotalData> totalData
-    ) {}
+    ) {
 
-    public record TotalData(
-            Long id,
-            String name,
-            List<DataPoint> dataPoint
-    ) {}
+        public static Result from(TargetCategory category, PeriodCategory period, List<TotalData> totalData) {
 
-    public record DataPoint(
-            LocalDate date,
-            Double point
-    ) {}
+            return new Result(
+                    category.toString(),
+                    period.toString(),
+                    totalData
+            );
+        }
+    }
 }
 
