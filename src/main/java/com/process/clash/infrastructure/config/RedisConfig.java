@@ -32,7 +32,7 @@ public class RedisConfig {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-                .allowIfSubType("com.process.clash.adapter.persistence.auth")
+                .allowIfSubType(PendingUserDto.class)
                 .build();
 
         objectMapper.activateDefaultTyping(
