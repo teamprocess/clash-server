@@ -1,11 +1,5 @@
 package com.process.clash.application.roadmap.missions.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
 import com.process.clash.application.roadmap.missions.exception.exception.badrequest.ChapterLockedException;
@@ -26,6 +20,14 @@ import com.process.clash.domain.roadmap.entity.UserMissionHistory;
 import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -126,6 +128,10 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 현재 챕터의 미션 기록만 조회
         List<UserMissionHistory> chapterHistories = userMissionHistoryRepositoryPort.findAllByUserIdAndMissionIdIn(actor.id(), missionIdsInChapter);
 
+        // histories를 missionId로 매핑 (O(1) 조회를 위함)
+        Map<Long, UserMissionHistory> historyMap = chapterHistories.stream()
+                .collect(Collectors.toMap(UserMissionHistory::getMissionId, Function.identity()));
+
         // 정렬된 미션 목록
         List<Mission> sortedMissions = missionsInChapter.stream()
                 .filter(m -> m.getOrderIndex() != null)
@@ -137,10 +143,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         Integer nextMissionOrderIndex = null;
         if (isMissionCleared) {
             for (Mission m : sortedMissions) {
-                UserMissionHistory ch = chapterHistories.stream()
-                        .filter(h -> h.getMissionId().equals(m.getId()))
-                        .findFirst()
-                        .orElse(null);
+                UserMissionHistory ch = historyMap.get(m.getId());
                 if (ch == null || !ch.isCleared()) {
                     nextMissionId = m.getId();
                     nextMissionOrderIndex = m.getOrderIndex();
@@ -152,10 +155,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 챕터 클리어 여부 확인
         boolean isChapterCleared = sortedMissions.stream()
                 .allMatch(m -> {
-                    UserMissionHistory ch = chapterHistories.stream()
-                            .filter(h -> h.getMissionId().equals(m.getId()))
-                            .findFirst()
-                            .orElse(null);
+                    UserMissionHistory ch = historyMap.get(m.getId());
                     return ch != null && ch.isCleared();
                 });
 
