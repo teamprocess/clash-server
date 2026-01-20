@@ -58,7 +58,7 @@ public class GetChapterDetailsDto {
             List<ChoiceVo> choices = vo.choices().stream()
                     .map(ChoiceVo::from)
                     .toList();
-            return new QuestionVo(vo.id(), vo.title(), choices);
+            return new QuestionVo(vo.id(), vo.content(), choices);
         }
     }
 

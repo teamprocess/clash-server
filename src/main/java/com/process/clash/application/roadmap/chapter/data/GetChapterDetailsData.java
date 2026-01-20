@@ -60,7 +60,7 @@ public class GetChapterDetailsData {
 
         public record QuestionVo(
                 Long id,
-                String title,
+                String content,
                 List<ChoiceVo> choices
         ) {
             public static QuestionVo from(MissionQuestion question) {
