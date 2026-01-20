@@ -16,11 +16,7 @@ public class UserJpaMapper {
                 user.name(),
                 user.password(),
                 user.role(),
-                user.ableToAddRival(),
                 user.profileImage(),
-                user.pomodoroEnabled(),
-                user.pomodoroStudyMinute(),
-                user.pomodoroBreakMinute(),
                 user.major(),
                 user.userStatus()
         );
@@ -36,11 +32,7 @@ public class UserJpaMapper {
                 userJpaEntity.getName(),
                 userJpaEntity.getPassword(),
                 userJpaEntity.getRole(),
-                userJpaEntity.isAbleToAddRival(),
                 userJpaEntity.getProfileImage(),
-                userJpaEntity.isPomodoroEnabled(),
-                userJpaEntity.getPomodoroStudyMinute(),
-                userJpaEntity.getPomodoroBreakMinute(),
                 userJpaEntity.getMajor(),
                 userJpaEntity.getUserStatus()
         );

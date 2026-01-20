@@ -47,20 +47,8 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = false)
-    private boolean ableToAddRival;
-
     @Column
     private String profileImage;
-
-    @Column(nullable = false)
-    private boolean pomodoroEnabled;
-
-    @Column(nullable = false)
-    private Integer pomodoroStudyMinute;
-
-    @Column(nullable = false)
-    private Integer pomodoroBreakMinute;
 
     @Enumerated(EnumType.STRING)
     private Major major;
