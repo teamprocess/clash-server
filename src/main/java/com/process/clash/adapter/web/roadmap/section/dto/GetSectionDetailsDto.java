@@ -20,6 +20,8 @@ public class GetSectionDetailsDto {
             Long currentChapterId,
             @Schema(description = "현재 챕터 순서 (0-based)", example = "0")
             Integer currentOrderIndex,
+            @Schema(description = "현재 미션 순서 (0-based)", example = "2")
+            Integer currentMissionIndex,
             List<ChapterVo> chapters
     ) {
         public static Response from(GetSectionDetailsData.Result result) {
@@ -32,6 +34,7 @@ public class GetSectionDetailsDto {
                     result.totalChapters(),
                     result.currentChapterId(),
                     result.currentOrderIndex(),
+                    result.currentMissionIndex(),
                     chapters
             );
         }
@@ -40,10 +43,11 @@ public class GetSectionDetailsDto {
     public record ChapterVo(
             Long id,
             String title,
-            Integer difficulty
+            Integer completedMissions,
+            Integer totalMissions
     ) {
         public static ChapterVo from(GetSectionDetailsData.Result.ChapterVo vo) {
-            return new ChapterVo(vo.id(), vo.title(), vo.difficulty());
+            return new ChapterVo(vo.id(), vo.title(), vo.completedMissions(), vo.totalMissions());
         }
     }
 

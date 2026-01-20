@@ -4,6 +4,7 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.roadmap.entity.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class GetSectionDetailsData {
 
@@ -15,12 +16,23 @@ public class GetSectionDetailsData {
             Integer totalChapters,
             Long currentChapterId,
             Integer currentOrderIndex,
+            Integer currentMissionIndex,
             List<ChapterVo> chapters
     ) {
-        public static Result from(Section section, Long currentChapterId, Integer currentOrderIndex) {
+        public static Result from(Section section, Long currentChapterId, Integer currentOrderIndex, Integer currentMissionIndex, Map<Long, List<Mission>> chapterMissionsMap, Map<Long, UserMissionHistory> missionHistoryMap) {
             List<ChapterVo> chapterVos = section.getChapters() != null
                     ? section.getChapters().stream()
-                            .map(chapter -> ChapterVo.from(chapter, 1)) // difficulty는 서비스에서 계산 필요
+                            .map(chapter -> {
+                                List<Mission> missions = chapterMissionsMap.getOrDefault(chapter.getId(), List.of());
+                                Integer totalMissions = missions.size();
+                                Integer completedMissions = (int) missions.stream()
+                                        .filter(mission -> {
+                                            UserMissionHistory history = missionHistoryMap.get(mission.getId());
+                                            return history != null && history.isCleared();
+                                        })
+                                        .count();
+                                return ChapterVo.from(chapter, completedMissions, totalMissions);
+                            })
                             .toList()
                     : List.of();
 
@@ -30,6 +42,7 @@ public class GetSectionDetailsData {
                     chapterVos.size(),
                     currentChapterId,
                     currentOrderIndex,
+                    currentMissionIndex,
                     chapterVos
             );
         }
@@ -37,13 +50,15 @@ public class GetSectionDetailsData {
         public record ChapterVo(
                 Long id,
                 String title,
-                Integer difficulty
+                Integer completedMissions,
+                Integer totalMissions
         ) {
-            public static ChapterVo from(Chapter chapter, Integer difficulty) {
+            public static ChapterVo from(Chapter chapter, Integer completedMissions, Integer totalMissions) {
                 return new ChapterVo(
                         chapter.getId(),
                         chapter.getTitle(),
-                        difficulty
+                        completedMissions,
+                        totalMissions
                 );
             }
         }

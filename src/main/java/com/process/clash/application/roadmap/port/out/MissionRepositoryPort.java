@@ -11,4 +11,5 @@ public interface MissionRepositoryPort {
     Optional<Mission> findByIdWithQuestions(Long id);
     List<Mission> findAll();
     List<Mission> findAllByChapterId(Long chapterId);
+    List<Mission> findAllByChapterIdIn(List<Long> chapterIds);
 }

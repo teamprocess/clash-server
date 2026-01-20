@@ -35,6 +35,9 @@ public class MissionJpaEntity {
     @Column(nullable = false)
     private Integer difficulty;
 
+    @Column(nullable = false)
+    private Integer orderIndex;
+
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MissionQuestionJpaEntity> questions = new ArrayList<>();
 
