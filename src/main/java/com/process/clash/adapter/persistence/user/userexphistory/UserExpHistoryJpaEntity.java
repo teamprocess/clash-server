@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.user.userexphistory;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,10 @@ public class UserExpHistoryJpaEntity {
 
     @Column(nullable = false)
     private int earnExp;
+
+    @Enumerated
+    @Column(nullable = false)
+    private ExpActingCategory actingCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user_id", nullable = false)
