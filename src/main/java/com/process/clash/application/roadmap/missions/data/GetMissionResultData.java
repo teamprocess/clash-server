@@ -16,7 +16,10 @@ public class GetMissionResultData {
             Integer correctCount,
             Integer totalCount,
             Long nextMissionId,
-            Long nextStepId
+            Long nextChapterId,
+            Integer sectionOrderIndex,
+            Integer chapterOrderIndex,
+            Integer missionOrderIndex
     ) {
     }
 }
