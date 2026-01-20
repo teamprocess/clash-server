@@ -1,6 +1,6 @@
 package com.process.clash.application.compete.rival.rival.service;
 
-import com.process.clash.application.compete.rival.rival.data.AbleRivalInfo;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import com.process.clash.application.compete.rival.rival.data.SearchRivalByKeywordData;
 import com.process.clash.application.compete.rival.rival.port.in.SearchRivalByKeywordUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
@@ -40,13 +40,13 @@ public class SearchRivalByKeywordService implements SearchRivalByKeywordUseCase 
                 Stream.of(myId)
         ).toList();
 
-        List<AbleRivalInfo> ableRivalInfos =
+        List<AbleRivalInfoForRival> ableRivalInfoForRivals =
                 userGitHubRepositoryPort.findAbleRivalsWithUserInfoByKeyword(
                         excludedUserIds,
                         command.keyword()
                 );
 
-        return SearchRivalByKeywordData.Result.from(ableRivalInfos);
+        return SearchRivalByKeywordData.Result.from(ableRivalInfoForRivals);
     }
 
 }

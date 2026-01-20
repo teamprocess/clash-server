@@ -1,6 +1,6 @@
 package com.process.clash.application.compete.rival.rival.service;
 
-import com.process.clash.application.compete.rival.rival.data.AbleRivalInfo;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import com.process.clash.application.compete.rival.rival.data.GetAllAbleRivalsData;
 import com.process.clash.application.compete.rival.rival.port.in.GetAllAbleRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
@@ -40,8 +40,8 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
         ).distinct().toList();
 
 
-        List<AbleRivalInfo> ableRivalInfos = userGitHubRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
+        List<AbleRivalInfoForRival> ableRivalInfoForRivals = userGitHubRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
 
-        return GetAllAbleRivalsData.Result.from(ableRivalInfos);
+        return GetAllAbleRivalsData.Result.from(ableRivalInfoForRivals);
     }
 }

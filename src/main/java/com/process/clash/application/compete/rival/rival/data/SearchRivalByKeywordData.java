@@ -21,12 +21,12 @@ public class SearchRivalByKeywordData {
     }
 
     public record Result(
-            List<AbleRivalInfo> users
+            List<AbleRivalInfoForRival> users
     ) {
 
-        public static Result from(List<AbleRivalInfo> ableRivalInfos) {
+        public static Result from(List<AbleRivalInfoForRival> ableRivalInfoForRivals) {
             return new Result(
-                    ableRivalInfos
+                    ableRivalInfoForRivals
             );
         }
     }
