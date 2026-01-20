@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 public record GithubDailyStats(
-        Long id,
         Long userId,
         LocalDate studyDate,
         int commitCount,

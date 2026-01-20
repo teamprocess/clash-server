@@ -30,7 +30,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
     @Override
     public GetMyRivalActingData.Result execute(GetMyRivalActingData.Command command) {
 
-        List<Rival> rivals = rivalRepositoryPort.findAllByMyId(command.actor().id());
+        List<Rival> rivals = rivalRepositoryPort.findAllByUserId(command.actor().id());
 
         if (rivals.isEmpty()) {
             return GetMyRivalActingData.Result.from(List.of());

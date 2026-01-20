@@ -2,19 +2,13 @@ package com.process.clash.adapter.web.compete.rival.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.compete.rival.docs.controller.RivalCompeteControllerDocument;
-import com.process.clash.adapter.web.compete.rival.dto.GetMyRivalActingDto;
-import com.process.clash.adapter.web.compete.rival.dto.ApplyRivalDto;
-import com.process.clash.adapter.web.compete.rival.dto.GetAllAbleRivalsDto;
-import com.process.clash.adapter.web.compete.rival.dto.SearchRivalByKeywordDto;
+import com.process.clash.adapter.web.compete.rival.dto.*;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.data.*;
-import com.process.clash.application.compete.rival.port.in.GetMyRivalActingUseCase;
-import com.process.clash.application.compete.rival.port.in.ApplyRivalUseCase;
-import com.process.clash.application.compete.rival.port.in.GetAllAbleRivalsUseCase;
-import com.process.clash.application.compete.rival.port.in.SearchRivalByKeywordUseCase;
+import com.process.clash.application.compete.rival.port.in.*;
 import com.process.clash.domain.common.enums.PeriodCategory;
-import com.process.clash.domain.roadmap.entity.Category;
+import com.process.clash.domain.common.enums.TargetCategory;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +22,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;
     private final SearchRivalByKeywordUseCase searchRivalByKeywordUseCase;
     private final ApplyRivalUseCase applyRivalUseCase;
+    private final CompareWithRivalsUseCase compareWithRivalsUseCase;
 
     // 내 라이벌 정보 조회
     // TODO: 추가 구현 필요합니다
@@ -81,12 +76,15 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
 
     // 라이벌과의 경쟁 - 라이벌과의 비교
     @GetMapping("/compare/category/{category}/period/{period}")
-    public ApiResponse<Void> compareWithRivals(
+    public ApiResponse<CompareWithRivalsDto.Response> compareWithRivals(
             @AuthenticatedActor Actor actor,
-            @PathVariable Category category,
+            @PathVariable TargetCategory category,
             @PathVariable PeriodCategory period
     ) {
 
         CompareWithRivalsData.Command command = CompareWithRivalsData.Command.from(actor, category, period);
+        CompareWithRivalsData.Result result = compareWithRivalsUseCase.execute(command);
+        CompareWithRivalsDto.Response response = CompareWithRivalsDto.Response.from(result);
+        return ApiResponse.success(response, "라이벌과의 비교 정보를 성공적으로 반환했습니다.");
     }
 }

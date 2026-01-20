@@ -25,16 +25,16 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     @Override
     public Rival save(Rival rival) {
 
-        UserJpaEntity my = userJpaRepository.getReferenceById(rival.myId());
-        UserJpaEntity opponent = userJpaRepository.getReferenceById(rival.opponentId());
-        RivalJpaEntity savedEntity = rivalJpaRepository.save(rivalJpaMapper.toJpaEntity(rival, my, opponent));
+        UserJpaEntity firstUser = userJpaRepository.getReferenceById(rival.firstUserId());
+        UserJpaEntity secondUser = userJpaRepository.getReferenceById(rival.secondUser2Id());
+        RivalJpaEntity savedEntity = rivalJpaRepository.save(rivalJpaMapper.toJpaEntity(rival, firstUser, secondUser));
         return rivalJpaMapper.toDomain(savedEntity);
     }
 
     @Override
     public void saveAll(List<Rival> rivals) {
         Set<Long> allUserIds = rivals.stream()
-                .flatMap(rival -> Stream.of(rival.myId(), rival.opponentId()))
+                .flatMap(rival -> Stream.of(rival.firstUserId(), rival.secondUser2Id()))
                 .collect(Collectors.toSet());
 
         Map<Long, UserJpaEntity> userMap = userJpaRepository.findAllById(allUserIds)
@@ -43,8 +43,8 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
 
         List<RivalJpaEntity> entities = rivals.stream()
                 .map(rival -> {
-                    UserJpaEntity my = userMap.get(rival.myId());
-                    UserJpaEntity opponent = userMap.get(rival.opponentId());
+                    UserJpaEntity my = userMap.get(rival.firstUserId());
+                    UserJpaEntity opponent = userMap.get(rival.secondUser2Id());
                     return rivalJpaMapper.toJpaEntity(rival, my, opponent);
                 })
                 .toList();
@@ -53,29 +53,29 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
-    public int countAllByMyId(Long myId) {
+    public int countAllByUserId(Long myId) {
 
-        return rivalJpaRepository.countAllByMyId(myId);
+        return rivalJpaRepository.countAllByUserId(myId);
     }
 
     @Override
     public List<Map<String, Object>> countAllByOpponentIdsGrouped(List<Long> opponentIds) {
 
-        return rivalJpaRepository.countAllByOpponentIdsGrouped(opponentIds);
+        return rivalJpaRepository.countAllByUserIdsGrouped(opponentIds);
     }
 
     @Override
-    public List<Rival> findAllByMyId(Long myId) {
+    public List<Rival> findAllByUserId(Long myId) {
 
-        return rivalJpaRepository.findAllByMyId(myId)
+        return rivalJpaRepository.findAllByUserId(myId)
                 .stream()
                 .map(rivalJpaMapper::toDomain)
                 .toList();
     }
 
     @Override
-    public List<Long> findOpponentIdByMyId(Long myId) {
+    public List<Long> findOpponentIdByUserId(Long myId) {
 
-        return rivalJpaRepository.findOpponentIdByMyId(myId);
+        return rivalJpaRepository.findOpponentIdsByUserId(myId);
     }
 }

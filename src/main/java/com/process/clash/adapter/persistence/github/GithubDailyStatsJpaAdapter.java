@@ -41,12 +41,12 @@ public class GithubDailyStatsJpaAdapter implements GithubDailyStatsStorePort {
 
             Map<LocalDate, Long> existingIds = new HashMap<>();
             for (GithubDailyStatsJpaEntity entity : repository.findByUserIdAndStudyDateIn(userId, dates)) {
-                existingIds.put(entity.getStudyDate(), entity.getId());
+                existingIds.put(entity.getStudyDate(), entity.getUserId());
             }
 
             for (GithubDailyStats stat : userStats) {
                 Long existingId = existingIds.get(stat.studyDate());
-                entities.add(mapper.toJpaEntity(stat, existingId));
+                entities.add(mapper.toJpaEntity(stat));
             }
         }
 
