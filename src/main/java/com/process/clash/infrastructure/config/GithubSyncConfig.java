@@ -40,6 +40,7 @@ public class GithubSyncConfig {
 
     @Bean(destroyMethod = "shutdown")
     public ExecutorService githubSyncExecutor(GithubSyncProperties properties) {
+        // 동기화 병렬 처리 시 사용할 제한된 스레드풀
         int maxConcurrency = Math.max(1, properties.maxConcurrency());
         return Executors.newFixedThreadPool(maxConcurrency);
     }
