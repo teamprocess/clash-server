@@ -13,6 +13,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        default_batch_fetch_size: 100
         format_sql: true
         show_sql: true
         jdbc:
