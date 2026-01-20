@@ -35,4 +35,10 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
         BattleJpaEntity savedEntity = battleJpaRepository.save(battleJpaMapper.toJpaEntity(battle, winner, rivalJpaEntity));
         return battleJpaMapper.toDomain(savedEntity);
     }
+
+    @Override
+    public boolean existsActiveBattleByUserId(Long userId) {
+
+        return battleJpaRepository.existsActiveBattleByUserId(userId);
+    }
 }

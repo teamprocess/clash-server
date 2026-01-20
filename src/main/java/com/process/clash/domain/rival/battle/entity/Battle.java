@@ -15,4 +15,18 @@ public record Battle(
         Long winnerId,
         Long rivalId
 ) {
+
+    public static Battle createDefault(LocalDate startDate, LocalDate endDate, Long rivalId) {
+
+        return new Battle(
+                null,
+                null,
+                null,
+                startDate,
+                endDate,
+                BattleStatus.PENDING,
+                null,
+                rivalId
+        );
+    }
 }
