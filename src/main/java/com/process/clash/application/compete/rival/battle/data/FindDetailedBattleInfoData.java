@@ -39,20 +39,4 @@ public class FindDetailedBattleInfoData {
             );
         }
     }
-
-    public record Enemy(
-            Long id,
-            String name,
-            String profileImage
-    ) {
-
-        public static Enemy from(User user) {
-
-            return new Enemy(
-                    user.id(),
-                    user.name(),
-                    user.profileImage()
-            );
-        }
-    }
 }

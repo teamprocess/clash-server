@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.compete.rival.battle.dto;
 
+import com.process.clash.application.compete.rival.battle.data.Enemy;
 import com.process.clash.application.compete.rival.battle.data.FindDetailedBattleInfoData;
 
 import java.time.LocalDate;
@@ -8,7 +9,7 @@ public class FindDetailedBattleInfoDto {
 
     public record Response(
             Long id,
-            FindDetailedBattleInfoData.Enemy enemy,
+            Enemy enemy,
             LocalDate expireDate,
             Double myOverallPercentage
     ) {
