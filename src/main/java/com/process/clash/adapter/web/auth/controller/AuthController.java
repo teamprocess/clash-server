@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,8 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController implements AuthControllerDocument {
+
+	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L; // 인증 코드 만료: 5분
 
 	private static final Map<String, String> REDIRECT_MAP = Map.of(
 			"signin", "/api/auth/sign-in",
@@ -42,8 +45,15 @@ public class AuthController implements AuthControllerDocument {
 	@PostMapping("/sign-up")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
 		SignUpData.Command command = request.toCommand();
-		signUpUseCase.execute(command);
-		return ApiResponse.success("회원가입이 완료되었습니다.");
+		String token = signUpUseCase.execute(command);
+		ResponseCookie cookie = ResponseCookie.from("signup_token", token)
+				.httpOnly(true)
+				.secure(true)
+				.path("/")
+				.maxAge(VERIFICATION_CODE_EXPIRATION_MS)
+				.sameSite("Lax")
+				.build();
+		return ApiResponse.success("회원가입 요청 / 이메일 인증 코드 발송이 완료되었습니다.", cookie);
 	}
 
 	@PostMapping("/sign-in")
@@ -73,21 +83,26 @@ public class AuthController implements AuthControllerDocument {
 	}
 
 	@GetMapping("/username-duplicate-check")
-	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(@Valid @RequestBody CheckDuplicateUsernameDto.Request request) {
+	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(@RequestParam String username) {
 
-		CheckDuplicateUsernameData.Command command = request.toCommand();
+		CheckDuplicateUsernameData.Command command = CheckDuplicateUsernameData.Command.fromString(username);
 		boolean duplicate = checkDuplicatedUsernameUseCase.execute(command);
 		CheckDuplicateUsernameDto.Response response = new CheckDuplicateUsernameDto.Response(duplicate);
 		return ApiResponse.success(response);
 	}
 
 	@PostMapping("/verify-email")
-	public ApiResponse<Void> verifyEmail(@Valid @RequestBody VerifyEmailDto.Request request) {
+	public ApiResponse<Void> verifyEmail(@CookieValue(name = "signup_token") String token, @Valid @RequestBody VerifyEmailDto.Request request) {
 
-		VerifyEmailData.Command command = request.toCommand();
+		VerifyEmailData.Command command = request.toCommand(token);
 		verifyEmailUseCase.execute(command);
-		return ApiResponse.success("이메일 인증을 성공했습니다.");
 
+		ResponseCookie deleteCookie = ResponseCookie.from("signup_token", "")
+				.maxAge(0)
+				.path("/")
+				.build();
+
+		return ApiResponse.success("이메일 인증을 성공했습니다.", deleteCookie);
 	}
 
 	@PostMapping({"/{action:signin|signup|signout}"})

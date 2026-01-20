@@ -3,6 +3,7 @@ package com.process.clash.adapter.persistence.user.usergithub;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user_github")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class UserGitHubJpaEntity {
 
     @Id
