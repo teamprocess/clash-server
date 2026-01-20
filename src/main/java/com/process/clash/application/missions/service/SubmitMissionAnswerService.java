@@ -68,16 +68,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
 
         // 정답이면 correctCount 증가
         if (isCorrect) {
-            history = new UserMissionHistory(
-                    history.getId(),
-                    history.getUserId(),
-                    history.getMissionId(),
-                    history.isCleared(),
-                    history.getCorrectCount() + 1,
-                    history.getTotalCount(),
-                    history.getCurrentQuestionIndex()
-            );
-            history.checkCleared();
+            history.recordCorrectAnswer();
         }
 
         // 히스토리 저장

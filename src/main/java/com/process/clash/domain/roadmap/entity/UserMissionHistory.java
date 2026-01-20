@@ -32,6 +32,12 @@ public class UserMissionHistory {
         this.totalCount = totalCount;
     }
 
+    public void recordCorrectAnswer() {
+        this.correctCount = this.correctCount + 1;
+        this.currentQuestionIndex = this.currentQuestionIndex + 1;
+        checkCleared();
+    }
+
     public void checkCleared() {
         this.isCleared = this.correctCount.equals(this.totalCount);
     }
