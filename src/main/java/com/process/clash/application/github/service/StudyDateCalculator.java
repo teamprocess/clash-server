@@ -19,17 +19,20 @@ public class StudyDateCalculator {
     }
 
     public LocalDate toStudyDate(Instant instant) {
+        // dayBoundaryHour 기준으로 "학습일"을 계산
         return instant.atZone(zoneId)
                 .minusHours(dayBoundaryHour)
                 .toLocalDate();
     }
 
     public Instant rangeStartUtc(LocalDate studyDate) {
+        // 학습일 시작 시각(로컬) → UTC 변환
         ZonedDateTime start = studyDate.atTime(dayBoundaryHour, 0).atZone(zoneId);
         return start.toInstant();
     }
 
     public Instant rangeEndExclusiveUtc(LocalDate studyDate) {
+        // 학습일 종료 시각(로컬) → UTC 변환 (exclusive)
         ZonedDateTime end = studyDate.plusDays(1).atTime(dayBoundaryHour, 0).atZone(zoneId);
         return end.toInstant();
     }
@@ -38,6 +41,7 @@ public class StudyDateCalculator {
         if (days <= 0) {
             return List.of();
         }
+        // 현재 시각을 학습일로 환산한 뒤, 최근 N일을 생성
         LocalDate end = toStudyDate(now);
         LocalDate start = end.minusDays(days - 1L);
         List<LocalDate> dates = new ArrayList<>(days);

@@ -21,10 +21,12 @@ public class GithubGraphqlQueries {
     private final Map<String, String> cache = new ConcurrentHashMap<>();
 
     public String get(String name) {
+        // 쿼리 파일을 캐시하여 반복 로딩을 방지
         return cache.computeIfAbsent(name, this::loadQuery);
     }
 
     private String loadQuery(String name) {
+        // classpath 내 graphql/github/{name}.graphql 로딩
         String location = "classpath:graphql/github/" + name + ".graphql";
         Resource resource = resourceLoader.getResource(location);
         try (BufferedReader reader = new BufferedReader(

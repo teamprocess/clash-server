@@ -18,6 +18,7 @@ public class GithubReviewAggregator {
             StudyDateCalculator calculator
     ) {
         Map<LocalDate, Set<String>> prIdsByDate = new HashMap<>();
+        // 같은 날짜에 같은 PR을 여러 번 리뷰한 경우 중복 제거
         for (ReviewContribution contribution : contributions) {
             LocalDate studyDate = calculator.toStudyDate(contribution.occurredAt());
             prIdsByDate
@@ -26,6 +27,7 @@ public class GithubReviewAggregator {
         }
 
         Map<LocalDate, Integer> result = new HashMap<>();
+        // 날짜별로 고유 PR 개수 집계
         for (Map.Entry<LocalDate, Set<String>> entry : prIdsByDate.entrySet()) {
             result.put(entry.getKey(), entry.getValue().size());
         }
