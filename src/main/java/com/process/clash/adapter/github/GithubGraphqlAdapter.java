@@ -48,20 +48,24 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             return List.of();
         }
 
+        // 전체 기간을 먼저 계산해 공통 질의 범위를 재사용
         LocalDate startDate = studyDates.getFirst();
         LocalDate endDate = studyDates.getLast();
         Instant rangeStart = studyDateCalculator.rangeStartUtc(startDate);
         Instant rangeEndExclusive = studyDateCalculator.rangeEndExclusiveUtc(endDate);
         Instant rangeEndInclusive = rangeEndExclusive.minusMillis(1);
 
+        // 날짜별 집계를 위한 초기 버킷 생성
         Map<LocalDate, MutableStats> statsByDate = initializeStats(studyDates);
 
+        // 리뷰/커밋은 전체 기간을 조회한 뒤 날짜별로 집계
         Map<LocalDate, Integer> reviewCounts = fetchReviewCounts(target, rangeStart, rangeEndInclusive);
         mergeReviewCounts(statsByDate, reviewCounts);
 
         Map<LocalDate, CommitStats> commitStats = fetchCommitStats(target, rangeStart, rangeEndInclusive, statsByDate.keySet());
         mergeCommitStats(statsByDate, commitStats);
 
+        // PR/이슈는 전체 기간 검색 결과를 받아 날짜별로 집계 (1000건 초과 시 fallback)
         Map<LocalDate, Integer> prCounts = fetchSearchCountsByDate(
                 target,
                 "is:pr",
@@ -111,6 +115,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     }
 
     private int fetchSearchCount(GithubSyncTarget target, String typeQualifier, Instant startUtc, Instant endInclusive) {
+        // 날짜 범위를 제한한 단건 카운트 조회 (fallback 경로)
         String queryValue = String.format(Locale.ROOT,
                 "%s author:%s created:%s..%s",
                 typeQualifier,
@@ -131,6 +136,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             Set<LocalDate> studyDates
     ) {
         Map<LocalDate, Integer> counts = new HashMap<>();
+        // 전체 기간을 한 번에 조회하고 클라이언트에서 날짜별로 집계
         String queryValue = String.format(Locale.ROOT,
                 "%s author:%s created:%s..%s",
                 typeQualifier,
@@ -155,6 +161,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             if (firstPage) {
                 firstPage = false;
                 int totalCount = search.path("issueCount").asInt(0);
+                // GitHub Search는 1000건 제한이 있어 초과 시 기존 방식으로 정확도 보장
                 if (totalCount > 1000) {
                     return fetchSearchCountsByDateFallback(target, typeQualifier, studyDates);
                 }
@@ -189,6 +196,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             Set<LocalDate> studyDates
     ) {
         Map<LocalDate, Integer> counts = new HashMap<>();
+        // 날짜별 카운트로 정확도 보장 (API 호출 수는 증가)
         for (LocalDate studyDate : studyDates) {
             Instant startUtc = studyDateCalculator.rangeStartUtc(studyDate);
             Instant endUtcExclusive = studyDateCalculator.rangeEndExclusiveUtc(studyDate);
@@ -394,6 +402,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             } catch (GithubRateLimitException ex) {
                 throw ex;
             } catch (WebClientResponseException ex) {
+                // 5xx만 재시도하고 나머지는 즉시 실패 처리
                 if (ex.getStatusCode().is5xxServerError() && attempt < 3) {
                     backoff(attempt);
                     continue;
@@ -405,7 +414,8 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                     continue;
                 }
                 throw ex;
-            } catch (Exception ex) {
+            } catch (java.io.IOException ex) {
+                // 응답 파싱 오류 등은 제한된 재시도로 복구 시도
                 if (attempt < 3) {
                     backoff(attempt);
                     continue;

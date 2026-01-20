@@ -46,6 +46,7 @@ public class GithubDailyStatsSyncService {
             return;
         }
 
+        // 최근 N일의 "학습일" 기준으로 동기화 범위를 계산
         Instant now = clock.instant();
         List<LocalDate> studyDates = studyDateCalculator.recentStudyDates(now, recomputeDays);
         if (studyDates.isEmpty()) {
@@ -53,6 +54,7 @@ public class GithubDailyStatsSyncService {
             return;
         }
 
+        // max-concurrency 설정에 따라 순차/병렬 처리 분기
         if (maxConcurrency <= 1) {
             for (GithubSyncTarget target : targets) {
                 syncTarget(target, studyDates);
@@ -60,6 +62,7 @@ public class GithubDailyStatsSyncService {
             return;
         }
 
+        // 사용자별 동기화를 제한된 스레드풀에서 병렬 실행
         List<CompletableFuture<Void>> futures = targets.stream()
                 .map(target -> CompletableFuture.runAsync(
                         () -> syncTarget(target, studyDates),
@@ -88,6 +91,7 @@ public class GithubDailyStatsSyncService {
             return;
         }
         try {
+            // 기본 토큰 대체 및 사용자 정보 정규화
             GithubSyncTarget resolvedTarget = new GithubSyncTarget(
                     target.userId(),
                     target.githubLogin(),
