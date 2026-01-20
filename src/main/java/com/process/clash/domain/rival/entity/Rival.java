@@ -10,19 +10,19 @@ public record Rival(
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         RivalLinkingStatus rivalLinkingStatus,
-        Long myId,
-        Long opponentId
+        Long firstUserId,
+        Long secondUser2Id
 ) {
 
-    public static Rival createDefault(Long myId, Long opponentId) {
+    public static Rival createDefault(Long firstUserId, Long secondUser2Id) {
 
         return new Rival(
                 null,
                 null,
                 null,
                 RivalLinkingStatus.PENDING,
-                myId,
-                opponentId
+                firstUserId,
+                secondUser2Id
         );
     }
 }

@@ -33,7 +33,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     @Override
     public CompareWithRivalsData.Result execute(CompareWithRivalsData.Command command) {
 
-        List<Long> rivalIds = rivalRepositoryPort.findOpponentIdByMyId(command.actor().id());
+        List<Long> rivalIds = rivalRepositoryPort.findOpponentIdByUserId(command.actor().id());
 
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = switch (command.period()) {

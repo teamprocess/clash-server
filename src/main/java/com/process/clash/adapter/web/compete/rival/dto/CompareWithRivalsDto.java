@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.compete.rival.dto;
 
+import com.process.clash.application.compete.rival.data.CompareWithRivalsData;
 import com.process.clash.application.compete.rival.data.TotalData;
 
 import java.util.List;
@@ -10,5 +11,15 @@ public class CompareWithRivalsDto {
             String category,
             String period,
             List<TotalData> totalData
-    ) {}
+    ) {
+
+        public static Response from(CompareWithRivalsData.Result result) {
+
+            return new Response(
+                    result.category(),
+                    result.period(),
+                    result.totalData()
+            );
+        }
+    }
 }

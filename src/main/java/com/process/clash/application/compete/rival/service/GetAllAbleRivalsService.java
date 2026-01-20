@@ -22,7 +22,7 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
     @Override
     public GetAllAbleRivalsData.Result execute(GetAllAbleRivalsData.Command command) {
 
-        List<Rival> rivals = rivalRepositoryPort.findAllByMyId(command.actor().id());
+        List<Rival> rivals = rivalRepositoryPort.findAllByUserId(command.actor().id());
 
         List<Long> excludedUserIds = Stream.concat(
                 rivals.stream().map(Rival::opponentId),
