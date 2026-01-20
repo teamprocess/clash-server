@@ -1,4 +1,4 @@
-package com.process.clash.application.record.dto;
+package com.process.clash.application.record.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

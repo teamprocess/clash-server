@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.GetRecordSettingData;
+import com.process.clash.application.record.data.GetRecordSettingData;
 import com.process.clash.application.record.port.in.GetRecordSettingUseCase;
 import com.process.clash.application.user.userpomodorosetting.exception.exception.notfound.UserPomodoroSettingNotFoundException;
 import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;

@@ -1,6 +1,6 @@
 package com.process.clash.application.record.port.in;
 
-import com.process.clash.application.record.dto.StopRecordData;
+import com.process.clash.application.record.data.StopRecordData;
 
 public interface StopRecordUseCase {
 

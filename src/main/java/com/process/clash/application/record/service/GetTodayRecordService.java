@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.GetTodayRecordData;
+import com.process.clash.application.record.data.GetTodayRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;

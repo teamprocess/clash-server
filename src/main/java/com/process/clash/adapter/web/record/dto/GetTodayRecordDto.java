@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.record.dto;
 
-import com.process.clash.application.record.dto.GetTodayRecordData;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.process.clash.application.record.data.GetTodayRecordData;
+
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;

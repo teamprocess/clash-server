@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.GetAllTasksData;
+import com.process.clash.application.record.data.GetAllTasksData;
 import com.process.clash.application.record.port.in.GetAllTasksUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;

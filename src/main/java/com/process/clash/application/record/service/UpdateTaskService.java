@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.UpdateTaskData;
+import com.process.clash.application.record.data.UpdateTaskData;
 import com.process.clash.application.record.exception.exception.notfound.TaskNotFoundException;
 import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.UpdateTaskUseCase;

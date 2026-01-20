@@ -1,4 +1,4 @@
-package com.process.clash.application.record.dto;
+package com.process.clash.application.record.data;
 
 import com.process.clash.application.common.actor.Actor;
 import java.time.Instant;
