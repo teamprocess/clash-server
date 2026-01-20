@@ -16,7 +16,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
      */
     @Query("""
         select count(r)
-        from RivalJpaEntity r
+        from MatchJpaEntity r
         where r.rivalLinkingStatus = 'ACCEPTED'
           and (r.firstUser.id = :userId or r.secondUser.id = :userId)
     """)
@@ -35,7 +35,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
             end as userId,
             count(r) as count
         )
-        from RivalJpaEntity r
+        from MatchJpaEntity r
         where r.rivalLinkingStatus = 'ACCEPTED'
           and (r.firstUser.id in :userIds or r.secondUser.id in :userIds)
         group by
@@ -53,7 +53,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
      */
     @Query("""
         select r
-        from RivalJpaEntity r
+        from MatchJpaEntity r
         where r.rivalLinkingStatus = 'ACCEPTED'
           and (r.firstUser.id = :userId or r.secondUser.id = :userId)
     """)
@@ -70,7 +70,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
                 when r.firstUser.id = :userId then r.secondUser.id
                 else r.firstUser.id
             end
-        from RivalJpaEntity r
+        from MatchJpaEntity r
         where r.rivalLinkingStatus = 'ACCEPTED'
           and (r.firstUser.id = :userId or r.secondUser.id = :userId)
     """)
