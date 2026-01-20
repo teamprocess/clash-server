@@ -51,41 +51,4 @@ public class GetSectionDetailsDto {
             return new ChapterVo(vo.id(), vo.title(), vo.orderIndex(), vo.completedMissions(), vo.totalMissions());
         }
     }
-
-    public record MissionVo(
-            Long id,
-            String title,
-            Integer orderIndex,
-            List<QuestionVo> questions
-    ) {
-        public static MissionVo from(GetSectionDetailsData.Result.MissionVo vo) {
-            List<QuestionVo> questions = vo.questions().stream()
-                    .map(QuestionVo::from)
-                    .toList();
-            return new MissionVo(vo.id(), vo.title(), vo.orderIndex(), questions);
-        }
-    }
-
-    public record QuestionVo(
-            Long id,
-            String title,
-            Integer orderIndex,
-            List<ChoiceVo> choices
-    ) {
-        public static QuestionVo from(GetSectionDetailsData.Result.QuestionVo vo) {
-            List<ChoiceVo> choices = vo.choices().stream()
-                    .map(ChoiceVo::from)
-                    .toList();
-            return new QuestionVo(vo.id(), vo.title(), vo.orderIndex(), choices);
-        }
-    }
-
-    public record ChoiceVo(
-            Long id,
-            String content
-    ) {
-        public static ChoiceVo from(GetSectionDetailsData.Result.ChoiceVo vo) {
-            return new ChoiceVo(vo.id(), vo.content());
-        }
-    }
 }
