@@ -50,6 +50,15 @@ public class UserJpaEntity {
     @Column
     private String profileImage;
 
+    @Column(nullable = false)
+    private int totalExp;
+
+    @Column(nullable = false)
+    private int totalCookie;
+
+    @Column(nullable = false)
+    private int totalToken;
+
     @Enumerated(EnumType.STRING)
     private Major major;
 
