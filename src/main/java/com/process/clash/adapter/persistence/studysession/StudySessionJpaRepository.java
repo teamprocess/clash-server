@@ -1,6 +1,5 @@
 package com.process.clash.adapter.persistence.studysession;
 
-import com.process.clash.domain.record.model.entity.StudySession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +17,28 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
 
     Boolean existsByUserIdAndEndedAtIsNull(Long userId);
 
+    Boolean existsByTaskIdAndEndedAtIsNull(Long taskId);
+
     @EntityGraph(attributePaths = {"user", "task"})
     Optional<StudySessionJpaEntity> findByUserIdAndEndedAtIsNull(Long userId);
 
-    List<StudySession> findByUserIdAndStartedAtAfter(Long userId, LocalDateTime startedAtAfter);
+    @EntityGraph(attributePaths = {"user", "task"})
+    List<StudySessionJpaEntity> findAllByEndedAtIsNull();
+
+    @Query("""
+        select s
+        from StudySessionJpaEntity s
+        join fetch s.user
+        join fetch s.task
+        where s.user.id = :userId
+            and s.startedAt < :endTime
+            and (s.endedAt is null or s.endedAt > :startTime)
+    """)
+    List<StudySessionJpaEntity> findAllOverlappingByUserId(
+        @Param("userId") Long userId,
+        @Param("startTime") LocalDateTime startTime,
+        @Param("endTime") LocalDateTime endTime
+    );
 
     @Query(value = """
         select coalesce(sum(
@@ -30,7 +47,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 greatest(s.started_at, cast(:startOfDay as timestamp))
             ))
         ), 0)
-        from study_session s
+        from study_sessions s
         where s.user_id = :userId
             and s.started_at < :endOfDay
             and (s.ended_at is null or s.ended_at > :startOfDay)
@@ -49,7 +66,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                        greatest(s.started_at, cast(:startOfDay as timestamp))
                    ))
                ), 0) as totalSeconds
-        from study_session s
+        from study_sessions s
         where s.user_id IN :userIds
             and s.started_at < :endOfDay
             and (s.ended_at is null or s.ended_at > :startOfDay)

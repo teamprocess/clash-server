@@ -53,6 +53,10 @@ github:
     day-boundary-hour: ${GITHUB_DAY_BOUNDARY_HOUR:6}
     max-concurrency: ${GITHUB_MAX_CONCURRENCY:1}
 
+record:
+  timezone: ${RECORD_TIMEZONE:Asia/Seoul}
+  day-boundary-hour: ${RECORD_DAY_BOUNDARY_HOUR:6}
+
 mail:
   sender:
     address: ${MAIL_SENDER_ADDRESS:no-reply@clash.kr}

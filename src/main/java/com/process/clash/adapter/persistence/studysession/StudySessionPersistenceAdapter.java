@@ -7,7 +7,6 @@ import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.record.exception.exception.notfound.StudySessionNotFound;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.model.entity.StudySession;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +26,20 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     private final TaskJpaRepository taskJpaRepository;
 
     @Override
-    public void save(StudySession studySession) {
+    public StudySession save(StudySession studySession) {
         if (studySession.id() == null) {
             UserJpaEntity user = userJpaRepository.getReferenceById(studySession.user().id());
             TaskJpaEntity task = taskJpaRepository.getReferenceById(studySession.task().id());
             StudySessionJpaEntity studySessionJpaEntity = studySessionJpaMapper.toJpaEntity(studySession, user, task);
             studySessionJpaRepository.save(studySessionJpaEntity);
-            return;
+            return studySessionJpaMapper.toDomain(studySessionJpaEntity);
         }
 
         StudySessionJpaEntity existing = studySessionJpaRepository.findById(studySession.id())
                 .orElseThrow(StudySessionNotFound::new);
         existing.changeEndedAt(studySession.endedAt());
         studySessionJpaRepository.save(existing);
+        return studySessionJpaMapper.toDomain(existing);
     }
 
     @Override
@@ -66,8 +66,22 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     }
 
     @Override
-    public List<StudySession> findAllByUserIdAndStartedAtAfter(Long userId, LocalDate today) {
-        return studySessionJpaRepository.findByUserIdAndStartedAtAfter(userId, today.atTime(6, 0));
+    public List<StudySession> findAllByUserIdAndTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
+        return studySessionJpaRepository.findAllOverlappingByUserId(userId, startTime, endTime).stream()
+            .map(studySessionJpaMapper::toDomain)
+            .toList();
+    }
+
+    @Override
+    public List<StudySession> findAllActiveSessions() {
+        return studySessionJpaRepository.findAllByEndedAtIsNull().stream()
+            .map(studySessionJpaMapper::toDomain)
+            .toList();
+    }
+
+    @Override
+    public Boolean existsActiveSessionByTaskId(Long taskId) {
+        return studySessionJpaRepository.existsByTaskIdAndEndedAtIsNull(taskId);
     }
 
     @Override
