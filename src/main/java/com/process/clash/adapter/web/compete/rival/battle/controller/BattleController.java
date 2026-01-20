@@ -3,16 +3,15 @@ package com.process.clash.adapter.web.compete.rival.battle.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.compete.rival.battle.dto.ApplyBattleDto;
 import com.process.clash.adapter.web.compete.rival.battle.dto.FindAbleRivalsDto;
+import com.process.clash.adapter.web.compete.rival.battle.dto.FindDetailedBattleInfoDto;
 import com.process.clash.adapter.web.compete.rival.battle.dto.ModifyBattleDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.battle.data.ApplyBattleData;
 import com.process.clash.application.compete.rival.battle.data.FindAbleRivalsData;
+import com.process.clash.application.compete.rival.battle.data.FindDetailedBattleInfoData;
 import com.process.clash.application.compete.rival.battle.data.ModifyBattleData;
-import com.process.clash.application.compete.rival.battle.port.in.AcceptBattleUseCase;
-import com.process.clash.application.compete.rival.battle.port.in.ApplyBattleUseCase;
-import com.process.clash.application.compete.rival.battle.port.in.FindAbleRivalsUseCase;
-import com.process.clash.application.compete.rival.battle.port.in.RejectBattleUseCase;
+import com.process.clash.application.compete.rival.battle.port.in.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +25,7 @@ public class BattleController {
     private final AcceptBattleUseCase acceptBattleUseCase;
     private final RejectBattleUseCase rejectBattleUseCase;
     private final FindAbleRivalsUseCase findAbleRivalsUseCase;
+    private final FindDetailedBattleInfoUseCase findDetailedBattleInfoUseCase;
 
     // 라이벌과의 경쟁 - 배틀 신청
     @PostMapping("/apply")
@@ -72,5 +72,18 @@ public class BattleController {
         FindAbleRivalsData.Result result = findAbleRivalsUseCase.execute(command);
         FindAbleRivalsDto.Response response = FindAbleRivalsDto.Response.from(result);
         return ApiResponse.success(response, "배틀을 신청할 라이벌 목록을 성공적으로 반환하였습니다.");
+    }
+
+    // 라이벌과의 경쟁 - 배틀 상세 정보
+    @GetMapping("/{id}")
+    public ApiResponse<FindDetailedBattleInfoDto.Response> findDetailedBattleInfo(
+            @AuthenticatedActor Actor actor,
+            @PathVariable Long id
+    ) {
+
+        FindDetailedBattleInfoData.Command command = FindDetailedBattleInfoData.Command.from(actor, id);
+        FindDetailedBattleInfoData.Result result = findDetailedBattleInfoUseCase.execute(command);
+        FindDetailedBattleInfoDto.Response response = FindDetailedBattleInfoDto.Response.from(result);
+        return ApiResponse.success(response, "라이벌과의 배틀 상세 정보를 성공적으로 반환했습니다.");
     }
 }

@@ -63,4 +63,17 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query(value = """
+        SELECT AVG(earn_exp) as point
+        FROM user_exp_history
+        WHERE fk_user_id = :userId
+          AND date >= :startDate
+          AND date < :endDate
+    """, nativeQuery = true)
+    double findAverageExpByUserIdAndPeriod(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }
