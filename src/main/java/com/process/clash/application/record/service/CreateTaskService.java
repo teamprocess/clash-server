@@ -1,6 +1,6 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.CreateTaskData;
+import com.process.clash.application.record.data.CreateTaskData;
 import com.process.clash.application.record.port.in.CreateTaskUseCase;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;

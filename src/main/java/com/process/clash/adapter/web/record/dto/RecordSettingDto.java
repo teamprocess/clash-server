@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.record.dto;
 
-import com.process.clash.application.record.dto.GetRecordSettingData;
-import com.process.clash.application.record.dto.UpdateRecordSettingData;
+import com.process.clash.application.record.data.GetRecordSettingData;
+import com.process.clash.application.record.data.UpdateRecordSettingData;
 import jakarta.validation.constraints.NotNull;
 import io.swagger.v3.oas.annotations.media.Schema;
 
