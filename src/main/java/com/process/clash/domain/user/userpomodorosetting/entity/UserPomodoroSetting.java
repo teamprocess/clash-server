@@ -24,4 +24,21 @@ public record UserPomodoroSetting(
                 userId
         );
     }
+
+    public UserPomodoroSetting updatePomodoroSetting(
+            boolean pomodoroEnabled,
+            int pomodoroStudyMinute,
+            int pomodoroBreakMinute
+    ) {
+
+        return new UserPomodoroSetting(
+                this.id,
+                this.createdAt,
+                null,
+                pomodoroEnabled,
+                pomodoroStudyMinute,
+                pomodoroBreakMinute,
+                this.userId
+        );
+    }
 }
