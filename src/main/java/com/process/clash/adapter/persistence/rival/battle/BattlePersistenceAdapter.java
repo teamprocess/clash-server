@@ -53,9 +53,17 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
 
     @Override
     public List<Battle> findByUserId(Long userId) {
+
         return battleJpaRepository.findByUserId(userId)
                 .stream()
                 .map(battleJpaMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Optional<Battle> findActiveByUserId(Long userId) {
+
+        return battleJpaRepository.findActiveByUserId(userId)
+                .map(battleJpaMapper::toDomain);
     }
 }

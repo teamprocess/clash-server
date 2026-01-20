@@ -12,4 +12,5 @@ public interface BattleRepositoryPort {
     Optional<Battle> findById(Long id);
     boolean existsActiveBattleByUserId(Long userId);
     List<Battle> findByUserId(Long userId);
+    Optional<Battle> findActiveByUserId(Long userId);
 }

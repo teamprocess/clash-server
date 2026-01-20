@@ -65,13 +65,13 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     );
 
     @Query(value = """
-        SELECT AVG(earn_exp) as point
+        SELECT COALESCE(AVG(earn_exp), 0) as point
         FROM user_exp_history
         WHERE fk_user_id = :userId
           AND date >= :startDate
           AND date < :endDate
     """, nativeQuery = true)
-    double findAverageExpByUserIdAndPeriod(
+    Double findAverageExpByUserIdAndCategoryAndPeriod(
             @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate

@@ -51,4 +51,10 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
 
         return userStudyTimeJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate);
     }
+
+    @Override
+    public double findAverageStudyTimeByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        return userStudyTimeJpaRepository.findAverageStudyTimeByUserIdAndPeriod(userId, startDate, endDate);
+    }
 }

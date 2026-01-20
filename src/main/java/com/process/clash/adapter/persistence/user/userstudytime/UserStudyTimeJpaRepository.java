@@ -66,4 +66,17 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query(value = """
+        SELECT COALESCE(AVG(study_time), 0)
+        FROM user_study_time
+        WHERE fk_user_id = :userId
+          AND date >= :startDate
+          AND date < :endDate
+    """, nativeQuery = true)
+    double findAverageStudyTimeByUserIdAndPeriod(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }

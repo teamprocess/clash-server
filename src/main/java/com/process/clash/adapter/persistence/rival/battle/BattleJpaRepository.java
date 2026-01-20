@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long> {
@@ -19,11 +20,21 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     """)
     boolean existsActiveBattleByUserId(@Param("userId") Long userId);
 
-    @Query("SELECT b FROM BattleJpaEntity b " +
-            "JOIN FETCH b.rival r " +
-            "JOIN FETCH r.firstUser " +
-            "JOIN FETCH r.secondUser " +
-            "LEFT JOIN FETCH b.winner " +
-            "WHERE r.firstUser.id = :userId OR r.secondUser.id = :userId")
+    @Query("""
+        select b
+        from BattleJpaEntity b
+        where b.rival.firstUser.id = :userId
+            or b.rival.secondUser.id = :userId
+    """)
     List<BattleJpaEntity> findByUserId(@Param("userId") Long userId);
+
+    @Query("""
+        select b
+        from BattleJpaEntity b
+        where b.battleStatus <> 'DONE'
+            and (b.rival.firstUser.id = :userId
+                or b.rival.secondUser.id = :userId)
+    """)
+    Optional<BattleJpaEntity> findActiveByUserId(@Param("userId") Long userId);
 }
+
