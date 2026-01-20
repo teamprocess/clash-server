@@ -292,7 +292,6 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
         for (int attempt = 1; attempt <= 3; attempt++) {
             try {
-                System.out.println(request);
                 String response = githubWebClient.post()
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + target.accessToken())
@@ -300,7 +299,6 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                         .retrieve()
                         .bodyToMono(String.class)
                         .block();
-                System.out.println(response);
 
                 JsonNode root = objectMapper.readTree(response);
                 handleGraphqlErrors(root, target, queryName);
