@@ -3,6 +3,8 @@ package com.process.clash.adapter.web.missions.controller;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.missions.docs.controller.MissionControllerDocument;
 import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
+import com.process.clash.adapter.web.security.AuthenticatedActor;
+import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.missions.port.in.SubmitMissionAnswerUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +18,13 @@ public class MissionController implements MissionControllerDocument {
 
     @PostMapping("/{missionId}/questions/{questionId}/submit")
     public ApiResponse<MissionSubmitDto.Response> submitAnswer(
+            @AuthenticatedActor Actor actor,
             @PathVariable Long missionId,
             @PathVariable Long questionId,
             @RequestBody MissionSubmitDto.Request request
     ) {
         SubmitMissionAnswerUseCase.Command command = new SubmitMissionAnswerUseCase.Command(
+                actor,
                 missionId,
                 questionId,
                 request.submittedChoiceId()

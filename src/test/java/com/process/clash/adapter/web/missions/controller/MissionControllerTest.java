@@ -2,22 +2,29 @@ package com.process.clash.adapter.web.missions.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
+import com.process.clash.adapter.web.security.AuthenticatedActor;
+import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.missions.port.in.SubmitMissionAnswerUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -25,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MissionControllerTest {
 
     @Autowired
-    private WebApplicationContext ctx;
+    private MissionController missionController;
 
     private MockMvc mockMvc;
 
@@ -37,11 +44,27 @@ public class MissionControllerTest {
 
     private void initMockMvc() {
         if (this.mockMvc == null) {
-            this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+            this.mockMvc = MockMvcBuilders.standaloneSetup(missionController)
+                    .setCustomArgumentResolvers(new HandlerMethodArgumentResolver() {
+                        @Override
+                        public boolean supportsParameter(MethodParameter parameter) {
+                            return parameter.hasParameterAnnotation(AuthenticatedActor.class);
+                        }
+
+                        @Override
+                        public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                                      org.springframework.web.context.request.NativeWebRequest webRequest,
+                                                      WebDataBinderFactory binderFactory) throws Exception {
+                            // Mock Actor
+                            return new Actor(1L);
+                        }
+                    })
+                    .build();
         }
     }
 
     @Test
+    @WithMockUser
     void submitAnswer_shouldSucceed() throws Exception {
         initMockMvc();
         // Given
@@ -62,7 +85,6 @@ public class MissionControllerTest {
         mockMvc.perform(post("/api/missions/{missionId}/questions/{questionId}/submit", missionId, questionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 }

@@ -28,13 +28,13 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         Mission mission = missionRepositoryPort.findByIdWithQuestionsAndChoices(command.missionId())
                 .orElseThrow(MissionNotFoundException::new);
 
-        // 질문 조회 (임시: 첫 번째 질문으로 가정)
-        List<MissionQuestion> questions = mission.getQuestions();
-        if (questions == null || questions.isEmpty()) {
-            throw new QuestionNotFoundException();
-        }
-
-        MissionQuestion question = questions.get(0); // command.questionId() 사용해야 하지만 임시
+        // 질문 조회
+        MissionQuestion question = Optional.ofNullable(mission.getQuestions())
+                .orElse(List.of())
+                .stream()
+                .filter(q -> q.getId().equals(command.questionId()))
+                .findFirst()
+                .orElseThrow(QuestionNotFoundException::new);
 
         // 선택지 검증
         List<Choice> choices = Optional.ofNullable(question.getChoices()).orElse(List.of());
@@ -54,7 +54,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
 
         // 진행 상황 계산 (임시)
         int currentProgress = 1;
-        int totalQuestion = questions.size();
+        int totalQuestion = Optional.ofNullable(mission.getQuestions()).map(List::size).orElse(0);
 
         return new Result(
                 isCorrect,

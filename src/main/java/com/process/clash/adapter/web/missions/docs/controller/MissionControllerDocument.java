@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.missions.docs.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
+import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,6 +39,7 @@ public interface MissionControllerDocument {
             )
     })
     ApiResponse<MissionSubmitDto.Response> submitAnswer(
+            @Parameter(description = "인증된 사용자") Actor actor,
             @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId,
             @Parameter(description = "질문 ID", example = "1") @PathVariable Long questionId,
             @RequestBody(description = "제출할 선택지 ID", required = true,
