@@ -35,27 +35,27 @@ public class GithubDailyStatsJpaEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "study_date", nullable = false)
+    @Column(nullable = false)
     private LocalDate studyDate;
 
-    @Column(name = "commit_count", nullable = false)
+    @Column(nullable = false)
     private int commitCount;
 
-    @Column(name = "pr_count", nullable = false)
+    @Column(nullable = false)
     private int prCount;
 
-    @Column(name = "issue_count", nullable = false)
+    @Column(nullable = false)
     private int issueCount;
 
-    @Column(name = "review_count", nullable = false)
+    @Column(nullable = false)
     private int reviewCount;
 
-    @Column(name = "additions", nullable = false)
+    @Column(nullable = false)
     private long additions;
 
-    @Column(name = "deletions", nullable = false)
+    @Column(nullable = false)
     private long deletions;
 
-    @Column(name = "synced_at", nullable = false)
+    @Column(nullable = false)
     private Instant syncedAt;
 }
