@@ -5,9 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-
 @Repository
 public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long> {
+
+    @Query("""
+        select case when count(b) > 0 then true else false end
+        from BattleJpaEntity b
+        where b.battleStatus <> 'DONE'
+          and (b.rival.firstUser.id = :userId
+            or b.rival.secondUser.id = :userId)
+    """)
+    boolean existsActiveBattleByUserId(@Param("userId") Long userId);
 }
