@@ -4,7 +4,6 @@ import com.process.clash.application.roadmap.chapter.data.GetChapterDetailsData;
 import com.process.clash.application.roadmap.chapter.port.in.GetChapterDetailsUseCase;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.ChapterNotFoundException;
 import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
-import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
 import com.process.clash.domain.roadmap.entity.Chapter;
 import com.process.clash.domain.roadmap.entity.Mission;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +21,6 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
 
     private final ChapterRepositoryPort chapterRepositoryPort;
     private final UserMissionHistoryRepositoryPort userMissionHistoryRepositoryPort;
-    private final MissionRepositoryPort missionRepositoryPort;
 
     @Override
     public GetChapterDetailsData.Result execute(GetChapterDetailsData.Command command) {
@@ -32,7 +29,7 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
 
         Long userId = command.actor().id();
 
-        List<Mission> missions = missionRepositoryPort.findAllByChapterId(chapter.getId());
+        List<Mission> missions = chapter.getMissions() != null ? chapter.getMissions() : List.of();
         List<Long> missionIds = missions.stream()
                 .map(Mission::getId)
                 .toList();
