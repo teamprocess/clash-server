@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 public record GithubDailyStats(
+        Long id,
         Long userId,
         LocalDate studyDate,
         int commitCount,
@@ -14,4 +15,6 @@ public record GithubDailyStats(
         long deletions,
         Instant syncedAt
 ) {
+
+    public int getTotalContributionCount(Long userId)
 }
