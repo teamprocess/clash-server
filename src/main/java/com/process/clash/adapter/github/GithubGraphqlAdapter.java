@@ -3,11 +3,14 @@ package com.process.clash.adapter.github;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.process.clash.application.github.exception.GithubRateLimitException;
+import com.process.clash.application.github.exception.exception.internalserver.GithubGraphqlRequestFailedException;
+import com.process.clash.application.github.exception.exception.internalserver.GithubGraphqlResponseErrorException;
 import com.process.clash.application.github.model.GithubSyncTarget;
 import com.process.clash.application.github.port.out.GithubStatsFetchPort;
 import com.process.clash.application.github.service.GithubReviewAggregator;
 import com.process.clash.application.github.service.StudyDateCalculator;
 import com.process.clash.domain.github.entity.GithubDailyStats;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -426,16 +429,16 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                     continue;
                 }
                 throw ex;
-            } catch (java.io.IOException ex) {
+            } catch (IOException ex) {
                 // 응답 파싱 오류 등은 제한된 재시도로 복구 시도
                 if (attempt < 3) {
                     backoff(attempt);
                     continue;
                 }
-                throw new IllegalStateException("GitHub GraphQL request failed. query=" + queryName, ex);
+                throw new GithubGraphqlRequestFailedException(ex);
             }
         }
-        throw new IllegalStateException("GitHub GraphQL request failed. query=" + queryName);
+        throw new GithubGraphqlRequestFailedException();
     }
 
     private void handleGraphqlErrors(JsonNode root, GithubSyncTarget target, String queryName) {
@@ -451,10 +454,9 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             if (combined.toLowerCase(Locale.ROOT).contains("rate limit") ||
                     combined.toLowerCase(Locale.ROOT).contains("abuse")) {
                 Instant resetAt = parseRateLimitResetAt(root.path("data"));
-                throw new GithubRateLimitException("GitHub rate limit hit: " + combined, resetAt);
+                throw new GithubRateLimitException("GitHub 요청 제한에 도달했습니다: " + combined, resetAt);
             }
-            throw new IllegalStateException("GitHub GraphQL error. query=" + queryName + " errors=" + combined
-                    + " userId=" + target.userId());
+            throw new GithubGraphqlResponseErrorException();
         }
     }
 
@@ -469,7 +471,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     private void logRateLimit(JsonNode data, String queryName, Long userId) {
         JsonNode rateLimit = data.path("rateLimit");
         if (!rateLimit.isMissingNode()) {
-            log.debug("GitHub rateLimit. query={}, userId={}, cost={}, remaining={}, resetAt={}",
+            log.debug("GitHub 요청 제한 상태. query={}, userId={}, cost={}, remaining={}, resetAt={}",
                     queryName,
                     userId,
                     rateLimit.path("cost").asInt(),

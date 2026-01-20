@@ -1,5 +1,6 @@
 package com.process.clash.adapter.github;
 
+import com.process.clash.application.github.exception.exception.internalserver.GithubGraphqlQueryLoadException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -34,7 +35,7 @@ public class GithubGraphqlQueries {
         )) {
             return reader.lines().collect(Collectors.joining("\n"));
         } catch (IOException ex) {
-            throw new IllegalStateException("Failed to load GraphQL query: " + name, ex);
+            throw new GithubGraphqlQueryLoadException(ex);
         }
     }
 }

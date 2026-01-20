@@ -42,7 +42,7 @@ public class GithubDailyStatsSyncService {
     public void syncRecentDays() {
         List<GithubSyncTarget> targets = syncTargetPort.findSyncTargets();
         if (targets.isEmpty()) {
-            log.info("No GitHub sync targets found.");
+            log.info("GitHub 동기화 대상이 없습니다.");
             return;
         }
 
@@ -50,7 +50,7 @@ public class GithubDailyStatsSyncService {
         Instant now = clock.instant();
         List<LocalDate> studyDates = studyDateCalculator.recentStudyDates(now, recomputeDays);
         if (studyDates.isEmpty()) {
-            log.info("No study dates to recompute. recomputeDays={}", recomputeDays);
+            log.info("재계산할 학습일이 없습니다. recomputeDays={}", recomputeDays);
             return;
         }
 
@@ -86,7 +86,7 @@ public class GithubDailyStatsSyncService {
     private void syncTarget(GithubSyncTarget target, List<LocalDate> studyDates) {
         String accessToken = resolveAccessToken(target);
         if (accessToken == null || accessToken.isBlank()) {
-            log.warn("Skipping GitHub sync: missing access token. userId={}, login={}",
+            log.warn("GitHub 동기화를 건너뜁니다. 액세스 토큰이 없습니다. userId={}, login={}",
                     target.userId(), target.githubLogin());
             return;
         }
@@ -103,13 +103,13 @@ public class GithubDailyStatsSyncService {
             if (!stats.isEmpty()) {
                 statsStorePort.upsertAll(stats);
             }
-            log.info("GitHub daily stats sync completed. userId={}, days={}",
+            log.info("GitHub 일일 통계 동기화 완료. userId={}, days={}",
                     target.userId(), studyDates.size());
         } catch (GithubRateLimitException ex) {
-            log.warn("GitHub rate limit hit. userId={}, resetAt={}",
+            log.warn("GitHub 요청 제한에 도달했습니다. userId={}, resetAt={}",
                     target.userId(), ex.getResetAt());
         } catch (Exception ex) {
-            log.error("GitHub daily stats sync failed. userId={}, login={}",
+            log.error("GitHub 일일 통계 동기화 실패. userId={}, login={}",
                     target.userId(), target.githubLogin(), ex);
         }
     }
