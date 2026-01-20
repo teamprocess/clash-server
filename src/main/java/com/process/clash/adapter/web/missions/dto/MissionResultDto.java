@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.missions.dto;
 
-import com.process.clash.application.missions.data.GetMissionResultData;
+import com.process.clash.application.roadmap.missions.data.GetMissionResultData;
 
 public class MissionResultDto {
 

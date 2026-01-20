@@ -1,4 +1,4 @@
-package com.process.clash.application.missions.service;
+package com.process.clash.application.roadmap.missions.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,11 +6,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.missions.data.SubmitMissionAnswerData;
-import com.process.clash.application.missions.exception.exception.badrequest.InvalidChoiceException;
-import com.process.clash.application.missions.exception.exception.notfound.MissionNotFoundException;
-import com.process.clash.application.missions.exception.exception.notfound.QuestionNotFoundException;
-import com.process.clash.application.missions.port.in.SubmitMissionAnswerUseCase;
+import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
+import com.process.clash.application.roadmap.missions.exception.exception.badrequest.InvalidChoiceException;
+import com.process.clash.application.roadmap.missions.exception.exception.notfound.MissionNotFoundException;
+import com.process.clash.application.roadmap.missions.exception.exception.notfound.QuestionNotFoundException;
+import com.process.clash.application.roadmap.missions.port.in.SubmitMissionAnswerUseCase;
 import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
 import com.process.clash.domain.roadmap.entity.UserMissionHistory;
@@ -62,8 +62,8 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         UserMissionHistory history = userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), command.missionId())
                 .orElseGet(() -> {
                     UserMissionHistory newHistory = UserMissionHistory.create(
-                            actor.id(), 
-                            command.missionId(), 
+                            actor.id(),
+                            command.missionId(),
                             Optional.ofNullable(mission.getQuestions()).map(List::size).orElse(0)
                     );
                     return newHistory;

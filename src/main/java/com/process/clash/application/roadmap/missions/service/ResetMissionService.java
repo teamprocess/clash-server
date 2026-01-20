@@ -1,9 +1,9 @@
-package com.process.clash.application.missions.service;
+package com.process.clash.application.roadmap.missions.service;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.missions.data.ResetMissionData;
-import com.process.clash.application.missions.exception.exception.notfound.MissionNotFoundException;
-import com.process.clash.application.missions.port.in.ResetMissionUseCase;
+import com.process.clash.application.roadmap.missions.data.ResetMissionData;
+import com.process.clash.application.roadmap.missions.exception.exception.notfound.MissionNotFoundException;
+import com.process.clash.application.roadmap.missions.port.in.ResetMissionUseCase;
 import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
 import com.process.clash.domain.roadmap.entity.UserMissionHistory;
@@ -29,8 +29,8 @@ public class ResetMissionService implements ResetMissionUseCase {
         // 기존 히스토리 삭제 또는 초기화
         userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), missionId)
                 .ifPresent(history -> {
-                    UserMissionHistory resetHistory = new UserMissionHistory(history.getId(), history.getUserId(), history.getMissionId(), false, 0, history.getTotalCount(), 0);
-                    userMissionHistoryRepositoryPort.save(resetHistory);
+                    history.reset();
+                    userMissionHistoryRepositoryPort.save(history);
                 });
     }
 }

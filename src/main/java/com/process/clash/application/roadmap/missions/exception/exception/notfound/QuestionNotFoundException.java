@@ -1,7 +1,7 @@
-package com.process.clash.application.missions.exception.exception.notfound;
+package com.process.clash.application.roadmap.missions.exception.exception.notfound;
 
 import com.process.clash.application.common.exception.exception.NotFoundException;
-import com.process.clash.application.missions.exception.status.MissionStatusCode;
+import com.process.clash.application.roadmap.missions.exception.status.MissionStatusCode;
 
 public class QuestionNotFoundException extends NotFoundException {
 

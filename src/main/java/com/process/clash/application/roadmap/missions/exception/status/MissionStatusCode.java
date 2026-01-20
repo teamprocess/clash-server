@@ -1,4 +1,4 @@
-package com.process.clash.application.missions.exception.status;
+package com.process.clash.application.roadmap.missions.exception.status;
 
 import com.process.clash.application.common.exception.statuscode.ErrorCategory;
 import com.process.clash.application.common.exception.statuscode.StatusCode;

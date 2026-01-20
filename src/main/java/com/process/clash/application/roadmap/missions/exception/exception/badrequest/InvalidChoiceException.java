@@ -1,7 +1,7 @@
-package com.process.clash.application.missions.exception.exception.badrequest;
+package com.process.clash.application.roadmap.missions.exception.exception.badrequest;
 
 import com.process.clash.application.common.exception.exception.BadRequestException;
-import com.process.clash.application.missions.exception.status.MissionStatusCode;
+import com.process.clash.application.roadmap.missions.exception.status.MissionStatusCode;
 
 public class InvalidChoiceException extends BadRequestException {
 

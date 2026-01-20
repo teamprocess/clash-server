@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.missions.dto;
 
-import com.process.clash.application.missions.data.SubmitMissionAnswerData;
+import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
 
 public class MissionSubmitDto {
 

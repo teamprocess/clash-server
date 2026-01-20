@@ -41,4 +41,10 @@ public class UserMissionHistory {
     public void checkCleared() {
         this.isCleared = this.correctCount.equals(this.totalCount);
     }
+
+    public void reset() {
+        this.isCleared = false;
+        this.correctCount = 0;
+        this.currentQuestionIndex = 0;
+    }
 }

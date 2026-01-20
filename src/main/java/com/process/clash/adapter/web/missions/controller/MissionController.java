@@ -6,12 +6,12 @@ import com.process.clash.adapter.web.missions.dto.MissionResultDto;
 import com.process.clash.adapter.web.missions.dto.MissionSubmitDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.missions.data.GetMissionResultData;
-import com.process.clash.application.missions.data.ResetMissionData;
-import com.process.clash.application.missions.data.SubmitMissionAnswerData;
-import com.process.clash.application.missions.port.in.GetMissionResultUseCase;
-import com.process.clash.application.missions.port.in.ResetMissionUseCase;
-import com.process.clash.application.missions.port.in.SubmitMissionAnswerUseCase;
+import com.process.clash.application.roadmap.missions.data.GetMissionResultData;
+import com.process.clash.application.roadmap.missions.data.ResetMissionData;
+import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
+import com.process.clash.application.roadmap.missions.port.in.GetMissionResultUseCase;
+import com.process.clash.application.roadmap.missions.port.in.ResetMissionUseCase;
+import com.process.clash.application.roadmap.missions.port.in.SubmitMissionAnswerUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

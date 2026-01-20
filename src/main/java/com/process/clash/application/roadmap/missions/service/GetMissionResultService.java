@@ -1,9 +1,9 @@
-package com.process.clash.application.missions.service;
+package com.process.clash.application.roadmap.missions.service;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.missions.data.GetMissionResultData;
-import com.process.clash.application.missions.exception.exception.notfound.MissionNotFoundException;
-import com.process.clash.application.missions.port.in.GetMissionResultUseCase;
+import com.process.clash.application.roadmap.missions.data.GetMissionResultData;
+import com.process.clash.application.roadmap.missions.exception.exception.notfound.MissionNotFoundException;
+import com.process.clash.application.roadmap.missions.port.in.GetMissionResultUseCase;
 import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
 import com.process.clash.domain.roadmap.entity.Mission;

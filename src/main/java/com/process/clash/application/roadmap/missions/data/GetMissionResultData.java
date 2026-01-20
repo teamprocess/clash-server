@@ -1,4 +1,4 @@
-package com.process.clash.application.missions.data;
+package com.process.clash.application.roadmap.missions.data;
 
 import com.process.clash.application.common.actor.Actor;
 
