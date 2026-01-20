@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
@@ -36,6 +37,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
     private final UserSectionProgressRepositoryPort userSectionProgressRepositoryPort;
 
     @Override
+    @Transactional
     public SubmitMissionAnswerData.Result execute(SubmitMissionAnswerData.Command command) {
         Actor actor = command.actor();
         // 미션 조회 (N+1 방지: questions와 choices 함께 fetch)
@@ -105,6 +107,11 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 히스토리 저장
         userMissionHistoryRepositoryPort.save(history);
 
+        // 챕터 완료 여부 확인 및 섹션 업데이트
+        if (history.getCurrentQuestionIndex() >= history.getTotalCount()) {
+            updateSectionProgress(actor.id(), chapter, progress);
+        }
+
         // 진행 상황 계산
         int currentProgress = history.getCurrentQuestionIndex();
         int totalQuestion = history.getTotalCount();
@@ -116,5 +123,38 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
                 totalQuestion,
                 correctChoiceId
         );
+    }
+
+    private void updateSectionProgress(Long userId, Chapter chapter, UserSectionProgress progress) {
+        // 현재 챕터에 속한 모든 미션 조회
+        List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
+        List<Long> missionIdsInChapter = missionsInChapter.stream()
+                .map(Mission::getId)
+                .toList();
+
+        // 해당 미션들이 모두 클리어(isCleared=true) 되었는지 확인
+        List<UserMissionHistory> histories = userMissionHistoryRepositoryPort.findAllByUserId(userId);
+        long clearedCount = histories.stream()
+                .filter(h -> missionIdsInChapter.contains(h.getMissionId()))
+                .filter(UserMissionHistory::isCleared)
+                .count();
+
+        // 챕터 내 모든 미션이 완료되었다면 다음 단계로 진행
+        if (clearedCount == missionIdsInChapter.size()) {
+            // 현재 섹션 내에서 다음 순서(OrderIndex)의 챕터를 찾음
+            List<Chapter> chaptersInSection = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
+            Optional<Chapter> nextChapterOpt = chaptersInSection.stream()
+                    .filter(c -> c.getOrderIndex() > chapter.getOrderIndex())
+                    .min((c1, c2) -> Integer.compare(c1.getOrderIndex(), c2.getOrderIndex()));
+
+            if (nextChapterOpt.isPresent()) {
+                // 다음 챕터가 있으면 currentChapterId를 갱신하고 완료 챕터 수 +1
+                progress.moveToNextChapter(nextChapterOpt.get().getId());
+            } else {
+                // 더 이상 다음 챕터가 없으면 섹션 전체 완료 처리
+                progress.completeSection();
+            }
+            userSectionProgressRepositoryPort.save(progress);
+        }
     }
 }
