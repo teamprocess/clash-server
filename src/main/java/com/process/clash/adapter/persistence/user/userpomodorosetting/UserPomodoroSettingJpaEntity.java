@@ -40,6 +40,6 @@ public class UserPomodoroSettingJpaEntity {
     private int pomodoroBreakMinute;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_user_id", nullable = false)
+    @JoinColumn(name = "fk_user_id", nullable = false, unique = true)
     private UserJpaEntity user;
 }

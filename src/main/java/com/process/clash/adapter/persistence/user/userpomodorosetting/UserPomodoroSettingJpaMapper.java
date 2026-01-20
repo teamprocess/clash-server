@@ -10,7 +10,7 @@ public class UserPomodoroSettingJpaMapper {
     public UserPomodoroSettingJpaEntity toJpaEntity(UserPomodoroSetting userPomodoroSetting, UserJpaEntity userJpaEntity) {
 
         return new UserPomodoroSettingJpaEntity(
-                userPomodoroSetting.userId(),
+                userPomodoroSetting.id(),
                 userPomodoroSetting.createdAt(),
                 userPomodoroSetting.updatedAt(),
                 userPomodoroSetting.pomodoroEnabled(),

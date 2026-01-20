@@ -27,12 +27,12 @@ public class UpdateRecordSettingService implements UpdateRecordSettingUseCase {
                 command.breakMinute()
         );
 
-        UserPomodoroSetting saveddUserPomodoroSetting = userPomodoroSettingRepositoryPort.save(updatedUserPomodoroSetting);
+        UserPomodoroSetting savedUserPomodoroSetting = userPomodoroSettingRepositoryPort.save(updatedUserPomodoroSetting);
 
         return UpdateRecordSettingData.Result.create(
-                saveddUserPomodoroSetting.pomodoroEnabled(),
-                saveddUserPomodoroSetting.pomodoroStudyMinute(),
-                saveddUserPomodoroSetting.pomodoroBreakMinute()
+                savedUserPomodoroSetting.pomodoroEnabled(),
+                savedUserPomodoroSetting.pomodoroStudyMinute(),
+                savedUserPomodoroSetting.pomodoroBreakMinute()
         );
     }
 }
