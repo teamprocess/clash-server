@@ -11,6 +11,7 @@ import com.process.clash.domain.roadmap.entity.UserMissionHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,13 +27,17 @@ public class GetMissionResultService implements GetMissionResultUseCase {
         Long missionId = command.missionId();
 
         // 미션 조회
-        Mission mission = missionRepositoryPort.findById(missionId)
+        Mission mission = missionRepositoryPort.findByIdWithQuestionsAndChoices(missionId)
                 .orElseThrow(MissionNotFoundException::new);
 
         // 사용자 미션 히스토리 조회
         Optional<UserMissionHistory> historyOpt = userMissionHistoryRepositoryPort.findByUserIdAndMissionId(actor.id(), missionId);
 
-        UserMissionHistory history = historyOpt.orElseGet(() -> UserMissionHistory.create(actor.id(), missionId));
+        UserMissionHistory history = historyOpt.orElseGet(() -> UserMissionHistory.create(
+                actor.id(), 
+                missionId, 
+                Optional.ofNullable(mission.getQuestions()).map(List::size).orElse(0)
+        ));
 
         // 다음 미션 ID 계산 (임시로 null)
         Long nextMissionId = null; // TODO: 로직 추가

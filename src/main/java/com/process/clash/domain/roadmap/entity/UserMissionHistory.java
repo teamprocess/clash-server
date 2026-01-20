@@ -24,8 +24,8 @@ public class UserMissionHistory {
 
     private Integer currentQuestionIndex;
 
-    public static UserMissionHistory create(Long userId, Long missionId) {
-        return new UserMissionHistory(null, userId, missionId, false, 0, 0, 0);
+    public static UserMissionHistory create(Long userId, Long missionId, Integer totalCount) {
+        return new UserMissionHistory(null, userId, missionId, false, 0, totalCount, 0);
     }
 
     public void setTotalCount(Integer totalCount) {
