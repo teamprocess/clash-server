@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.rival;
 
+import com.process.clash.application.compete.rival.data.RivalInfoForGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,4 +36,17 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     );
 
     List<RivalJpaEntity> findAllByMyId(Long myId);
+
+    @Query("""
+        select new com.process.clash.application.compete.rival.data.RivalInfoForGraph(
+            r.opponent.id,
+            r.opponent.name
+        )
+        from RivalJpaEntity r
+        where r.my.id = :myId
+            and r.rivalLinkingStatus = 'ACCEPTED'
+    """)
+    List<RivalInfoForGraph> findRivalInfoForGraphByMyId(
+            @Param("myId") Long myId
+    );
 }

@@ -8,14 +8,13 @@ import com.process.clash.adapter.web.compete.rival.dto.GetAllAbleRivalsDto;
 import com.process.clash.adapter.web.compete.rival.dto.SearchRivalByKeywordDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.compete.rival.data.GetMyRivalActingData;
-import com.process.clash.application.compete.rival.data.ApplyRivalData;
-import com.process.clash.application.compete.rival.data.GetAllAbleRivalsData;
-import com.process.clash.application.compete.rival.data.SearchRivalByKeywordData;
+import com.process.clash.application.compete.rival.data.*;
 import com.process.clash.application.compete.rival.port.in.GetMyRivalActingUseCase;
 import com.process.clash.application.compete.rival.port.in.ApplyRivalUseCase;
 import com.process.clash.application.compete.rival.port.in.GetAllAbleRivalsUseCase;
 import com.process.clash.application.compete.rival.port.in.SearchRivalByKeywordUseCase;
+import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.domain.roadmap.entity.Category;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -78,5 +77,16 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
         ApplyRivalData.Command command = request.toCommand(actor);
         applyRivalUseCase.execute(command);
         return ApiResponse.created("라이벌을 성공적으로 추가했습니다.");
+    }
+
+    // 라이벌과의 경쟁 - 라이벌과의 비교
+    @GetMapping("/compare/category/{category}/period/{period}")
+    public ApiResponse<Void> compareWithRivals(
+            @AuthenticatedActor Actor actor,
+            @PathVariable Category category,
+            @PathVariable PeriodCategory period
+    ) {
+
+        CompareWithRivalsData.Command command = CompareWithRivalsData.Command.from(actor, category, period);
     }
 }

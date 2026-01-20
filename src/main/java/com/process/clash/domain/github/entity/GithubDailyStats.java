@@ -16,5 +16,8 @@ public record GithubDailyStats(
         Instant syncedAt
 ) {
 
-    public int getTotalContributionCount(Long userId)
+    public int getTotalContributionCount() {
+
+        return this.commitCount + this.prCount + this.reviewedPrCount;
+    }
 }
