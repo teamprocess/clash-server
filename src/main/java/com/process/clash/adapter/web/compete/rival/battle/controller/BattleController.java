@@ -6,6 +6,7 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.battle.data.*;
 import com.process.clash.application.compete.rival.battle.port.in.*;
+import com.process.clash.domain.common.enums.TargetCategory;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class BattleController {
     private final FindAbleRivalsUseCase findAbleRivalsUseCase;
     private final FindDetailedBattleInfoUseCase findDetailedBattleInfoUseCase;
     private final FindAllBattleInfoUseCase findAllBattleInfoUseCase;
+    private final AnalyzeBattleInfoUseCase analyzeBattleInfoUseCase;
 
     // 라이벌과의 경쟁 - 배틀 신청
     @PostMapping("/apply")
@@ -92,5 +94,18 @@ public class BattleController {
         FindAllBattleInfoData.Result result = findAllBattleInfoUseCase.execute(command);
         FindAllBattleInfoDto.Response response = FindAllBattleInfoDto.Response.from(result);
         return ApiResponse.success(response, "라이벌과의 배틀 정보를 성공적으로 반환했습니다.");
+    }
+
+    // 라이벌과의 경쟁 - 배틀 정보 분석
+    @GetMapping("/{id}/analyze/category/{category}")
+    public ApiResponse<AnalyzeBattleInfoDto.Response> analyzeBattleInfo(
+            @AuthenticatedActor Actor actor,
+            @PathVariable TargetCategory category
+    ) {
+
+        AnalyzeBattleInfoData.Command command = AnalyzeBattleInfoData.Command.from(actor, category);
+        AnalyzeBattleInfoData.Result result = analyzeBattleInfoUseCase.execute(command);
+        AnalyzeBattleInfoDto.Response response = AnalyzeBattleInfoDto.Response.from(result);
+        return ApiResponse.success(response, "라이벌과의 배틀 정보 분석을 성공적으로 반환했습니다.");
     }
 }

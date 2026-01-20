@@ -1,6 +1,7 @@
 package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData.*;
+import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.battle.port.in.FindAllBattleInfoUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
@@ -84,14 +85,14 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
         // 배틀이 진행 중인 경우
         if (status == BattleStatus.IN_PROGRESS) {
             Double currentUserAvgExp = userExpHistoryRepositoryPort
-                    .findAverageExpByUserIdAndPeriod(
+                    .findAverageExpByUserIdAndCategoryAndPeriod(
                             currentUserId,
                             battle.startDate(),
                             battle.endDate()
                     );
 
             Double enemyAvgExp = userExpHistoryRepositoryPort
-                    .findAverageExpByUserIdAndPeriod(
+                    .findAverageExpByUserIdAndCategoryAndPeriod(
                             enemyId,
                             battle.startDate(),
                             battle.endDate()
