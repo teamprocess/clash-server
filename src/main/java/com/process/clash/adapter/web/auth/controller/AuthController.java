@@ -82,10 +82,10 @@ public class AuthController {
 		return ApiResponse.success("로그아웃 되었습니다.");
 	}
 
-	@PostMapping("/username-duplicate-check")
-	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(@Valid @RequestBody CheckDuplicateUsernameDto.Request request) {
+	@GetMapping("/username-duplicate-check")
+	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(@RequestParam String username) {
 
-		CheckDuplicateUsernameData.Command command = request.toCommand();
+		CheckDuplicateUsernameData.Command command = CheckDuplicateUsernameData.Command.fromString(username);
 		boolean duplicate = checkDuplicatedUsernameUseCase.execute(command);
 		CheckDuplicateUsernameDto.Response response = new CheckDuplicateUsernameDto.Response(duplicate);
 		return ApiResponse.success(response);
