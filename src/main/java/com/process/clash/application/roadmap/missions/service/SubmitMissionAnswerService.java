@@ -135,7 +135,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // [수정] 섹션 진행도 업데이트 (조건 강화: 챕터 클리어 AND 현재 진행중인 챕터일 경우에만)
         // 기존: 미션 하나만 깨도 다음 챕터 열림 -> 수정: 챕터 전체 클리어 시 열림
         // 기존: 과거 챕터 다시 풀면 진행도 롤백 -> 수정: 현재 진행 중인 챕터일 때만 전진
-        if (isChapterCleared && progress.getCurrentChapterId().equals(chapter.getId())) {
+        if (isChapterCleared && chapter.getId().equals(progress.getCurrentChapterId())) {
             updateSectionProgress(chapter, progress);
         }
 
