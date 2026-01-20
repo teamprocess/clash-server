@@ -7,5 +7,5 @@ import java.util.Optional;
 public interface PendingUserCachePort {
     void save(String token, User user, long ttlMs);
     Optional<User> findByToken(String token);
-    void delete(String email);
+    void delete(String token);
 }
