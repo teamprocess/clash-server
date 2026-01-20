@@ -1,0 +1,10 @@
+query ($query: String!) {
+  search(type: ISSUE, query: $query) {
+    issueCount
+  }
+  rateLimit {
+    cost
+    remaining
+    resetAt
+  }
+}

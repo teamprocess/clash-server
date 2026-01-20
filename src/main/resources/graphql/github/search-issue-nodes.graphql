@@ -1,0 +1,27 @@
+query (
+  $query: String!,
+  $first: Int!,
+  $after: String
+) {
+  search(type: ISSUE, query: $query, first: $first, after: $after) {
+    issueCount
+    nodes {
+      __typename
+      ... on PullRequest {
+        createdAt
+      }
+      ... on Issue {
+        createdAt
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+  rateLimit {
+    cost
+    remaining
+    resetAt
+  }
+}

@@ -20,10 +20,6 @@ spring:
           order_updates: true
           order_inserts: true
 
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-
   mail:
     host: email-smtp.ap-northeast-2.amazonaws.com # 서울 리전 기준
     port: 587
@@ -46,6 +42,15 @@ server:
   servlet:
     session:
       timeout: 3d
+
+github:
+  sync:
+    api-base-url: ${GITHUB_API_BASE_URL:https://api.github.com/graphql}
+    default-token: ${GITHUB_ACCESS_TOKEN:}
+    recompute-days: ${GITHUB_RECOMPUTE_DAYS:30}
+    timezone: ${GITHUB_TIMEZONE:Asia/Seoul}
+    day-boundary-hour: ${GITHUB_DAY_BOUNDARY_HOUR:6}
+    max-concurrency: ${GITHUB_MAX_CONCURRENCY:1}
 
 mail:
   sender:

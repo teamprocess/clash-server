@@ -136,6 +136,7 @@ public interface AuthControllerDocument {
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> verifyEmail(
+            String token,
             @RequestBody(description = "이메일 인증 요청", required = true,
                     content = @Content(
                             schema = @Schema(implementation = VerifyEmailDto.Request.class),

@@ -11,6 +11,11 @@ import java.util.List;
 @Repository
 public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEntity, Long> {
 
+    List<UserGitHubJpaEntity> findByUserIdNotIn(List<Long> ids);
+
+    @Query("select ug from UserGitHubJpaEntity ug join fetch ug.user where ug.gitHubId is not null")
+    List<UserGitHubJpaEntity> findAllWithUserAndGitHubId();
+
     @Query("""
         select new com.process.clash.application.compete.rival.data.AbleRivalInfo(
             u.id,
