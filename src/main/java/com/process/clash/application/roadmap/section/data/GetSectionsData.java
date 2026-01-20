@@ -16,13 +16,6 @@ public class GetSectionsData {
             Integer completedSections,
             Integer totalSections
     ) {
-        public static Result from(List<Section> sections, List<String> categories) {
-            List<SectionVo> sectionVos = sections.stream()
-                    .map(section -> SectionVo.from(section, false, false))
-                    .toList();
-            return new Result(sectionVos, categories, 0, sections.size());
-        }
-
         public record SectionVo(
                 Long id,
                 String title,
