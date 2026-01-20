@@ -55,8 +55,9 @@ public class SignUpService implements SignUpUseCase {
 				encoded
 		);
 
+		userRepositoryPort.save(pendingUser);
 		// 뽀모도로 타이머에 사용하기 위한 userId를 위해서 flush
-		userRepositoryPort.saveAndFlush(pendingUser);
+		userRepositoryPort.flush();
 
 		// 뽀모도로 타이머 세팅 추가
 		UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(pendingUser.id());
