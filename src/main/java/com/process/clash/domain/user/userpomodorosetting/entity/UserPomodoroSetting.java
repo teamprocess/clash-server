@@ -12,7 +12,7 @@ public record UserPomodoroSetting(
         Long userId
 ) {
 
-    public UserPomodoroSetting createDefault(Long userId) {
+    public static UserPomodoroSetting createDefault(Long userId) {
 
         return new UserPomodoroSetting(
                 null,
