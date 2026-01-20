@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,20 +31,23 @@ public class RecordDayBoundaryService {
 
         List<StudySession> activeSessions = studySessionRepositoryPort.findAllActiveSessions();
 
+        List<StudySession> sessionsToClose = new ArrayList<>();
+        List<StudySession> sessionsToCreate = new ArrayList<>();
+
         activeSessions.stream()
             .filter(session -> session.startedAt().isBefore(boundaryStart))
             .forEach(session -> {
-                StudySession closedSession = session.changeEndedAt(boundaryEndOfPrevious);
-                studySessionRepositoryPort.save(closedSession);
-
-                StudySession newSession = StudySession.create(
+                sessionsToClose.add(session.changeEndedAt(boundaryEndOfPrevious));
+                sessionsToCreate.add(StudySession.create(
                     null,
                     session.user(),
                     session.task(),
                     boundaryStart,
                     null
-                );
-                studySessionRepositoryPort.save(newSession);
+                ));
             });
+
+        studySessionRepositoryPort.saveAll(sessionsToClose);
+        studySessionRepositoryPort.saveAll(sessionsToCreate);
     }
 }

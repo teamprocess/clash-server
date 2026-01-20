@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface StudySessionRepositoryPort {
     StudySession save(StudySession studySession);
+    void saveAll(List<StudySession> studySessions);
     Optional<StudySession> findById(Long id);
     List<StudySession> findAllByUserId(Long userId);
     Boolean existsActiveSessionByUserId(Long userId);

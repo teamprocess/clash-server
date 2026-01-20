@@ -8,6 +8,7 @@ import com.process.clash.application.record.exception.exception.notfound.StudySe
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.model.entity.StudySession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,6 +41,52 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
         existing.changeEndedAt(studySession.endedAt());
         studySessionJpaRepository.save(existing);
         return studySessionJpaMapper.toDomain(existing);
+    }
+
+    @Override
+    public void saveAll(List<StudySession> studySessions) {
+        if (studySessions == null || studySessions.isEmpty()) {
+            return;
+        }
+
+        List<StudySession> newSessions = new ArrayList<>();
+        List<StudySession> existingSessions = new ArrayList<>();
+
+        for (StudySession studySession : studySessions) {
+            if (studySession.id() == null) {
+                newSessions.add(studySession);
+            } else {
+                existingSessions.add(studySession);
+            }
+        }
+
+        if (!newSessions.isEmpty()) {
+            List<StudySessionJpaEntity> entitiesToCreate = newSessions.stream()
+                .map(session -> {
+                    UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
+                    TaskJpaEntity task = taskJpaRepository.getReferenceById(session.task().id());
+                    return studySessionJpaMapper.toJpaEntity(session, user, task);
+                })
+                .toList();
+            studySessionJpaRepository.saveAll(entitiesToCreate);
+        }
+
+        if (!existingSessions.isEmpty()) {
+            List<Long> ids = existingSessions.stream()
+                .map(StudySession::id)
+                .toList();
+            Map<Long, StudySessionJpaEntity> existingEntities = studySessionJpaRepository.findAllById(ids).stream()
+                .collect(Collectors.toMap(StudySessionJpaEntity::getId, entity -> entity));
+
+            for (StudySession session : existingSessions) {
+                StudySessionJpaEntity entity = existingEntities.get(session.id());
+                if (entity != null) {
+                    entity.changeEndedAt(session.endedAt());
+                }
+            }
+
+            studySessionJpaRepository.saveAll(existingEntities.values());
+        }
     }
 
     @Override
