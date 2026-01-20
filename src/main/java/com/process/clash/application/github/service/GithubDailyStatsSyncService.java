@@ -15,6 +15,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +28,16 @@ public class GithubDailyStatsSyncService {
     private final GithubDailyStatsStorePort statsStorePort;
     private final StudyDateCalculator studyDateCalculator;
     private final Clock clock;
+    private final ExecutorService githubSyncExecutor;
 
     @Value("${github.sync.recompute-days:30}")
     private int recomputeDays;
 
     @Value("${github.sync.default-token:}")
     private String defaultToken;
+
+    @Value("${github.sync.max-concurrency:1}")
+    private int maxConcurrency;
 
     public void syncRecentDays() {
         List<GithubSyncTarget> targets = syncTargetPort.findSyncTargets();
@@ -47,35 +53,21 @@ public class GithubDailyStatsSyncService {
             return;
         }
 
-        for (GithubSyncTarget target : targets) {
-            String accessToken = resolveAccessToken(target);
-            if (accessToken == null || accessToken.isBlank()) {
-                log.warn("Skipping GitHub sync: missing access token. userId={}, login={}",
-                        target.userId(), target.githubLogin());
-                continue;
+        if (maxConcurrency <= 1) {
+            for (GithubSyncTarget target : targets) {
+                syncTarget(target, studyDates);
             }
-            try {
-                GithubSyncTarget resolvedTarget = new GithubSyncTarget(
-                        target.userId(),
-                        target.githubLogin(),
-                        target.githubUserNodeId(),
-                        target.emails(),
-                        accessToken
-                );
-                List<GithubDailyStats> stats = statsFetchPort.fetchDailyStats(resolvedTarget, studyDates);
-                if (!stats.isEmpty()) {
-                    statsStorePort.upsertAll(stats);
-                }
-                log.info("GitHub daily stats sync completed. userId={}, days={}",
-                        target.userId(), studyDates.size());
-            } catch (GithubRateLimitException ex) {
-                log.warn("GitHub rate limit hit. userId={}, resetAt={}",
-                        target.userId(), ex.getResetAt());
-            } catch (Exception ex) {
-                log.error("GitHub daily stats sync failed. userId={}, login={}",
-                        target.userId(), target.githubLogin(), ex);
-            }
+            return;
         }
+
+        List<CompletableFuture<Void>> futures = targets.stream()
+                .map(target -> CompletableFuture.runAsync(
+                        () -> syncTarget(target, studyDates),
+                        githubSyncExecutor
+                ))
+                .toList();
+
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }
 
     private String resolveAccessToken(GithubSyncTarget target) {
@@ -86,5 +78,35 @@ public class GithubDailyStatsSyncService {
             return defaultToken;
         }
         return null;
+    }
+
+    private void syncTarget(GithubSyncTarget target, List<LocalDate> studyDates) {
+        String accessToken = resolveAccessToken(target);
+        if (accessToken == null || accessToken.isBlank()) {
+            log.warn("Skipping GitHub sync: missing access token. userId={}, login={}",
+                    target.userId(), target.githubLogin());
+            return;
+        }
+        try {
+            GithubSyncTarget resolvedTarget = new GithubSyncTarget(
+                    target.userId(),
+                    target.githubLogin(),
+                    target.githubUserNodeId(),
+                    target.emails(),
+                    accessToken
+            );
+            List<GithubDailyStats> stats = statsFetchPort.fetchDailyStats(resolvedTarget, studyDates);
+            if (!stats.isEmpty()) {
+                statsStorePort.upsertAll(stats);
+            }
+            log.info("GitHub daily stats sync completed. userId={}, days={}",
+                    target.userId(), studyDates.size());
+        } catch (GithubRateLimitException ex) {
+            log.warn("GitHub rate limit hit. userId={}, resetAt={}",
+                    target.userId(), ex.getResetAt());
+        } catch (Exception ex) {
+            log.error("GitHub daily stats sync failed. userId={}, login={}",
+                    target.userId(), target.githubLogin(), ex);
+        }
     }
 }

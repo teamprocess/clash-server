@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Clock;
 import java.time.ZoneId;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling
@@ -34,5 +36,11 @@ public class GithubSyncConfig {
     @Bean
     public Clock clock(@Value("${github.sync.timezone:Asia/Seoul}") String timezone) {
         return Clock.system(ZoneId.of(timezone));
+    }
+
+    @Bean(destroyMethod = "shutdown")
+    public ExecutorService githubSyncExecutor(GithubSyncProperties properties) {
+        int maxConcurrency = Math.max(1, properties.maxConcurrency());
+        return Executors.newFixedThreadPool(maxConcurrency);
     }
 }
