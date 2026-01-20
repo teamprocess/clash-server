@@ -109,47 +109,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 히스토리 저장
         userMissionHistoryRepositoryPort.save(history);
 
-        // 챕터 완료 여부 확인 및 섹션 업데이트
-        if (history.getCurrentQuestionIndex() >= history.getTotalCount()) {
-            // 챕터 내 모든 미션 조회 (이미 가져온 mission의 chapterId 사용)
-            List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
-            List<Long> missionIdsInChapter = missionsInChapter.stream().map(Mission::getId).toList();
-
-            // 현재 챕터의 미션 기록만 조회
-            List<UserMissionHistory> chapterHistories = userMissionHistoryRepositoryPort.findAllByUserIdAndMissionIdIn(actor.id(), missionIdsInChapter);
-
-            // histories를 missionId로 매핑 (O(1) 조회를 위해)
-            Map<Long, UserMissionHistory> historyMap = chapterHistories.stream()
-                    .collect(Collectors.toMap(UserMissionHistory::getMissionId, Function.identity()));
-
-            // mission을 missionId로 매핑
-            Map<Long, Mission> missionMap = missionsInChapter.stream()
-                    .collect(Collectors.toMap(Mission::getId, Function.identity()));
-
-            // 정렬된 미션 목록
-            List<Mission> sortedMissions = missionsInChapter.stream()
-                    .filter(m -> m.getOrderIndex() != null)
-                    .sorted((m1, m2) -> Integer.compare(m1.getOrderIndex(), m2.getOrderIndex()))
-                    .toList();
-
-            // 챕터 클리어 여부 확인
-            boolean isChapterCleared = sortedMissions.stream()
-                    .allMatch(m -> {
-                        UserMissionHistory h = historyMap.get(m.getId());
-                        return h != null && h.isCleared();
-                    });
-
-            updateSectionProgress(actor.id(), chapter, progress, isChapterCleared, missionMap);
-        }
-
-        // 진행 상황 계산
-        int currentProgress = history.getCurrentQuestionIndex();
-        int totalQuestion = history.getTotalCount();
-
-        // 미션 클리어 여부 확인
-        boolean isMissionCleared = history.isCleared();
-
-        // 챕터 내 모든 미션 조회 (이미 가져온 mission의 chapterId 사용)
+        // 챕터 내 모든 미션 조회
         List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
         List<Long> missionIdsInChapter = missionsInChapter.stream().map(Mission::getId).toList();
 
@@ -160,11 +120,34 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         Map<Long, UserMissionHistory> historyMap = chapterHistories.stream()
                 .collect(Collectors.toMap(UserMissionHistory::getMissionId, Function.identity()));
 
+        // mission을 missionId로 매핑
+        Map<Long, Mission> missionMap = missionsInChapter.stream()
+                .collect(Collectors.toMap(Mission::getId, Function.identity()));
+
         // 정렬된 미션 목록
         List<Mission> sortedMissions = missionsInChapter.stream()
                 .filter(m -> m.getOrderIndex() != null)
                 .sorted((m1, m2) -> Integer.compare(m1.getOrderIndex(), m2.getOrderIndex()))
                 .toList();
+
+        // 챕터 클리어 여부 확인
+        boolean isChapterCleared = sortedMissions.stream()
+                .allMatch(m -> {
+                    UserMissionHistory h = historyMap.get(m.getId());
+                    return h != null && h.isCleared();
+                });
+
+        // 챕터 완료 여부 확인 및 섹션 업데이트
+        if (history.getCurrentQuestionIndex() >= history.getTotalCount()) {
+            updateSectionProgress(actor.id(), chapter, progress, isChapterCleared, missionMap);
+        }
+
+        // 진행 상황 계산
+        int currentProgress = history.getCurrentQuestionIndex();
+        int totalQuestion = history.getTotalCount();
+
+        // 미션 클리어 여부 확인
+        boolean isMissionCleared = history.isCleared();
 
         // 다음 미션 계산
         Long nextMissionId = null;
@@ -179,13 +162,6 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
                 }
             }
         }
-
-        // 챕터 클리어 여부 확인
-        boolean isChapterCleared = sortedMissions.stream()
-                .allMatch(m -> {
-                    UserMissionHistory h = historyMap.get(m.getId());
-                    return h != null && h.isCleared();
-                });
 
         // 다음 챕터 계산
         Long nextChapterId = null;
