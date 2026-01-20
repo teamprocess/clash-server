@@ -32,7 +32,7 @@ public interface AuthControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
-                                      "message": "회원가입이 완료되었습니다."
+                                      "message": "회원가입 요청 / 이메일 인증 코드 발송이 완료되었습니다."
                                     }
                                     """)
                     ))
