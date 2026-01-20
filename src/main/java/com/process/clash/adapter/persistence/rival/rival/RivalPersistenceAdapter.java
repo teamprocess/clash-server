@@ -23,6 +23,14 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     private final UserJpaRepository userJpaRepository;
 
     @Override
+    public void saveAndFlush(Rival rival) {
+
+        UserJpaEntity firstUser = userJpaRepository.getReferenceById(rival.firstUserId());
+        UserJpaEntity secondUser = userJpaRepository.getReferenceById(rival.secondUserId());
+        rivalJpaRepository.saveAndFlush(rivalJpaMapper.toJpaEntity(rival, firstUser, secondUser));
+    }
+
+    @Override
     public Rival save(Rival rival) {
 
         UserJpaEntity firstUser = userJpaRepository.getReferenceById(rival.firstUserId());
