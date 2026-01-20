@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,11 +25,17 @@ public interface MissionControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "data": {
-                                        "isCorrect": true,
-                                        "explanation": "설명",
-                                        "currentProgress": 1,
-                                        "totalQuestion": 10,
-                                        "correctChoiceId": 1
+                                          "isCorrect": true,
+                                          "explanation": "함수형 컴포넌트는 this.state를 사용할 수 없어서, 상태를 만들고 변경해 렌더링에 반영하려면 useState 훅을 사용합니다.",
+                                          "currentProgress": 1,
+                                          "totalQuestion": 5,
+                                          "correctChoiceId": null,
+                                          "isMissionCleared": false,
+                                          "nextMissionId": null,
+                                          "nextMissionOrderIndex": null,
+                                          "isChapterCleared": false,
+                                          "nextChapterId": null,
+                                          "nextChapterOrderIndex": null
                                       },
                                       "message": "정답 제출을 성공했습니다.",
                                       "success": true
@@ -43,19 +48,10 @@ public interface MissionControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId,
             @Parameter(description = "질문 ID", example = "1") @PathVariable Long questionId,
-            @RequestBody(description = "제출할 선택지 ID", required = true,
-                    content = @Content(
-                            schema = @Schema(implementation = MissionSubmitDto.Request.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "submittedChoiceId": 1
-                                    }
-                                    """)
-                    )
-            ) MissionSubmitDto.Request request
+            MissionSubmitDto.Request request
     );
 
-    @Operation(summary = "미션 결과 조회", description = "특정 미션의 결과를 조회합니다.")
+    @Operation(summary = "미션 결과 조회", description = "특정 미션의 완료 결과를 조회합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "미션 결과 조회 성공",
                     content = @Content(
@@ -64,14 +60,14 @@ public interface MissionControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "data": {
-                                        "missionId": 1,
-                                        "isCleared": true,
-                                        "correctCount": 5,
-                                        "totalCount": 5,
-                                        "nextMissionId": 2,
-                                        "nextStepId": null
+                                          "missionId": 1,
+                                          "isCleared": true,
+                                          "correctCount": 5,
+                                          "totalCount": 5,
+                                          "nextMissionId": 2,
+                                          "nextStepId": null
                                       },
-                                      "message": "미션 결과 보기를 성공했습니다.",
+                                      "message": "미션 결과 조회를 성공했습니다.",
                                       "success": true
                                     }
                                     """)
@@ -91,6 +87,7 @@ public interface MissionControllerDocument {
                             schema = @Schema(implementation = ApiResponse.class),
                             examples = @ExampleObject(value = """
                                     {
+                                      "data": null,
                                       "message": "미션 진행 상황이 초기화되었습니다. 다시 시작합니다.",
                                       "success": true
                                     }

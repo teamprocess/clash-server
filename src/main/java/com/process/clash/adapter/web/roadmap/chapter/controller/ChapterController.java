@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.roadmap.chapter.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.roadmap.chapter.dto.GetChapterDetailsDto;
+import com.process.clash.adapter.web.roadmap.chapter.docs.controller.ChapterControllerDocument;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.chapter.data.GetChapterDetailsData;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/chapters")
 @RequiredArgsConstructor
-public class ChapterController {
+public class ChapterController implements ChapterControllerDocument {
 
     private final GetChapterDetailsUseCase getChapterDetailsUseCase;
 
