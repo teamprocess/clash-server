@@ -72,7 +72,7 @@ public class MissionControllerTest {
         Long submittedChoiceId = 1L;
 
         SubmitMissionAnswerData.Result result = new SubmitMissionAnswerData.Result(
-                true, "정답입니다!", 1, 5, 1L
+                true, "정답입니다!", 1, 5, 1L, false, null, null, false, null, null
         );
 
         when(submitMissionAnswerUseCase.execute(any(SubmitMissionAnswerData.Command.class)))

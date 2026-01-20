@@ -17,7 +17,13 @@ public class SubmitMissionAnswerData {
             String explanation,
             Integer currentProgress,
             Integer totalQuestion,
-            Long correctChoiceId
+            Long correctChoiceId,
+            boolean isMissionCleared,
+            Long nextMissionId,
+            Integer nextMissionOrderIndex,
+            boolean isChapterCleared,
+            Long nextChapterId,
+            Integer nextChapterOrderIndex
     ) {
     }
 }
