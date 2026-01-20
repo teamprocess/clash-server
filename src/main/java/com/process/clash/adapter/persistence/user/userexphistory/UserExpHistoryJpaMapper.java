@@ -14,6 +14,7 @@ public class UserExpHistoryJpaMapper {
                 userExpHistory.createdAt(),
                 userExpHistory.date(),
                 userExpHistory.earnExp(),
+                userExpHistory.actingCategory(),
                 userJpaEntity
         );
     }
@@ -25,6 +26,7 @@ public class UserExpHistoryJpaMapper {
                 userExpHistoryJpaEntity.getCreatedAt(),
                 userExpHistoryJpaEntity.getDate(),
                 userExpHistoryJpaEntity.getEarnExp(),
+                userExpHistoryJpaEntity.getActingCategory(),
                 userExpHistoryJpaEntity.getUser().getId()
         );
     }
