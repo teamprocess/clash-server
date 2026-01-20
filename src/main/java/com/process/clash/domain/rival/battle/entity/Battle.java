@@ -49,4 +49,18 @@ public record Battle(
                 this.rivalId
         );
     }
+
+    public Battle reject() {
+
+        return new Battle(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.startDate,
+                this.endDate,
+                BattleStatus.REJECTED,
+                this.winnerId,
+                this.rivalId
+        );
+    }
 }

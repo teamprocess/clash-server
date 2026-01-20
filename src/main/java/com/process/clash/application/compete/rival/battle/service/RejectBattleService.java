@@ -1,8 +1,8 @@
 package com.process.clash.application.compete.rival.battle.service;
 
-import com.process.clash.application.compete.rival.battle.data.ApplyBattleData;
+import com.process.clash.application.compete.rival.battle.data.ModifyBattleData;
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
-import com.process.clash.application.compete.rival.battle.port.in.ApplyBattleUseCase;
+import com.process.clash.application.compete.rival.battle.port.in.RejectBattleUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
@@ -16,25 +16,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ApplyBattleService implements ApplyBattleUseCase {
+public class RejectBattleService implements RejectBattleUseCase {
 
     private final BattleRepositoryPort battleRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
 
     @Override
-    public void execute(ApplyBattleData.Command command) {
+    public void execute(ModifyBattleData.Command command) {
 
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
 
-        Battle updatedBattle = battle.accept();
+        Battle updatedBattle = battle.reject();
 
         battleRepositoryPort.save(updatedBattle);
 
         UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(
-                        NoticeCategory.ACCEPT_BATTLE,
+                        NoticeCategory.REJECT_BATTLE,
                         command.actor().id(),
                         rivalRepositoryPort.findOpponentIdByIdAndUserId(updatedBattle.rivalId(), command.actor().id())
                 );
@@ -43,7 +43,7 @@ public class ApplyBattleService implements ApplyBattleUseCase {
 
         UserNotice userNoticeForSender = UserNotice
                 .createDefault(
-                        NoticeCategory.SHOW_ACCEPT_BATTLE,
+                        NoticeCategory.SHOW_REJECT_BATTLE,
                         command.actor().id(),
                         command.actor().id()
                 );
