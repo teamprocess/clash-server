@@ -40,7 +40,7 @@ public interface MissionControllerDocument {
             )
     })
     ApiResponse<MissionSubmitDto.Response> submitAnswer(
-            @Parameter(description = "인증된 사용자") Actor actor,
+            @Parameter(hidden = true) Actor actor,
             @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId,
             @Parameter(description = "질문 ID", example = "1") @PathVariable Long questionId,
             @RequestBody(description = "제출할 선택지 ID", required = true,
@@ -79,7 +79,7 @@ public interface MissionControllerDocument {
             )
     })
     ApiResponse<MissionResultDto.Response> getResult(
-            @Parameter(description = "인증된 사용자") Actor actor,
+            @Parameter(hidden = true) Actor actor,
             @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId
     );
 
@@ -99,7 +99,7 @@ public interface MissionControllerDocument {
             )
     })
     ApiResponse<Void> resetMission(
-            @Parameter(description = "인증된 사용자") Actor actor,
+            @Parameter(hidden = true) Actor actor,
             @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId
     );
 }

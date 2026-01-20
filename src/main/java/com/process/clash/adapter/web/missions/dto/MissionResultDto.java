@@ -4,9 +4,6 @@ import com.process.clash.application.roadmap.missions.data.GetMissionResultData;
 
 public class MissionResultDto {
 
-    public record Request() {
-    }
-
     public record Response(
             Long missionId,
             Boolean isCleared,
