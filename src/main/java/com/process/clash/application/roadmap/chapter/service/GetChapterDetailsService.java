@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,30 +44,27 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
         Integer currentQuestionIndex = 0;
         Integer totalQuestions = 0;
 
-        if (!histories.isEmpty()) {
-            UserMissionHistory currentHistory = histories.stream()
-                    .filter(h -> !h.isCleared())
-                    .findFirst()
-                    .orElse(histories.get(0));
+        // missions를 orderIndex로 정렬
+        List<Mission> sortedMissions = missions.stream()
+                .filter(m -> m.getOrderIndex() != null)
+                .sorted((m1, m2) -> Integer.compare(m1.getOrderIndex(), m2.getOrderIndex()))
+                .toList();
 
-            currentMissionId = currentHistory.getMissionId();
-            currentQuestionIndex = currentHistory.getCurrentQuestionIndex();
-            totalQuestions = currentHistory.getTotalCount();
+        // histories를 missionId로 매핑
+        Map<Long, UserMissionHistory> historyMap = histories.stream()
+                .collect(Collectors.toMap(UserMissionHistory::getMissionId, h -> h));
 
-            Mission currentMission = missions.stream()
-                    .filter(m -> m.getId().equals(currentHistory.getMissionId()))
-                    .findFirst()
-                    .orElse(missions.get(0));
-
-            if (currentMission.getQuestions() != null && currentQuestionIndex < currentMission.getQuestions().size()) {
-                currentQuestionId = currentMission.getQuestions().get(currentQuestionIndex).getId();
-            }
-        } else if (!missions.isEmpty()) {
-            Mission firstMission = missions.get(0);
-            currentMissionId = firstMission.getId();
-            totalQuestions = firstMission.getQuestions() != null ? firstMission.getQuestions().size() : 0;
-            if (firstMission.getQuestions() != null && !firstMission.getQuestions().isEmpty()) {
-                currentQuestionId = firstMission.getQuestions().get(0).getId();
+        // 정렬된 missions에서 미완료 첫 번째 미션을 찾음
+        for (Mission mission : sortedMissions) {
+            UserMissionHistory history = historyMap.get(mission.getId());
+            if (history == null || !history.isCleared()) {
+                currentMissionId = mission.getId();
+                currentQuestionIndex = history != null ? history.getCurrentQuestionIndex() : 0;
+                totalQuestions = mission.getQuestions() != null ? mission.getQuestions().size() : 0;
+                if (mission.getQuestions() != null && currentQuestionIndex < mission.getQuestions().size()) {
+                    currentQuestionId = mission.getQuestions().get(currentQuestionIndex).getId();
+                }
+                break;
             }
         }
 
