@@ -15,7 +15,7 @@ public class GithubStatsSyncScheduler {
 
     @Scheduled(cron = "0 0 * * * *", zone = "${github.sync.timezone:Asia/Seoul}")
     public void runHourlySync() {
-        log.info("Starting GitHub daily stats sync scheduler.");
+        log.info("GitHub 일일 통계 동기화 스케줄러 시작.");
         syncService.syncRecentDays();
     }
 }
