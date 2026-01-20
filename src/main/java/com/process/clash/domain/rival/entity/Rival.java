@@ -36,4 +36,16 @@ public record Rival(
                 this.secondUserId
         );
     }
+
+    public Rival reject() {
+
+        return new Rival(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(),
+                RivalLinkingStatus.REJECTED,
+                this.firstUserId,
+                this.secondUserId
+        );
+    }
 }

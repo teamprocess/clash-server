@@ -23,6 +23,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     private final SearchRivalByKeywordUseCase searchRivalByKeywordUseCase;
     private final ApplyRivalUseCase applyRivalUseCase;
     private final AcceptRivalUseCase acceptRivalUseCase;
+    private final RejectRivalUseCase rejectRivalUseCase;
     private final CompareWithRivalsUseCase compareWithRivalsUseCase;
 
     // 내 라이벌 정보 조회
@@ -78,12 +79,24 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     @PostMapping("/accept")
     public ApiResponse<Void> acceptRival(
             @AuthenticatedActor Actor actor,
-            @Valid @RequestBody AcceptRivalDto.Request request
+            @Valid @RequestBody ModifyRivalDto.Request request
     ) {
 
-        AcceptRivalData.Command command = request.toCommand(actor);
+        ModifyRivalData.Command command = request.toCommand(actor);
         acceptRivalUseCase.execute(command);
         return ApiResponse.success("라이벌을 성공적으로 승인했습니다.");
+    }
+
+    // 라이벌 - 라이벌 거절
+    @PostMapping("/accept")
+    public ApiResponse<Void> rejectRival(
+            @AuthenticatedActor Actor actor,
+            @Valid @RequestBody ModifyRivalDto.Request request
+    ) {
+
+        ModifyRivalData.Command command = request.toCommand(actor);
+        rejectRivalUseCase.execute(command);
+        return ApiResponse.success("라이벌을 성공적으로 거절했습니다.");
     }
 
     // 라이벌과의 경쟁 - 라이벌과의 비교
