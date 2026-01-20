@@ -119,23 +119,29 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 미션 클리어 여부 확인
         boolean isMissionCleared = history.isCleared();
 
+        // 챕터 내 모든 미션 조회 (이미 가져온 mission의 chapterId 사용)
+        List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
+        List<Long> missionIdsInChapter = missionsInChapter.stream().map(Mission::getId).toList();
+
+        // 현재 챕터의 미션 기록만 조회
+        List<UserMissionHistory> chapterHistories = userMissionHistoryRepositoryPort.findAllByUserIdAndMissionIdIn(actor.id(), missionIdsInChapter);
+
+        // 정렬된 미션 목록
+        List<Mission> sortedMissions = missionsInChapter.stream()
+                .filter(m -> m.getOrderIndex() != null)
+                .sorted((m1, m2) -> Integer.compare(m1.getOrderIndex(), m2.getOrderIndex()))
+                .toList();
+
         // 다음 미션 계산
         Long nextMissionId = null;
         Integer nextMissionOrderIndex = null;
         if (isMissionCleared) {
-            List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
-            List<Mission> sortedMissions = missionsInChapter.stream()
-                    .filter(m -> m.getOrderIndex() != null)
-                    .sorted((m1, m2) -> Integer.compare(m1.getOrderIndex(), m2.getOrderIndex()))
-                    .toList();
-
-            List<Long> clearedMissionIds = userMissionHistoryRepositoryPort.findAllByUserId(actor.id()).stream()
-                    .filter(UserMissionHistory::isCleared)
-                    .map(UserMissionHistory::getMissionId)
-                    .toList();
-
             for (Mission m : sortedMissions) {
-                if (!clearedMissionIds.contains(m.getId())) {
+                UserMissionHistory ch = chapterHistories.stream()
+                        .filter(h -> h.getMissionId().equals(m.getId()))
+                        .findFirst()
+                        .orElse(null);
+                if (ch == null || !ch.isCleared()) {
                     nextMissionId = m.getId();
                     nextMissionOrderIndex = m.getOrderIndex();
                     break;
@@ -143,33 +149,28 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
             }
         }
 
-        // 챕터 클리어 여부 및 다음 챕터 계산
-        boolean isChapterCleared = false;
+        // 챕터 클리어 여부 확인
+        boolean isChapterCleared = sortedMissions.stream()
+                .allMatch(m -> {
+                    UserMissionHistory ch = chapterHistories.stream()
+                            .filter(h -> h.getMissionId().equals(m.getId()))
+                            .findFirst()
+                            .orElse(null);
+                    return ch != null && ch.isCleared();
+                });
+
+        // 다음 챕터 계산
         Long nextChapterId = null;
         Integer nextChapterOrderIndex = null;
+        if (isChapterCleared) {
+            List<Chapter> chaptersInSection = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
+            Optional<Chapter> nextChapterOpt = chaptersInSection.stream()
+                    .filter(c -> c.getOrderIndex() > chapter.getOrderIndex())
+                    .min((c1, c2) -> Integer.compare(c1.getOrderIndex(), c2.getOrderIndex()));
 
-        if (isMissionCleared) {
-            List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
-            List<Long> missionIdsInChapter = missionsInChapter.stream().map(Mission::getId).toList();
-
-            List<UserMissionHistory> histories = userMissionHistoryRepositoryPort.findAllByUserId(actor.id());
-            long clearedCount = histories.stream()
-                    .filter(h -> missionIdsInChapter.contains(h.getMissionId()))
-                    .filter(UserMissionHistory::isCleared)
-                    .count();
-
-            isChapterCleared = clearedCount == missionIdsInChapter.size();
-
-            if (isChapterCleared) {
-                List<Chapter> chaptersInSection = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
-                Optional<Chapter> nextChapterOpt = chaptersInSection.stream()
-                        .filter(c -> c.getOrderIndex() > chapter.getOrderIndex())
-                        .min((c1, c2) -> Integer.compare(c1.getOrderIndex(), c2.getOrderIndex()));
-
-                if (nextChapterOpt.isPresent()) {
-                    nextChapterId = nextChapterOpt.get().getId();
-                    nextChapterOrderIndex = nextChapterOpt.get().getOrderIndex();
-                }
+            if (nextChapterOpt.isPresent()) {
+                nextChapterId = nextChapterOpt.get().getId();
+                nextChapterOrderIndex = nextChapterOpt.get().getOrderIndex();
             }
         }
 
