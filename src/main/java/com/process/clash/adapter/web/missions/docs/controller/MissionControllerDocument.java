@@ -64,12 +64,12 @@ public interface MissionControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "data": {
-                                        "mission_id": 1,
-                                        "is_cleared": true,
-                                        "correct_count": 5,
-                                        "total_count": 5,
-                                        "next_mission_id": 2,
-                                        "next_step_id": null
+                                        "missionId": 1,
+                                        "isCleared": true,
+                                        "correctCount": 5,
+                                        "totalCount": 5,
+                                        "nextMissionId": 2,
+                                        "nextStepId": null
                                       },
                                       "message": "미션 결과 보기를 성공했습니다.",
                                       "success": true
