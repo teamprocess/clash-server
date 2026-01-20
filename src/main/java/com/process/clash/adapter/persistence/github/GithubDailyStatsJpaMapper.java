@@ -20,4 +20,18 @@ public class GithubDailyStatsJpaMapper {
                 stat.syncedAt()
         );
     }
+
+    public GithubDailyStats toDomain(GithubDailyStatsJpaEntity entity) {
+        return new GithubDailyStats(
+                entity.getUserId(),
+                entity.getStudyDate(),
+                entity.getCommitCount(),
+                entity.getPrCount(),
+                entity.getIssueCount(),
+                entity.getReviewCount(),
+                entity.getAdditions(),
+                entity.getDeletions(),
+                entity.getSyncedAt()
+        );
+    }
 }

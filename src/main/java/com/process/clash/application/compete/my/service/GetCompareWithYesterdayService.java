@@ -2,8 +2,9 @@ package com.process.clash.application.compete.my.service;
 
 import com.process.clash.application.compete.my.data.GetCompareWithYesterdayData;
 import com.process.clash.application.compete.my.port.in.GetCompareWithYesterdayUseCase;
-import com.process.clash.application.githubinfo.exception.exception.notfound.GitHubInfoNotFoundException;
-import com.process.clash.application.githubinfo.port.out.GitHubInfoRepositoryPort;
+import com.process.clash.application.github.exception.exception.notfound.GithubDailyStatsNotFoundException;
+import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
+import com.process.clash.domain.github.entity.GithubDailyStats;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.user.userstudytime.exception.exception.notfound.UserStudyTimeNotFoundException;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
@@ -19,7 +20,7 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
 
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
-    private final GitHubInfoRepositoryPort gitHubInfoRepositoryPort;
+    private final GithubDailyStatsQueryPort githubDailyStatsQueryPort;
 
     @Override
     public GetCompareWithYesterdayData.Result execute(GetCompareWithYesterdayData.Command command) {
@@ -42,16 +43,23 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
                 endOfDay
         );
 
-        Integer yesterdayContributions =
-                gitHubInfoRepositoryPort.findByUserIdAndDate(command.actor().id(), yesterday)
-                        .orElseThrow(GitHubInfoNotFoundException::new)
-                        .contributionCount();
+        GithubDailyStats yesterdayStats = githubDailyStatsQueryPort
+                .findByUserIdAndStudyDate(command.actor().id(), yesterday)
+                .orElseThrow(GithubDailyStatsNotFoundException::new);
+        GithubDailyStats todayStats = githubDailyStatsQueryPort
+                .findByUserIdAndStudyDate(command.actor().id(), today)
+                .orElseThrow(GithubDailyStatsNotFoundException::new);
 
-        Integer todayContributions =
-                gitHubInfoRepositoryPort.findByUserIdAndDate(command.actor().id(), today)
-                        .orElseThrow(GitHubInfoNotFoundException::new)
-                        .contributionCount();
+        Integer yesterdayContributions = toContributionCount(yesterdayStats);
+        Integer todayContributions = toContributionCount(todayStats);
 
         return GetCompareWithYesterdayData.Result.from(yesterdayActiveTime, todayActiveTime, yesterdayContributions, todayContributions);
+    }
+
+    private int toContributionCount(GithubDailyStats stats) {
+        return stats.commitCount()
+                + stats.prCount()
+                + stats.issueCount()
+                + stats.reviewedPrCount();
     }
 }
