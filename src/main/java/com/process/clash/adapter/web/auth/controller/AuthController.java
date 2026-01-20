@@ -72,7 +72,7 @@ public class AuthController implements AuthControllerDocument {
 		return ApiResponse.success("로그아웃 되었습니다.");
 	}
 
-	@GetMapping("/username-duplicate-check")
+	@PostMapping("/username-duplicate-check")
 	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(@Valid @RequestBody CheckDuplicateUsernameDto.Request request) {
 
 		CheckDuplicateUsernameData.Command command = request.toCommand();
