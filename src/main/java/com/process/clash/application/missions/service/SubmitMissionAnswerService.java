@@ -1,6 +1,7 @@
 package com.process.clash.application.missions.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -36,27 +37,20 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         MissionQuestion question = questions.get(0); // command.questionId() 사용해야 하지만 임시
 
         // 선택지 검증
-        List<Choice> choices = question.getChoices();
-        if (choices == null) {
-            throw new InvalidChoiceException();
-        }
+        List<Choice> choices = Optional.ofNullable(question.getChoices()).orElse(List.of());
 
-        boolean isCorrect = false;
-        Long correctChoiceId = null;
-        boolean choiceFound = false;
-        for (Choice choice : choices) {
-            if (choice.isCorrect()) {
-                correctChoiceId = choice.getId();
-            }
-            if (choice.getId().equals(command.submittedChoiceId())) {
-                isCorrect = choice.isCorrect();
-                choiceFound = true;
-            }
-        }
+        Choice submittedChoice = choices.stream()
+                .filter(c -> c.getId().equals(command.submittedChoiceId()))
+                .findFirst()
+                .orElseThrow(InvalidChoiceException::new);
 
-        if (!choiceFound) {
-            throw new InvalidChoiceException();
-        }
+        boolean isCorrect = submittedChoice.isCorrect();
+
+        Long correctChoiceId = choices.stream()
+                .filter(Choice::isCorrect)
+                .findFirst()
+                .map(Choice::getId)
+                .orElse(null);
 
         // 진행 상황 계산 (임시)
         int currentProgress = 1;
