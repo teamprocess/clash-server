@@ -74,6 +74,9 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
             history.recordCorrectAnswer();
         }
 
+        // 답을 제출했으므로 currentQuestionIndex 증가
+        history.recordQuestionAttempt();
+
         // 히스토리 저장
         userMissionHistoryRepositoryPort.save(history);
 

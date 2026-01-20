@@ -34,8 +34,11 @@ public class UserMissionHistory {
 
     public void recordCorrectAnswer() {
         this.correctCount = this.correctCount + 1;
-        this.currentQuestionIndex = this.currentQuestionIndex + 1;
         checkCleared();
+    }
+
+    public void recordQuestionAttempt() {
+        this.currentQuestionIndex = this.currentQuestionIndex + 1;
     }
 
     public void checkCleared() {
