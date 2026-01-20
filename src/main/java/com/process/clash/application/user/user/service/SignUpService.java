@@ -40,8 +40,8 @@ public class SignUpService implements SignUpUseCase {
 			throw new UsernameAlreadyExistException();
 		}
 
-		if (userRepositoryPort.existsByUsername(command.username())) {
-			throw new UsernameAlreadyExistException();
+		if (userRepositoryPort.existsByEmail(command.email())) {
+			throw new EmailAlreadyExistException();
 		}
 
 		String encoded = passwordEncoder.encode(command.password());
