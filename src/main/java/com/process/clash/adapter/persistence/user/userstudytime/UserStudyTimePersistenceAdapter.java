@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,5 +32,23 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
 
         return userStudyTimeJpaRepository.findByUserIdAndDate(userId, date)
                 .map(userStudyTimeJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+
+        return userStudyTimeJpaRepository.findDailyDataByUserIds(ids, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+
+        return userStudyTimeJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+
+        return userStudyTimeJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate);
     }
 }
