@@ -30,7 +30,7 @@ public class ApplyBattleService implements ApplyBattleUseCase {
     @Override
     public void execute(ApplyBattleData.Command command) {
 
-        applyBattlePolicy.check(command.actor());
+        applyBattlePolicy.check(command.id());
 
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(command.duration());

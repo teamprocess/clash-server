@@ -11,6 +11,9 @@ public enum BattleStatusCode implements StatusCode {
 
     // 400
     ALREADY_IN_BATTLE("ALREADY_IN_BATTLE", "이미 배틀이 존재합니다.", ErrorCategory.BAD_REQUEST),
+
+    // 404
+    BATTLE_NOT_FOUND("BATTLE_NOT_FOUND", "배틀이 존재하지 않습니다.", ErrorCategory.NOT_FOUND),
     ;
 
     private final String code;
