@@ -81,7 +81,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         userMissionHistoryRepositoryPort.save(history);
 
         // 진행 상황 계산
-        int currentProgress = history.getCorrectCount();
+        int currentProgress = history.getCurrentQuestionIndex();
         int totalQuestion = history.getTotalCount();
 
         return new SubmitMissionAnswerData.Result(
