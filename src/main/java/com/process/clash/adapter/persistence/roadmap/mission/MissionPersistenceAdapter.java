@@ -37,4 +37,9 @@ public class MissionPersistenceAdapter implements MissionRepositoryPort {
     public List<Mission> findAllByChapterId(Long chapterId) {
         return missionJpaRepository.findAllByChapterId(chapterId).stream().map(missionJpaMapper::toDomain).toList();
     }
+
+    @Override
+    public Optional<Mission> findByIdWithQuestionsAndChoices(Long id) {
+        return missionJpaRepository.findByIdWithQuestionsAndChoices(id).map(missionJpaMapper::toDomain);
+    }
 }
