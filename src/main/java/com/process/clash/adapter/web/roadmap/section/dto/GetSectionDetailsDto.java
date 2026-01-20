@@ -10,10 +10,16 @@ public class GetSectionDetailsDto {
     @Schema(name = "GetSectionDetailsDtoResponse")
 
     public record Response(
+            @Schema(description = "로드맵 ID", example = "1")
             Long sectionId,
+            @Schema(description = "로드맵 제목", example = "스프링 입문")
             String sectionTitle,
+            @Schema(description = "총 챕터 수", example = "3")
             Integer totalChapters,
+            @Schema(description = "현재 챕터 ID", example = "1")
             Long currentChapterId,
+            @Schema(description = "현재 챕터 순서 (0-based)", example = "0")
+            Integer currentOrderIndex,
             List<ChapterVo> chapters
     ) {
         public static Response from(GetSectionDetailsData.Result result) {
@@ -25,6 +31,7 @@ public class GetSectionDetailsDto {
                     result.sectionTitle(),
                     result.totalChapters(),
                     result.currentChapterId(),
+                    result.currentOrderIndex(),
                     chapters
             );
         }
@@ -33,14 +40,10 @@ public class GetSectionDetailsDto {
     public record ChapterVo(
             Long id,
             String title,
-            Integer difficulty,
-            List<MissionVo> missions
+            Integer difficulty
     ) {
         public static ChapterVo from(GetSectionDetailsData.Result.ChapterVo vo) {
-            List<MissionVo> missions = vo.missions().stream()
-                    .map(MissionVo::from)
-                    .toList();
-            return new ChapterVo(vo.id(), vo.title(), vo.difficulty(), missions);
+            return new ChapterVo(vo.id(), vo.title(), vo.difficulty());
         }
     }
 

@@ -1,51 +1,33 @@
-package com.process.clash.application.roadmap.section.data;
+package com.process.clash.application.roadmap.chapter.data;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.roadmap.entity.*;
 
 import java.util.List;
 
-public class GetSectionDetailsData {
+public class GetChapterDetailsData {
 
-    public record Command(Actor actor, Long sectionId) {}
+    public record Command(Actor actor, Long chapterId) {}
 
     public record Result(
-            Long sectionId,
-            String sectionTitle,
-            Integer totalChapters,
-            Long currentChapterId,
-            Integer currentOrderIndex,
-            List<ChapterVo> chapters
+            Long chapterId,
+            String title,
+            String description,
+            List<MissionVo> missions
     ) {
-        public static Result from(Section section, Long currentChapterId, Integer currentOrderIndex) {
-            List<ChapterVo> chapterVos = section.getChapters() != null
-                    ? section.getChapters().stream()
-                            .map(chapter -> ChapterVo.from(chapter, 1)) // difficulty는 서비스에서 계산 필요
+        public static Result from(Chapter chapter) {
+            List<MissionVo> missionVos = chapter.getMissions() != null
+                    ? chapter.getMissions().stream()
+                            .map(MissionVo::from)
                             .toList()
                     : List.of();
 
             return new Result(
-                    section.getId(),
-                    section.getTitle(),
-                    chapterVos.size(),
-                    currentChapterId,
-                    currentOrderIndex,
-                    chapterVos
+                    chapter.getId(),
+                    chapter.getTitle(),
+                    chapter.getDescription(),
+                    missionVos
             );
-        }
-
-        public record ChapterVo(
-                Long id,
-                String title,
-                Integer difficulty
-        ) {
-            public static ChapterVo from(Chapter chapter, Integer difficulty) {
-                return new ChapterVo(
-                        chapter.getId(),
-                        chapter.getTitle(),
-                        difficulty
-                );
-            }
         }
 
         public record MissionVo(

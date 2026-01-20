@@ -6,6 +6,7 @@ import com.process.clash.application.roadmap.section.data.GetSectionDetailsData;
 import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.port.in.GetSectionDetailsUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
+import com.process.clash.domain.roadmap.entity.Chapter;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,15 @@ public class GetSectionDetailsService implements GetSectionDetailsUseCase {
 
         Long currentChapterId = userSectionProgress.getCurrentChapterId();
 
-        return GetSectionDetailsData.Result.from(section, currentChapterId);
+        Integer currentOrderIndex = null;
+        if (currentChapterId != null && section.getChapters() != null) {
+            currentOrderIndex = section.getChapters().stream()
+                    .filter(chapter -> chapter.getId().equals(currentChapterId))
+                    .findFirst()
+                    .map(Chapter::getOrderIndex)
+                    .orElse(null);
+        }
+
+        return GetSectionDetailsData.Result.from(section, currentChapterId, currentOrderIndex);
     }
 }

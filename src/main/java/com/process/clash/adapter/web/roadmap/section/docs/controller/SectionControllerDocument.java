@@ -104,6 +104,7 @@ public interface SectionControllerDocument {
                                         "sectionTitle": "스프링 입문",
                                         "totalChapters": 3,
                                         "currentChapterId": 1,
+                                        "currentOrderIndex": 0,
                                         "chapters": [
                                           {
                                             "id": 1,
