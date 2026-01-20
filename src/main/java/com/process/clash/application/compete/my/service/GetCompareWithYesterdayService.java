@@ -6,7 +6,7 @@ import com.process.clash.application.github.exception.exception.notfound.GithubD
 import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
 import com.process.clash.domain.github.entity.GithubDailyStats;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.application.user.userstudytime.exception.exception.notfound.UserStudyTimeNotFoundException;
+import com.process.clash.application.user.userstudytime.exception.exception.UserStudyTimeNotFoundException;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
