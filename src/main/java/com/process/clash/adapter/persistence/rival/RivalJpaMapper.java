@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class RivalJpaMapper {
 
-    public RivalJpaEntity toJpaEntity(Rival rival, UserJpaEntity my, UserJpaEntity opponent) {
+    public RivalJpaEntity toJpaEntity(Rival rival, UserJpaEntity firstUser, UserJpaEntity secondUser) {
 
         return new RivalJpaEntity(
                 rival.id(),
                 rival.createdAt(),
                 rival.updatedAt(),
                 rival.rivalLinkingStatus(),
-                my,
-                opponent
+                firstUser,
+                secondUser
         );
     }
 
@@ -26,8 +26,8 @@ public class RivalJpaMapper {
                 rivalJpaEntity.getCreatedAt(),
                 rivalJpaEntity.getUpdatedAt(),
                 rivalJpaEntity.getRivalLinkingStatus(),
-                rivalJpaEntity.getMy().getId(),
-                rivalJpaEntity.getOpponent().getId()
+                rivalJpaEntity.getFirstUser().getId(),
+                rivalJpaEntity.getSecondUser().getId()
         );
     }
 }

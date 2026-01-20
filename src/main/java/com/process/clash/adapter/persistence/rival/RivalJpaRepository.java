@@ -1,6 +1,5 @@
 package com.process.clash.adapter.persistence.rival;
 
-import com.process.clash.application.compete.rival.data.RivalInfoForGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,38 +11,70 @@ import java.util.Map;
 @Repository
 public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> {
 
-    // 내 현재 라이벌 수
+    /**
+     * 내 현재 라이벌 수
+     */
     @Query("""
         select count(r)
-        from RivalJpaEntity as r
-        where r.my.id = :myId
-            and r.rivalLinkingStatus = 'ACCEPTED'
+        from RivalJpaEntity r
+        where r.rivalLinkingStatus = 'ACCEPTED'
+          and (r.firstUser.id = :userId or r.secondUser.id = :userId)
     """)
-    int countAllByMyId(
-            @Param("myId") Long myId
+    int countAllByUserId(
+            @Param("userId") Long userId
     );
 
-    // 상대방 현재 라이벌 수
+    /**
+     * 여러 유저의 라이벌 수 (group by)
+     */
     @Query("""
-    select new map(r.opponent.id as opponentId, count(r) as count)
-    from RivalJpaEntity as r
-    where r.rivalLinkingStatus = 'ACCEPTED'
-        and r.opponent.id in :opponentIds
-    group by r.opponent.id
-""")
-    List<Map<String, Object>> countAllByOpponentIdsGrouped(
-            @Param("opponentIds") List<Long> opponentIds
+        select new map(
+            case
+                when r.firstUser.id in :userIds then r.firstUser.id
+                else r.secondUser.id
+            end as userId,
+            count(r) as count
+        )
+        from RivalJpaEntity r
+        where r.rivalLinkingStatus = 'ACCEPTED'
+          and (r.firstUser.id in :userIds or r.secondUser.id in :userIds)
+        group by
+            case
+                when r.firstUser.id in :userIds then r.firstUser.id
+                else r.secondUser.id
+            end
+    """)
+    List<Map<String, Object>> countAllByUserIdsGrouped(
+            @Param("userIds") List<Long> userIds
     );
 
-    List<RivalJpaEntity> findAllByMyId(Long myId);
-
+    /**
+     * 내 라이벌 전체 조회
+     */
     @Query("""
-        select r.opponent.id
-        from RivalJpaEntity as r
-        where r.my.id = :myId
-            and r.rivalLinkingStatus = 'ACCEPTED'
+        select r
+        from RivalJpaEntity r
+        where r.rivalLinkingStatus = 'ACCEPTED'
+          and (r.firstUser.id = :userId or r.secondUser.id = :userId)
     """)
-    List<Long> findOpponentIdByMyId(
-            @Param("myId") Long myId
+    List<RivalJpaEntity> findAllByUserId(
+            @Param("userId") Long userId
+    );
+
+    /**
+     * 내 라이벌 상대방 ID 목록
+     */
+    @Query("""
+        select
+            case
+                when r.firstUser.id = :userId then r.secondUser.id
+                else r.firstUser.id
+            end
+        from RivalJpaEntity r
+        where r.rivalLinkingStatus = 'ACCEPTED'
+          and (r.firstUser.id = :userId or r.secondUser.id = :userId)
+    """)
+    List<Long> findOpponentIdsByUserId(
+            @Param("userId") Long userId
     );
 }

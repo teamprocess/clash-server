@@ -37,8 +37,8 @@ public class ApplyRivalService implements ApplyRivalUseCase {
         List<UserNotice> userNotices = rivals.stream()
                 .map(rival -> UserNotice.createDefault(
                         NoticeCategory.APPLY_RIVAL,
-                        rival.opponentId(),
-                        rival.myId()
+                        rival.firstUserId(),
+                        rival.secondUser2Id()
                 ))
                 .toList();
 

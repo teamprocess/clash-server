@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_rival_pair",
-                        columnNames = {"fk_my_id", "fk_opponent_id"}
+                        columnNames = {"fk_first_user_d", "fk_second_user_id"}
                 )
         }
 )
@@ -45,10 +45,10 @@ public class RivalJpaEntity {
     private RivalLinkingStatus rivalLinkingStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_my_id", nullable = false)
-    private UserJpaEntity my;
+    @JoinColumn(name = "fk_first_user_d", nullable = false)
+    private UserJpaEntity firstUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_opponent_id", nullable = false)
-    private UserJpaEntity opponent;
+    @JoinColumn(name = "fk_second_user_id", nullable = false)
+    private UserJpaEntity secondUser;
 }

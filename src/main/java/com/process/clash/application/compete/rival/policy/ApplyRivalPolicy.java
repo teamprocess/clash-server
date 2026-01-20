@@ -18,7 +18,7 @@ public class ApplyRivalPolicy {
     private static final int MAX_RIVAL_COUNT = 4;
 
     public void check(ApplyRivalData.Command command) {
-        int myRivalCount = rivalRepositoryPort.countAllByMyId(command.actor().id());
+        int myRivalCount = rivalRepositoryPort.countAllByUserId(command.actor().id());
 
         if (myRivalCount + command.ids().size() > MAX_RIVAL_COUNT) {
             throw new TooMuchRivalsException();
