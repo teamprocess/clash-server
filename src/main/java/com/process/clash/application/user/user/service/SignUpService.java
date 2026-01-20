@@ -55,13 +55,13 @@ public class SignUpService implements SignUpUseCase {
 				encoded
 		);
 
-		userRepositoryPort.save(pendingUser);
+		User savedUser = userRepositoryPort.save(pendingUser);
 		// 뽀모도로 타이머에 사용하기 위한 userId를 위해서 flush
 		userRepositoryPort.flush();
-
 		// 뽀모도로 타이머 세팅 추가
-		UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(pendingUser.id());
+		UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(savedUser.id());
 		userPomodoroSettingRepositoryPort.save(userPomodoroSetting);
+
 		String token = tokenGenerator.generateCleanToken();
 
 		pendingUserCachePort.save(token, pendingUser, PENDING_USER_EXPIRATION_MS);

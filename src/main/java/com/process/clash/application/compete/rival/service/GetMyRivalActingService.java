@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
+    private static final int DAY_START_HOUR = 6;
 
     @Override
     public GetMyRivalActingData.Result execute(GetMyRivalActingData.Command command) {
@@ -34,8 +37,19 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         }
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atTime(6, 0);
-        LocalDateTime endOfDay = today.plusDays(1).atTime(6, 0);
+        LocalDateTime startOfDay = today.atTime(DAY_START_HOUR, 0);
+        LocalDateTime endOfDay = today.plusDays(1).atTime(DAY_START_HOUR, 0);
+
+        List<Long> opponentIds = rivals.stream()
+                .map(Rival::opponentId)
+                .toList();
+
+        Map<Long, User> opponentMap = userRepositoryPort.findAllByIds(opponentIds)
+                .stream()
+                .collect(Collectors.toMap(User::id, user -> user));
+
+        Map<Long, Long> studyTimeMap = studySessionRepositoryPort
+                .getTotalStudyTimeInSecondsByUserIds(opponentIds, startOfDay, endOfDay);
 
         List<GetMyRivalActingData.MyRival> myRivals = rivals.stream()
                 .map(rival -> {
@@ -53,8 +67,8 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                     return GetMyRivalActingData.MyRival.from(
                             opponent,
                             activeTime == null ? 0L : activeTime,
-                            "Intellij IDEA",
-                            RivalCurrentStatus.ONLINE
+                            "Intellij IDEA", //TODO: 더미 수정 필요
+                            RivalCurrentStatus.ONLINE //TODO: 더미 수정 필요
                     );
                 })
                 .toList();

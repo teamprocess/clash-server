@@ -2,6 +2,7 @@ package com.process.clash.application.user.user.port.out;
 
 import com.process.clash.domain.user.user.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepositoryPort {
@@ -17,4 +18,6 @@ public interface UserRepositoryPort {
     Optional<User> findByEmail(String email);
 
     void flush();
+
+    List<User> findAllByIds(List<Long> ids);
 }

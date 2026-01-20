@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public class UserGoodsHistoryPersistenceAdapter implements UserGoodsHistoryRepositoryPort {
 
     private final UserGoodsHistoryJpaRepository userGoodsHistoryJpaRepository;
-    private final UserGoodsJpaMapper userGoodsJpaMapper;
+    private final UserGoodsHistoryJpaMapper userGoodsHistoryJpaMapper;
     private final UserJpaRepository userJpaRepository;
     private final ProductJpaRepository productJpaRepository;
 
@@ -22,8 +22,9 @@ public class UserGoodsHistoryPersistenceAdapter implements UserGoodsHistoryRepos
     public UserGoodsHistory save(UserGoodsHistory userGoodsHistory) {
 
         UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(userGoodsHistory.userId());
-        ProductJpaEntity productJpaEntity = productJpaRepository.getReferenceById(userGoodsHistory.productId());
-        UserGoodsHistoryJpaEntity savedEntity = userGoodsHistoryJpaRepository.save(userGoodsJpaMapper.toJpaEntity(userGoodsHistory, userJpaEntity, productJpaEntity));
-        return userGoodsJpaMapper.toDomain(savedEntity);
+        ProductJpaEntity productJpaEntity = userGoodsHistory.productId() != null ?
+                productJpaRepository.getReferenceById(userGoodsHistory.productId()) : null;
+        UserGoodsHistoryJpaEntity savedEntity = userGoodsHistoryJpaRepository.save(userGoodsHistoryJpaMapper.toJpaEntity(userGoodsHistory, userJpaEntity, productJpaEntity));
+        return userGoodsHistoryJpaMapper.toDomain(savedEntity);
     }
 }

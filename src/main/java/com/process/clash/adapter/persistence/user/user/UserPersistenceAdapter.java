@@ -58,4 +58,14 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 
         userJpaRepository.flush();
     }
+
+    @Override
+    public List<User> findAllByIds(List<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+
+        return userJpaRepository.findAllById(ids).stream()
+                .map(userJpaMapper::toDomain).toList();
+    }
 }

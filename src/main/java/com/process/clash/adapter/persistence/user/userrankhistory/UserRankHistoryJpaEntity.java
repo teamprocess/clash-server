@@ -47,7 +47,7 @@ public class UserRankHistoryJpaEntity {
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_season_id", nullable = false)
     private SeasonJpaEntity season;
 }

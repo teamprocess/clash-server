@@ -6,7 +6,7 @@ import com.process.clash.domain.user.usergoodshistory.entity.UserGoodsHistory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserGoodsJpaMapper {
+public class UserGoodsHistoryJpaMapper {
 
     public UserGoodsHistoryJpaEntity toJpaEntity(UserGoodsHistory userGoodsHistory, UserJpaEntity userJpaEntity, ProductJpaEntity productJpaEntity) {
 
@@ -29,7 +29,7 @@ public class UserGoodsJpaMapper {
                 userGoodsHistoryJpaEntity.getGoodsType(),
                 userGoodsHistoryJpaEntity.getActingCategory(),
                 userGoodsHistoryJpaEntity.getVariation(),
-                userGoodsHistoryJpaEntity.getProduct().getId(),
+                userGoodsHistoryJpaEntity.getProduct() != null ? userGoodsHistoryJpaEntity.getProduct().getId() : null,
                 userGoodsHistoryJpaEntity.getUser().getId()
         );
     }

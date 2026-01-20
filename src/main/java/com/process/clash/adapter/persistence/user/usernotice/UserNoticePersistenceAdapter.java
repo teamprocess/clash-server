@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.user.usernotice;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.user.usernotice.exception.exception.badrequest.InvalidUserNoticeException;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +43,13 @@ public class UserNoticePersistenceAdapter implements UserNoticeRepositoryPort {
 
         List<UserNoticeJpaEntity> entities = userNotices.stream()
                 .map(userNotice -> {
-                    UserJpaEntity sender = userMap.get(userNotice.senderId());
-                    UserJpaEntity receiver = userMap.get(userNotice.receiverId());
-                    return userNoticeJpaMapper.toJpaEntity(userNotice, sender, receiver);
+                    if (userNotice.senderId() != null && userNotice.receiverId() != null) {
+                        UserJpaEntity sender = userMap.get(userNotice.senderId());
+                        UserJpaEntity receiver = userMap.get(userNotice.receiverId());
+                        return userNoticeJpaMapper.toJpaEntity(userNotice, sender, receiver);
+                    }
+
+                    throw new InvalidUserNoticeException();
                 })
                 .toList();
 
