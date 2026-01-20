@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface RivalRepositoryPort {
 
+    void saveAndFlush(Rival rival);
     Rival save(Rival rival);
     void saveAll(List<Rival> rivals);
     List<Rival> findAllByUserId(Long myId);

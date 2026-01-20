@@ -5,7 +5,10 @@ import com.process.clash.application.compete.rival.rival.exception.exception.not
 import com.process.clash.application.compete.rival.rival.policy.ModifyRivalPolicy;
 import com.process.clash.application.compete.rival.rival.port.in.AcceptRivalUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
+import com.process.clash.domain.user.usernotice.entity.UserNotice;
+import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
     private final ModifyRivalPolicy modifyRivalPolicy;
+    private final UserNoticeRepositoryPort userNoticeRepositoryPort;
 
     @Override
     public void execute(ModifyRivalData.Command command) {
@@ -28,6 +32,15 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
         Rival updatedRival = rival.accept();
 
-        rivalRepositoryPort.save(updatedRival);
+        rivalRepositoryPort.saveAndFlush(updatedRival);
+
+        UserNotice userNotice = UserNotice
+                .createDefault(
+                        NoticeCategory.ACCEPT_RIVAL,
+                        command.actor().id(),
+                        rivalRepositoryPort.findOpponentIdByIdAndUserId(rival.id(), command.actor().id())
+                );
+
+        userNoticeRepositoryPort.save(userNotice);
     }
 }
