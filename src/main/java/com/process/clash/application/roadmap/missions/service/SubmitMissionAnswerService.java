@@ -111,7 +111,35 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
 
         // 챕터 완료 여부 확인 및 섹션 업데이트
         if (history.getCurrentQuestionIndex() >= history.getTotalCount()) {
-            updateSectionProgress(actor.id(), chapter, progress);
+            // 챕터 내 모든 미션 조회 (이미 가져온 mission의 chapterId 사용)
+            List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
+            List<Long> missionIdsInChapter = missionsInChapter.stream().map(Mission::getId).toList();
+
+            // 현재 챕터의 미션 기록만 조회
+            List<UserMissionHistory> chapterHistories = userMissionHistoryRepositoryPort.findAllByUserIdAndMissionIdIn(actor.id(), missionIdsInChapter);
+
+            // histories를 missionId로 매핑 (O(1) 조회를 위해)
+            Map<Long, UserMissionHistory> historyMap = chapterHistories.stream()
+                    .collect(Collectors.toMap(UserMissionHistory::getMissionId, Function.identity()));
+
+            // mission을 missionId로 매핑
+            Map<Long, Mission> missionMap = missionsInChapter.stream()
+                    .collect(Collectors.toMap(Mission::getId, Function.identity()));
+
+            // 정렬된 미션 목록
+            List<Mission> sortedMissions = missionsInChapter.stream()
+                    .filter(m -> m.getOrderIndex() != null)
+                    .sorted((m1, m2) -> Integer.compare(m1.getOrderIndex(), m2.getOrderIndex()))
+                    .toList();
+
+            // 챕터 클리어 여부 확인
+            boolean isChapterCleared = sortedMissions.stream()
+                    .allMatch(m -> {
+                        UserMissionHistory h = historyMap.get(m.getId());
+                        return h != null && h.isCleared();
+                    });
+
+            updateSectionProgress(actor.id(), chapter, progress, isChapterCleared, missionMap);
         }
 
         // 진행 상황 계산
@@ -128,7 +156,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 현재 챕터의 미션 기록만 조회
         List<UserMissionHistory> chapterHistories = userMissionHistoryRepositoryPort.findAllByUserIdAndMissionIdIn(actor.id(), missionIdsInChapter);
 
-        // histories를 missionId로 매핑 (O(1) 조회를 위함)
+        // histories를 missionId로 매핑 (O(1) 조회를 위해)
         Map<Long, UserMissionHistory> historyMap = chapterHistories.stream()
                 .collect(Collectors.toMap(UserMissionHistory::getMissionId, Function.identity()));
 
@@ -143,8 +171,8 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         Integer nextMissionOrderIndex = null;
         if (isMissionCleared) {
             for (Mission m : sortedMissions) {
-                UserMissionHistory ch = historyMap.get(m.getId());
-                if (ch == null || !ch.isCleared()) {
+                UserMissionHistory h = historyMap.get(m.getId());
+                if (h == null || !h.isCleared()) {
                     nextMissionId = m.getId();
                     nextMissionOrderIndex = m.getOrderIndex();
                     break;
@@ -155,8 +183,8 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // 챕터 클리어 여부 확인
         boolean isChapterCleared = sortedMissions.stream()
                 .allMatch(m -> {
-                    UserMissionHistory ch = historyMap.get(m.getId());
-                    return ch != null && ch.isCleared();
+                    UserMissionHistory h = historyMap.get(m.getId());
+                    return h != null && h.isCleared();
                 });
 
         // 다음 챕터 계산
@@ -189,22 +217,9 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         );
     }
 
-    private void updateSectionProgress(Long userId, Chapter chapter, UserSectionProgress progress) {
-        // 현재 챕터에 속한 모든 미션 조회
-        List<Mission> missionsInChapter = missionRepositoryPort.findAllByChapterId(chapter.getId());
-        List<Long> missionIdsInChapter = missionsInChapter.stream()
-                .map(Mission::getId)
-                .toList();
-
-        // 해당 미션들이 모두 클리어(isCleared=true) 되었는지 확인
-        List<UserMissionHistory> histories = userMissionHistoryRepositoryPort.findAllByUserId(userId);
-        long clearedCount = histories.stream()
-                .filter(h -> missionIdsInChapter.contains(h.getMissionId()))
-                .filter(UserMissionHistory::isCleared)
-                .count();
-
+    private void updateSectionProgress(Long userId, Chapter chapter, UserSectionProgress progress, boolean isChapterCleared, Map<Long, Mission> missionMap) {
         // 챕터 내 모든 미션이 완료되었다면 다음 단계로 진행
-        if (clearedCount == missionIdsInChapter.size()) {
+        if (isChapterCleared) {
             // 현재 섹션 내에서 다음 순서(OrderIndex)의 챕터를 찾음
             List<Chapter> chaptersInSection = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
             Optional<Chapter> nextChapterOpt = chaptersInSection.stream()
