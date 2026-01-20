@@ -4,6 +4,7 @@ import com.process.clash.adapter.persistence.rival.rival.RivalJpaEntity;
 import com.process.clash.adapter.persistence.rival.rival.RivalJpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.adapter.persistence.user.userexphistory.UserExpHistoryJpaMapper;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
@@ -26,6 +27,7 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     private final BattleJpaRepository battleJpaRepository;
     private final RivalJpaRepository rivalJpaRepository;
     private final UserJpaRepository userJpaRepository;
+    private final UserExpHistoryJpaMapper userExpHistoryJpaMapper;
 
     @Override
     public Battle save(Battle battle) {
@@ -47,5 +49,13 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     public boolean existsActiveBattleByUserId(Long userId) {
 
         return battleJpaRepository.existsActiveBattleByUserId(userId);
+    }
+
+    @Override
+    public List<Battle> findByUserId(Long userId) {
+        return battleJpaRepository.findByUserId(userId)
+                .stream()
+                .map(battleJpaMapper::toDomain)
+                .toList();
     }
 }
