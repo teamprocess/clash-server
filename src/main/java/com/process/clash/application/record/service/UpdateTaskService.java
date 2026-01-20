@@ -29,7 +29,7 @@ public class UpdateTaskService implements UpdateTaskUseCase {
         Task updatedTask = new Task(
             task.id(),
             command.name(),
-            command.color(),
+            task.color(),
             task.studyTime(),
             task.createdAt(),
             LocalDateTime.now(),

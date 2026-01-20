@@ -39,7 +39,6 @@ public interface TaskControllerDocument {
                                             "id": 1,
                                             "name": "자료구조",
                                             "icon": "timer",
-                                            "color": "BLUE",
                                             "studyTime": 3600
                                           }
                                         ]
@@ -72,8 +71,7 @@ public interface TaskControllerDocument {
                             schema = @Schema(implementation = CreateTaskRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "name": "알고리즘",
-                                      "color": "RED"
+                                      "name": "알고리즘"
                                     }
                                     """)
                     ))
@@ -92,7 +90,6 @@ public interface TaskControllerDocument {
                                       "data": {
                                         "id": 1,
                                         "name": "알고리즘 심화",
-                                        "color": "GREEN",
                                         "studyTime": 4200
                                       }
                                     }
@@ -107,8 +104,7 @@ public interface TaskControllerDocument {
                             schema = @Schema(implementation = UpdateTaskRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "name": "알고리즘 심화",
-                                      "color": "GREEN"
+                                      "name": "알고리즘 심화"
                                     }
                                     """)
                     ))

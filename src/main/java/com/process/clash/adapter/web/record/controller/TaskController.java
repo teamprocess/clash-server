@@ -57,8 +57,7 @@ public class TaskController implements TaskControllerDocument {
     ) {
         CreateTaskData.Command command = new CreateTaskData.Command(
             actor,
-            request.name(),
-            request.color()
+            request.name()
         );
         createTaskUseCase.execute(command);
 
@@ -74,8 +73,7 @@ public class TaskController implements TaskControllerDocument {
         UpdateTaskData.Command command = new UpdateTaskData.Command(
             actor,
             taskId,
-            request.name(),
-            request.color()
+            request.name()
         );
         UpdateTaskData.Result result = updateTaskUseCase.execute(command);
 
