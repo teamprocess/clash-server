@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,15 @@ public interface MissionControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "미션 ID", example = "1") @PathVariable Long missionId,
             @Parameter(description = "질문 ID", example = "1") @PathVariable Long questionId,
+            @RequestBody(description = "미션 정답 제출 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = MissionSubmitDto.Request.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "submittedChoiceId": 1
+                                    }
+                                    """)
+                    ))
             MissionSubmitDto.Request request
     );
 
