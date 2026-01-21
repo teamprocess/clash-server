@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.compete.rival.rival.dto;
 
 import com.process.clash.application.compete.rival.rival.data.CompareWithRivalsData;
 import com.process.clash.application.compete.rival.rival.data.TotalData;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 

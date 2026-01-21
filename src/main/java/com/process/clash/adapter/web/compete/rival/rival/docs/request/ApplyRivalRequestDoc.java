@@ -10,7 +10,7 @@ public class ApplyRivalRequestDoc {
     public List<IdDoc> ids;
 
     public static class IdDoc {
-        @Schema(description = "사용자 ID")
+        @Schema(description = "사용자 ID", example = "3")
         public Long id;
     }
 }
