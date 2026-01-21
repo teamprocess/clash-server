@@ -1,10 +1,11 @@
 package com.process.clash.adapter.web.compete.rival.rival.docs.response;
 
+import com.process.clash.adapter.web.common.docs.response.SuccessMessageResponseDoc;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(description = "라이벌과 비교 응답")
-public class CompareWithRivalsResponseDoc {
+public class CompareWithRivalsResponseDoc extends SuccessMessageResponseDoc {
 
     @Schema(description = "성공 여부", example = "true")
     public Boolean success;
