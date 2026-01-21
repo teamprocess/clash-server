@@ -3,12 +3,15 @@ package com.process.clash.adapter.persistence.user.userexphistory;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
+import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -48,5 +51,22 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     public double findAverageExpByUserIdAndCategoryAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return userExpHistoryJpaRepository.findAverageExpByUserIdAndCategoryAndPeriod(userId, startDate, endDate);
+    }
+
+    @Override
+    public Map<Long, Double> findAverageExpByUserIdAndBattles(Long userId, List<Battle> battles) {
+        Map<Long, Double> result = new HashMap<>();
+
+        for (Battle battle : battles) {
+            Double avgExp = userExpHistoryJpaRepository
+                    .findAverageExpByUserIdAndPeriod(
+                            userId,
+                            battle.startDate(),
+                            battle.endDate()
+                    );
+            result.put(battle.id(), avgExp != null ? avgExp : 0.0);
+        }
+
+        return result;
     }
 }

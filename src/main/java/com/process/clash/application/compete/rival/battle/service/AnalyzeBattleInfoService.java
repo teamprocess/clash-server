@@ -5,6 +5,7 @@ import com.process.clash.application.compete.rival.battle.data.AnalyzeBattleInfo
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.battle.port.in.AnalyzeBattleInfoUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
+import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
@@ -39,7 +40,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
 
         // Rival 정보 조회
         Rival rival = rivalRepositoryPort.findById(battle.rivalId())
-                .orElseThrow(() -> new IllegalStateException("Rival not found"));
+                .orElseThrow(RivalNotFoundException::new);
 
         // 상대방 ID 추출
         Long enemyId = rival.firstUserId().equals(userId)

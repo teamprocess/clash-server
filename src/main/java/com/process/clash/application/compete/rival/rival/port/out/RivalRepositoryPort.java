@@ -6,6 +6,7 @@ import com.process.clash.domain.rival.rival.entity.Rival;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public interface RivalRepositoryPort {
 
@@ -19,4 +20,5 @@ public interface RivalRepositoryPort {
     Long findOpponentIdByIdAndUserId(Long id, Long userId);
     Optional<Rival> findById(Long id);
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(Long userId);
+    List<Rival> findByIdIn(Set<Long> ids);
 }

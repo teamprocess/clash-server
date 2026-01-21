@@ -106,4 +106,11 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
 
         return rivalJpaRepository.findAbleToBattleRivals(userId);
     }
+
+    @Override
+    public List<Rival> findByIdIn(Set<Long> ids) {
+        return rivalJpaRepository.findByIdIn(ids).stream()
+                .map(rivalJpaMapper::toDomain)
+                .toList();
+    }
 }
