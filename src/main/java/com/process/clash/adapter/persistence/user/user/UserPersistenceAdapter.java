@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -67,5 +68,12 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
 
         return userJpaRepository.findAllById(ids).stream()
                 .map(userJpaMapper::toDomain).toList();
+    }
+
+    @Override
+    public List<User> findByIdIn(Set<Long> ids) {
+        return userJpaRepository.findByIdIn(ids).stream()
+                .map(userJpaMapper::toDomain)
+                .toList();
     }
 }

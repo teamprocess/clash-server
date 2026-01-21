@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Repository
 public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> {
@@ -134,4 +135,5 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     """)
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(@Param("userId") Long userId);
 
+    List<RivalJpaEntity> findByIdIn(Set<Long> ids);
 }

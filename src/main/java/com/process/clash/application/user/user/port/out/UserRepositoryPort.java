@@ -4,6 +4,7 @@ import com.process.clash.domain.user.user.entity.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserRepositoryPort {
     User save(User user);
@@ -20,4 +21,5 @@ public interface UserRepositoryPort {
     void flush();
 
     List<User> findAllByIds(List<Long> ids);
+    List<User> findByIdIn(Set<Long> ids);
 }
