@@ -32,7 +32,7 @@ public class BattleJpaMapper {
                 battleJpaEntity.getStartDate(),
                 battleJpaEntity.getEndDate(),
                 battleJpaEntity.getBattleStatus(),
-                battleJpaEntity.getWinner().getId(),
+                battleJpaEntity.getWinner() != null ? battleJpaEntity.getWinner().getId() : null,
                 battleJpaEntity.getRival().getId()
         );
     }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
@@ -51,4 +52,22 @@ public class GithubDailyStatsJpaEntity {
 
     @Column(nullable = false)
     private Instant syncedAt;
+
+    public void updateStats(
+            Integer commitCount,
+            Integer prCount,
+            Integer issueCount,
+            Integer reviewCount,
+            long additions,
+            long deletions,
+            Instant syncedAt
+    ) {
+        this.commitCount = commitCount;
+        this.prCount = prCount;
+        this.issueCount = issueCount;
+        this.reviewCount = reviewCount;
+        this.additions = additions;
+        this.deletions = deletions;
+        this.syncedAt = syncedAt;
+    }
 }

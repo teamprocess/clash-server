@@ -68,8 +68,8 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
     );
 
     @Query(value = """
-        SELECT COALESCE(AVG(study_time), 0)
-        FROM user_study_time
+        SELECT COALESCE(AVG(total_study_time_seconds), 0)
+        FROM user_study_times
         WHERE fk_user_id = :userId
           AND date >= :startDate
           AND date < :endDate

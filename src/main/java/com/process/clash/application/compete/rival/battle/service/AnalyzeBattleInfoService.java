@@ -34,8 +34,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
         Long userId = command.actor().id();
         TargetCategory category = command.category();
 
-        // 현재 진행 중인 배틀 조회
-        Battle battle = battleRepositoryPort.findActiveByUserId(userId)
+        Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
 
         // Rival 정보 조회
@@ -68,7 +67,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
             case ACTIVE_TIME -> calculateStudyPoint(userId, startDate, endDate);
             case GITHUB -> calculateGithubPoint(userId, startDate, endDate);
             case EXP -> calculateExpPoint(userId, startDate, endDate);
-            case SOLVED_AC -> null; //TODO: 나중에 구현
+            case SOLVED_AC -> 0; //TODO: 나중에 구현
         };
     }
 

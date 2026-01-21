@@ -7,13 +7,15 @@ public class AnalyzeBattleInfoData {
 
     public record Command(
             Actor actor,
+            Long id,
             TargetCategory category
     ) {
 
-        public static Command from(Actor actor, TargetCategory category) {
+        public static Command from(Actor actor, Long id, TargetCategory category) {
 
             return new Command(
                     actor,
+                    id,
                     category
             );
         }
