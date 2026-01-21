@@ -33,7 +33,7 @@ public class UserExpHistoryJpaEntity {
     @Column(nullable = false)
     private int earnExp;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ExpActingCategory actingCategory;
 

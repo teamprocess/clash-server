@@ -13,7 +13,7 @@ public record Rival(
         Long secondUserId
 ) {
 
-    public static Rival createDefault(Long firstUserId, Long secondUser2Id) {
+    public static Rival createDefault(Long firstUserId, Long secondUserId) {
 
         return new Rival(
                 null,
@@ -21,7 +21,7 @@ public record Rival(
                 null,
                 RivalLinkingStatus.PENDING,
                 firstUserId,
-                secondUser2Id
+                secondUserId
         );
     }
 

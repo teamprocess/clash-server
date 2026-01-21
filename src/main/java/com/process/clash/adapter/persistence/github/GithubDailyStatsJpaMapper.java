@@ -20,6 +20,18 @@ public class GithubDailyStatsJpaMapper {
         );
     }
 
+    public void updateEntity(GithubDailyStatsJpaEntity entity, GithubDailyStats stat) {
+        entity.updateStats(
+                stat.commitCount(),
+                stat.prCount(),
+                stat.issueCount(),
+                stat.reviewedPrCount(),
+                stat.additions(),
+                stat.deletions(),
+                stat.syncedAt()
+        );
+    }
+
     public GithubDailyStats toDomain(GithubDailyStatsJpaEntity entity) {
         return new GithubDailyStats(
                 entity.getUserId(),
