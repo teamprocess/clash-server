@@ -7,6 +7,7 @@ import com.process.clash.adapter.web.auth.docs.response.SignOutResponseDoc;
 import com.process.clash.adapter.web.auth.docs.response.SignUpResponseDoc;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
+import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +18,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "인증 API", description = "회원가입/로그인/로그아웃")
@@ -31,24 +34,14 @@ public interface AuthControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
-                                      "message": "회원가입이 완료되었습니다."
+                                      "message": "회원가입 요청 / 이메일 인증 코드 발송이 완료되었습니다."
                                     }
                                     """)
-                    ))
+                    )
+            )
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> signUp(
-            @RequestBody(description = "회원가입 요청", required = true,
-                    content = @Content(
-                            schema = @Schema(implementation = SignUpRequestDoc.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "username": "process123",
-                                      "password": "P@ssw0rd!",
-                                      "name": "홍길동"
-                                    }
-                                    """)
-                    ))
-            SignUpDto.Request request
+            @Parameter(description = "회원가입 요청", required = true) @RequestBody(description = "회원가입 요청") SignUpDto.Request request
     );
 
     @Operation(summary = "로그인", description = "아이디/비밀번호로 로그인합니다.")
@@ -75,8 +68,8 @@ public interface AuthControllerDocument {
                             schema = @Schema(implementation = SignInRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "username": "process123",
-                                      "password": "P@ssw0rd!",
+                                      "username": "process",
+                                      "password": "qwer1234",
                                       "rememberMe": true
                                     }
                                     """)
@@ -109,5 +102,32 @@ public interface AuthControllerDocument {
     ResponseEntity<Void> handleRedirect(
             @Parameter(description = "이전 액션", example = "signin", required = true)
             @PathVariable String action
+    );
+
+    @Operation(summary = "이메일 인증", description = "회원가입 후 발송된 6자리 코드로 계정을 활성화합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = SignInResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "이메일 인증을 성공했습니다."
+                                    }
+                                    """)
+                    )),
+            @ApiResponse(responseCode = "400", description = "인증 실패 (코드 불일치 또는 만료)",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "message": "인증 코드가 일치하지 않거나 만료되었습니다."
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> verifyEmail(
+            @CookieValue(name = "signup_token", required = true) String token,
+            @Valid @RequestBody(description = "이메일 인증 요청", required = true) VerifyEmailDto.Request request
     );
 }

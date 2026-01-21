@@ -21,4 +21,13 @@ public class UserSectionProgress {
     private Integer completedChapters;
 
     private Boolean isCompleted;
+
+    public void moveToNextChapter(Long nextChapterId) {
+        this.currentChapterId = nextChapterId;
+        this.completedChapters += 1;
+    }
+
+    public void completeSection() {
+        this.isCompleted = true;
+    }
 }

@@ -12,15 +12,10 @@ public class GetSectionsData {
 
     public record Result(
             List<SectionVo> sections,
-            List<String> categories
+            List<String> categories,
+            Integer completedSections,
+            Integer totalSections
     ) {
-        public static Result from(List<Section> sections, List<String> categories) {
-            List<SectionVo> sectionVos = sections.stream()
-                    .map(section -> SectionVo.from(section, false, false)) // completed, locked는 서비스에서 계산 필요
-                    .toList();
-            return new Result(sectionVos, categories);
-        }
-
         public record SectionVo(
                 Long id,
                 String title,

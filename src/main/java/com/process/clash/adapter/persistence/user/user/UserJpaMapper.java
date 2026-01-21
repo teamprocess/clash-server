@@ -12,15 +12,16 @@ public class UserJpaMapper {
                 user.createdAt(),
                 user.updatedAt(),
                 user.username(),
+                user.email(),
                 user.name(),
                 user.password(),
                 user.role(),
-                user.ableToAddRival(),
                 user.profileImage(),
-                user.pomodoroEnabled(),
-                user.pomodoroStudyMinute(),
-                user.pomodoroBreakMinute(),
-                user.major()
+                user.totalExp(),
+                user.totalCookie(),
+                user.totalToken(),
+                user.major(),
+                user.userStatus()
         );
     }
 
@@ -30,15 +31,16 @@ public class UserJpaMapper {
                 userJpaEntity.getCreatedAt(),
                 userJpaEntity.getUpdatedAt(),
                 userJpaEntity.getUsername(),
+                userJpaEntity.getEmail(),
                 userJpaEntity.getName(),
                 userJpaEntity.getPassword(),
                 userJpaEntity.getRole(),
-                userJpaEntity.isAbleToAddRival(),
                 userJpaEntity.getProfileImage(),
-                userJpaEntity.isPomodoroEnabled(),
-                userJpaEntity.getPomodoroStudyMinute(),
-                userJpaEntity.getPomodoroBreakMinute(),
-                userJpaEntity.getMajor()
+                userJpaEntity.getTotalExp(),
+                userJpaEntity.getTotalCookie(),
+                userJpaEntity.getTotalToken(),
+                userJpaEntity.getMajor(),
+                userJpaEntity.getUserStatus()
         );
     }
 }

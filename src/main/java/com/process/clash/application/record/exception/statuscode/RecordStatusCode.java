@@ -19,6 +19,11 @@ public enum RecordStatusCode implements StatusCode {
         "이미 공부 세션이 시작되었습니다.",
         ErrorCategory.CONFLICT
     ),
+    TASK_HAS_ACTIVE_SESSION(
+        "TASK_HAS_ACTIVE_SESSION",
+        "진행 중인 공부 세션이 있어 과목을 삭제할 수 없습니다.",
+        ErrorCategory.CONFLICT
+    ),
     STUDY_SESSION_NOT_FOUND(
             "STUDY_SESSION_NOT_FOUND",
             "공부 세션이 존재하지 않습니다.",

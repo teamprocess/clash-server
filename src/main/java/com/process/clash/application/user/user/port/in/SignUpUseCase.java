@@ -4,5 +4,5 @@ import com.process.clash.application.user.user.data.SignUpData;
 
 public interface SignUpUseCase {
 
-	void execute(SignUpData.Command command);
+	String execute(SignUpData.Command command);
 }

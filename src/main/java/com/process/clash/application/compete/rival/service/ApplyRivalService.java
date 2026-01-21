@@ -4,7 +4,10 @@ import com.process.clash.application.compete.rival.data.ApplyRivalData;
 import com.process.clash.application.compete.rival.policy.ApplyRivalPolicy;
 import com.process.clash.application.compete.rival.port.in.ApplyRivalUseCase;
 import com.process.clash.application.compete.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
 import com.process.clash.domain.rival.entity.Rival;
+import com.process.clash.domain.user.usernotice.entity.UserNotice;
+import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,13 +16,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ApplyRivalService implements ApplyRivalUseCase {
 
     private final ApplyRivalPolicy applyRivalPolicy;
     private final RivalRepositoryPort rivalRepositoryPort;
+    private final UserNoticeRepositoryPort userNoticeRepositoryPort;
 
     @Override
-    @Transactional
     public void execute(ApplyRivalData.Command command) {
 
         applyRivalPolicy.check(command);
@@ -29,5 +33,15 @@ public class ApplyRivalService implements ApplyRivalUseCase {
                 .toList();
 
         rivalRepositoryPort.saveAll(rivals);
+
+        List<UserNotice> userNotices = rivals.stream()
+                .map(rival -> UserNotice.createDefault(
+                        NoticeCategory.APPLY_RIVAL,
+                        rival.opponentId(),
+                        rival.myId()
+                ))
+                .toList();
+
+        userNoticeRepositoryPort.saveAll(userNotices);
     }
 }

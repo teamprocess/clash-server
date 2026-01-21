@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
 @Builder
@@ -28,6 +29,18 @@ public record CommonResponse<T>(
 
     public static <T> ResponseEntity<CommonResponse<T>> success(String message, HttpStatus status) {
         return ResponseEntity.status(status).body(CommonResponse.<T>builder()
+                .data(null)
+                .success(true)
+                .message(message)
+                .error(null)
+                .status(status.value())
+                .build());
+    }
+
+    public static <T> ResponseEntity<CommonResponse<T>> success(String message, ResponseCookie cookie, HttpStatus status) {
+        return ResponseEntity.status(status)
+                .header("Set-Cookie", cookie.toString())
+                .body(CommonResponse.<T>builder()
                 .data(null)
                 .success(true)
                 .message(message)

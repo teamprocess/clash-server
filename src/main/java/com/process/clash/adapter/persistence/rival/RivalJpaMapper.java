@@ -13,7 +13,6 @@ public class RivalJpaMapper {
                 rival.id(),
                 rival.createdAt(),
                 rival.updatedAt(),
-                rival.rivalCurrentStatus(),
                 rival.rivalLinkingStatus(),
                 my,
                 opponent
@@ -26,7 +25,6 @@ public class RivalJpaMapper {
                 rivalJpaEntity.getId(),
                 rivalJpaEntity.getCreatedAt(),
                 rivalJpaEntity.getUpdatedAt(),
-                rivalJpaEntity.getRivalCurrentStatus(),
                 rivalJpaEntity.getRivalLinkingStatus(),
                 rivalJpaEntity.getMy().getId(),
                 rivalJpaEntity.getOpponent().getId()

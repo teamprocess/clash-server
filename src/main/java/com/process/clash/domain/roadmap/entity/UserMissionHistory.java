@@ -18,7 +18,36 @@ public class UserMissionHistory {
 
     private boolean isCleared;
 
-    private Integer score;
+    private Integer correctCount;
+
+    private Integer totalCount;
 
     private Integer currentQuestionIndex;
+
+    public static UserMissionHistory create(Long userId, Long missionId, Integer totalCount) {
+        return new UserMissionHistory(null, userId, missionId, false, 0, totalCount, 0);
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
+    }
+
+    public void recordCorrectAnswer() {
+        this.correctCount = this.correctCount + 1;
+        checkCleared();
+    }
+
+    public void recordQuestionAttempt() {
+        this.currentQuestionIndex = this.currentQuestionIndex + 1;
+    }
+
+    public void checkCleared() {
+        this.isCleared = this.correctCount.equals(this.totalCount);
+    }
+
+    public void reset() {
+        this.isCleared = false;
+        this.correctCount = 0;
+        this.currentQuestionIndex = 0;
+    }
 }

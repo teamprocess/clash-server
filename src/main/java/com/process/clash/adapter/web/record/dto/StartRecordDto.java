@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.record.dto;
 
-import com.process.clash.application.record.dto.StartRecordData;
+import com.process.clash.application.record.data.StartRecordData;
 import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import io.swagger.v3.oas.annotations.media.Schema;

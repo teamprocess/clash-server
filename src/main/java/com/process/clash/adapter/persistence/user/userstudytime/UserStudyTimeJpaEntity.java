@@ -8,10 +8,16 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
-@Table(name = "user_study_times")
+@Table(
+        name = "user_study_times",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"fk_user_id", "date"}
+                )
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserStudyTimeJpaEntity {
@@ -19,17 +25,20 @@ public class UserStudyTimeJpaEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private LocalDate date;
+
+    @Column(nullable = false)
+    private long totalStudyTimeSeconds;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
 
-    public UserStudyTimeJpaEntity(Long id, LocalDate date, UserJpaEntity user) {
+    public UserStudyTimeJpaEntity(Long id, LocalDate date, long totalStudyTimeSeconds, UserJpaEntity user) {
         this.id = id;
         this.date = date;
+        this.totalStudyTimeSeconds = totalStudyTimeSeconds;
         this.user = user;
     }
 }

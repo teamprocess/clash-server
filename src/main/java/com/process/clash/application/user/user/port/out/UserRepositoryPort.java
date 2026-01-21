@@ -7,10 +7,17 @@ import java.util.Optional;
 
 public interface UserRepositoryPort {
     User save(User user);
+    void saveAndFlush(User user);
     Optional<User> findById(Long id);
     Optional<User> findByUsername(String username);
 
     boolean existsByUsername(String username);
 
-    List<User> findByIdIn(List<Long> ids);
+    boolean existsByEmail(String email);
+
+    Optional<User> findByEmail(String email);
+
+    void flush();
+
+    List<User> findAllByIds(List<Long> ids);
 }

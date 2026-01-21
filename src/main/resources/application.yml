@@ -13,6 +13,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        default_batch_fetch_size: 100
         format_sql: true
         show_sql: true
         jdbc:
@@ -20,11 +21,43 @@ spring:
           order_updates: true
           order_inserts: true
 
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
+  mail:
+    host: email-smtp.ap-northeast-2.amazonaws.com # 서울 리전 기준
+    port: 587
+    username: ${AWS_SES_SMTP_USERNAME} # AWS에서 생성한 SMTP 아이디
+    password: ${AWS_SES_SMTP_PASSWORD} # AWS에서 생성한 SMTP 비밀번호
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+      password: ${REDIS_PASSWORD}
 
 server:
   servlet:
     session:
       timeout: 3d
+
+github:
+  sync:
+    api-base-url: ${GITHUB_API_BASE_URL:https://api.github.com/graphql}
+    default-token: ${GITHUB_ACCESS_TOKEN:}
+    recompute-days: ${GITHUB_RECOMPUTE_DAYS:30}
+    timezone: ${GITHUB_TIMEZONE:Asia/Seoul}
+    day-boundary-hour: ${GITHUB_DAY_BOUNDARY_HOUR:6}
+    max-concurrency: ${GITHUB_MAX_CONCURRENCY:1}
+
+record:
+  timezone: ${RECORD_TIMEZONE:Asia/Seoul}
+  day-boundary-hour: ${RECORD_DAY_BOUNDARY_HOUR:6}
+
+mail:
+  sender:
+    address: ${MAIL_SENDER_ADDRESS:no-reply@clash.kr}
+    name: ${MAIL_SENDER_NAME:Clash}

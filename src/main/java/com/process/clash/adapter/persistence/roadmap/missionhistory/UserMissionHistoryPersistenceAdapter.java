@@ -37,4 +37,14 @@ public class UserMissionHistoryPersistenceAdapter implements UserMissionHistoryR
     public List<UserMissionHistory> findAllByUserId(Long userId) {
         return userMissionHistoryJpaRepository.findAllByUserId(userId).stream().map(userMissionHistoryJpaMapper::toDomain).toList();
     }
+
+    @Override
+    public Optional<UserMissionHistory> findByUserIdAndMissionId(Long userId, Long missionId) {
+        return userMissionHistoryJpaRepository.findByUserIdAndMissionId(userId, missionId).map(userMissionHistoryJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<UserMissionHistory> findAllByUserIdAndMissionIdIn(Long userId, List<Long> missionIds) {
+        return userMissionHistoryJpaRepository.findAllByUserIdAndMissionIdIn(userId, missionIds).stream().map(userMissionHistoryJpaMapper::toDomain).toList();
+    }
 }

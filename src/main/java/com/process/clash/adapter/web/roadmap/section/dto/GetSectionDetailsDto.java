@@ -10,10 +10,18 @@ public class GetSectionDetailsDto {
     @Schema(name = "GetSectionDetailsDtoResponse")
 
     public record Response(
+            @Schema(description = "로드맵 ID", example = "1")
             Long sectionId,
+            @Schema(description = "로드맵 제목", example = "스프링 입문")
             String sectionTitle,
+            @Schema(description = "총 챕터 수", example = "3")
             Integer totalChapters,
+            @Schema(description = "현재 챕터 ID", example = "1")
             Long currentChapterId,
+            @Schema(description = "현재 챕터 순서 (0-based)", example = "0")
+            Integer currentOrderIndex,
+            @Schema(description = "현재 미션 순서 (0-based)", example = "2")
+            Integer currentMissionIndex,
             List<ChapterVo> chapters
     ) {
         public static Response from(GetSectionDetailsData.Result result) {
@@ -25,6 +33,8 @@ public class GetSectionDetailsDto {
                     result.sectionTitle(),
                     result.totalChapters(),
                     result.currentChapterId(),
+                    result.currentOrderIndex(),
+                    result.currentMissionIndex(),
                     chapters
             );
         }
@@ -33,49 +43,12 @@ public class GetSectionDetailsDto {
     public record ChapterVo(
             Long id,
             String title,
-            Integer difficulty,
-            List<MissionVo> missions
+            Integer orderIndex,
+            Integer completedMissions,
+            Integer totalMissions
     ) {
         public static ChapterVo from(GetSectionDetailsData.Result.ChapterVo vo) {
-            List<MissionVo> missions = vo.missions().stream()
-                    .map(MissionVo::from)
-                    .toList();
-            return new ChapterVo(vo.id(), vo.title(), vo.difficulty(), missions);
-        }
-    }
-
-    public record MissionVo(
-            Long id,
-            String title,
-            List<QuestionVo> questions
-    ) {
-        public static MissionVo from(GetSectionDetailsData.Result.MissionVo vo) {
-            List<QuestionVo> questions = vo.questions().stream()
-                    .map(QuestionVo::from)
-                    .toList();
-            return new MissionVo(vo.id(), vo.title(), questions);
-        }
-    }
-
-    public record QuestionVo(
-            Long id,
-            String title,
-            List<ChoiceVo> choices
-    ) {
-        public static QuestionVo from(GetSectionDetailsData.Result.QuestionVo vo) {
-            List<ChoiceVo> choices = vo.choices().stream()
-                    .map(ChoiceVo::from)
-                    .toList();
-            return new QuestionVo(vo.id(), vo.title(), choices);
-        }
-    }
-
-    public record ChoiceVo(
-            Long id,
-            String content
-    ) {
-        public static ChoiceVo from(GetSectionDetailsData.Result.ChoiceVo vo) {
-            return new ChoiceVo(vo.id(), vo.content());
+            return new ChapterVo(vo.id(), vo.title(), vo.orderIndex(), vo.completedMissions(), vo.totalMissions());
         }
     }
 }

@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface MissionRepositoryPort {
     void save(Mission mission);
     Optional<Mission> findById(Long id);
+    Optional<Mission> findByIdWithQuestions(Long id);
     List<Mission> findAll();
     List<Mission> findAllByChapterId(Long chapterId);
+    List<Mission> findAllByChapterIdIn(List<Long> chapterIds);
 }

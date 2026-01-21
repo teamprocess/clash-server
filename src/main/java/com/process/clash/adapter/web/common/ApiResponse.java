@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.common;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
 public class ApiResponse<T> extends ResponseEntity<CommonResponse<T>> {
@@ -22,6 +23,11 @@ public class ApiResponse<T> extends ResponseEntity<CommonResponse<T>> {
     // 3. 메시지만 포함된 성공 응답 (200 OK)
     public static ApiResponse<Void> success(String message) {
         return new ApiResponse<>(CommonResponse.success(message, HttpStatus.OK));
+    }
+
+    // 3. 메시지만 포함된 성공 응답 (200 OK)
+    public static ApiResponse<Void> success(String message, ResponseCookie cookie) {
+        return new ApiResponse<>(CommonResponse.success(message, cookie, HttpStatus.OK));
     }
 
     // 4. 생성 성공 응답 (201 Created)

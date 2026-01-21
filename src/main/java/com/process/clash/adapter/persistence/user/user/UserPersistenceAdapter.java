@@ -23,6 +23,12 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public void saveAndFlush(User user) {
+
+        userJpaRepository.saveAndFlush(userJpaMapper.toJpaEntity(user));
+    }
+
+    @Override
     public Optional<User> findById(Long id) {
         return userJpaRepository.findById(id).map(userJpaMapper::toDomain);
     }
@@ -38,10 +44,28 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public List<User> findByIdIn(List<Long> ids) {
-        return userJpaRepository.findByIdIn(ids)
-                .stream()
-                .map(userJpaMapper::toDomain)
-                .toList();
+    public boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userJpaRepository.findByEmail(email).map(userJpaMapper::toDomain);
+    }
+
+    @Override
+    public void flush() {
+
+        userJpaRepository.flush();
+    }
+
+    @Override
+    public List<User> findAllByIds(List<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+
+        return userJpaRepository.findAllById(ids).stream()
+                .map(userJpaMapper::toDomain).toList();
     }
 }

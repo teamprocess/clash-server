@@ -1,11 +1,12 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.dto.CreateTaskData;
+import com.process.clash.application.record.data.CreateTaskData;
 import com.process.clash.application.record.port.in.CreateTaskUseCase;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.model.entity.Task;
+import com.process.clash.domain.record.model.enums.TaskColor;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class CreateTaskService implements CreateTaskUseCase {
         User user = userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
-        Task task = Task.create(command.name(), command.color(), user);
+        Task task = Task.create(command.name(), TaskColor.GRAY, user);
         taskRepositoryPort.save(task);
     }
 }

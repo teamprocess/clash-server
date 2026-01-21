@@ -1,7 +1,8 @@
 package com.process.clash.adapter.persistence.user.user;
 
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.common.enums.Role;
+import com.process.clash.domain.user.user.enums.Role;
+import com.process.clash.domain.user.user.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,9 @@ public class UserJpaEntity {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
     @Column(nullable = false)
     private String name;
 
@@ -43,21 +47,21 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = false)
-    private boolean ableToAddRival;
-
     @Column
     private String profileImage;
 
     @Column(nullable = false)
-    private boolean pomodoroEnabled;
+    private int totalExp;
 
     @Column(nullable = false)
-    private Integer pomodoroStudyMinute;
+    private int totalCookie;
 
     @Column(nullable = false)
-    private Integer pomodoroBreakMinute;
+    private int totalToken;
 
     @Enumerated(EnumType.STRING)
     private Major major;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 }

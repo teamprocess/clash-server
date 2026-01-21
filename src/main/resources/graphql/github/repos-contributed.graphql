@@ -1,0 +1,26 @@
+query ($login: String!, $first: Int!, $after: String) {
+  user(login: $login) {
+    repositoriesContributedTo(
+      first: $first,
+      after: $after,
+      contributionTypes: [COMMIT],
+      includeUserRepositories: true
+    ) {
+      nodes {
+        nameWithOwner
+        defaultBranchRef {
+          name
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+  rateLimit {
+    cost
+    remaining
+    resetAt
+  }
+}

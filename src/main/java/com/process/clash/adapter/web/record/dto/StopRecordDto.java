@@ -1,8 +1,7 @@
 package com.process.clash.adapter.web.record.dto;
 
-import com.process.clash.application.record.dto.StopRecordData;
+import com.process.clash.application.record.data.StopRecordData;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class StopRecordDto {
@@ -16,7 +15,7 @@ public class StopRecordDto {
         public static Response from(StopRecordData.Result result) {
             return new Response(
                     result.taskId(),
-                    result.stoppedAt().atZone(ZoneOffset.UTC).toInstant()
+                    result.stoppedAt()
             );
         }
     }
