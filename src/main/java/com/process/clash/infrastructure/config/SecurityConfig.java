@@ -5,6 +5,7 @@ import com.process.clash.adapter.web.auth.service.CustomUserDetailsService;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -114,7 +115,22 @@ public class SecurityConfig {
 
     @Bean
     public RememberMeServices rememberMeServices(CustomUserDetailsService customUserDetailsService) {
-        return new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService); // 프로덕선 환경에서는 키를 노출시키지 마세요
+        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService) {
+            @Override
+            protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
+                super.setCookie(tokens, maxAge, request, response);
+
+                String cookieHeader = response.getHeader(org.springframework.http.HttpHeaders.SET_COOKIE);
+                if (cookieHeader != null && cookieHeader.contains("remember-me")) {
+                    // SameSite=None과 Secure를 추가
+                    response.setHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookieHeader + "; SameSite=None; Secure");
+                }
+            }
+        };
+
+        services.setParameter("remember-me");
+        services.setTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
+        return services;
     }
 
     @Bean
@@ -137,4 +153,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }
