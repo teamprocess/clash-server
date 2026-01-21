@@ -13,5 +13,5 @@ public interface UserExpHistoryRepositoryPort {
     List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
     List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
     double findAverageExpByUserIdAndCategoryAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
-    Map<Long, Double> findAverageExpByUserIdAndBattles(Long userId, List<Battle> battles);
+    Map<Long, Double> findAverageExpByUserIdAndPeriod(Long userId, List<Battle> battles);
 }

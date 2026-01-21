@@ -3,7 +3,7 @@ package com.process.clash.domain.github.entity;
 import java.time.Instant;
 import java.time.LocalDate;
 
-public record GithubDailyStats(
+public record GitHubDailyStats(
         Long userId,
         LocalDate studyDate,
         int commitCount,

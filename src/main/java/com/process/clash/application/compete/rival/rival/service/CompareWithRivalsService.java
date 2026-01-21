@@ -4,7 +4,7 @@ import com.process.clash.application.compete.rival.rival.data.CompareWithRivalsD
 import com.process.clash.application.compete.rival.rival.data.TotalData;
 import com.process.clash.application.compete.rival.rival.port.in.CompareWithRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
-import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
+import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CompareWithRivalsService implements CompareWithRivalsUseCase {
 
-    private final GithubDailyStatsQueryPort githubDailyStatsQueryPort;
+    private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
