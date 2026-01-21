@@ -14,7 +14,7 @@ import com.process.clash.domain.record.model.entity.Task;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +27,7 @@ public class StartRecordService implements StartRecordUseCase {
     private final UserRepositoryPort userRepositoryPort;
     private final TaskRepositoryPort taskRepositoryPort;
     private final TaskPolicy taskPolicy;
+    private final ZoneId recordZoneId;
 
     @Override
     public StartRecordData.Result execute(StartRecordData.Command command) {
@@ -45,18 +46,19 @@ public class StartRecordService implements StartRecordUseCase {
 
         if(existsActiveSession) throw new StudySessionAlreadyStartedException();
 
+        LocalDateTime startedAt = LocalDateTime.now(recordZoneId);
         StudySession newStudySession = StudySession.create(
                 null,
                 user,
                 task,
-                LocalDateTime.now(),
+                startedAt,
                 null
         );
 
         studySessionRepositoryPort.save(newStudySession);
 
         return StartRecordData.Result.from(
-                newStudySession.startedAt().atZone(ZoneOffset.UTC).toInstant()
+                startedAt.atZone(recordZoneId).toInstant()
         );
     }
 }

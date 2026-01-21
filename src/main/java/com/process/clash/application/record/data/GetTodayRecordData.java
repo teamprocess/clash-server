@@ -2,7 +2,6 @@ package com.process.clash.application.record.data;
 
 import com.process.clash.application.common.actor.Actor;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 
@@ -40,12 +39,12 @@ public class GetTodayRecordData {
     }
 
     public record Session(
-        LocalDateTime startedAt,
-        LocalDateTime endedAt,
+        Instant startedAt,
+        Instant endedAt,
         Long taskId,
         String taskName
     ) {
-        public static Session from(LocalDateTime startedAt, LocalDateTime endedAt, Long taskId, String taskName) {
+        public static Session from(Instant startedAt, Instant endedAt, Long taskId, String taskName) {
             return new Session(startedAt, endedAt, taskId, taskName);
         }
     }

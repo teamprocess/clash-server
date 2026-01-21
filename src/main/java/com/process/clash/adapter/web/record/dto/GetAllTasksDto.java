@@ -2,7 +2,6 @@ package com.process.clash.adapter.web.record.dto;
 
 import com.process.clash.application.record.data.GetAllTasksData;
 import com.process.clash.domain.record.model.entity.Task;
-import com.process.clash.domain.record.model.enums.TaskColor;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -28,7 +27,6 @@ public class GetAllTasksDto {
         Long id,
         String name,
         String icon,
-        TaskColor color,
         Long studyTime
     ) {
         public static TaskSummary from(Task task) {
@@ -36,7 +34,6 @@ public class GetAllTasksDto {
                     task.id(),
                     task.name(),
                     DEFAULT_ICON,
-                    task.color(),
                     task.studyTime()
             );
         }

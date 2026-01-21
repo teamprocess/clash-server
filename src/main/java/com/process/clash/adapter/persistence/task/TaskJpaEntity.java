@@ -4,6 +4,8 @@ import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.record.model.enums.TaskColor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,6 +41,7 @@ public class TaskJpaEntity {
     private String name;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TaskColor color;
 
     @JoinColumn(name = "fk_user_id", nullable = false)
