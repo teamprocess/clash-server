@@ -22,6 +22,7 @@ public class MissionJpaMapper {
                 chapterEntity,
                 mission.getTitle(),
                 mission.getDifficulty(),
+                mission.getOrderIndex(),
                 new ArrayList<>(),
                 null, // createdAt은 @CreationTimestamp가 자동으로 설정
                 null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
@@ -44,6 +45,7 @@ public class MissionJpaMapper {
                 entity.getChapter() != null ? entity.getChapter().getId() : null,
                 entity.getTitle(),
                 entity.getDifficulty(),
+                entity.getOrderIndex(),
                 // null-safe: entity.getQuestions()가 null이면 빈 리스트로 처리
                 (entity.getQuestions() != null)
                         ? entity.getQuestions().stream()

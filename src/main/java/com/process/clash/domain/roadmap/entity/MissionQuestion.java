@@ -20,5 +20,7 @@ public class MissionQuestion {
 
     private String explanation;
 
+    private Integer orderIndex;
+
     private List<Choice> choices;
 }

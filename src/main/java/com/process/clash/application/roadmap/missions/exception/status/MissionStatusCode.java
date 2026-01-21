@@ -25,6 +25,18 @@ public enum MissionStatusCode implements StatusCode {
             "INVALID_CHOICE",
             "유효하지 않은 선택지입니다.",
             ErrorCategory.BAD_REQUEST
+    ),
+
+    CHAPTER_LOCKED(
+            "CHAPTER_LOCKED",
+            "챕터가 잠겨 있어 접근할 수 없습니다.",
+            ErrorCategory.BAD_REQUEST
+    ),
+
+    CHAPTER_NOT_FOUND(
+            "CHAPTER_NOT_FOUND",
+            "챕터를 찾을 수 없습니다.",
+            ErrorCategory.NOT_FOUND
     );
 
     private final String code;

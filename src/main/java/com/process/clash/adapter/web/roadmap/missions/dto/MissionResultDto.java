@@ -10,7 +10,9 @@ public class MissionResultDto {
             Integer correctCount,
             Integer totalCount,
             Long nextMissionId,
-            Long nextStepId
+            Integer nextMissionOrderIndex,
+            Long nextChapterId,
+            Integer nextChapterOrderIndex
     ) {
         public static Response fromResult(GetMissionResultData.Result result) {
             return new Response(
@@ -19,7 +21,9 @@ public class MissionResultDto {
                     result.correctCount(),
                     result.totalCount(),
                     result.nextMissionId(),
-                    result.nextStepId()
+                    result.nextMissionOrderIndex(),
+                    result.nextChapterId(),
+                    result.nextChapterOrderIndex()
             );
         }
     }

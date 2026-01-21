@@ -11,13 +11,15 @@ public class GetSectionsDto {
 
     public record Response(
             List<SectionVo> sections,
-            List<String> categories
+            List<String> categories,
+            Integer completedSections,
+            Integer totalSections
     ) {
         public static Response from(GetSectionsData.Result result) {
             List<SectionVo> sections = result.sections().stream()
                     .map(SectionVo::from)
                     .toList();
-            return new Response(sections, result.categories());
+            return new Response(sections, result.categories(), result.completedSections(), result.totalSections());
         }
     }
 

@@ -20,5 +20,7 @@ public class Mission {
 
     private Integer difficulty;
 
+    private Integer orderIndex;
+
     private List<MissionQuestion> questions;
 }

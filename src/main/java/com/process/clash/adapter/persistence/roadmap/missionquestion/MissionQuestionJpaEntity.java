@@ -34,6 +34,9 @@ public class MissionQuestionJpaEntity {
 
     private String explanation; // 해설
 
+    @Column(nullable = false)
+    private Integer orderIndex;
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChoiceJpaEntity> choices = new ArrayList<>();
 

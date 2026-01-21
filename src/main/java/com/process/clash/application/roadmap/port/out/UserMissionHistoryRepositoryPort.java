@@ -10,4 +10,5 @@ public interface UserMissionHistoryRepositoryPort {
     Optional<UserMissionHistory> findById(Long id);
     List<UserMissionHistory> findAllByUserId(Long userId);
     Optional<UserMissionHistory> findByUserIdAndMissionId(Long userId, Long missionId);
+    List<UserMissionHistory> findAllByUserIdAndMissionIdIn(Long userId, List<Long> missionIds);
 }

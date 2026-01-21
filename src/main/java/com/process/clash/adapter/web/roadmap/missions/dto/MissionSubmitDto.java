@@ -14,7 +14,13 @@ public class MissionSubmitDto {
             String explanation,
             Integer currentProgress,
             Integer totalQuestion,
-            Long correctChoiceId
+            Long correctChoiceId,
+            boolean isMissionCleared,
+            Long nextMissionId,
+            Integer nextMissionOrderIndex,
+            boolean isChapterCleared,
+            Long nextChapterId,
+            Integer nextChapterOrderIndex
     ) {
         public static Response fromResult(SubmitMissionAnswerData.Result result) {
             return new Response(
@@ -22,7 +28,13 @@ public class MissionSubmitDto {
                     result.explanation(),
                     result.currentProgress(),
                     result.totalQuestion(),
-                    result.correctChoiceId()
+                    result.correctChoiceId(),
+                    result.isMissionCleared(),
+                    result.nextMissionId(),
+                    result.nextMissionOrderIndex(),
+                    result.isChapterCleared(),
+                    result.nextChapterId(),
+                    result.nextChapterOrderIndex()
             );
         }
     }

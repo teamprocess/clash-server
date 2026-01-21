@@ -4,6 +4,7 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.roadmap.entity.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class GetSectionDetailsData {
 
@@ -14,12 +15,24 @@ public class GetSectionDetailsData {
             String sectionTitle,
             Integer totalChapters,
             Long currentChapterId,
+            Integer currentOrderIndex,
+            Integer currentMissionIndex,
             List<ChapterVo> chapters
     ) {
-        public static Result from(Section section, Long currentChapterId) {
+        public static Result from(Section section, Long currentChapterId, Integer currentOrderIndex, Integer currentMissionIndex, Map<Long, List<Mission>> chapterMissionsMap, Map<Long, UserMissionHistory> missionHistoryMap) {
             List<ChapterVo> chapterVos = section.getChapters() != null
                     ? section.getChapters().stream()
-                            .map(chapter -> ChapterVo.from(chapter, 1)) // difficulty는 서비스에서 계산 필요
+                            .map(chapter -> {
+                                List<Mission> missions = chapterMissionsMap.getOrDefault(chapter.getId(), List.of());
+                                Integer totalMissions = missions.size();
+                                Integer completedMissions = (int) missions.stream()
+                                        .filter(mission -> {
+                                            UserMissionHistory history = missionHistoryMap.get(mission.getId());
+                                            return history != null && history.isCleared();
+                                        })
+                                        .count();
+                                return ChapterVo.from(chapter, completedMissions, totalMissions);
+                            })
                             .toList()
                     : List.of();
 
@@ -28,6 +41,8 @@ public class GetSectionDetailsData {
                     section.getTitle(),
                     chapterVos.size(),
                     currentChapterId,
+                    currentOrderIndex,
+                    currentMissionIndex,
                     chapterVos
             );
         }
@@ -35,21 +50,17 @@ public class GetSectionDetailsData {
         public record ChapterVo(
                 Long id,
                 String title,
-                Integer difficulty,
-                List<MissionVo> missions
+                Integer orderIndex,
+                Integer completedMissions,
+                Integer totalMissions
         ) {
-            public static ChapterVo from(Chapter chapter, Integer difficulty) {
-                List<MissionVo> missionVos = chapter.getMissions() != null
-                        ? chapter.getMissions().stream()
-                                .map(MissionVo::from)
-                                .toList()
-                        : List.of();
-
+            public static ChapterVo from(Chapter chapter, Integer completedMissions, Integer totalMissions) {
                 return new ChapterVo(
                         chapter.getId(),
                         chapter.getTitle(),
-                        difficulty,
-                        missionVos
+                        chapter.getOrderIndex(),
+                        completedMissions,
+                        totalMissions
                 );
             }
         }
@@ -57,6 +68,7 @@ public class GetSectionDetailsData {
         public record MissionVo(
                 Long id,
                 String title,
+                Integer orderIndex,
                 List<QuestionVo> questions
         ) {
             public static MissionVo from(Mission mission) {
@@ -69,6 +81,7 @@ public class GetSectionDetailsData {
                 return new MissionVo(
                         mission.getId(),
                         mission.getTitle(),
+                        mission.getOrderIndex(),
                         questionVos
                 );
             }
@@ -77,6 +90,7 @@ public class GetSectionDetailsData {
         public record QuestionVo(
                 Long id,
                 String title,
+                Integer orderIndex,
                 List<ChoiceVo> choices
         ) {
             public static QuestionVo from(MissionQuestion question) {
@@ -89,6 +103,7 @@ public class GetSectionDetailsData {
                 return new QuestionVo(
                         question.getId(),
                         question.getContent(),
+                        question.getOrderIndex(),
                         choiceVos
                 );
             }
