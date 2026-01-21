@@ -1,8 +1,10 @@
 package com.process.clash.application.compete.rival.battle.policy;
 
-import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.battle.exception.exception.badrequest.AlreadyInBattleException;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
+import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
+import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
+import com.process.clash.domain.rival.rival.entity.Rival;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,10 +13,14 @@ import org.springframework.stereotype.Component;
 public class ModifyBattlePolicy {
 
     private final BattleRepositoryPort battleRepositoryPort;
+    private final RivalRepositoryPort rivalRepositoryPort;
 
-    public void check(Actor actor) {
+    public void check(Long id) {
 
-        if (battleRepositoryPort.existsActiveBattleByUserId(actor.id())) {
+        Rival rival = rivalRepositoryPort.findById(id)
+                .orElseThrow(RivalNotFoundException::new);
+
+        if (battleRepositoryPort.existsActiveBattleByRivalId(rival.id())) {
             throw new AlreadyInBattleException();
         }
     }

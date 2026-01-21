@@ -23,6 +23,15 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     """, nativeQuery = true)
     boolean existsActiveBattleByUserId(@Param("userId") Long userId);
 
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM battle b
+        JOIN rival r ON b.rival_id = r.id
+        WHERE b.battle_status <> 'DONE'
+          AND (b.rival.id = :rivalId)
+    """, nativeQuery = true)
+    boolean existsActiveBattleByRivalId(@Param("rivalId") Long rivalId);
+
     /**
      * 유저 관련 모든 배틀 조회
      */
