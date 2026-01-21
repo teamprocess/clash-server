@@ -16,15 +16,15 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
 
     // DAY: 여러 유저의 일별 깃허브 기여도 데이터
     @Query(value = """
-        SELECT 
-            fk_user_id AS "userId",
+        SELECT
+            user_id AS "userId",
             study_date AS "date",
             (commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE user_id = ANY(:userIds)
           AND study_date >= :startDate
           AND study_date < :endDate
-        ORDER BY fk_user_id, study_date ASC
+        ORDER BY user_id, study_date ASC
     """, nativeQuery = true)
     List<Object[]> findDailyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -34,16 +34,16 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
 
     // WEEK: 여러 유저의 주별 평균 깃허브 기여도
     @Query(value = """
-        SELECT 
-            fk_user_id AS "userId",
+        SELECT
+            user_id AS "userId",
             date_trunc('week', study_date) AS "date",
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE user_id = ANY(:userIds)
           AND study_date >= :startDate
           AND study_date < :endDate
-        GROUP BY fk_user_id, date_trunc('week', study_date)
-        ORDER BY fk_user_id, date_trunc('week', study_date) ASC
+        GROUP BY user_id, date_trunc('week', study_date)
+        ORDER BY user_id, date_trunc('week', study_date) ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -53,16 +53,16 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
 
     // MONTH: 여러 유저의 월별 평균 깃허브 기여도
     @Query(value = """
-        SELECT 
-            fk_user_id AS "userId",
+        SELECT
+            user_id AS "userId",
             date_trunc('month', study_date) AS "date",
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE user_id = ANY(:userIds)
           AND study_date >= :startDate
           AND study_date < :endDate
-        GROUP BY fk_user_id, date_trunc('month', study_date)
-        ORDER BY fk_user_id, date_trunc('month', study_date) ASC
+        GROUP BY user_id, date_trunc('month', study_date)
+        ORDER BY user_id, date_trunc('month', study_date) ASC
     """, nativeQuery = true)
     List<Object[]> findMonthlyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -74,7 +74,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     @Query(value = """
         SELECT COALESCE(AVG(commit_count + pr_count + review_count + issue_count), 0)
         FROM github_daily_stats
-        WHERE fk_user_id = :userId
+        WHERE user_id = :userId
           AND study_date >= :startDate
           AND study_date < :endDate
     """, nativeQuery = true)
