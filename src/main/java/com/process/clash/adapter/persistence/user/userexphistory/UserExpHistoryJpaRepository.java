@@ -20,7 +20,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             date AS "date",
             earn_exp AS point
         FROM user_exp_history
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         ORDER BY fk_user_id, date ASC
@@ -40,7 +40,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             date_trunc('week', date) AS "date",
             AVG(earn_exp) AS point
         FROM user_exp_history
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('week', date)
@@ -61,7 +61,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             date_trunc('month', date) AS "date",
             AVG(earn_exp) AS point
         FROM user_exp_history
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('month', date)

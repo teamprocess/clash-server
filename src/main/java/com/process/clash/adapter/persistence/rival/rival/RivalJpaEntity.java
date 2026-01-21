@@ -13,15 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(
-        name = "rivals",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_rival_pair",
-                        columnNames = {"fk_first_user_id", "fk_second_user_id"}
-                )
-        }
-)
+@Table(name = "rivals")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -31,18 +23,6 @@ public class RivalJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RivalLinkingStatus rivalLinkingStatus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_first_user_id", nullable = false)
     private UserJpaEntity firstUser;
@@ -50,4 +30,16 @@ public class RivalJpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_second_user_id", nullable = false)
     private UserJpaEntity secondUser;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RivalLinkingStatus rivalLinkingStatus;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 }

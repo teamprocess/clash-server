@@ -28,13 +28,13 @@ public class RejectRivalService implements RejectRivalUseCase {
 
         Rival updatedRival = rival.reject();
 
-        rivalRepositoryPort.save(updatedRival);
+        Rival savedRival = rivalRepositoryPort.save(updatedRival);
 
         UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(
                         NoticeCategory.REJECT_RIVAL,
                         command.actor().id(),
-                        rivalRepositoryPort.findOpponentIdByIdAndUserId(rival.id(), command.actor().id())
+                        rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(savedRival.id(), command.actor().id())
                 );
 
         userNoticeRepositoryPort.save(userNoticeForReceiver);

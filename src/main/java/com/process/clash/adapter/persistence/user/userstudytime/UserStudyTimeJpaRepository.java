@@ -23,7 +23,7 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             date as "date",
             total_study_time_seconds as point
         FROM user_study_times
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         ORDER BY fk_user_id, date ASC
@@ -41,9 +41,9 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
         SELECT 
             fk_user_id as "userId",
             date_trunc('week', date) as "date",
-            AVG(totalStudyTimeSeconds) as point
+            AVG(total_study_time_seconds) as point
         FROM user_study_times
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('week', date)
@@ -62,9 +62,9 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
         SELECT 
             fk_user_id as "userId",
             date_trunc('month', date) as "date",
-            AVG(totalStudyTimeSeconds) as point
+            AVG(total_study_time_seconds) as point
         FROM user_study_times
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('month', date)

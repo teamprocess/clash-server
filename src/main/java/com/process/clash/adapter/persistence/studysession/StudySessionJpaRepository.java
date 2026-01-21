@@ -48,7 +48,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             ))
         ), 0)
         from study_sessions s
-        where s.user_id = :userId
+        where s.fk_user_id = :userId
             and s.started_at < :endOfDay
             and (s.ended_at is null or s.ended_at > :startOfDay)
     """, nativeQuery = true)
@@ -59,7 +59,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     );
 
     @Query(value = """
-        select s.user_id as userId,
+        select s.fk_user_id as userId,
                coalesce(sum(
                    extract(epoch from (
                        least(coalesce(s.ended_at, current_timestamp), cast(:endOfDay as timestamp)) - 
@@ -67,10 +67,10 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                    ))
                ), 0) as totalSeconds
         from study_sessions s
-        where s.user_id IN :userIds
+        where s.fk_user_id IN :userIds
             and s.started_at < :endOfDay
             and (s.ended_at is null or s.ended_at > :startOfDay)
-        group by s.user_id
+        group by s.fk_user_id
     """, nativeQuery = true)
     List<UserStudyTimeProjection> getTotalStudyTimeInSecondsByUserIds(
             @Param("userIds") List<Long> userIds,

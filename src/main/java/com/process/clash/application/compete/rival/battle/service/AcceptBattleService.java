@@ -27,7 +27,7 @@ public class AcceptBattleService implements AcceptBattleUseCase {
     @Override
     public void execute(ModifyBattleData.Command command) {
 
-        modifyBattlePolicy.check(command.actor());
+        modifyBattlePolicy.check(command.id());
 
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
