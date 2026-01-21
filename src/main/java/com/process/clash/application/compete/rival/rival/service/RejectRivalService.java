@@ -28,7 +28,7 @@ public class RejectRivalService implements RejectRivalUseCase {
 
         Rival updatedRival = rival.reject();
 
-        rivalRepositoryPort.saveAndFlush(updatedRival);
+        rivalRepositoryPort.save(updatedRival);
 
         UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(

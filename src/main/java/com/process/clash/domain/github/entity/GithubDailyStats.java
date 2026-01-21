@@ -17,6 +17,6 @@ public record GithubDailyStats(
 
     public int getTotalContributionCount() {
 
-        return this.commitCount + this.prCount + this.reviewedPrCount;
+        return this.commitCount + this.prCount + this.reviewedPrCount + this.issueCount;
     }
 }

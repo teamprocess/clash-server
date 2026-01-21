@@ -18,7 +18,7 @@ public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDaily
         SELECT 
             fk_user_id as userId,
             study_date as date,
-            (commit_count + pr_count + reviewe_count + issue_count) as point
+            (commit_count + pr_count + review_count + issue_count) as point
         FROM github_daily_stats
         WHERE fk_user_id IN :userIds
         AND study_date >= :startDate
@@ -36,7 +36,7 @@ public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDaily
         SELECT 
             fk_user_id as userId,
             DATE_SUB(study_date, INTERVAL (DAYOFWEEK(study_date) - 2) DAY) as date,
-            AVG(commit_count + pr_count + reviewe_count + issue_count) as point
+            AVG(commit_count + pr_count + review_count + issue_count) as point
         FROM github_daily_stats
         WHERE fk_user_id IN :userIds
         AND study_date >= :startDate
@@ -55,7 +55,7 @@ public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDaily
         SELECT 
             fk_user_id as userId,
             DATE_FORMAT(study_date, '%Y-%m-01') as date,
-            AVG(commit_count + pr_count + reviewe_count + issue_count) as point
+            AVG(commit_count + pr_count + review_count + issue_count) as point
         FROM github_daily_stats
         WHERE fk_user_id IN :userIds
         AND study_date >= :startDate
@@ -73,8 +73,8 @@ public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDaily
         SELECT COALESCE(AVG(commit_count + pr_count + reviewe_count + issue_count), 0)
         FROM github_daily_stats
         WHERE fk_user_id = :userId
-          AND date >= :startDate
-          AND date < :endDate
+          AND study_date >= :startDate
+          AND study_date < :endDate
     """, nativeQuery = true)
     double findAverageCommitsByUserIdAndPeriod(
             @Param("userId") Long userId,

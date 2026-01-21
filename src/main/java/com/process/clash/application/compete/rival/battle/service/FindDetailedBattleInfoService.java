@@ -55,7 +55,8 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
         double enemyAverageExp = userExpHistoryRepositoryPort
                 .findAverageExpByUserIdAndCategoryAndPeriod(rivalId, battle.startDate(), endDate);
 
-        double myOverallPercentage = myAverageExp / (myAverageExp + enemyAverageExp) * 100;
+        double totalAverageExp = myAverageExp + enemyAverageExp;
+        double myOverallPercentage = (totalAverageExp == 0) ? 0 : (myAverageExp / totalAverageExp) * 100;
 
         return FindDetailedBattleInfoData.Result.from(battle, user, myOverallPercentage);
     }

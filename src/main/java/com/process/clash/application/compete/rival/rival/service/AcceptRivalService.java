@@ -32,7 +32,7 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
         Rival updatedRival = rival.accept();
 
-        rivalRepositoryPort.saveAndFlush(updatedRival);
+        rivalRepositoryPort.save(updatedRival);
 
         UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(

@@ -100,10 +100,11 @@ public class BattleController {
     @GetMapping("/{id}/analyze/category/{category}")
     public ApiResponse<AnalyzeBattleInfoDto.Response> analyzeBattleInfo(
             @AuthenticatedActor Actor actor,
+            @PathVariable Long id,
             @PathVariable TargetCategory category
     ) {
 
-        AnalyzeBattleInfoData.Command command = AnalyzeBattleInfoData.Command.from(actor, category);
+        AnalyzeBattleInfoData.Command command = AnalyzeBattleInfoData.Command.from(actor, id, category);
         AnalyzeBattleInfoData.Result result = analyzeBattleInfoUseCase.execute(command);
         AnalyzeBattleInfoDto.Response response = AnalyzeBattleInfoDto.Response.from(result);
         return ApiResponse.success(response, "라이벌과의 배틀 정보 분석을 성공적으로 반환했습니다.");

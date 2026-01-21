@@ -31,22 +31,36 @@ public class GithubDailyStatsJpaAdapter implements GithubDailyStatsStorePort {
                 .collect(Collectors.groupingBy(GithubDailyStats::userId));
 
         List<GithubDailyStatsJpaEntity> entities = new ArrayList<>(stats.size());
+
         for (Map.Entry<Long, List<GithubDailyStats>> entry : statsByUser.entrySet()) {
             Long userId = entry.getKey();
             List<GithubDailyStats> userStats = entry.getValue();
+
             List<LocalDate> dates = userStats.stream()
                     .map(GithubDailyStats::studyDate)
                     .distinct()
                     .toList();
 
-            Map<LocalDate, Long> existingIds = new HashMap<>();
-            for (GithubDailyStatsJpaEntity entity : repository.findByUserIdAndStudyDateIn(userId, dates)) {
-                existingIds.put(entity.getStudyDate(), entity.getUserId());
-            }
+            // 기존 엔티티를 날짜별로 맵핑
+            Map<LocalDate, GithubDailyStatsJpaEntity> existingEntitiesByDate = repository
+                    .findByUserIdAndStudyDateIn(userId, dates)
+                    .stream()
+                    .collect(Collectors.toMap(
+                            GithubDailyStatsJpaEntity::getStudyDate,
+                            entity -> entity
+                    ));
 
+            // upsert 처리
             for (GithubDailyStats stat : userStats) {
-                Long existingId = existingIds.get(stat.studyDate());
-                entities.add(mapper.toJpaEntity(stat));
+                GithubDailyStatsJpaEntity entity = existingEntitiesByDate.get(stat.studyDate());
+
+                if (entity != null) {
+                    mapper.updateEntity(entity, stat);
+                } else {
+                    entity = mapper.toJpaEntity(stat);
+                }
+
+                entities.add(entity);
             }
         }
 
