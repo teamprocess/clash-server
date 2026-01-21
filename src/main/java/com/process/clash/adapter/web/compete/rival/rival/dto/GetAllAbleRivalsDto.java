@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetAllAbleRivalsDto {
 
-    @Schema(name = "GetAllAbleRivalsDtoResponse")
-
     public record Response(
         List<AbleRivalInfoForRival> users
     ) {
