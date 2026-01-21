@@ -7,9 +7,11 @@ import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GetUserProfileService implements GetUserProfileUseCase {
 
     private final UserRepositoryPort userRepositoryPort;

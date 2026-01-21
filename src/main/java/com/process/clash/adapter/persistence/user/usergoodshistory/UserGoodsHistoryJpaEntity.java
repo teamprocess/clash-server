@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.user.usergoodshistory;
 
 import com.process.clash.adapter.persistence.shop.product.ProductJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.common.enums.ActingCategory;
+import com.process.clash.domain.common.enums.GoodsActingCategory;
 import com.process.clash.domain.common.enums.GoodsType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -34,7 +34,7 @@ public class UserGoodsHistoryJpaEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ActingCategory actingCategory;
+    private GoodsActingCategory goodsActingCategory;
 
     @Column(nullable = false)
     private int variation; // 감소하면 -, 증가하면 +
