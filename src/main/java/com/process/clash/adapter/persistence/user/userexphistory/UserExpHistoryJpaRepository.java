@@ -20,7 +20,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             date AS "date",
             earn_exp AS point
         FROM user_exp_history
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         ORDER BY fk_user_id, date ASC
@@ -40,7 +40,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             date_trunc('week', date) AS "date",
             AVG(earn_exp) AS point
         FROM user_exp_history
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('week', date)
@@ -61,7 +61,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             date_trunc('month', date) AS "date",
             AVG(earn_exp) AS point
         FROM user_exp_history
-        WHERE fk_user_id = ANY(:userIds)
+        WHERE fk_user_id IN (:userIds)
           AND date >= :startDate
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('month', date)
@@ -94,17 +94,15 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             b.id AS battleId,
             COALESCE(AVG(ueh.earn_exp), 0) AS avgExp
         FROM user_exp_history ueh
-        JOIN (VALUES
-            :battleTuples
-        ) AS b(id, start_date, end_date)
-        ON ueh.fk_user_id = :userId
-           AND ueh.date >= b.start_date
-           AND ueh.date <= b.end_date
+        JOIN battles b ON b.id IN (:battleIds)
+            AND ueh.fk_user_id = :userId
+            AND ueh.date >= b.start_date
+            AND ueh.date <= b.end_date
         GROUP BY b.id
     """, nativeQuery = true)
     List<Object[]> findAverageExpForBattles(
             @Param("userId") Long userId,
-            @Param("battleTuples") List<Object[]> battleTuples
+            @Param("battleIds") List<Long> battleIds
     );
 
 }

@@ -56,11 +56,15 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
 
     @Override
     public Map<Long, Double> findAverageExpForBattles(Long userId, List<Battle> battles) {
-        List<Object[]> battleTuples = battles.stream()
-                .map(b -> new Object[]{b.id(), b.startDate(), b.endDate()})
+        if (battles.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        List<Long> battleIds = battles.stream()
+                .map(Battle::id)
                 .toList();
 
-        List<Object[]> averages = userExpHistoryJpaRepository.findAverageExpForBattles(userId, battleTuples);
+        List<Object[]> averages = userExpHistoryJpaRepository.findAverageExpForBattles(userId, battleIds);
 
         return averages.stream()
                 .collect(Collectors.toMap(

@@ -54,6 +54,18 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
                 .map(rival -> {
                     UserJpaEntity my = userMap.get(rival.firstUserId());
                     UserJpaEntity opponent = userMap.get(rival.secondUserId());
+
+                    if (my == null) {
+                        throw new IllegalArgumentException(
+                                "User not found with id: " + rival.firstUserId()
+                        );
+                    }
+                    if (opponent == null) {
+                        throw new IllegalArgumentException(
+                                "User not found with id: " + rival.secondUserId()
+                        );
+                    }
+
                     return rivalJpaMapper.toJpaEntity(rival, my, opponent);
                 })
                 .toList();
@@ -105,6 +117,12 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     public List<AbleRivalInfoForBattle> findAbleToBattleRivals(Long userId) {
 
         return rivalJpaRepository.findAbleToBattleRivals(userId);
+    }
+
+    @Override
+    public Long findOpponentIdByIdAndUserIdInRejectCase(Long id, Long userId) {
+
+        return rivalJpaRepository.findOpponentIdByIdAndUserIdInRejectCase(id, userId);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.process.clash.adapter.web.compete.rival.battle.docs.controller;
 
+import com.process.clash.adapter.web.compete.rival.battle.docs.request.*;
+import com.process.clash.adapter.web.compete.rival.battle.docs.response.*;
 import com.process.clash.adapter.web.compete.rival.battle.dto.*;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.TargetCategory;
@@ -21,6 +23,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "신청 성공",
                     content = @Content(
+                            schema = @Schema(implementation = ApplyBattleResponseDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -33,7 +36,7 @@ public interface BattleControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "배틀 신청 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ApplyBattleDto.Request.class),
+                            schema = @Schema(implementation = ApplyBattleRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "id": 3,
@@ -48,6 +51,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "승인 성공",
                     content = @Content(
+                            schema = @Schema(implementation = ModifyBattleResponseDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -60,7 +64,7 @@ public interface BattleControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "배틀 승인 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ModifyBattleDto.Request.class),
+                            schema = @Schema(implementation = ModifyBattleRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "battleId": 1
@@ -74,6 +78,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "거절 성공",
                     content = @Content(
+                            schema = @Schema(implementation = ModifyBattleResponseDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -86,7 +91,7 @@ public interface BattleControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "배틀 거절 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ModifyBattleDto.Request.class),
+                            schema = @Schema(implementation = ModifyBattleRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "battleId": 1
@@ -100,7 +105,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = FindAbleRivalsDto.Response.class),
+                            schema = @Schema(implementation = FindAbleRivalsResponseDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -127,7 +132,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = FindDetailedBattleInfoDto.Response.class),
+                            schema = @Schema(implementation = FindDetailedBattleInfoResponseDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -157,7 +162,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = FindAllBattleInfoDto.Response.class),
+                            schema = @Schema(implementation = FindAllBattleInfoResponseDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -186,7 +191,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = AnalyzeBattleInfoDto.Response.class),
+                            schema = @Schema(implementation = AnalyzeBattleInfoResponseDoc.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
