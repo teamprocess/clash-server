@@ -1,13 +1,13 @@
 package com.process.clash.adapter.persistence.github;
 
-import com.process.clash.domain.github.entity.GithubDailyStats;
+import com.process.clash.domain.github.entity.GitHubDailyStats;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GithubDailyStatsJpaMapper {
+public class GitHubDailyStatsJpaMapper {
 
-    public GithubDailyStatsJpaEntity toJpaEntity(GithubDailyStats stat) {
-        return new GithubDailyStatsJpaEntity(
+    public GitHubDailyStatsJpaEntity toJpaEntity(GitHubDailyStats stat) {
+        return new GitHubDailyStatsJpaEntity(
                 stat.userId(),
                 stat.studyDate(),
                 stat.commitCount(),
@@ -20,7 +20,7 @@ public class GithubDailyStatsJpaMapper {
         );
     }
 
-    public void updateEntity(GithubDailyStatsJpaEntity entity, GithubDailyStats stat) {
+    public void updateEntity(GitHubDailyStatsJpaEntity entity, GitHubDailyStats stat) {
         entity.updateStats(
                 stat.commitCount(),
                 stat.prCount(),
@@ -32,8 +32,8 @@ public class GithubDailyStatsJpaMapper {
         );
     }
 
-    public GithubDailyStats toDomain(GithubDailyStatsJpaEntity entity) {
-        return new GithubDailyStats(
+    public GitHubDailyStats toDomain(GitHubDailyStatsJpaEntity entity) {
+        return new GitHubDailyStats(
                 entity.getUserId(),
                 entity.getStudyDate(),
                 entity.getCommitCount(),

@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.github;
 
-import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
-import com.process.clash.domain.github.entity.GithubDailyStats;
+import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.domain.github.entity.GitHubDailyStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -11,13 +11,13 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class GithubDailyStatsQueryJpaAdapter implements GithubDailyStatsQueryPort {
+public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPort {
 
-    private final GithubDailyStatsJpaRepository repository;
-    private final GithubDailyStatsJpaMapper mapper;
+    private final GitHubDailyStatsJpaRepository repository;
+    private final GitHubDailyStatsJpaMapper mapper;
 
     @Override
-    public Optional<GithubDailyStats> findByUserIdAndStudyDate(Long userId, LocalDate studyDate) {
+    public Optional<GitHubDailyStats> findByUserIdAndStudyDate(Long userId, LocalDate studyDate) {
         return repository.findByUserIdAndStudyDate(userId, studyDate)
                 .map(mapper::toDomain);
     }

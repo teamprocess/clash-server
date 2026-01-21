@@ -4,7 +4,7 @@ import com.process.clash.application.github.model.GithubSyncTarget;
 import com.process.clash.application.github.port.out.GithubDailyStatsStorePort;
 import com.process.clash.application.github.port.out.GithubStatsFetchPort;
 import com.process.clash.application.github.port.out.GithubSyncTargetPort;
-import com.process.clash.domain.github.entity.GithubDailyStats;
+import com.process.clash.domain.github.entity.GitHubDailyStats;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GithubDailyStatsSyncServiceTest {
+class GitHubDailyStatsSyncServiceTest {
 
     @Mock
     private GithubSyncTargetPort syncTargetPort;
@@ -123,7 +123,7 @@ class GithubDailyStatsSyncServiceTest {
 
         // 조회 결과가 존재하면 저장 포트가 호출되어야 함
         LocalDate studyDate = studyDateCalculator.toStudyDate(clock.instant());
-        GithubDailyStats stats = new GithubDailyStats(
+        GitHubDailyStats stats = new GitHubDailyStats(
                 1L,
                 studyDate,
                 1,
