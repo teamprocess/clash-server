@@ -21,7 +21,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             study_date AS "date",
             (commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE user_id = ANY(:userIds)
+        WHERE user_id IN (:userIds)
           AND study_date >= :startDate
           AND study_date < :endDate
         ORDER BY user_id, study_date ASC
@@ -39,7 +39,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             date_trunc('week', study_date) AS "date",
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE user_id = ANY(:userIds)
+        WHERE user_id IN (:userIds)
           AND study_date >= :startDate
           AND study_date < :endDate
         GROUP BY user_id, date_trunc('week', study_date)
@@ -58,7 +58,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             date_trunc('month', study_date) AS "date",
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE user_id = ANY(:userIds)
+        WHERE user_id IN (:userIds)
           AND study_date >= :startDate
           AND study_date < :endDate
         GROUP BY user_id, date_trunc('month', study_date)

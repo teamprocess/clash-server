@@ -11,6 +11,7 @@ public interface BattleRepositoryPort {
     Battle save(Battle battle);
     Optional<Battle> findById(Long id);
     boolean existsActiveBattleByUserId(Long userId);
-    List<Battle> findByUserId(Long userId);
+    boolean existsActiveBattleByRivalId(Long rivalId);
+    List<Battle> findByUserIdWithOutRejected(Long userId);
     Optional<Battle> findActiveByUserId(Long userId);
 }

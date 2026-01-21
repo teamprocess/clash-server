@@ -11,11 +11,11 @@ public class RivalJpaMapper {
 
         return new RivalJpaEntity(
                 rival.id(),
-                rival.createdAt(),
-                rival.updatedAt(),
-                rival.rivalLinkingStatus(),
                 firstUser,
-                secondUser
+                secondUser,
+                rival.rivalLinkingStatus(),
+                rival.createdAt(),
+                rival.updatedAt()
         );
     }
 

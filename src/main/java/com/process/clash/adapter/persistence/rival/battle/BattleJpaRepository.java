@@ -23,6 +23,20 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     """, nativeQuery = true)
     boolean existsActiveBattleByUserId(@Param("userId") Long userId);
 
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM battles b
+        WHERE b.battle_status NOT IN ('DONE', 'REJECTED')
+          AND (b.fk_rival_id = :rivalId)
+            AND b.id NOT IN (
+                    SELECT ba.id
+                    FROM battles ba
+                    WHERE ba.fk_rival_id = :rivalId
+                        AND ba.battle_status = 'PENDING'
+                )
+    """, nativeQuery = true)
+    boolean existsActiveBattleByRivalId(@Param("rivalId") Long rivalId);
+
     /**
      * 유저 관련 모든 배틀 조회
      */
@@ -30,9 +44,10 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         SELECT b.*
         FROM battles b
         JOIN rivals r ON b.fk_rival_id = r.id
-        WHERE r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId
+        WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
+            AND b.battle_status <> 'REJECTED'
     """, nativeQuery = true)
-    List<BattleJpaEntity> findByUserId(@Param("userId") Long userId);
+    List<BattleJpaEntity> findByUserIdWithOutRejected(@Param("userId") Long userId);
 
     /**
      * 유저 관련 진행 중인 배틀 조회 (Optional)
