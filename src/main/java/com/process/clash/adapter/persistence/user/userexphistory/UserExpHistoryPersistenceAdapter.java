@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -54,19 +55,17 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     }
 
     @Override
-    public Map<Long, Double> findAverageExpByUserIdAndPeriod(Long userId, List<Battle> battles) {
-        Map<Long, Double> result = new HashMap<>();
+    public Map<Long, Double> findAverageExpForBattles(Long userId, List<Battle> battles) {
+        List<Object[]> battleTuples = battles.stream()
+                .map(b -> new Object[]{b.id(), b.startDate(), b.endDate()})
+                .toList();
 
-        for (Battle battle : battles) {
-            Double avgExp = userExpHistoryJpaRepository
-                    .findAverageExpByUserIdAndPeriod(
-                            userId,
-                            battle.startDate(),
-                            battle.endDate()
-                    );
-            result.put(battle.id(), avgExp != null ? avgExp : 0.0);
-        }
+        List<Object[]> averages = userExpHistoryJpaRepository.findAverageExpForBattles(userId, battleTuples);
 
-        return result;
+        return averages.stream()
+                .collect(Collectors.toMap(
+                        row -> ((Number) row[0]).longValue(),
+                        row -> ((Number) row[1]).doubleValue()
+                ));
     }
 }

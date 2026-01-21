@@ -88,4 +88,23 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query(value = """
+        SELECT 
+            b.id AS battleId,
+            COALESCE(AVG(ueh.earn_exp), 0) AS avgExp
+        FROM user_exp_history ueh
+        JOIN (VALUES
+            :battleTuples
+        ) AS b(id, start_date, end_date)
+        ON ueh.fk_user_id = :userId
+           AND ueh.date >= b.start_date
+           AND ueh.date <= b.end_date
+        GROUP BY b.id
+    """, nativeQuery = true)
+    List<Object[]> findAverageExpForBattles(
+            @Param("userId") Long userId,
+            @Param("battleTuples") List<Object[]> battleTuples
+    );
+
 }

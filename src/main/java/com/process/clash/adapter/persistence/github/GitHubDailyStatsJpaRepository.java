@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDailyStatsJpaEntity, Long> {
+public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDailyStatsJpaEntity, GitHubDailyStatsId> {
 
     List<GitHubDailyStatsJpaEntity> findByUserIdAndStudyDateIn(Long userId, List<LocalDate> studyDates);
 

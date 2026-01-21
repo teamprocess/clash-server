@@ -21,7 +21,7 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
         SELECT 
             fk_user_id as "userId",
             date as "date",
-            totalStudyTimeSeconds as point
+            total_study_time_seconds as point
         FROM user_study_times
         WHERE fk_user_id = ANY(:userIds)
           AND date >= :startDate
