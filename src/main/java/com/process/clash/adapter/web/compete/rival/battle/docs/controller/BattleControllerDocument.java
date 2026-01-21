@@ -44,7 +44,7 @@ public interface BattleControllerDocument {
                                     }
                                     """)
                     ))
-            ApplyBattleDto.Request request  // 여기를 실제 DTO로 변경
+            ApplyBattleDto.Request request
     );
 
     @Operation(summary = "배틀 승인", description = "신청받은 배틀을 승인합니다.")
@@ -71,7 +71,7 @@ public interface BattleControllerDocument {
                                     }
                                     """)
                     ))
-            ModifyBattleDto.Request request  // 여기를 실제 DTO로 변경
+            ModifyBattleDto.Request request
     );
 
     @Operation(summary = "배틀 거절", description = "신청받은 배틀을 거절합니다.")
@@ -98,7 +98,7 @@ public interface BattleControllerDocument {
                                     }
                                     """)
                     ))
-            ModifyBattleDto.Request request  // 여기를 실제 DTO로 변경
+            ModifyBattleDto.Request request
     );
 
     @Operation(summary = "배틀 가능한 라이벌 조회", description = "배틀을 신청할 수 있는 라이벌 목록을 조회합니다.")

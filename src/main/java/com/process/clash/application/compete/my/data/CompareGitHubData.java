@@ -70,8 +70,8 @@ public class CompareGitHubData {
                     "멧돼지", //TODO: 나중에 수정
                     gitHubDailyStats.additions(),
                     gitHubDailyStats.deletions(),
-                    LocalDateTime.now(),
-                    LocalDateTime.now().minusHours(1) //TODO: 나중에 수정
+                    LocalDateTime.now().minusHours(1), //TODO: 나중에 수정
+                    LocalDateTime.now() //TODO: 나중에 수정
             );
         }
     }

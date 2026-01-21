@@ -25,8 +25,6 @@ public class RejectBattleService implements RejectBattleUseCase {
     @Override
     public void execute(ModifyBattleData.Command command) {
 
-        System.out.printf(command.id() + " fghjkikoasjhffe");
-
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
 
