@@ -41,7 +41,19 @@ public interface AuthControllerDocument {
             )
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> signUp(
-            @Parameter(description = "회원가입 요청", required = true) @RequestBody(description = "회원가입 요청") SignUpDto.Request request
+            @RequestBody(description = "회원가입 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = SignUpDto.Request.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "username": "gildong123",
+                                      "email": "gildong@example.com",
+                                      "password": "qwer1234",
+                                      "name": "홍길동"
+                                    }
+                                    """)
+                    ))
+            SignUpDto.Request request
     );
 
     @Operation(summary = "로그인", description = "아이디/비밀번호로 로그인합니다.")
@@ -128,6 +140,15 @@ public interface AuthControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> verifyEmail(
             @CookieValue(name = "signup_token", required = true) String token,
-            @Valid @RequestBody(description = "이메일 인증 요청", required = true) VerifyEmailDto.Request request
+            @RequestBody(description = "이메일 인증 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = VerifyEmailDto.Request.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "code": "123456"
+                                    }
+                                    """)
+                    ))
+            VerifyEmailDto.Request request
     );
 }

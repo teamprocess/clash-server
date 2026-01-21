@@ -43,6 +43,10 @@ server:
   servlet:
     session:
       timeout: 3d
+      cookie:
+        same-site: none
+        secure: true   # None 설정 시 필수
+        http-only: true
 
 github:
   sync:
