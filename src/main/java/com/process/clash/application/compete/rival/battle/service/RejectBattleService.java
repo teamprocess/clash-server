@@ -25,18 +25,20 @@ public class RejectBattleService implements RejectBattleUseCase {
     @Override
     public void execute(ModifyBattleData.Command command) {
 
+        System.out.printf(command.id() + " fghjkikoasjhffe");
+
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
 
         Battle updatedBattle = battle.reject();
 
-        battleRepositoryPort.save(updatedBattle);
+        Battle savedBattle = battleRepositoryPort.save(updatedBattle);
 
         UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(
                         NoticeCategory.REJECT_BATTLE,
                         command.actor().id(),
-                        rivalRepositoryPort.findOpponentIdByIdAndUserId(updatedBattle.rivalId(), command.actor().id())
+                        rivalRepositoryPort.findOpponentIdByIdAndUserId(savedBattle.rivalId(), command.actor().id())
                 );
 
         userNoticeRepositoryPort.save(userNoticeForReceiver);

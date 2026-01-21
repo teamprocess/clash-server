@@ -113,10 +113,11 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
         )
         from RivalJpaEntity r
         where :userId in (r.firstUser.id, r.secondUser.id)
-          and r.id not in (
-              select b.rival.id
-              from BattleJpaEntity b
-              where b.battleStatus <> 'DONE'
+            and r.rivalLinkingStatus = 'ACCEPTED'
+            and r.id not in (
+                select b.rival.id
+                from BattleJpaEntity b
+                where b.battleStatus <> 'DONE'
           )
     """)
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(@Param("userId") Long userId);

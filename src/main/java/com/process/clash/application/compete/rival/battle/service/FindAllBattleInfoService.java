@@ -33,7 +33,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
     public Result execute(Command command) {
         Long userId = command.actor().id();
 
-        List<Battle> battles = battleRepositoryPort.findByUserId(userId);
+        List<Battle> battles = battleRepositoryPort.findByUserIdWithOutRejected(userId);
 
         if (battles.isEmpty()) {
             return Result.from(Collections.emptyList());
