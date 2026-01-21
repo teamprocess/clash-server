@@ -6,21 +6,23 @@ import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.user.userstudytime.exception.exception.notfound.UserStudyTimeNotFoundException;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.application.github.exception.exception.notfound.GithubDailyStatsNotFoundException;
-import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
-import com.process.clash.domain.github.entity.GithubDailyStats;
+import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.domain.github.entity.GitHubDailyStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUseCase {
 
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
-    private final GithubDailyStatsQueryPort githubDailyStatsQueryPort;
+    private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
 
     @Override
     public GetCompareWithYesterdayData.Result execute(GetCompareWithYesterdayData.Command command) {
@@ -43,10 +45,10 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
                 endOfDay
         );
 
-        GithubDailyStats yesterdayStats = githubDailyStatsQueryPort
+        GitHubDailyStats yesterdayStats = githubDailyStatsQueryPort
                 .findByUserIdAndStudyDate(command.actor().id(), yesterday)
                 .orElseThrow(GithubDailyStatsNotFoundException::new);
-        GithubDailyStats todayStats = githubDailyStatsQueryPort
+        GitHubDailyStats todayStats = githubDailyStatsQueryPort
                 .findByUserIdAndStudyDate(command.actor().id(), today)
                 .orElseThrow(GithubDailyStatsNotFoundException::new);
 
@@ -56,7 +58,7 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
         return GetCompareWithYesterdayData.Result.from(yesterdayActiveTime, todayActiveTime, yesterdayContributions, todayContributions);
     }
 
-    private int toContributionCount(GithubDailyStats stats) {
+    private int toContributionCount(GitHubDailyStats stats) {
         return stats.commitCount()
                 + stats.prCount()
                 + stats.issueCount()

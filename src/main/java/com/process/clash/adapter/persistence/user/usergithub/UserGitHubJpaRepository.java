@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.user.usergithub;
 
-import com.process.clash.application.compete.rival.data.AbleRivalInfo;
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +17,7 @@ public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEnti
     List<UserGitHubJpaEntity> findAllWithUserAndGitHubId();
 
     @Query("""
-        select new com.process.clash.application.compete.rival.data.AbleRivalInfo(
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival(
             u.id,
             u.name,
             ug.gitHubId,
@@ -27,12 +27,12 @@ public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEnti
         join ug.user u
         where u.id not in :excludedUserIds
     """)
-    List<AbleRivalInfo> findAbleRivalsWithUserInfo(
+    List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(
             @Param("excludedUserIds") List<Long> excludedUserIds
     );
 
     @Query("""
-        select new com.process.clash.application.compete.rival.data.AbleRivalInfo(
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival(
             u.id,
             u.name,
             ug.gitHubId,
@@ -44,7 +44,7 @@ public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEnti
             and (lower(ug.gitHubId) like lower(concat('%', :keyword, '%'))
                 or lower(u.name) like lower(concat('%', :keyword, '%')))
     """)
-    List<AbleRivalInfo> findAbleRivalsWithUserInfoByKeyword(
+    List<AbleRivalInfoForRival> findAbleRivalsWithUserInfoByKeyword(
             @Param("excludedUserIds") List<Long> excludedUserIds,
             @Param("keyword") String keyword
     );
