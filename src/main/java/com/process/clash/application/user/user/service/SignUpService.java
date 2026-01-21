@@ -39,7 +39,7 @@ public class SignUpService implements SignUpUseCase {
 
 	/**
 	 * 회원가입 요청을 처리하고 이메일 인증 세션을 식별하기 위한 토큰을 반환합니다.
-	 * * <p><b>상세 프로세스:</b></p>
+         * <p><b>상세 프로세스:</b></p>
 	 * <ul>
 	 * <li>중복된 사용자 이름 또는 이메일이 있는지 DB에서 확인합니다.</li>
 	 * <li>비밀번호를 암호화하여 {@link User} 엔티티를 생성하고 캐시에 임시 보관합니다.</li>
