@@ -99,7 +99,6 @@ public interface MissionControllerDocument {
                             schema = @Schema(implementation = ApiResponse.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "data": null,
                                       "message": "미션 진행 상황이 초기화되었습니다. 다시 시작합니다.",
                                       "success": true
                                     }
