@@ -132,7 +132,7 @@ public interface RivalCompeteControllerDocument {
                                     }
                                     """)
                     ))
-            ApplyRivalDto.Request request
+            ApplyRivalDto.Request request  // 실제 DTO 사용
     );
 
     @Operation(summary = "라이벌 승인", description = "신청받은 라이벌을 승인합니다.")
@@ -159,7 +159,7 @@ public interface RivalCompeteControllerDocument {
                                     }
                                     """)
                     ))
-            ModifyRivalDto.Request request
+            ModifyRivalDto.Request request  // 실제 DTO 사용
     );
 
     @Operation(summary = "라이벌 거절", description = "신청받은 라이벌을 거절합니다.")
@@ -186,7 +186,7 @@ public interface RivalCompeteControllerDocument {
                                     }
                                     """)
                     ))
-            ModifyRivalDto.Request request
+            ModifyRivalDto.Request request  // 실제 DTO 사용
     );
 
     @Operation(summary = "라이벌과 비교", description = "특정 카테고리와 기간에 대해 라이벌과 나의 활동을 비교합니다.")
