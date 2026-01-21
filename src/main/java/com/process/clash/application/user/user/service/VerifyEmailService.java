@@ -49,13 +49,14 @@ public class VerifyEmailService implements VerifyEmailUseCase {
         }
 
         // 인증 완료 처리 후 DB 저장
-        User verifiedUser = pendingUser.active(); // isActive = true로 변경
-        userRepositoryPort.save(verifiedUser);
+        // 인증 완료 처리 후 DB에 저장하고, 생성된 ID를 포함한 User 객체를 받습니다.
+        User savedUser = userRepositoryPort.save(pendingUser.active());
 
-        // 뽀모도로 타이머에 사용하기 위한 userId를 위해서 flush
-        userRepositoryPort.flush();
+        // `save`의 반환값을 사용하면 영속성 컨텍스트에 의해 ID가 관리되므로,
+        // 명시적인 flush() 호출은 필요하지 않습니다.
+
         // 뽀모도로 타이머 세팅 추가
-        UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(verifiedUser.id());
+        UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(savedUser.id());
         userPomodoroSettingRepositoryPort.save(userPomodoroSetting);
 
         // Redis 정리
