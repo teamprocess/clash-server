@@ -51,7 +51,7 @@ public class AuthController implements AuthControllerDocument {
 				.secure(true)
 				.path("/")
 				.maxAge(VERIFICATION_CODE_EXPIRATION_MS)
-				.sameSite("None")
+				.sameSite("None") // TODO: Lax로 변경
 				.build();
 		return ApiResponse.success("회원가입 요청 / 이메일 인증 코드 발송이 완료되었습니다.", cookie);
 	}
