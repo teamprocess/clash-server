@@ -10,7 +10,9 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.in.VerifyEmailUseCase;
 import com.process.clash.application.user.user.port.out.PendingUserCachePort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.userpomodorosetting.entity.UserPomodoroSetting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ public class VerifyEmailService implements VerifyEmailUseCase {
     private final VerificationCodePort verificationCodePort;
     private final UserRepositoryPort userRepositoryPort;
     private final PendingUserCachePort pendingUserCachePort;
+    private final UserPomodoroSettingRepositoryPort userPomodoroSettingRepositoryPort;
 
     @Override
     @Transactional
@@ -48,6 +51,12 @@ public class VerifyEmailService implements VerifyEmailUseCase {
         // 인증 완료 처리 후 DB 저장
         User verifiedUser = pendingUser.active(); // isActive = true로 변경
         userRepositoryPort.save(verifiedUser);
+
+        // 뽀모도로 타이머에 사용하기 위한 userId를 위해서 flush
+        userRepositoryPort.flush();
+        // 뽀모도로 타이머 세팅 추가
+        UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(verifiedUser.id());
+        userPomodoroSettingRepositoryPort.save(userPomodoroSetting);
 
         // Redis 정리
         pendingUserCachePort.delete(command.token());
