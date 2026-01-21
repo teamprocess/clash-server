@@ -31,14 +31,14 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     @Query(value = """
         SELECT
             CASE
-                WHEN r.first_user_id = ANY(:userIds) THEN r.first_user_id
-                ELSE r.second_user_id
+                WHEN r.fk_first_user_id = ANY(:userIds) THEN r.fk_first_user_id
+                ELSE r.fk_second_user_id
             END AS user_id,
             COUNT(*) AS count
-        FROM rival r
+        FROM rivals r
         WHERE r.rival_linking_status = 'ACCEPTED'
-          AND (r.first_user_id = ANY(:userIds) OR r.second_user_id = ANY(:userIds))
-        GROUP BY user_id
+          AND (r.fk_first_user_id = ANY(:userIds) OR r.fk_second_user_id = ANY(:userIds))
+        GROUP BY fk_user_id
     """, nativeQuery = true)
     List<Map<String, Object>> countAllByUserIdsGrouped(
             @Param("userIds") List<Long> userIds
@@ -49,9 +49,9 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
      */
     @Query(value = """
         SELECT *
-        FROM rival r
+        FROM rivals r
         WHERE r.rival_linking_status = 'ACCEPTED'
-          AND (r.first_user_id = :userId OR r.second_user_id = :userId)
+          AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     List<RivalJpaEntity> findAllByUserId(@Param("userId") Long userId);
 
@@ -61,12 +61,12 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     @Query(value = """
         SELECT
             CASE
-                WHEN r.first_user_id = :userId THEN r.second_user_id
-                ELSE r.first_user_id
+                WHEN r.fk_first_user_id = :userId THEN r.fk_second_user_id
+                ELSE r.fk_first_user_id
             END
-        FROM rival r
+        FROM rivals r
         WHERE r.rival_linking_status = 'ACCEPTED'
-          AND (r.first_user_id = :userId OR r.second_user_id = :userId)
+          AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     List<Long> findOpponentIdsByUserId(@Param("userId") Long userId);
 
@@ -76,10 +76,10 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     @Query(value = """
         SELECT
             CASE
-                WHEN r.first_user_id = :userId THEN r.second_user_id
-                ELSE r.first_user_id
+                WHEN r.fk_first_user_id = :userId THEN r.fk_second_user_id
+                ELSE r.fk_first_user_id
             END
-        FROM rival r
+        FROM rivals r
         WHERE r.id = :id
           AND r.rival_linking_status = 'ACCEPTED'
     """, nativeQuery = true)
@@ -91,34 +91,21 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     /**
      * 배틀 가능한 라이벌 조회
      */
-    @Query(value = """
-        SELECT
-            CASE
-                WHEN r.first_user_id = :userId THEN u2.id
-                ELSE u1.id
-            END AS rival_id,
-            CASE
-                WHEN r.first_user_id = :userId THEN u2.name
-                ELSE u1.name
-            END AS rival_name,
-            CASE
-                WHEN r.first_user_id = :userId THEN u2.profile_image
-                ELSE u1.profile_image
-            END AS rival_profile_image
-        FROM rival r
-        JOIN "user" u1 ON u1.id = r.first_user_id
-        JOIN "user" u2 ON u2.id = r.second_user_id
-        WHERE :userId IN (r.first_user_id, r.second_user_id)
-          AND NOT EXISTS (
-              SELECT 1
-              FROM battle b
-              WHERE b.rival_id = r.id
-                AND b.battle_status IN ('IN_PROGRESS', 'PENDING')
+    @Query("""
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle(
+            case when r.firstUser.id = :userId then r.secondUser.id else r.firstUser.id end,
+            case when r.firstUser.id = :userId then r.secondUser.name else r.firstUser.name end,
+            case when r.firstUser.id = :userId then r.secondUser.profileImage else r.firstUser.profileImage end
+        )
+        from RivalJpaEntity r
+        where :userId in (r.firstUser.id, r.secondUser.id)
+          and r.id not in (
+              select b.rival.id
+              from BattleJpaEntity b
+              where b.battleStatus <> 'DONE'
           )
-    """, nativeQuery = true)
-    List<AbleRivalInfoForBattle> findAbleToBattleRivals(
-            @Param("userId") Long userId
-    );
+    """)
+    List<AbleRivalInfoForBattle> findAbleToBattleRivals(@Param("userId") Long userId);
 
     List<RivalJpaEntity> findByIdIn(Set<Long> ids);
 }

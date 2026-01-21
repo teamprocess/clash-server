@@ -16,10 +16,10 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
      */
     @Query(value = """
         SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
-        FROM battle b
-        JOIN rival r ON b.rival_id = r.id
+        FROM battles b
+        JOIN rivals r ON b.fk_rival_id = r.id
         WHERE b.battle_status <> 'DONE'
-          AND (r.first_user_id = :userId OR r.second_user_id = :userId)
+          AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     boolean existsActiveBattleByUserId(@Param("userId") Long userId);
 
@@ -37,9 +37,9 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
      */
     @Query(value = """
         SELECT b.*
-        FROM battle b
-        JOIN rival r ON b.rival_id = r.id
-        WHERE r.first_user_id = :userId OR r.second_user_id = :userId
+        FROM battles b
+        JOIN rivals r ON b.fk_rival_id = r.id
+        WHERE r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId
     """, nativeQuery = true)
     List<BattleJpaEntity> findByUserId(@Param("userId") Long userId);
 
@@ -48,10 +48,10 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
      */
     @Query(value = """
         SELECT b.*
-        FROM battle b
-        JOIN rival r ON b.rival_id = r.id
+        FROM battles b
+        JOIN rivals r ON b.fk_rival_id = r.id
         WHERE b.battle_status <> 'DONE'
-          AND (r.first_user_id = :userId OR r.second_user_id = :userId)
+          AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
         LIMIT 1
     """, nativeQuery = true)
     Optional<BattleJpaEntity> findActiveByUserId(@Param("userId") Long userId);

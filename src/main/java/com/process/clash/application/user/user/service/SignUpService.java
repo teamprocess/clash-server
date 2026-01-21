@@ -28,7 +28,6 @@ public class SignUpService implements SignUpUseCase {
 	private final PasswordEncoder passwordEncoder;
 	private final VerificationCodePort verificationCodePort;
 	private final SendVerificationEmailPort sendVerificationEmailPort;
-	private final UserPomodoroSettingRepositoryPort userPomodoroSettingRepositoryPort;
 	private final PendingUserCachePort pendingUserCachePort;
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 	private static final long VERIFICATION_CODE_EXPIRATION_MS = 5 * 60 * 1000L; // 인증 코드 만료: 5분
@@ -54,13 +53,6 @@ public class SignUpService implements SignUpUseCase {
 				command.name(),
 				encoded
 		);
-
-		User savedUser = userRepositoryPort.save(pendingUser);
-		// 뽀모도로 타이머에 사용하기 위한 userId를 위해서 flush
-		userRepositoryPort.flush();
-		// 뽀모도로 타이머 세팅 추가
-		UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(savedUser.id());
-		userPomodoroSettingRepositoryPort.save(userPomodoroSetting);
 
 		String token = tokenGenerator.generateCleanToken();
 
