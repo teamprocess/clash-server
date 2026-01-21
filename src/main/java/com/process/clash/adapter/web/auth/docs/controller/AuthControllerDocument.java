@@ -41,9 +41,9 @@ public interface AuthControllerDocument {
             )
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> signUp(
-            @Parameter(description = "회원가입 요청", required = true) @RequestBody(description = "회원가입 요청",
+            @RequestBody(description = "회원가입 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = SignUpRequestDoc.class),
+                            schema = @Schema(implementation = SignUpDto.Request.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "username": "gildong123",
@@ -140,9 +140,9 @@ public interface AuthControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> verifyEmail(
             @CookieValue(name = "signup_token", required = true) String token,
-            @Valid @RequestBody(description = "이메일 인증 요청", required = true,
+            @RequestBody(description = "이메일 인증 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = VerifyEmailDto.class),
+                            schema = @Schema(implementation = VerifyEmailDto.Request.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "code": "123456"
