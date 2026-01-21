@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(
@@ -22,7 +21,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @IdClass(GitHubDailyStatsId.class)
-public class GithubDailyStatsJpaEntity {
+public class GitHubDailyStatsJpaEntity {
 
     @Id
     @Column(name = "user_id", nullable = false)

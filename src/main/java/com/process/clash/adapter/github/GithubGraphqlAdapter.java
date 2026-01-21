@@ -9,7 +9,7 @@ import com.process.clash.application.github.model.GithubSyncTarget;
 import com.process.clash.application.github.port.out.GithubStatsFetchPort;
 import com.process.clash.application.github.service.GithubReviewAggregator;
 import com.process.clash.application.github.service.StudyDateCalculator;
-import com.process.clash.domain.github.entity.GithubDailyStats;
+import com.process.clash.domain.github.entity.GitHubDailyStats;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     private final Clock clock;
 
     @Override
-    public List<GithubDailyStats> fetchDailyStats(GithubSyncTarget target, List<LocalDate> studyDates) {
+    public List<GitHubDailyStats> fetchDailyStats(GithubSyncTarget target, List<LocalDate> studyDates) {
         if (studyDates.isEmpty()) {
             return List.of();
         }
@@ -91,10 +91,10 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         }
 
         Instant syncedAt = clock.instant();
-        List<GithubDailyStats> results = new ArrayList<>(studyDates.size());
+        List<GitHubDailyStats> results = new ArrayList<>(studyDates.size());
         for (LocalDate studyDate : studyDates) {
             MutableStats mutable = statsByDate.get(studyDate);
-            results.add(new GithubDailyStats(
+            results.add(new GitHubDailyStats(
                     target.userId(),
                     studyDate,
                     mutable.commitCount,

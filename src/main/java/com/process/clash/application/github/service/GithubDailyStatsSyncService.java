@@ -5,7 +5,7 @@ import com.process.clash.application.github.model.GithubSyncTarget;
 import com.process.clash.application.github.port.out.GithubDailyStatsStorePort;
 import com.process.clash.application.github.port.out.GithubStatsFetchPort;
 import com.process.clash.application.github.port.out.GithubSyncTargetPort;
-import com.process.clash.domain.github.entity.GithubDailyStats;
+import com.process.clash.domain.github.entity.GitHubDailyStats;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -99,7 +99,7 @@ public class GithubDailyStatsSyncService {
                     target.emails(),
                     accessToken
             );
-            List<GithubDailyStats> stats = statsFetchPort.fetchDailyStats(resolvedTarget, studyDates);
+            List<GitHubDailyStats> stats = statsFetchPort.fetchDailyStats(resolvedTarget, studyDates);
             if (!stats.isEmpty()) {
                 statsStorePort.upsertAll(stats);
             }

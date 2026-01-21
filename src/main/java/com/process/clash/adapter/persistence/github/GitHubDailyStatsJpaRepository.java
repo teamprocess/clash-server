@@ -8,21 +8,22 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDailyStatsJpaEntity, Long> {
-    List<GithubDailyStatsJpaEntity> findByUserIdAndStudyDateIn(Long userId, List<LocalDate> studyDates);
+public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDailyStatsJpaEntity, Long> {
 
-    Optional<GithubDailyStatsJpaEntity> findByUserIdAndStudyDate(Long userId, LocalDate studyDate);
+    List<GitHubDailyStatsJpaEntity> findByUserIdAndStudyDateIn(Long userId, List<LocalDate> studyDates);
+
+    Optional<GitHubDailyStatsJpaEntity> findByUserIdAndStudyDate(Long userId, LocalDate studyDate);
 
     // DAY: 여러 유저의 일별 깃허브 기여도 데이터
     @Query(value = """
         SELECT 
-            fk_user_id as userId,
-            study_date as date,
-            (commit_count + pr_count + review_count + issue_count) as point
+            fk_user_id AS "userId",
+            study_date AS "date",
+            (commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE fk_user_id IN :userIds
-        AND study_date >= :startDate
-        AND study_date < :endDate
+        WHERE fk_user_id = ANY(:userIds)
+          AND study_date >= :startDate
+          AND study_date < :endDate
         ORDER BY fk_user_id, study_date ASC
     """, nativeQuery = true)
     List<Object[]> findDailyContributionsByUserIds(
@@ -34,15 +35,15 @@ public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDaily
     // WEEK: 여러 유저의 주별 평균 깃허브 기여도
     @Query(value = """
         SELECT 
-            fk_user_id as userId,
-            DATE_SUB(study_date, INTERVAL (DAYOFWEEK(study_date) - 2) DAY) as date,
-            AVG(commit_count + pr_count + review_count + issue_count) as point
+            fk_user_id AS "userId",
+            date_trunc('week', study_date) AS "date",
+            AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE fk_user_id IN :userIds
-        AND study_date >= :startDate
-        AND study_date < :endDate
-        GROUP BY fk_user_id, YEARWEEK(study_date)
-        ORDER BY fk_user_id, MIN(study_date) ASC
+        WHERE fk_user_id = ANY(:userIds)
+          AND study_date >= :startDate
+          AND study_date < :endDate
+        GROUP BY fk_user_id, date_trunc('week', study_date)
+        ORDER BY fk_user_id, date_trunc('week', study_date) ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -53,15 +54,15 @@ public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDaily
     // MONTH: 여러 유저의 월별 평균 깃허브 기여도
     @Query(value = """
         SELECT 
-            fk_user_id as userId,
-            DATE_FORMAT(study_date, '%Y-%m-01') as date,
-            AVG(commit_count + pr_count + review_count + issue_count) as point
+            fk_user_id AS "userId",
+            date_trunc('month', study_date) AS "date",
+            AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
-        WHERE fk_user_id IN :userIds
-        AND study_date >= :startDate
-        AND study_date < :endDate
-        GROUP BY fk_user_id, YEAR(study_date), MONTH(study_date)
-        ORDER BY fk_user_id, MIN(study_date) ASC
+        WHERE fk_user_id = ANY(:userIds)
+          AND study_date >= :startDate
+          AND study_date < :endDate
+        GROUP BY fk_user_id, date_trunc('month', study_date)
+        ORDER BY fk_user_id, date_trunc('month', study_date) ASC
     """, nativeQuery = true)
     List<Object[]> findMonthlyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -69,8 +70,9 @@ public interface GithubDailyStatsJpaRepository extends JpaRepository<GithubDaily
             @Param("endDate") LocalDate endDate
     );
 
+    // 기간 내 평균 기여도
     @Query(value = """
-        SELECT COALESCE(AVG(commit_count + pr_count + reviewe_count + issue_count), 0)
+        SELECT COALESCE(AVG(commit_count + pr_count + review_count + issue_count), 0)
         FROM github_daily_stats
         WHERE fk_user_id = :userId
           AND study_date >= :startDate

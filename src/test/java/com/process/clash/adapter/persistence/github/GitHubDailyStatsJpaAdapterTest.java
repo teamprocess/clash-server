@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.github;
 
-import com.process.clash.domain.github.entity.GithubDailyStats;
+import com.process.clash.domain.github.entity.GitHubDailyStats;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,18 +13,18 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import({GithubDailyStatsJpaAdapter.class, GithubDailyStatsJpaMapper.class})
-class GithubDailyStatsJpaAdapterTest {
+@Import({GitHubDailyStatsJpaAdapter.class, GitHubDailyStatsJpaMapper.class})
+class GitHubDailyStatsJpaAdapterTest {
 
     @Autowired
-    private GithubDailyStatsJpaAdapter adapter;
+    private GitHubDailyStatsJpaAdapter adapter;
 
     @Autowired
-    private GithubDailyStatsJpaRepository repository;
+    private GitHubDailyStatsJpaRepository repository;
 
     @Test
     void upsertOverwritesExistingRow() {
-        GithubDailyStats first = new GithubDailyStats(
+        GitHubDailyStats first = new GitHubDailyStats(
                 1L,
                 LocalDate.of(2026, 1, 19),
                 1,
@@ -36,7 +36,7 @@ class GithubDailyStatsJpaAdapterTest {
                 Instant.parse("2026-01-19T00:00:00Z")
         );
 
-        GithubDailyStats updated = new GithubDailyStats(
+        GitHubDailyStats updated = new GitHubDailyStats(
                 1L,
                 LocalDate.of(2026, 1, 19),
                 9,
@@ -51,7 +51,7 @@ class GithubDailyStatsJpaAdapterTest {
         adapter.upsertAll(List.of(first));
         adapter.upsertAll(List.of(updated));
 
-        List<GithubDailyStatsJpaEntity> rows = repository.findByUserIdAndStudyDateIn(
+        List<GitHubDailyStatsJpaEntity> rows = repository.findByUserIdAndStudyDateIn(
                 1L,
                 List.of(LocalDate.of(2026, 1, 19))
         );

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
-public class GithubSyncTargetJpaAdapter implements GithubSyncTargetPort {
+public class GitHubSyncTargetJpaAdapter implements GithubSyncTargetPort {
 
     private final UserGitHubJpaRepository userGitHubJpaRepository;
 

@@ -68,7 +68,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
 
         if (!inProgressBattles.isEmpty()) {
             currentUserAvgExpMap = userExpHistoryRepositoryPort
-                    .findAverageExpByUserIdAndBattles(userId, inProgressBattles);
+                    .findAverageExpByUserIdAndPeriod(userId, inProgressBattles);
 
             Set<Long> enemyIdsForInProgress = inProgressBattles.stream()
                     .map(battle -> getEnemyId(rivalMap.get(battle.rivalId()), userId))
@@ -85,7 +85,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
                 List<Battle> enemyBattles = entry.getValue();
 
                 Map<Long, Double> enemyAvgForBattle = userExpHistoryRepositoryPort
-                        .findAverageExpByUserIdAndBattles(enemyId, enemyBattles);
+                        .findAverageExpByUserIdAndPeriod(enemyId, enemyBattles);
                 enemyAvgExpMap.putAll(enemyAvgForBattle);
             }
         } else {

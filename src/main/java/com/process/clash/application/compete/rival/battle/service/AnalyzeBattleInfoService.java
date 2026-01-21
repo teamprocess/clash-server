@@ -1,13 +1,12 @@
 package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.data.AnalyzeBattleInfoData;
-import com.process.clash.application.compete.rival.battle.data.AnalyzeBattleInfoData.*;
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.battle.port.in.AnalyzeBattleInfoUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
-import com.process.clash.application.github.port.out.GithubDailyStatsQueryPort;
+import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.common.enums.TargetCategory;
@@ -26,7 +25,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
 
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
-    private final GithubDailyStatsQueryPort githubDailyStatsQueryPort;
+    private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
     private final BattleRepositoryPort battleRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
 

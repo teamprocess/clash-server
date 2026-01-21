@@ -14,15 +14,18 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
 
     Optional<UserStudyTimeJpaEntity> findByUserIdAndDate(Long userId, LocalDate date);
 
+    /**
+     * DAY: 유저별 일별 학습시간
+     */
     @Query(value = """
         SELECT 
-            fk_user_id as userId,
-            date,
+            fk_user_id as "userId",
+            date as "date",
             totalStudyTimeSeconds as point
         FROM user_study_times
-        WHERE fk_user_id IN :userIds
-        AND date >= :startDate
-        AND date < :endDate
+        WHERE fk_user_id = ANY(:userIds)
+          AND date >= :startDate
+          AND date < :endDate
         ORDER BY fk_user_id, date ASC
     """, nativeQuery = true)
     List<Object[]> findDailyDataByUserIds(
@@ -31,17 +34,20 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             @Param("endDate") LocalDate endDate
     );
 
+    /**
+     * WEEK: 유저별 주별 평균 학습시간
+     */
     @Query(value = """
         SELECT 
-            fk_user_id as userId,
-            DATE_SUB(date, INTERVAL (DAYOFWEEK(date) - 2) DAY) as date,
+            fk_user_id as "userId",
+            date_trunc('week', date) as "date",
             AVG(totalStudyTimeSeconds) as point
         FROM user_study_times
-        WHERE fk_user_id IN :userIds
-        AND date >= :startDate
-        AND date < :endDate
-        GROUP BY fk_user_id, YEARWEEK(date)
-        ORDER BY fk_user_id, MIN(date) ASC
+        WHERE fk_user_id = ANY(:userIds)
+          AND date >= :startDate
+          AND date < :endDate
+        GROUP BY fk_user_id, date_trunc('week', date)
+        ORDER BY fk_user_id, date_trunc('week', date) ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyDataByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -49,17 +55,20 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             @Param("endDate") LocalDate endDate
     );
 
+    /**
+     * MONTH: 유저별 월별 평균 학습시간
+     */
     @Query(value = """
         SELECT 
-            fk_user_id as userId,
-            DATE_FORMAT(date, '%Y-%m-01') as date,
+            fk_user_id as "userId",
+            date_trunc('month', date) as "date",
             AVG(totalStudyTimeSeconds) as point
         FROM user_study_times
-        WHERE fk_user_id IN :userIds
-        AND date >= :startDate
-        AND date < :endDate
-        GROUP BY fk_user_id, YEAR(date), MONTH(date)
-        ORDER BY fk_user_id, MIN(date) ASC
+        WHERE fk_user_id = ANY(:userIds)
+          AND date >= :startDate
+          AND date < :endDate
+        GROUP BY fk_user_id, date_trunc('month', date)
+        ORDER BY fk_user_id, date_trunc('month', date) ASC
     """, nativeQuery = true)
     List<Object[]> findMonthlyDataByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -67,6 +76,9 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             @Param("endDate") LocalDate endDate
     );
 
+    /**
+     * 기간 내 평균 학습시간
+     */
     @Query(value = """
         SELECT COALESCE(AVG(total_study_time_seconds), 0)
         FROM user_study_times
