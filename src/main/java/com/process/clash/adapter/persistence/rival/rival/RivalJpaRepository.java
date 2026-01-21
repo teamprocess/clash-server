@@ -91,34 +91,21 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     /**
      * 배틀 가능한 라이벌 조회
      */
-    @Query(value = """
-        SELECT
-            CASE
-                WHEN r.fk_first_user_id = :userId THEN u2.id
-                ELSE u1.id
-            END AS rival_id,
-            CASE
-                WHEN r.fk_first_user_id = :userId THEN u2.name
-                ELSE u1.name
-            END AS rival_name,
-            CASE
-                WHEN r.fk_first_user_id = :userId THEN u2.profile_image
-                ELSE u1.profile_image
-            END AS rival_profile_image
-        FROM rivals r
-        JOIN "user" u1 ON u1.id = r.fk_first_user_id
-        JOIN "user" u2 ON u2.id = r.fk_second_user_id
-        WHERE :userId IN (r.fk_first_user_id, r.fk_second_user_id)
-          AND NOT EXISTS (
-              SELECT 1
-              FROM battles b
-              WHERE b.rival_id = r.id
-                AND b.battle_status IN ('IN_PROGRESS', 'PENDING')
+    @Query("""
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle(
+            case when r.firstUser.id = :userId then r.secondUser.id else r.firstUser.id end,
+            case when r.firstUser.id = :userId then r.secondUser.name else r.firstUser.name end,
+            case when r.firstUser.id = :userId then r.secondUser.profileImage else r.firstUser.profileImage end
+        )
+        from RivalJpaEntity r
+        where :userId in (r.firstUser.id, r.secondUser.id)
+          and r.id not in (
+              select b.rival.id
+              from BattleJpaEntity b
+              where b.battleStatus <> 'DONE'
           )
-    """, nativeQuery = true)
-    List<AbleRivalInfoForBattle> findAbleToBattleRivals(
-            @Param("userId") Long userId
-    );
+    """)
+    List<AbleRivalInfoForBattle> findAbleToBattleRivals(@Param("userId") Long userId);
 
     List<RivalJpaEntity> findByIdIn(Set<Long> ids);
 }
