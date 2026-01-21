@@ -24,6 +24,11 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -110,6 +115,27 @@ public class SecurityConfig {
     @Bean
     public RememberMeServices rememberMeServices(CustomUserDetailsService customUserDetailsService) {
         return new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService); // 프로덕선 환경에서는 키를 노출시키지 마세요
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 사실상 "모든 도메인" 허용 (CORS 무력화)
+        configuration.addAllowedOriginPattern("*");
+
+        // 모든 메서드(GET, POST...) 허용
+        configuration.addAllowedMethod("*");
+
+        // 모든 헤더 허용
+        configuration.addAllowedHeader("*");
+
+        // 쿠키/세션 허용 (인증 사용 중이므로 필수)
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
 
