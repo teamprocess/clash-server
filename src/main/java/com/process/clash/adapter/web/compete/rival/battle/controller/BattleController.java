@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.compete.rival.battle.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.compete.rival.battle.docs.controller.BattleControllerDocument;
 import com.process.clash.adapter.web.compete.rival.battle.dto.*;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/compete/rivals/battles")
 @RequiredArgsConstructor
-public class BattleController {
+public class BattleController implements BattleControllerDocument {
 
     private final ApplyBattleUseCase applyBattleUseCase;
     private final AcceptBattleUseCase acceptBattleUseCase;
