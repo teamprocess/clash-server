@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.ranking.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.ranking.docs.controller.RankingControllerDocument;
+import com.process.clash.adapter.web.ranking.dto.GetChapterRankingDto;
 import com.process.clash.adapter.web.ranking.dto.GetRankingDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
@@ -35,5 +36,10 @@ public class RankingController implements RankingControllerDocument {
         GetRankingData.Result result = getRankingUseCase.execute(command);
         GetRankingDto.Response response = GetRankingDto.Response.from(result);
         return ApiResponse.success(response, "내 EXP 획득 정보 분석 결과를 성공적으로 반환했습니다.");
+    }
+
+    @GetMapping("/chapters")
+    public ApiResponse<GetChapterRankingDto.Response> getChapterRanking(@AuthenticatedActor Actor actor) {
+        return null;
     }
 }
