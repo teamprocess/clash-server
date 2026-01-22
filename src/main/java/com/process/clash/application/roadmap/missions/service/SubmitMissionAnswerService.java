@@ -37,9 +37,30 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
     private final ChapterRepositoryPort chapterRepositoryPort;
     private final UserSectionProgressRepositoryPort userSectionProgressRepositoryPort;
 
+    /**
+     * 사용자의 미션 답변을 실행하고 그 결과를 반환합니다.
+     * <p><b>프로세스 흐름:</b></p>
+     * <ol>
+     * <li>미션 및 질문의 유효성 검증</li>
+     * <li>{@link UserSectionProgress}를 통한 챕터 접근 권한 체크</li>
+     * <li>정답 여부 판별 및 {@link UserMissionHistory} 갱신</li>
+     * <li>챕터 내 모든 미션 완료 시 섹션 진행도 전진 ({@code updateSectionProgress})</li>
+     * <li>다음 미션 또는 다음 챕터의 정보를 계산하여 결과 반환</li>
+     * </ol>
+     *
+     * @param command 사용자 정보, 미션/질문/선택지 ID를 포함한 명령 객체
+     * @return 정답 여부, 해설, 다음 단계 정보(미션/챕터) 등을 포함한 결과 객체
+     * @throws MissionNotFoundException  요청한 미션이 존재하지 않을 경우
+     * @throws ChapterLockedException    선행 챕터를 완료하지 않아 접근이 거부된 경우
+     * @throws QuestionNotFoundException 해당 미션에 속하지 않은 질문 ID일 경우
+     * @throws InvalidChoiceException    유효하지 않은 선택지 ID일 경우
+     *
+     * @author 김연호
+     */
     @Override
     @Transactional
     public SubmitMissionAnswerData.Result execute(SubmitMissionAnswerData.Command command) {
+
         Actor actor = command.actor();
 
         // 1. 미션 조회 (N+1 방지: questions와 choices 함께 fetch)
@@ -52,6 +73,9 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         UserSectionProgress progress = userSectionProgressRepositoryPort.findByUserIdAndSectionId(actor.id(), chapter.getSectionId())
                 .orElse(null);
 
+        // 현재 user의 UserSectionProgress의 챕터의 orderindex가
+        // 현재 문제를 제출하려는 챕터의 orderindex보다 작으면
+        // 접근 권한이 없음
         if (progress != null && progress.getCurrentChapterId() != null) {
             Chapter currentChapter = chapterRepositoryPort.findById(progress.getCurrentChapterId())
                     .orElseThrow(ChapterNotFoundException::new);
