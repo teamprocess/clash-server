@@ -28,20 +28,5 @@ public class AnalyzeMyActivityData {
             List<Streak> streaks,
             List<Variation> variations
     ) {
-
-//        public static Result from() {
-//
-//        }
     }
-
-    public record Streak(
-            LocalDate date,
-            Integer detailedInfo,
-            WeekCategory dayOfTheWeek
-    ) {}
-
-    public record Variation(
-            Integer month,
-            Double avgVariationPerMonth
-    ) {}
 }

@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.github;
 
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +46,17 @@ public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPor
     public double findAverageCommitsByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return repository.findAverageCommitsByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    @Override
+    public List<Streak> findStreakByUserId(Long userId, LocalDate standard) {
+
+        return repository.findStreakByUserId(userId, standard);
+    }
+
+    @Override
+    public List<Variation> findVaricationByUserId(Long userId, LocalDate standard) {
+
+        return repository.findVariationByUserId(userId, standard);
     }
 }
