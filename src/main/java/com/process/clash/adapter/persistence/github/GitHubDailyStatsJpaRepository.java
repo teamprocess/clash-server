@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.github;
 
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -82,5 +84,36 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Streak(
+                g.studyDate,
+                g.commitCount + g.prCount + g.reviewCount + g.issueCount
+            )
+        from GitHubDailyStatsJpaEntity g
+        where g.userId = :userId
+            and g.studyDate >= :standard
+        order by g.studyDate asc
+    """)
+    List<Streak> findStreakByUserId(
+            @Param("userId") Long userId,
+            @Param("standard") LocalDate standard
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Variation(
+                month(g.studyDate),
+                avg(g.commitCount + g.prCount + g.reviewCount + g.issueCount)
+            )
+        from GitHubDailyStatsJpaEntity g
+        where g.userId = :userId
+            and g.studyDate >= :standard
+        group by month(g.studyDate)
+        order by month(g.studyDate) asc
+    """)
+    List<Variation> findVariationByUserId(
+            @Param("userId") Long userId,
+            @Param("standard") LocalDate standard
     );
 }
