@@ -116,9 +116,9 @@ public interface BattleControllerDocument {
                                     "data": {
                                       "rivals": [
                                           {
-                                              "id": "Long",
-                                              "name": "String",
-                                              "profileImage": "String"
+                                              "id": "1",
+                                              "name": "오용준",
+                                              "profileImage": "p-i-g"
                                           }
                                       ]
                                     }
