@@ -4,6 +4,7 @@ import com.process.clash.adapter.web.compete.rival.battle.docs.request.*;
 import com.process.clash.adapter.web.compete.rival.battle.docs.response.*;
 import com.process.clash.adapter.web.compete.rival.battle.dto.*;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData;
 import com.process.clash.domain.common.enums.TargetCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.time.LocalDate;
+
 @Tag(name = "배틀 API", description = "라이벌과의 배틀 신청/관리 및 조회")
 public interface BattleControllerDocument {
 
@@ -25,11 +28,11 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = ApplyBattleResponseDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "라이벌과의 배틀 신청을 성공적으로 생성하였습니다."
-                                    }
-                                    """)
+                                  {
+                                    "success": true,
+                                    "message": "라이벌과의 배틀 신청을 성공적으로 생성하였습니다."
+                                  }
+                                  """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> applyBattle(
@@ -38,11 +41,11 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = ApplyBattleRequestDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "id": 3,
-                                      "duration": 7
-                                    }
-                                    """)
+                                  {
+                                    "id": 3,
+                                    "duration": 7
+                                  }
+                                  """)
                     ))
             ApplyBattleDto.Request request
     );
@@ -53,11 +56,11 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = ModifyBattleResponseDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "라이벌과의 배틀 신청을 성공적으로 승인하였습니다."
-                                    }
-                                    """)
+                                  {
+                                    "success": true,
+                                    "message": "라이벌과의 배틀 신청을 성공적으로 승인하였습니다."
+                                  }
+                                  """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> acceptBattle(
@@ -66,10 +69,10 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = ModifyBattleRequestDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "battleId": 1
-                                    }
-                                    """)
+                                  {
+                                    "id": 1
+                                  }
+                                  """)
                     ))
             ModifyBattleDto.Request request
     );
@@ -80,11 +83,11 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = ModifyBattleResponseDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "라이벌과의 배틀 신청을 성공적으로 거절하였습니다."
-                                    }
-                                    """)
+                                  {
+                                    "success": true,
+                                    "message": "라이벌과의 배틀 신청을 성공적으로 거절하였습니다."
+                                  }
+                                  """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> rejectBattle(
@@ -93,10 +96,10 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = ModifyBattleRequestDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "battleId": 1
-                                    }
-                                    """)
+                                  {
+                                    "id": 1
+                                  }
+                                  """)
                     ))
             ModifyBattleDto.Request request
     );
@@ -107,21 +110,20 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = FindAbleRivalsResponseDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "배틀을 신청할 라이벌 목록을 성공적으로 반환하였습니다.",
-                                      "data": {
-                                        "rivals": [
+                                  {
+                                    "success": true,
+                                    "message": "배틀을 신청할 라이벌 목록을 성공적으로 반환하였습니다.",
+                                    "data": {
+                                      "rivals": [
                                           {
-                                            "id": 3,
-                                            "name": "이몽룡",
-                                            "username": "mongryong",
-                                            "profileImage": "https://cdn.example.com/profile/2.png"
+                                              "id": "Long",
+                                              "name": "String",
+                                              "profileImage": "String"
                                           }
-                                        ]
-                                      }
+                                      ]
                                     }
-                                    """)
+                                  }
+                                  """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<FindAbleRivalsDto.Response> findAbleRivals(
@@ -134,22 +136,21 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = FindDetailedBattleInfoResponseDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "라이벌과의 배틀 상세 정보를 성공적으로 반환했습니다.",
-                                      "data": {
-                                        "id": 1,
-                                        "enemy": {
-                                          "id": 3,
-                                          "name": "이몽룡",
-                                          "username": "mongryong",
-                                          "profileImage": "https://cdn.example.com/profile/2.png"
-                                        },
-                                        "expireDate": "2026-01-29",
-                                        "myOverallPercentage": 65.5
-                                      }
+                                  {
+                                    "success": true,
+                                    "message": "라이벌과의 배틀 상세 정보를 성공적으로 반환했습니다.",
+                                    "data": {
+                                      "id": 1,
+                                      "enemy": {
+                                        "id": 3,
+                                        "name": "이몽룡",
+                                        "profileImage": "https://cdn.example.com/profile/2.png"
+                                      },
+                                      "expireDate": "2026-01-29",
+                                      "myOverallPercentage": 65.5
                                     }
-                                    """)
+                                  }
+                                  """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<FindDetailedBattleInfoDto.Response> findDetailedCertainBattleInfo(
@@ -164,23 +165,25 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = FindAllBattleInfoResponseDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "라이벌과의 배틀 정보를 성공적으로 반환했습니다.",
-                                      "data": {
-                                        "battles": [
-                                          {
-                                            "battleId": 1,
-                                            "rivalName": "이몽룡",
-                                            "rivalUsername": "mongryong",
-                                            "rivalProfileImage": "https://cdn.example.com/profile/2.png",
-                                            "status": "ONGOING",
-                                            "expireDate": "2026-01-29"
-                                          }
-                                        ]
-                                      }
+                                  {
+                                    "success": true,
+                                    "message": "배틀을 신청할 라이벌 목록을 성공적으로 반환하였습니다.",
+                                    "data": {
+                                      "rivals": [
+                                        {
+                                          "id": 3,
+                                          "enemy": {
+                                              "id": "1",
+                                              "name": "오용준",
+                                              "profileImage": "p-i-g"
+                                          },
+                                          "expireDate": "2026-01-29",
+                                          "result": "WINNING" // WON, LOST, WINNING, LOSING, DRAW, PENDING
+                                        }
+                                      ]
                                     }
-                                    """)
+                                  }
+                                  """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<FindAllBattleInfoDto.Response> findAllBattleInfo(
@@ -193,17 +196,17 @@ public interface BattleControllerDocument {
                     content = @Content(
                             schema = @Schema(implementation = AnalyzeBattleInfoResponseDoc.class),
                             examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "라이벌과의 배틀 정보 분석을 성공적으로 반환했습니다.",
-                                      "data": {
-                                        "category": "CLASH",
-                                        "id": 1,
-                                        "enemyPoint": 850,
-                                        "myPoint": 720
-                                      }
+                                  {
+                                    "success": true,
+                                    "message": "라이벌과의 배틀 정보 분석을 성공적으로 반환했습니다.",
+                                    "data": {
+                                      "category": "CLASH",
+                                      "id": 1,
+                                      "enemyPoint": 850,
+                                      "myPoint": 720
                                     }
-                                    """)
+                                  }
+                                  """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<AnalyzeBattleInfoDto.Response> analyzeBattleInfo(

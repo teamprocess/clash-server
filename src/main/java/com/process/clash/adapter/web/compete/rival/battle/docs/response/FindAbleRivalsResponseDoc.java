@@ -28,9 +28,6 @@ public class FindAbleRivalsResponseDoc extends SuccessMessageResponseDoc {
         @Schema(description = "이름", example = "이몽룡")
         public String name;
 
-        @Schema(description = "사용자명", example = "mongryong")
-        public String username;
-
         @Schema(description = "프로필 이미지 URL", example = "https://cdn.example.com/profile/2.png")
         public String profileImage;
     }
