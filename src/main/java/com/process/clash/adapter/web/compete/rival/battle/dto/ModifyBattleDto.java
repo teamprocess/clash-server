@@ -8,14 +8,14 @@ public class ModifyBattleDto {
 
     @Schema(name = "ModifyBattleRequestDoc")
     public record Request(
-            Long battleId
+            Long id
     ) {
 
         public ModifyBattleData.Command toCommand(Actor actor) {
 
             return new ModifyBattleData.Command(
                     actor,
-                    battleId
+                    id
             );
         }
     }
