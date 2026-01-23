@@ -19,7 +19,6 @@ public class TaskJpaMapper {
         if (task.id() == null) {
             return TaskJpaEntity.create(
                 task.name(),
-                task.color(),
                 user
             );
         }
@@ -27,7 +26,6 @@ public class TaskJpaMapper {
         return TaskJpaEntity.from(
             task.id(),
             task.name(),
-            task.color(),
             user,
             task.createdAt(),
             task.updatedAt()
@@ -38,7 +36,6 @@ public class TaskJpaMapper {
         return new Task(
             taskJpaEntity.getId(),
             taskJpaEntity.getName(),
-            taskJpaEntity.getColor(),
             0L,
             taskJpaEntity.getCreatedAt(),
             taskJpaEntity.getUpdatedAt(),
