@@ -2,13 +2,16 @@ package com.process.clash.application.compete.my.service;
 
 import com.process.clash.application.compete.my.data.DataPoint;
 import com.process.clash.application.compete.my.data.GetMyGrowthRateData;
+import com.process.clash.application.compete.my.data.UserEarnedExp;
 import com.process.clash.application.compete.my.exception.exception.badrequest.InvalidDayCategoryException;
 import com.process.clash.application.compete.my.port.in.GetMyGrowthRateUseCase;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +30,7 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
         Long id = command.actor().id();
 
-        List<DataPoint> rawDataPoints = switch (command.category()) {
+        List<UserEarnedExp> rawDataPoints = switch (command.category()) {
             case "DAY" -> day(id);
             case "WEEK" -> week(id);
             case "MONTH" -> month(id);
@@ -39,50 +42,62 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
         return GetMyGrowthRateData.Result.from(proceedDataPoints);
     }
 
-    private List<DataPoint> day(Long id) {
+    private List<UserEarnedExp> day(Long id) {
 
-//        List<DataPoint> rawDataPoints = userExpHistoryRepositoryPort.findMonthlyDataByUserIds()
+        LocalDate now = LocalDate.now();
 
-        return null;
+        return userExpHistoryRepositoryPort.findUserDailyEarnedExpByUserIdAndPeriod(
+                id,
+                now.minusDays(10),
+                now,
+                PageRequest.of(0, FETCH_COUNT)
+        );
     }
 
-    private List<DataPoint> week(Long id) {
+    private List<UserEarnedExp> week(Long id) {
 
-        return null;
+        LocalDate now = LocalDate.now();
+
+        return userExpHistoryRepositoryPort.findUserWeeklyEarnedExpByUserIdAndPeriod(
+                id,
+                now.minusWeeks(10),
+                now,
+                PageRequest.of(0, FETCH_COUNT)
+        );
     }
 
-    private List<DataPoint> month(Long id) {
+    private List<UserEarnedExp> month(Long id) {
 
-        return null;
+        LocalDate now = LocalDate.now();
+
+        return userExpHistoryRepositoryPort.findUserMonthlyEarnedExpByUserIdAndPeriod(
+                id,
+                now.minusMonths(10),
+                now,
+                PageRequest.of(0, FETCH_COUNT)
+        );
     }
 
-    private List<DataPoint> calculateGrowthRates(List<DataPoint> rawDataPoints) {
-        if (rawDataPoints == null || rawDataPoints.isEmpty()) {
+    private List<DataPoint> calculateGrowthRates(List<UserEarnedExp> rawDataPoints) {
+        if (rawDataPoints == null || rawDataPoints.size() < 2) {
             return Collections.emptyList();
         }
 
         List<DataPoint> result = new ArrayList<>();
 
-        // 첫 번째 데이터는 비교 대상이 없으므로 성장률 0
-        result.add(new DataPoint(
-                rawDataPoints.get(0).date(),
-                0.0
-        ));
+        // 두 번째 데이터부터 시작 (첫 번째는 비교 기준으로만 사용)
+        for (int i = 1; i < rawDataPoints.size(); i++) {
+            UserEarnedExp current = rawDataPoints.get(i);
+            UserEarnedExp previous = rawDataPoints.get(i - 1);
 
-        // 나머지 데이터는 이전 데이터와 비교하여 성장률 계산
-        for (int i = 1; i < Math.min(FETCH_COUNT, rawDataPoints.size()); i++) {
-            DataPoint current = rawDataPoints.get(i);
-            DataPoint previous = rawDataPoints.get(i - 1);
+            double growthRate = calculateGrowthRate(
+                    current.avgEarnedExp(),
+                    previous.avgEarnedExp()
+            );
 
-            double growthRate = calculateGrowthRate(current.rate(), previous.rate());
-
-            result.add(new DataPoint(
-                    current.date(),
-                    growthRate
-            ));
+            result.add(new DataPoint(current.date(), growthRate));
         }
 
-        // 최대 10개만 반환
         return result.stream()
                 .limit(MAX_DATA_POINTS)
                 .toList();

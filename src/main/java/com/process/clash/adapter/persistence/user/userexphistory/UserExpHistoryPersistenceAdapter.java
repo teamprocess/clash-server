@@ -3,6 +3,7 @@ package com.process.clash.adapter.persistence.user.userexphistory;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.UserEarnedExp;
 import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
@@ -86,5 +87,23 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     public List<Variation> findVariationByUserId(Long userId, LocalDate standard) {
 
         return userExpHistoryJpaRepository.findVariationByUserId(userId, standard);
+    }
+
+    @Override
+    public List<UserEarnedExp> findUserDailyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+
+        return userExpHistoryJpaRepository.findUserDailyEarnedExpByUserIdAndPeriod(id, startDate, endDate, pageRequest);
+    }
+
+    @Override
+    public List<UserEarnedExp> findUserWeeklyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+
+        return userExpHistoryJpaRepository.findUserWeeklyEarnedExpByUserIdAndPeriod(id, startDate, endDate, pageRequest);
+    }
+
+    @Override
+    public List<UserEarnedExp> findUserMonthlyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+
+        return userExpHistoryJpaRepository.findUserMonthlyEarnedExpByUserIdAndPeriod(id, startDate, endDate, pageRequest);
     }
 }
