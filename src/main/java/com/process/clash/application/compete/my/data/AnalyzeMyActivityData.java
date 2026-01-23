@@ -6,6 +6,7 @@ import com.process.clash.domain.common.enums.WeekCategory;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class AnalyzeMyActivityData {
 
@@ -24,9 +25,20 @@ public class AnalyzeMyActivityData {
     }
 
     public record Result(
-            TargetCategory category,
+            String category,
             List<Streak> streaks,
             List<Variation> variations
     ) {
+
+        public static Result from(TargetCategory category, Map<List<Streak>, List<Variation>> result) {
+
+            Map.Entry<List<Streak>, List<Variation>> entry = result.entrySet().iterator().next();
+
+            return new Result(
+                    category.toString(),
+                    entry.getKey(),
+                    entry.getValue()
+            );
+        }
     }
 }
