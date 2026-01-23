@@ -80,7 +80,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
           AND study_date >= :startDate
           AND study_date < :endDate
     """, nativeQuery = true)
-    double findAverageCommitsByUserIdAndPeriod(
+    double findAverageContributionByUserIdAndPeriod(
             @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
