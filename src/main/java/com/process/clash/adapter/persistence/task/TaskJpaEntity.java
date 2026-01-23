@@ -1,7 +1,6 @@
 package com.process.clash.adapter.persistence.task;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.record.model.enums.TaskColor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,31 +39,25 @@ public class TaskJpaEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private TaskColor color;
-
     @JoinColumn(name = "fk_user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private UserJpaEntity user;
 
 
-    public static TaskJpaEntity create(String name, TaskColor color, UserJpaEntity userJpaEntity) {
+    public static TaskJpaEntity create(String name, UserJpaEntity userJpaEntity) {
         TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
 
         taskJpaEntity.name = name;
-        taskJpaEntity.color = color;
         taskJpaEntity.user = userJpaEntity;
 
         return taskJpaEntity;
     }
 
-    public static TaskJpaEntity from(Long taskId, String name, TaskColor color, UserJpaEntity userJpaEntity, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static TaskJpaEntity from(Long taskId, String name, UserJpaEntity userJpaEntity, LocalDateTime createdAt, LocalDateTime updatedAt) {
         TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
 
         taskJpaEntity.id = taskId;
         taskJpaEntity.name = name;
-        taskJpaEntity.color = color;
         taskJpaEntity.user = userJpaEntity;
         taskJpaEntity.createdAt = createdAt;
         taskJpaEntity.updatedAt = updatedAt;

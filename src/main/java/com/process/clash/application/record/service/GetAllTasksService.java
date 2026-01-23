@@ -39,7 +39,6 @@ public class GetAllTasksService implements GetAllTasksUseCase {
             .map(task -> new Task(
                 task.id(),
                 task.name(),
-                task.color(),
                 studyTimeByTaskId.getOrDefault(task.id(), 0L),
                 task.createdAt(),
                 task.updatedAt(),
