@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.user.userexphistory;
 
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -105,4 +107,38 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("battleIds") List<Long> battleIds
     );
 
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Streak(
+                ux.date,
+                cast(sum(ux.earnExp) as int)
+            )
+        from UserExpHistoryJpaEntity ux
+        where ux.user.id = :userId
+            and ux.date >= :standard
+            and ux.actingCategory <> 'SEASON_RESET'
+        group by ux.date
+        order by ux.date asc
+    """)
+    List<Streak> findStreakByUserId(
+            @Param("userId") Long userId,
+            @Param("standard") LocalDate standard
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Variation(
+                month(ux.date),
+                cast(avg(ux.earnExp) as double)
+            )
+        from UserExpHistoryJpaEntity ux
+        where ux.user.id = :userId
+            and ux.date >= :standard
+            and ux.actingCategory <> 'SEASON_RESET'
+        group by month(ux.date)
+        order by month(ux.date) asc
+    """)
+    List<Variation> findVariationByUserId(
+            @Param("userId") Long userId,
+            @Param("standard") LocalDate standard
+    );
 }

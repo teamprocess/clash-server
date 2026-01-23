@@ -2,6 +2,8 @@ package com.process.clash.adapter.persistence.user.userstudytime;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +58,17 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
     public double findAverageStudyTimeByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return userStudyTimeJpaRepository.findAverageStudyTimeByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    @Override
+    public List<Streak> findStreakByUserId(Long userId, LocalDate standard) {
+
+        return userStudyTimeJpaRepository.findStreakByUserId(userId, standard);
+    }
+
+    @Override
+    public List<Variation> findVariationByUserId(Long userId, LocalDate standard) {
+
+        return userStudyTimeJpaRepository.findVariationByUserId(userId, standard);
     }
 }

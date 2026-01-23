@@ -2,6 +2,8 @@ package com.process.clash.adapter.persistence.user.userexphistory;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
@@ -71,5 +73,17 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
                         row -> ((Number) row[0]).longValue(),
                         row -> ((Number) row[1]).doubleValue()
                 ));
+    }
+
+    @Override
+    public List<Streak> findStreakByUserId(Long userId, LocalDate standard) {
+
+        return userExpHistoryJpaRepository.findStreakByUserId(userId, standard);
+    }
+
+    @Override
+    public List<Variation> findVariationByUserId(Long userId, LocalDate standard) {
+
+        return userExpHistoryJpaRepository.findVariationByUserId(userId, standard);
     }
 }

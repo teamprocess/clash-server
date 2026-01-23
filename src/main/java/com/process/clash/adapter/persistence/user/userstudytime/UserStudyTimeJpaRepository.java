@@ -1,5 +1,7 @@
 package com.process.clash.adapter.persistence.user.userstudytime;
 
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -90,5 +92,36 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Streak(
+                us.date,
+                cast(us.totalStudyTimeSeconds as int)
+            )
+        from UserStudyTimeJpaEntity us
+        where us.user.id = :userId
+            and us.date >= :standard
+        order by us.date asc
+    """)
+    List<Streak> findStreakByUserId(
+            @Param("userId") Long userId,
+            @Param("standard") LocalDate standard
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Variation(
+                month(us.date),
+                cast(avg(us.totalStudyTimeSeconds) as double)
+            )
+        from UserStudyTimeJpaEntity us
+        where us.user.id = :userId
+            and us.date >= :standard
+        group by month(us.date)
+        order by month(us.date) asc
+    """)
+    List<Variation> findVariationByUserId(
+            @Param("userId") Long userId,
+            @Param("standard") LocalDate standard
     );
 }
