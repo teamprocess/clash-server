@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.user.userexphistory;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,7 +31,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     List<Object[]> findDailyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -51,7 +53,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     List<Object[]> findWeeklyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -72,7 +75,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     List<Object[]> findMonthlyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**

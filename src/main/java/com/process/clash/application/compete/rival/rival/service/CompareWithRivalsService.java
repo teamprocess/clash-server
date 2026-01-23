@@ -5,12 +5,15 @@ import com.process.clash.application.compete.rival.rival.data.TotalData;
 import com.process.clash.application.compete.rival.rival.port.in.CompareWithRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.converters.models.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +34,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
+    private final int LIMIT_VALUE = 7;
 
     @Override
     public CompareWithRivalsData.Result execute(CompareWithRivalsData.Command command) {
@@ -94,9 +98,9 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     private List<Object[]> exp(PeriodCategory period, List<Long> rivalIds, LocalDate startDate, LocalDate endDate) {
 
         return switch (period) {
-            case DAY -> userExpHistoryRepositoryPort.findDailyDataByUserIds(rivalIds, startDate, endDate);
-            case WEEK -> userExpHistoryRepositoryPort.findWeeklyDataByUserIds(rivalIds, startDate, endDate);
-            case MONTH -> userExpHistoryRepositoryPort.findMonthlyDataByUserIds(rivalIds, startDate, endDate);
+            case DAY -> userExpHistoryRepositoryPort.findDailyDataByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
+            case WEEK -> userExpHistoryRepositoryPort.findWeeklyDataByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
+            case MONTH -> userExpHistoryRepositoryPort.findMonthlyDataByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
             case SEASON -> null; //TODO: 나중에 처리
             case YEAR -> null; //TODO: 나중에 처리
         };
@@ -105,9 +109,9 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     private List<Object[]> gitHub(PeriodCategory period, List<Long> rivalIds, LocalDate startDate, LocalDate endDate) {
 
         return switch (period) {
-            case DAY -> githubDailyStatsQueryPort.findDailyContributionsByUserIds(rivalIds, startDate, endDate);
-            case WEEK -> githubDailyStatsQueryPort.findWeeklyContributionsByUserIds(rivalIds, startDate, endDate);
-            case MONTH -> githubDailyStatsQueryPort.findMonthlyContributionsByUserIds(rivalIds, startDate, endDate);
+            case DAY -> githubDailyStatsQueryPort.findDailyContributionsByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
+            case WEEK -> githubDailyStatsQueryPort.findWeeklyContributionsByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
+            case MONTH -> githubDailyStatsQueryPort.findMonthlyContributionsByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
             case SEASON -> null; //TODO: 나중에 처리
             case YEAR -> null; //TODO: 나중에 처리
         };
@@ -116,9 +120,9 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     private List<Object[]> activeTime(PeriodCategory period, List<Long> rivalIds, LocalDate startDate, LocalDate endDate) {
 
         return switch (period) {
-            case DAY -> userStudyTimeRepositoryPort.findDailyDataByUserIds(rivalIds, startDate, endDate);
-            case WEEK -> userStudyTimeRepositoryPort.findWeeklyDataByUserIds(rivalIds, startDate, endDate);
-            case MONTH -> userStudyTimeRepositoryPort.findMonthlyDataByUserIds(rivalIds, startDate, endDate);
+            case DAY -> userStudyTimeRepositoryPort.findDailyDataByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
+            case WEEK -> userStudyTimeRepositoryPort.findWeeklyDataByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
+            case MONTH -> userStudyTimeRepositoryPort.findMonthlyDataByUserIds(rivalIds, startDate, endDate, PageRequest.of(0, LIMIT_VALUE));
             case SEASON -> null; //TODO: 나중에 처리
             case YEAR -> null; //TODO: 나중에 처리
         };
