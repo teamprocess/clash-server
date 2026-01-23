@@ -1,6 +1,7 @@
 package com.process.clash.application.user.userexphistory.port.out;
 
 import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.UserEarnedExp;
 import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
@@ -19,4 +20,7 @@ public interface UserExpHistoryRepositoryPort {
     Map<Long, Double> findAverageExpForBattles(Long userId, List<Battle> battles);
     List<Streak> findStreakByUserId(Long userId, LocalDate standard);
     List<Variation> findVariationByUserId(Long userId, LocalDate standard);
+    List<UserEarnedExp> findUserDailyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
+    List<UserEarnedExp> findUserWeeklyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
+    List<UserEarnedExp> findUserMonthlyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
 }
