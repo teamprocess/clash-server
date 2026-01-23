@@ -8,6 +8,7 @@ import com.process.clash.application.user.userexphistory.port.out.UserExpHistory
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -33,21 +34,21 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     }
 
     @Override
-    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
-        return userExpHistoryJpaRepository.findDailyDataByUserIds(ids, startDate, endDate);
+        return userExpHistoryJpaRepository.findDailyDataByUserIds(ids, startDate, endDate, pageRequest);
     }
 
     @Override
-    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
-        return userExpHistoryJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate);
+        return userExpHistoryJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate, pageRequest);
     }
 
     @Override
-    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
-        return userExpHistoryJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate);
+        return userExpHistoryJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate, pageRequest);
     }
 
     @Override

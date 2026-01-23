@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.github;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +32,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     List<Object[]> findDailyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     // WEEK: 여러 유저의 주별 평균 깃허브 기여도
@@ -50,7 +52,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     List<Object[]> findWeeklyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     // MONTH: 여러 유저의 월별 평균 깃허브 기여도
@@ -69,7 +72,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     List<Object[]> findMonthlyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     // 기간 내 평균 기여도
