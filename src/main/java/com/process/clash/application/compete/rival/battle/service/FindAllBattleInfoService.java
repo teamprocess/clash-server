@@ -24,6 +24,13 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
 
+    private static final String RESULT_WON = "WON";
+    private static final String RESULT_LOST = "LOST";
+    private static final String RESULT_DRAW = "DRAW";
+    private static final String RESULT_WINNING = "WINNING";
+    private static final String RESULT_LOSING = "LOSING";
+    private static final String RESULT_PENDING = "PENDING";
+
     private final BattleRepositoryPort battleRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
@@ -165,9 +172,9 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
         if (status == BattleStatus.DONE) {
             Long winnerId = battle.winnerId();
             if (winnerId == null) {
-                return "DRAW";
+                return RESULT_DRAW;
             }
-            return winnerId.equals(currentUserId) ? "WON" : "LOST";
+            return winnerId.equals(currentUserId) ? RESULT_WON : RESULT_LOST;
         }
 
         // 배틀이 진행 중인 경우
@@ -176,15 +183,15 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
             Double enemyAvgExp = enemyAvgExpMap.getOrDefault(battle.id(), 0.0);
 
             if (currentUserAvgExp > enemyAvgExp) {
-                return "WINNING";
+                return RESULT_WINNING;
             } else if (currentUserAvgExp < enemyAvgExp) {
-                return "LOSING";
+                return RESULT_LOSING;
             } else {
-                return "DRAW";
+                return RESULT_DRAW;
             }
         }
 
-        return "PENDING";
+        return RESULT_PENDING;
     }
 
     private Long getEnemyId(Rival rival, Long currentUserId) {

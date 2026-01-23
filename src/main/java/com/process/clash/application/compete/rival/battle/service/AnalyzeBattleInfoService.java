@@ -79,7 +79,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
 
     private Integer calculateGithubPoint(Long userId, LocalDate startDate, LocalDate endDate) {
         Double avgCommits = githubDailyStatsQueryPort
-                .findAverageCommitsByUserIdAndPeriod(userId, startDate, endDate);
+                .findAverageContributionByUserIdAndPeriod(userId, startDate, endDate);
         return avgCommits != null ? (int) Math.round(avgCommits) : 0;
     }
 
