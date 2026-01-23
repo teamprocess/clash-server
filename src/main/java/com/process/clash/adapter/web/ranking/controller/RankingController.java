@@ -6,7 +6,9 @@ import com.process.clash.adapter.web.ranking.dto.GetChapterRankingDto;
 import com.process.clash.adapter.web.ranking.dto.GetRankingDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.ranking.data.GetChapterRankingData;
 import com.process.clash.application.ranking.data.GetRankingData;
+import com.process.clash.application.ranking.port.in.GetChapterRankingUseCase;
 import com.process.clash.application.ranking.port.in.GetRankingUseCase;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RankingController implements RankingControllerDocument {
 
     private final GetRankingUseCase getRankingUseCase;
+    private final GetChapterRankingUseCase getChapterRankingUseCase;
 
     // 대소고 랭킹
     // TODO: 추가 구현 필요합니다
@@ -40,6 +43,10 @@ public class RankingController implements RankingControllerDocument {
 
     @GetMapping("/chapters")
     public ApiResponse<GetChapterRankingDto.Response> getChapterRanking(@AuthenticatedActor Actor actor) {
-        return null;
+        GetChapterRankingData.Command command = GetChapterRankingData.Command.from(actor);
+        GetChapterRankingData.Result result = getChapterRankingUseCase.execute(command);
+        GetChapterRankingDto.Response response = GetChapterRankingDto.Response.from(result);
+        return ApiResponse.success(response, "챕터 완료 수 랭킹 조회를 성공했습니다.");
+
     }
 }
