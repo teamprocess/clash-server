@@ -2,10 +2,14 @@ package com.process.clash.adapter.web.compete.my.docs.controller;
 
 import com.process.clash.adapter.web.compete.my.docs.response.AnalyzeMyActivityResponseDoc;
 import com.process.clash.adapter.web.compete.my.docs.response.CompareGitHubResponseDoc;
+import com.process.clash.adapter.web.compete.my.docs.response.CompareMyActivityResponseDoc;
 import com.process.clash.adapter.web.compete.my.docs.response.GetCompareWithYesterdayResponseDoc;
+import com.process.clash.adapter.web.compete.my.docs.response.GetMyGrowthRateResponseDoc;
 import com.process.clash.adapter.web.compete.my.dto.AnalyzeMyActivityDto;
 import com.process.clash.adapter.web.compete.my.dto.CompareGitHubDto;
+import com.process.clash.adapter.web.compete.my.dto.CompareMyActivityDto;
 import com.process.clash.adapter.web.compete.my.dto.GetCompareWithYesterdayDto;
+import com.process.clash.adapter.web.compete.my.dto.GetMyGrowthRateDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.TargetCategory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "내 활동 API", description = "내 활동 분석/비교")
 public interface MyCompeteControllerDocument {
@@ -135,8 +140,7 @@ public interface MyCompeteControllerDocument {
                                         "streaks": [
                                           {
                                             "date": "2025-01-01",
-                                            "detailedInfo": 120,
-                                            "dayOfTheWeek": "WEDNESDAY"
+                                            "detailedInfo": 120
                                           }
                                         ],
                                         "variations": [
@@ -154,5 +158,64 @@ public interface MyCompeteControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "활동 카테고리", example = "SERVER", required = true)
             @PathVariable TargetCategory category
+    );
+
+    @Operation(summary = "내 성장도 분석", description = "기준별 성장도 데이터를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetMyGrowthRateResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "내 기록을 성공적으로 반환했습니다.",
+                                      "data": {
+                                        "dataPoint": [
+                                          {
+                                            "date": "2025-01-01",
+                                            "rate": 15.5
+                                          },
+                                          {
+                                            "date": "2025-01-02",
+                                            "rate": 18.2
+                                          },
+                                          {
+                                            "date": "2025-01-03",
+                                            "rate": 20.1
+                                          }
+                                        ]
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyGrowthRateDto.Response> getMyGrowthRate(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "조회 기준 (예: WEEKLY, MONTHLY)", example = "WEEKLY", required = true)
+            @RequestParam String standard
+    );
+
+    @Operation(summary = "내 기록 비교", description = "기준별 활동 기록을 비교합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = CompareMyActivityResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "내 기록을 성공적으로 반환했습니다.",
+                                      "data": {
+                                        "earnedExp": 1250.5,
+                                        "studyTime": 480.0,
+                                        "gitHubAttribution": 85.3
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<CompareMyActivityDto.Response> compareMyActivity(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "비교 기준 (예: WEEKLY, MONTHLY)", example = "WEEKLY", required = true)
+            @RequestParam String standard
     );
 }
