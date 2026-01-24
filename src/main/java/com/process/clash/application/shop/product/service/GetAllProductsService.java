@@ -1,5 +1,6 @@
 package com.process.clash.application.shop.product.service;
 
+import com.process.clash.application.common.pagination.Pagination;
 import com.process.clash.application.shop.product.data.GetAllProductsData;
 import com.process.clash.application.shop.product.port.in.GetAllProductsUseCase;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
@@ -31,8 +32,8 @@ public class GetAllProductsService implements GetAllProductsUseCase {
                 .map(ProductVo::from)
                 .toList();
 
-        GetAllProductsData.PaginationInfo pagination =
-                GetAllProductsData.PaginationInfo.from(
+        Pagination pagination =
+                Pagination.from(
                         command.page(),
                         command.size(),
                         totalCount
