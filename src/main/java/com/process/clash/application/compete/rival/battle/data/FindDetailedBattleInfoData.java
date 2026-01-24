@@ -13,7 +13,7 @@ public class FindDetailedBattleInfoData {
             Long id
     ) {
 
-        public static Command from(Actor actor, Long id) {
+        public static Command of(Actor actor, Long id) {
 
             return new Command(
                     actor,
@@ -29,7 +29,7 @@ public class FindDetailedBattleInfoData {
             Double myOverallPercentage
     ) {
 
-        public static Result from(Battle battle, User user, Double myOverallPercentage) {
+        public static Result of(Battle battle, User user, Double myOverallPercentage) {
 
             return new Result(
                     battle.id(),

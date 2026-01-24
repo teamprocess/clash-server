@@ -79,7 +79,7 @@ public class BattleController implements BattleControllerDocument {
             @PathVariable Long id
     ) {
 
-        FindDetailedBattleInfoData.Command command = FindDetailedBattleInfoData.Command.from(actor, id);
+        FindDetailedBattleInfoData.Command command = FindDetailedBattleInfoData.Command.of(actor, id);
         FindDetailedBattleInfoData.Result result = findDetailedBattleInfoUseCase.execute(command);
         FindDetailedBattleInfoDto.Response response = FindDetailedBattleInfoDto.Response.from(result);
         return ApiResponse.success(response, "라이벌과의 배틀 상세 정보를 성공적으로 반환했습니다.");
@@ -105,7 +105,7 @@ public class BattleController implements BattleControllerDocument {
             @PathVariable TargetCategory category
     ) {
 
-        AnalyzeBattleInfoData.Command command = AnalyzeBattleInfoData.Command.from(actor, id, category);
+        AnalyzeBattleInfoData.Command command = AnalyzeBattleInfoData.Command.of(actor, id, category);
         AnalyzeBattleInfoData.Result result = analyzeBattleInfoUseCase.execute(command);
         AnalyzeBattleInfoDto.Response response = AnalyzeBattleInfoDto.Response.from(result);
         return ApiResponse.success(response, "라이벌과의 배틀 정보 분석을 성공적으로 반환했습니다.");

@@ -57,7 +57,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
             @RequestParam String keyword
     ) {
 
-        SearchRivalByKeywordData.Command command = SearchRivalByKeywordData.Command.from(actor, keyword);
+        SearchRivalByKeywordData.Command command = SearchRivalByKeywordData.Command.of(actor, keyword);
         SearchRivalByKeywordData.Result result = searchRivalByKeywordUseCase.execute(command);
         SearchRivalByKeywordDto.Response response = SearchRivalByKeywordDto.Response.from(result);
         return ApiResponse.success(response, "키워드를 이용하여 라이벌 등록가능한 유저를 성공적으로 조회했습니다.");
@@ -107,7 +107,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
             @PathVariable PeriodCategory period
     ) {
 
-        CompareWithRivalsData.Command command = CompareWithRivalsData.Command.from(actor, category, period);
+        CompareWithRivalsData.Command command = CompareWithRivalsData.Command.of(actor, category, period);
         CompareWithRivalsData.Result result = compareWithRivalsUseCase.execute(command);
         CompareWithRivalsDto.Response response = CompareWithRivalsDto.Response.from(result);
         return ApiResponse.success(response, "라이벌과의 비교 정보를 성공적으로 반환했습니다.");

@@ -11,7 +11,7 @@ public class GetMyGrowthRateData {
             String category
     ) {
 
-        public static Command from(Actor actor, String category) {
+        public static Command of(Actor actor, String category) {
 
             return new Command(
                     actor,

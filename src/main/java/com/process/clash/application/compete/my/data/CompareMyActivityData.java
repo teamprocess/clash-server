@@ -11,7 +11,7 @@ public class CompareMyActivityData {
             String category
     ) {
 
-        public static Command from(Actor actor, String category) {
+        public static Command of(Actor actor, String category) {
 
             return new Command(
                     actor,
@@ -29,9 +29,9 @@ public class CompareMyActivityData {
         public static Result from(List<Double> result) {
 
             return new Result(
-                    result.get(0),
-                    result.get(1),
-                    result.get(2)
+                    result.get(0), // earnedExp
+                    result.get(1), // studyTime
+                    result.get(2) // gitHubAttribution
             );
         }
     }

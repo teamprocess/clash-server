@@ -117,7 +117,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
             and r.id not in (
                 select b.rival.id
                 from BattleJpaEntity b
-                where b.battleStatus not in ('DONE', 'REJECT')
+                where b.battleStatus in ('IN_PROGRESS', 'PENDING')
                     and :userId in (b.rival.firstUser.id, b.rival.secondUser.id)
             )
     """)

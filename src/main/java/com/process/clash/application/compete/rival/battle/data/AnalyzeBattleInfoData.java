@@ -11,7 +11,7 @@ public class AnalyzeBattleInfoData {
             TargetCategory category
     ) {
 
-        public static Command from(Actor actor, Long id, TargetCategory category) {
+        public static Command of(Actor actor, Long id, TargetCategory category) {
 
             return new Command(
                     actor,
@@ -28,7 +28,7 @@ public class AnalyzeBattleInfoData {
             Integer myPoint
     ) {
 
-        public static Result from(TargetCategory category, Long id, Integer enemyPoint, Integer myPoint) {
+        public static Result of(TargetCategory category, Long id, Integer enemyPoint, Integer myPoint) {
 
             return new Result(
                     category.toString(),
