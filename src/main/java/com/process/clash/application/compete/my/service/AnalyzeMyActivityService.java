@@ -40,7 +40,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
             case ACTIVE_TIME -> studyTime(command.actor().id(), startDate, endDate);
         };
 
-        return AnalyzeMyActivityData.Result.from(command.category(), result);
+        return AnalyzeMyActivityData.Result.of(command.category(), result);
     }
 
     private Map<List<Streak>, List<Variation>> gitHub(Long userId, LocalDate startDate, LocalDate endDate) {

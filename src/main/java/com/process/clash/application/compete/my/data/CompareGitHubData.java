@@ -25,7 +25,7 @@ public class CompareGitHubData {
             OneDayStats today
     ) {
 
-        public static Result from(GitHubDailyStats yesterday, GitHubDailyStats today) {
+        public static Result of(GitHubDailyStats yesterday, GitHubDailyStats today) {
 
             return new Result(
                     OneDayStats.from(yesterday),

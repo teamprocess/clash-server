@@ -53,7 +53,7 @@ public class MyCompeteController implements MyCompeteControllerDocument {
             @PathVariable TargetCategory category
     ) {
 
-        AnalyzeMyActivityData.Command command = AnalyzeMyActivityData.Command.from(actor, category);
+        AnalyzeMyActivityData.Command command = AnalyzeMyActivityData.Command.of(actor, category);
         AnalyzeMyActivityData.Result result = analyzeMyActivityUseCase.execute(command);
         AnalyzeMyActivityDto.Response response = AnalyzeMyActivityDto.Response.from(result);
         return ApiResponse.success(response, "내 활동 분석 결과를 성공적으로 반환했습니다.");
@@ -66,10 +66,10 @@ public class MyCompeteController implements MyCompeteControllerDocument {
             @RequestParam String standard // 서비스에서 예외처리 합니다
     ) {
 
-        GetMyGrowthRateData.Command command = GetMyGrowthRateData.Command.from(actor, standard);
+        GetMyGrowthRateData.Command command = GetMyGrowthRateData.Command.of(actor, standard);
         GetMyGrowthRateData.Result result = getMyGrowthRateUseCase.execute(command);
         GetMyGrowthRateDto.Response response = GetMyGrowthRateDto.Response.from(result);
-        return ApiResponse.success(response, "내 기록을 성공적으 반환했습니다.");
+        return ApiResponse.success(response, "내 기록을 성공적으로 반환했습니다.");
     }
 
     // 나와의 경쟁 - 내 기록 비교
@@ -79,9 +79,9 @@ public class MyCompeteController implements MyCompeteControllerDocument {
             @RequestParam String standard // 서비스에서 예외처리 합니다
     ) {
 
-        CompareMyActivityData.Command command = CompareMyActivityData.Command.from(actor, standard);
+        CompareMyActivityData.Command command = CompareMyActivityData.Command.of(actor, standard);
         CompareMyActivityData.Result result = compareMyActivityUseCase.execute(command);
         CompareMyActivityDto.Response response = CompareMyActivityDto.Response.from(result);
-        return ApiResponse.success(response, "내 기록을 성공적으 반환했습니다.");
+        return ApiResponse.success(response, "내 기록 비교 정보를 성공적으로 반환했습니다.");
     }
 }

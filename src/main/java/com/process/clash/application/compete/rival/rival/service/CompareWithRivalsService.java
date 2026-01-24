@@ -5,14 +5,12 @@ import com.process.clash.application.compete.rival.rival.data.TotalData;
 import com.process.clash.application.compete.rival.rival.port.in.CompareWithRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
-import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.converters.models.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,7 +90,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
                 })
                 .toList();
 
-        return CompareWithRivalsData.Result.from(command.category(), command.period(), totalData);
+        return CompareWithRivalsData.Result.of(command.category(), command.period(), totalData);
     }
 
     private List<Object[]> exp(PeriodCategory period, List<Long> rivalIds, LocalDate startDate, LocalDate endDate) {

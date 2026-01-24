@@ -19,14 +19,14 @@ public class GetCompareWithYesterdayData {
             Contributors contributors
     ) {
 
-        public static Result from(Long yesterdayActiveTime, Long todayActiveTime, Integer yesterdayContributions, Integer todayContributions) {
+        public static Result of(Long yesterdayActiveTime, Long todayActiveTime, Integer yesterdayContributions, Integer todayContributions) {
 
             return new Result(
-                    ActiveTime.from(
+                    ActiveTime.of(
                             yesterdayActiveTime,
                             todayActiveTime
                     ),
-                    Contributors.from(
+                    Contributors.of(
                             yesterdayContributions,
                             todayContributions
                     )
@@ -39,7 +39,7 @@ public class GetCompareWithYesterdayData {
             Long todayActiveTime
     ) {
 
-        public static ActiveTime from(Long yesterdayActiveTime, Long todayActiveTime) {
+        public static ActiveTime of(Long yesterdayActiveTime, Long todayActiveTime) {
 
             return new ActiveTime(
                     yesterdayActiveTime,
@@ -53,7 +53,7 @@ public class GetCompareWithYesterdayData {
             Integer todayContributors
     ) {
 
-        public static Contributors from(Integer yesterdayContributors, Integer todayContributors) {
+        public static Contributors of(Integer yesterdayContributors, Integer todayContributors) {
 
             return new Contributors(
                     yesterdayContributors,

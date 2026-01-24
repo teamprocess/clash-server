@@ -90,7 +90,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
                     Long activeTime = studyTimeMap.getOrDefault(opponentId, 0L);
 
-                    return GetMyRivalActingData.MyRival.from(
+                    return GetMyRivalActingData.MyRival.of(
                             opponent,
                             activeTime,
                             "Intellij IDEA",      // TODO: 더미 수정 필요

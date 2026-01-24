@@ -65,7 +65,7 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
         Integer yesterdayContributions = toContributionCount(yesterdayStats);
         Integer todayContributions = toContributionCount(todayStats);
 
-        return GetCompareWithYesterdayData.Result.from(yesterdayActiveTime, todayActiveTime, yesterdayContributions, todayContributions);
+        return GetCompareWithYesterdayData.Result.of(yesterdayActiveTime, todayActiveTime, yesterdayContributions, todayContributions);
     }
 
     private int toContributionCount(GitHubDailyStats stats) {

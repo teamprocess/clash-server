@@ -11,7 +11,7 @@ public class SearchRivalByKeywordData {
             String keyword
     ) {
 
-        public static Command from(Actor actor, String keyword) {
+        public static Command of(Actor actor, String keyword) {
 
             return new Command(
                     actor,

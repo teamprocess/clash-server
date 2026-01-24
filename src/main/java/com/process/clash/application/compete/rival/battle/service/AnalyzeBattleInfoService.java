@@ -54,7 +54,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
                 enemyId, category, battle.startDate(), battle.endDate()
         );
 
-        return AnalyzeBattleInfoData.Result.from(category, battle.id(), enemyPoint, myPoint);
+        return AnalyzeBattleInfoData.Result.of(category, battle.id(), enemyPoint, myPoint);
     }
 
     private Integer calculatePointByCategory(
