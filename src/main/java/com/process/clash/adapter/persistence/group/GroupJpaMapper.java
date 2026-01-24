@@ -1,10 +1,8 @@
 package com.process.clash.adapter.persistence.group;
 
-import com.process.clash.adapter.persistence.rival.rival.RivalJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
 import com.process.clash.domain.group.entity.Group;
-import com.process.clash.domain.rival.rival.entity.Rival;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +12,7 @@ public class GroupJpaMapper {
 
     private final UserJpaMapper userJpaMapper;
 
-    public GroupJpaEntity toJpaEntity(Group group) {
-
+    public GroupJpaEntity toJpaEntity(Group group, UserJpaEntity owner) {
         return new GroupJpaEntity(
             group.id(),
             group.createdAt(),
@@ -26,7 +23,7 @@ public class GroupJpaMapper {
             group.password(),
             group.passwordRequired(),
             group.category(),
-            userJpaMapper.toJpaEntity(group.owner())
+            owner
         );
     }
 
