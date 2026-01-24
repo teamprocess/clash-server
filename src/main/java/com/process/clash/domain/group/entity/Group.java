@@ -12,9 +12,8 @@ public record Group (
     String description,
     Integer maxMembers,
     Integer currentMemberCount,
+    String password,
     Boolean passwordRequired,
     GroupCategory category,
     User owner
-) {
-
-}
+) {}
