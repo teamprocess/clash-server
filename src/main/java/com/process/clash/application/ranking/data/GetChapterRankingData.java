@@ -1,6 +1,5 @@
 package com.process.clash.application.ranking.data;
 
-import com.process.clash.adapter.web.ranking.dto.GetChapterRankingDto;
 import com.process.clash.application.common.actor.Actor;
 
 import java.util.List;
@@ -16,8 +15,8 @@ public class GetChapterRankingData {
     }
 
     public record Result(
-        GetChapterRankingDto.MyRankingVo myRank,
-        List<GetChapterRankingDto.RankersVo> allRankers
+        MyRankingVo myRank,
+        List<RankersVo> allRankers
     ) {}
 
     public record MyRankingVo(

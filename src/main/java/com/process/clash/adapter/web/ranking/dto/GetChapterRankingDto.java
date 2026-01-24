@@ -11,11 +11,15 @@ public class GetChapterRankingDto {
         List<RankersVo> allRankers
     ) {
         public static Response from(GetChapterRankingData.Result result) {
+            MyRankingVo myRank = result.myRank() != null
+                    ? MyRankingVo.from(result.myRank())
+                    : null;
 
-            return new Response(
-                    result.myRank(),
-                    result.allRankers()
-            );
+            List<RankersVo> allRankers = result.allRankers().stream()
+                    .map(RankersVo::from)
+                    .toList();
+
+            return new Response(myRank, allRankers);
         }
     }
 
@@ -25,7 +29,17 @@ public class GetChapterRankingDto {
             Long id,
             String name,
             String profileImage
-    ) {}
+    ) {
+        public static MyRankingVo from(GetChapterRankingData.MyRankingVo vo) {
+            return new MyRankingVo(
+                    vo.rank(),
+                    vo.completedChaptersCount(),
+                    vo.id(),
+                    vo.name(),
+                    vo.profileImage()
+            );
+        }
+    }
 
     public record RankersVo(
             Integer rank,
@@ -33,5 +47,15 @@ public class GetChapterRankingDto {
             Long id,
             String name,
             String profileImage
-    ) {}
+    ) {
+        public static RankersVo from(GetChapterRankingData.RankersVo vo) {
+            return new RankersVo(
+                    vo.rank(),
+                    vo.completedChaptersCount(),
+                    vo.id(),
+                    vo.name(),
+                    vo.profileImage()
+            );
+        }
+    }
 }
