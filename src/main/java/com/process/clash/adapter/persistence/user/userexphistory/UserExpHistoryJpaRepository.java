@@ -120,14 +120,16 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :userId
-            and ux.date >= :standard
+            and ux.date >= :startDate
+            and ux.date < :endDate
             and ux.actingCategory <> 'SEASON_RESET'
         group by ux.date
         order by ux.date asc
     """)
     List<Streak> findStreakByUserId(
             @Param("userId") Long userId,
-            @Param("standard") LocalDate standard
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
     @Query("""
@@ -137,14 +139,16 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :userId
-            and ux.date >= :standard
+            and ux.date >= :startDate
+            and ux.date < :endDate
             and ux.actingCategory <> 'SEASON_RESET'
         group by month(ux.date)
         order by month(ux.date) asc
     """)
     List<Variation> findVariationByUserId(
             @Param("userId") Long userId,
-            @Param("standard") LocalDate standard
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
     @Query("""

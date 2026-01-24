@@ -97,12 +97,14 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             )
         from GitHubDailyStatsJpaEntity g
         where g.userId = :userId
-            and g.studyDate >= :standard
+            and g.studyDate >= :startDate
+            and g.studyDate < :endDate
         order by g.studyDate asc
     """)
     List<Streak> findStreakByUserId(
             @Param("userId") Long userId,
-            @Param("standard") LocalDate standard
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
     @Query("""
@@ -112,12 +114,14 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             )
         from GitHubDailyStatsJpaEntity g
         where g.userId = :userId
-            and g.studyDate >= :standard
+            and g.studyDate >= :startDate
+            and g.studyDate < :endDate
         group by month(g.studyDate)
         order by month(g.studyDate) asc
     """)
     List<Variation> findVariationByUserId(
             @Param("userId") Long userId,
-            @Param("standard") LocalDate standard
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 }

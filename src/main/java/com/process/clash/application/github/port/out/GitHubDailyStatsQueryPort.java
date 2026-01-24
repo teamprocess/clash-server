@@ -17,6 +17,6 @@ public interface GitHubDailyStatsQueryPort {
     List<Object[]> findMonthlyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
 
     double findAverageContributionByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
-    List<Streak> findStreakByUserId(Long userId, LocalDate standard);
-    List<Variation> findVaricationByUserId(Long userId, LocalDate standard);
+    List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate);
+    List<Variation> findVaricationByUserId(Long userId, LocalDate startDate, LocalDate endDate);
 }
