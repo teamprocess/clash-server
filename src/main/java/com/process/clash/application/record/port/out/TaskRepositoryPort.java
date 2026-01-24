@@ -1,6 +1,6 @@
 package com.process.clash.application.record.port.out;
 
-import com.process.clash.domain.record.model.entity.Task;
+import com.process.clash.domain.record.entity.Task;
 import java.util.List;
 import java.util.Optional;
 

@@ -1,7 +1,7 @@
 package com.process.clash.application.record.data;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.record.model.entity.Task;
+import com.process.clash.domain.record.entity.Task;
 import java.util.List;
 
 public class GetAllTasksData {

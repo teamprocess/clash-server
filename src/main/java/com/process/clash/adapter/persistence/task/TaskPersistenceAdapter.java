@@ -3,7 +3,7 @@ package com.process.clash.adapter.persistence.task;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
-import com.process.clash.domain.record.model.entity.Task;
+import com.process.clash.domain.record.entity.Task;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
