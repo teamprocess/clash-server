@@ -1,9 +1,8 @@
 package com.process.clash.application.ranking.service;
 
-import com.process.clash.adapter.persistence.roadmap.sectionprogress.UserSectionProgressJpaEntity;
-import com.process.clash.adapter.persistence.roadmap.sectionprogress.UserSectionProgressJpaRepository;
 import com.process.clash.application.ranking.data.GetChapterRankingData;
 import com.process.clash.application.ranking.port.in.GetChapterRankingUseCase;
+import com.process.clash.application.ranking.port.out.LoadChapterRankingPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetChapterRankingService implements GetChapterRankingUseCase {
 
-    private final UserSectionProgressJpaRepository userSectionProgressJpaRepository;
+    private final LoadChapterRankingPort loadChapterRankingPort;
 
     @Override
     public GetChapterRankingData.Result execute(GetChapterRankingData.Command command) {
-        List<Object[]> rankingsWithMyRank = userSectionProgressJpaRepository.findRankingsWithMyRank(command.actor().id());
+        List<Object[]> rankingsWithMyRank = loadChapterRankingPort.loadRankingsWithMyRank(command.actor().id());
 
         GetChapterRankingData.MyRankingVo myRank = null;
         List<GetChapterRankingData.RankersVo> allRankers = new java.util.ArrayList<>();
