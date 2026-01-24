@@ -2,7 +2,6 @@ package com.process.clash.application.ranking.service;
 
 import com.process.clash.adapter.persistence.roadmap.sectionprogress.UserSectionProgressJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.sectionprogress.UserSectionProgressJpaRepository;
-import com.process.clash.adapter.web.ranking.dto.GetChapterRankingDto;
 import com.process.clash.application.ranking.data.GetChapterRankingData;
 import com.process.clash.application.ranking.port.in.GetChapterRankingUseCase;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +19,8 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
     public GetChapterRankingData.Result execute(GetChapterRankingData.Command command) {
         List<Object[]> rankingsWithMyRank = userSectionProgressJpaRepository.findRankingsWithMyRank(command.actor().id());
 
-        GetChapterRankingDto.MyRankingVo myRank = null;
-        List<GetChapterRankingDto.RankersVo> allRankers = new java.util.ArrayList<>();
+        GetChapterRankingData.MyRankingVo myRank = null;
+        List<GetChapterRankingData.RankersVo> allRankers = new java.util.ArrayList<>();
 
         for (Object[] record : rankingsWithMyRank) {
             Long userId = ((Number) record[0]).longValue();
@@ -32,7 +31,7 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
 
             // 현재 사용자의 랭킹 정보 저장
             if (userId.equals(command.actor().id())) {
-                myRank = new GetChapterRankingDto.MyRankingVo(
+                myRank = new GetChapterRankingData.MyRankingVo(
                         userRank,
                         totalCompleted,
                         userId,
@@ -43,7 +42,7 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
 
             // 상위 20명만 allRankers에 추가
             if (userRank <= 20) {
-                allRankers.add(new GetChapterRankingDto.RankersVo(
+                allRankers.add(new GetChapterRankingData.RankersVo(
                         userRank,
                         totalCompleted,
                         userId,
