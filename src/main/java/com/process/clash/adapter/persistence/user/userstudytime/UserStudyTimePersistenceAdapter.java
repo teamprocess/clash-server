@@ -62,14 +62,14 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
     }
 
     @Override
-    public List<Streak> findStreakByUserId(Long userId, LocalDate standard) {
+    public List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        return userStudyTimeJpaRepository.findStreakByUserId(userId, standard);
+        return userStudyTimeJpaRepository.findStreakByUserId(userId, startDate, endDate);
     }
 
     @Override
-    public List<Variation> findVariationByUserId(Long userId, LocalDate standard) {
+    public List<Variation> findVariationByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        return userStudyTimeJpaRepository.findVariationByUserId(userId, standard);
+        return userStudyTimeJpaRepository.findVariationByUserId(userId, startDate, endDate);
     }
 }

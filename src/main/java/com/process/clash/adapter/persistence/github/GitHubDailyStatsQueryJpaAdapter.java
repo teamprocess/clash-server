@@ -50,14 +50,14 @@ public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPor
     }
 
     @Override
-    public List<Streak> findStreakByUserId(Long userId, LocalDate standard) {
+    public List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        return repository.findStreakByUserId(userId, standard);
+        return repository.findStreakByUserId(userId, startDate, endDate);
     }
 
     @Override
-    public List<Variation> findVaricationByUserId(Long userId, LocalDate standard) {
+    public List<Variation> findVaricationByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        return repository.findVariationByUserId(userId, standard);
+        return repository.findVariationByUserId(userId, startDate, endDate);
     }
 }

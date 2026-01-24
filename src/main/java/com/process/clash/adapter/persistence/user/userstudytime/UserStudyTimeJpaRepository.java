@@ -105,12 +105,14 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             )
         from UserStudyTimeJpaEntity us
         where us.user.id = :userId
-            and us.date >= :standard
+            and us.date >= :startDate
+            and us.date < :endDate
         order by us.date asc
     """)
     List<Streak> findStreakByUserId(
             @Param("userId") Long userId,
-            @Param("standard") LocalDate standard
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
     @Query("""
@@ -120,12 +122,14 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             )
         from UserStudyTimeJpaEntity us
         where us.user.id = :userId
-            and us.date >= :standard
+            and us.date >= :startDate
+            and us.date < :endDate
         group by month(us.date)
         order by month(us.date) asc
     """)
     List<Variation> findVariationByUserId(
             @Param("userId") Long userId,
-            @Param("standard") LocalDate standard
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 }

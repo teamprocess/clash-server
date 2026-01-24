@@ -78,15 +78,15 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     }
 
     @Override
-    public List<Streak> findStreakByUserId(Long userId, LocalDate standard) {
+    public List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        return userExpHistoryJpaRepository.findStreakByUserId(userId, standard);
+        return userExpHistoryJpaRepository.findStreakByUserId(userId, startDate, endDate);
     }
 
     @Override
-    public List<Variation> findVariationByUserId(Long userId, LocalDate standard) {
+    public List<Variation> findVariationByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        return userExpHistoryJpaRepository.findVariationByUserId(userId, standard);
+        return userExpHistoryJpaRepository.findVariationByUserId(userId, startDate, endDate);
     }
 
     @Override

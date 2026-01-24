@@ -30,39 +30,40 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
     @Override
     public AnalyzeMyActivityData.Result execute(AnalyzeMyActivityData.Command command) {
 
-        LocalDate standard = LocalDate.now().minusYears(1);
+        LocalDate endDate = LocalDate.now().plusDays(1); // 오늘 포함
+        LocalDate startDate = endDate.minusMonths(12);   // 정확히 12개월 기간
 
         Map<List<Streak>, List<Variation>> result = switch (command.category()) {
-            case GITHUB -> gitHub(command.actor().id(), standard);
-            case EXP -> exp(command.actor().id(), standard);
+            case GITHUB -> gitHub(command.actor().id(), startDate, endDate);
+            case EXP -> exp(command.actor().id(), startDate, endDate);
             case SOLVED_AC -> new HashMap<>(); //TODO: 나중에 구현
-            case ACTIVE_TIME -> studyTime(command.actor().id(), standard);
+            case ACTIVE_TIME -> studyTime(command.actor().id(), startDate, endDate);
         };
 
         return AnalyzeMyActivityData.Result.from(command.category(), result);
     }
 
-    private Map<List<Streak>, List<Variation>> gitHub(Long userId, LocalDate standard) {
+    private Map<List<Streak>, List<Variation>> gitHub(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        List<Streak> streaks = gitHubDailyStatsQueryPort.findStreakByUserId(userId, standard);
-        List<Variation> variations = gitHubDailyStatsQueryPort.findVaricationByUserId(userId, standard);
-
-        return Map.of(streaks, variations);
-    }
-
-    private Map<List<Streak>, List<Variation>> exp(Long userId, LocalDate standard) {
-
-        List<Streak> streaks = userExpHistoryRepositoryPort.findStreakByUserId(userId, standard);
-        List<Variation> variations = userExpHistoryRepositoryPort.findVariationByUserId(userId, standard);
+        List<Streak> streaks = gitHubDailyStatsQueryPort.findStreakByUserId(userId, startDate, endDate);
+        List<Variation> variations = gitHubDailyStatsQueryPort.findVaricationByUserId(userId, startDate, endDate);
 
         return Map.of(streaks, variations);
     }
 
-    private Map<List<Streak>, List<Variation>> studyTime(Long userId, LocalDate standard) {
+    private Map<List<Streak>, List<Variation>> exp(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        List<Streak> streaks = userExpHistoryRepositoryPort.findStreakByUserId(userId, startDate, endDate);
+        List<Variation> variations = userExpHistoryRepositoryPort.findVariationByUserId(userId, startDate, endDate);
+
+        return Map.of(streaks, variations);
+    }
+
+    private Map<List<Streak>, List<Variation>> studyTime(Long userId, LocalDate startDate, LocalDate endDate) {
 
         LocalDate now = LocalDate.now();
 
-        List<Streak> streaks = userStudyTimeRepositoryPort.findStreakByUserId(userId, standard);
+        List<Streak> streaks = userStudyTimeRepositoryPort.findStreakByUserId(userId, startDate, endDate);
 
         LocalDateTime startOfDay = now.atTime(6, 0, 0);
         LocalDateTime endOfDay = now.plusDays(1).atTime(6, 0, 0);
@@ -77,7 +78,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
         Streak todayStreak = new Streak(now, activeTimeValue);
         streaks.add(todayStreak);
 
-        List<Variation> variations = userStudyTimeRepositoryPort.findVariationByUserId(userId, standard);
+        List<Variation> variations = userStudyTimeRepositoryPort.findVariationByUserId(userId, startDate, endDate);
 
         int currentMonth = now.getMonthValue();
         int daysInMonth = now.lengthOfMonth(); // 해당 월의 실제 일수 (28, 29, 30, 31)

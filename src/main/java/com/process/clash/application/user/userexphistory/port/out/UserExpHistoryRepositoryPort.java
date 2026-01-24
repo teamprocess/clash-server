@@ -18,8 +18,8 @@ public interface UserExpHistoryRepositoryPort {
     List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
     double findAverageExpByUserIdAndCategoryAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
     Map<Long, Double> findAverageExpForBattles(Long userId, List<Battle> battles);
-    List<Streak> findStreakByUserId(Long userId, LocalDate standard);
-    List<Variation> findVariationByUserId(Long userId, LocalDate standard);
+    List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate);
+    List<Variation> findVariationByUserId(Long userId, LocalDate startDate, LocalDate endDate);
     List<UserEarnedExp> findUserDailyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
     List<UserEarnedExp> findUserWeeklyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
     List<UserEarnedExp> findUserMonthlyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
