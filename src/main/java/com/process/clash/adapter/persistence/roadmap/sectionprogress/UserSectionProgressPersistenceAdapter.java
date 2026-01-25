@@ -6,6 +6,7 @@ import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.ranking.port.out.LoadChapterRankingPort;
 import com.process.clash.application.roadmap.port.out.UserSectionProgressRepositoryPort;
 import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class UserSectionProgressPersistenceAdapter implements UserSectionProgressRepositoryPort {
+public class UserSectionProgressPersistenceAdapter implements UserSectionProgressRepositoryPort, LoadChapterRankingPort {
 
     private final UserSectionProgressJpaRepository userSectionProgressJpaRepository;
     private final UserSectionProgressJpaMapper userSectionProgressJpaMapper;
@@ -60,5 +61,10 @@ public class UserSectionProgressPersistenceAdapter implements UserSectionProgres
         return userSectionProgressJpaRepository.findAllByUserIdAndSectionIdIn(userId, sectionIds).stream()
                 .map(userSectionProgressJpaMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public List<Object[]> loadRankingsWithMyRank(Long targetUserId) {
+        return userSectionProgressJpaRepository.findRankingsWithMyRank(targetUserId);
     }
 }
