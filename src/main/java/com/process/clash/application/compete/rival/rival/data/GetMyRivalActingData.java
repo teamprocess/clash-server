@@ -37,7 +37,7 @@ public class GetMyRivalActingData {
             RivalCurrentStatus status
     ) {
 
-        public static MyRival from(User user, Long activeTime, String usingApp, RivalCurrentStatus status) {
+        public static MyRival of(User user, Long activeTime, String usingApp, RivalCurrentStatus status) {
 
             return new MyRival(
                     user.name(),

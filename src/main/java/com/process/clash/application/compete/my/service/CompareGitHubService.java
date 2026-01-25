@@ -29,6 +29,6 @@ public class CompareGitHubService implements CompareGitHubUseCase {
                 gitHubDailyStatsQueryPort.findByUserIdAndStudyDate(command.actor().id(), today)
                         .orElseThrow(GithubDailyStatsNotFoundException::new);
 
-        return CompareGitHubData.Result.from(yesterdayGitHubStat, todayGitHubStat);
+        return CompareGitHubData.Result.of(yesterdayGitHubStat, todayGitHubStat);
     }
 }

@@ -2,9 +2,12 @@ package com.process.clash.adapter.persistence.user.userstudytime;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -35,26 +38,38 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
     }
 
     @Override
-    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
-        return userStudyTimeJpaRepository.findDailyDataByUserIds(ids, startDate, endDate);
+        return userStudyTimeJpaRepository.findDailyDataByUserIds(ids, startDate, endDate, pageRequest);
     }
 
     @Override
-    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
-        return userStudyTimeJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate);
+        return userStudyTimeJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate, pageRequest);
     }
 
     @Override
-    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
+    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
-        return userStudyTimeJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate);
+        return userStudyTimeJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate, pageRequest);
     }
 
     @Override
     public double findAverageStudyTimeByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return userStudyTimeJpaRepository.findAverageStudyTimeByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    @Override
+    public List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        return userStudyTimeJpaRepository.findStreakByUserId(userId, startDate, endDate);
+    }
+
+    @Override
+    public List<Variation> findVariationByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        return userStudyTimeJpaRepository.findVariationByUserId(userId, startDate, endDate);
     }
 }

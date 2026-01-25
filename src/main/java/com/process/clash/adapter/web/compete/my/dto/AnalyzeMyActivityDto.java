@@ -1,10 +1,9 @@
 package com.process.clash.adapter.web.compete.my.dto;
 
 import com.process.clash.application.compete.my.data.AnalyzeMyActivityData;
-import com.process.clash.domain.common.enums.TargetCategory;
-import com.process.clash.domain.common.enums.WeekCategory;
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
 
-import java.time.LocalDate;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -13,7 +12,7 @@ public class AnalyzeMyActivityDto {
     @Schema(name = "AnalyzeMyActivityDtoResponse")
 
     public record Response(
-            TargetCategory category,
+            String category,
             List<Streak> streaks,
             List<Variation> variations
     ) {
@@ -22,31 +21,9 @@ public class AnalyzeMyActivityDto {
 
             return new Response(
                     result.category(),
-                    result.streaks().stream()
-                            .map(data -> new Streak(
-                                data.date(),
-                                data.detailedInfo(),
-                                data.dayOfTheWeek()
-                            ))
-                    .toList(),
-                    result.variations().stream()
-                            .map(data -> new Variation(
-                                    data.month(),
-                                    data.avgVariationPerMonth()
-                            ))
-                    .toList()
+                    result.streaks(),
+                    result.variations()
             );
         }
     }
-
-    private record Streak(
-            LocalDate date,
-            Integer detailedInfo,
-            WeekCategory dayOfTheWeek
-    ) {}
-
-    private record Variation(
-            Integer month,
-            Double avgVariationPerMonth
-    ) {}
 }

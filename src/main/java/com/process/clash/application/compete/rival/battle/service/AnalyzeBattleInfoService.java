@@ -54,7 +54,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
                 enemyId, category, battle.startDate(), battle.endDate()
         );
 
-        return AnalyzeBattleInfoData.Result.from(category, battle.id(), enemyPoint, myPoint);
+        return AnalyzeBattleInfoData.Result.of(category, battle.id(), enemyPoint, myPoint);
     }
 
     private Integer calculatePointByCategory(
@@ -79,7 +79,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
 
     private Integer calculateGithubPoint(Long userId, LocalDate startDate, LocalDate endDate) {
         Double avgCommits = githubDailyStatsQueryPort
-                .findAverageCommitsByUserIdAndPeriod(userId, startDate, endDate);
+                .findAverageContributionByUserIdAndPeriod(userId, startDate, endDate);
         return avgCommits != null ? (int) Math.round(avgCommits) : 0;
     }
 

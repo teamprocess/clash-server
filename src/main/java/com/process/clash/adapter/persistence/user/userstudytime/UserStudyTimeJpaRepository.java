@@ -1,5 +1,8 @@
 package com.process.clash.adapter.persistence.user.userstudytime;
 
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.Variation;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +34,8 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
     List<Object[]> findDailyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -44,7 +48,7 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             AVG(total_study_time_seconds) as point
         FROM user_study_times
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('week', CAST(:startDate AS date))
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('week', date)
         ORDER BY fk_user_id, date_trunc('week', date) ASC
@@ -52,7 +56,8 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
     List<Object[]> findWeeklyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -65,7 +70,7 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             AVG(total_study_time_seconds) as point
         FROM user_study_times
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('month', CAST(:startDate AS date))
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('month', date)
         ORDER BY fk_user_id, date_trunc('month', date) ASC
@@ -73,7 +78,8 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
     List<Object[]> findMonthlyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -87,6 +93,41 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
           AND date < :endDate
     """, nativeQuery = true)
     double findAverageStudyTimeByUserIdAndPeriod(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Streak(
+                us.date,
+                cast(us.totalStudyTimeSeconds as int)
+            )
+        from UserStudyTimeJpaEntity us
+        where us.user.id = :userId
+            and us.date >= :startDate
+            and us.date < :endDate
+        order by us.date asc
+    """)
+    List<Streak> findStreakByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Variation(
+                month(us.date),
+                cast(avg(us.totalStudyTimeSeconds) as double)
+            )
+        from UserStudyTimeJpaEntity us
+        where us.user.id = :userId
+            and us.date >= :startDate
+            and us.date < :endDate
+        group by month(us.date)
+        order by month(us.date) asc
+    """)
+    List<Variation> findVariationByUserId(
             @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
