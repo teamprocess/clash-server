@@ -2,7 +2,6 @@ package com.process.clash.adapter.persistence.user.userstudytime;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
-import com.process.clash.application.ranking.data.UserRanking;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

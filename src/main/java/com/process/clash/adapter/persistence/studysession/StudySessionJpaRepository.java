@@ -89,7 +89,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         select new com.process.clash.application.ranking.data.UserRanking(
                 u.name,
                 u.profileImage,
-                case when max(r.id) is not null then true else false end,
+                case when count(r) > 0 then true else false end,
                 u.username,
                 cast(
                     coalesce(
