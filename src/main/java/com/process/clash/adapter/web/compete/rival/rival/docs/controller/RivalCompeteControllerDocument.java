@@ -37,7 +37,7 @@ public interface RivalCompeteControllerDocument {
                                             "name": "이몽룡",
                                             "username": "mongryong",
                                             "profileImage": "https://cdn.example.com/profile/2.png",
-                                            "activeTime": "02:30",
+                                            "activeTime": 9000,
                                             "usingApp": "CLASH",
                                             "status": "STUDYING"
                                           }
@@ -63,9 +63,10 @@ public interface RivalCompeteControllerDocument {
                                       "data": {
                                         "users": [
                                           {
-                                            "id": 3,
-                                            "name": "성춘향",
-                                            "githubId": "chunhyang"
+                                            "userId": 3,
+                                            "userName": "성춘향",
+                                            "gitHubId": "chunhyang",
+                                            "profileImage": "https://cdn.example.com/profile/3.png"
                                           }
                                         ]
                                       }
@@ -89,9 +90,10 @@ public interface RivalCompeteControllerDocument {
                                       "data": {
                                         "users": [
                                           {
-                                            "id": 3,
-                                            "name": "성춘향",
-                                            "githubId": "chunhyang"
+                                            "userId": 3,
+                                            "userName": "성춘향",
+                                            "gitHubId": "chunhyang",
+                                            "profileImage": "https://cdn.example.com/profile/3.png"
                                           }
                                         ]
                                       }
@@ -155,7 +157,7 @@ public interface RivalCompeteControllerDocument {
                             schema = @Schema(implementation = ModifyRivalRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "rivalId": 3
+                                      "id": 3
                                     }
                                     """)
                     ))
@@ -182,7 +184,7 @@ public interface RivalCompeteControllerDocument {
                             schema = @Schema(implementation = ModifyRivalRequestDoc.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "rivalId": 3
+                                      "id": 3
                                     }
                                     """)
                     ))
@@ -199,20 +201,44 @@ public interface RivalCompeteControllerDocument {
                                       "success": true,
                                       "message": "라이벌과의 비교 정보를 성공적으로 반환했습니다.",
                                       "data": {
-                                        "myRecord": {
-                                          "name": "홍길동",
-                                          "username": "gildong",
-                                          "profileImage": "https://cdn.example.com/profile/1.png",
-                                          "totalTime": "10:30:00",
-                                          "rank": 2
-                                        },
-                                        "rivalRecords": [
+                                        "category": "GITHUB",
+                                        "period": "WEEKLY",
+                                        "totalData": [
                                           {
+                                            "id": 1,
+                                            "name": "홍길동",
+                                            "dataPoint": [
+                                              {
+                                                "date": "2025-01-19",
+                                                "point": 120.5
+                                              },
+                                              {
+                                                "date": "2025-01-20",
+                                                "point": 135.0
+                                              },
+                                              {
+                                                "date": "2025-01-21",
+                                                "point": 150.5
+                                              }
+                                            ]
+                                          },
+                                          {
+                                            "id": 2,
                                             "name": "이몽룡",
-                                            "username": "mongryong",
-                                            "profileImage": "https://cdn.example.com/profile/2.png",
-                                            "totalTime": "12:00:00",
-                                            "rank": 1
+                                            "dataPoint": [
+                                              {
+                                                "date": "2025-01-19",
+                                                "point": 100.0
+                                              },
+                                              {
+                                                "date": "2025-01-20",
+                                                "point": 110.5
+                                              },
+                                              {
+                                                "date": "2025-01-21",
+                                                "point": 125.0
+                                              }
+                                            ]
                                           }
                                         ]
                                       }
