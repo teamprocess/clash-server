@@ -1,5 +1,9 @@
 package com.process.clash.adapter.persistence.user.userexphistory;
 
+import com.process.clash.application.compete.my.data.Streak;
+import com.process.clash.application.compete.my.data.UserEarnedExp;
+import com.process.clash.application.compete.my.data.Variation;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,7 +32,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     List<Object[]> findDailyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -41,7 +46,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('week', CAST(:startDate AS date))
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('week', date)
         ORDER BY fk_user_id, date_trunc('week', date) ASC
@@ -49,7 +54,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     List<Object[]> findWeeklyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -62,7 +68,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('month', CAST(:startDate AS date))
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('month', date)
         ORDER BY fk_user_id, date_trunc('month', date) ASC
@@ -70,7 +76,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     List<Object[]> findMonthlyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
     );
 
     /**
@@ -105,4 +112,102 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("battleIds") List<Long> battleIds
     );
 
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Streak(
+                ux.date,
+                cast(sum(ux.earnExp) as int)
+            )
+        from UserExpHistoryJpaEntity ux
+        where ux.user.id = :userId
+            and ux.date >= :startDate
+            and ux.date < :endDate
+            and ux.actingCategory <> 'SEASON_RESET'
+        group by ux.date
+        order by ux.date asc
+    """)
+    List<Streak> findStreakByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.Variation(
+                month(ux.date),
+                cast(avg(ux.earnExp) as double)
+            )
+        from UserExpHistoryJpaEntity ux
+        where ux.user.id = :userId
+            and ux.date >= :startDate
+            and ux.date < :endDate
+            and ux.actingCategory <> 'SEASON_RESET'
+        group by month(ux.date)
+        order by month(ux.date) asc
+    """)
+    List<Variation> findVariationByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.UserEarnedExp(
+                ux.date,
+                avg(ux.earnExp)
+            )
+        from UserExpHistoryJpaEntity ux
+        where ux.user.id = :id
+            and ux.date > :startDate
+            and ux.date <= :endDate
+            and ux.actingCategory <> 'SEASON_RESET'
+        group by ux.date
+        order by ux.date asc
+    """)
+    List<UserEarnedExp> findUserDailyEarnedExpByUserIdAndPeriod(
+            @Param("id") Long id,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.UserEarnedExp(
+                min(ux.date),
+                avg(ux.earnExp)
+            )
+        from UserExpHistoryJpaEntity ux
+        where ux.user.id = :id
+            and ux.date >= function('date_trunc', 'week', cast(:startDate as date))
+            and ux.date <= :endDate
+            and ux.actingCategory <> 'SEASON_RESET'
+        group by function('date_trunc', 'week', ux.date)
+        order by function('date_trunc', 'week', ux.date) asc
+    """)
+    List<UserEarnedExp> findUserWeeklyEarnedExpByUserIdAndPeriod(
+            @Param("id") Long id,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
+
+    @Query("""
+        select new com.process.clash.application.compete.my.data.UserEarnedExp(
+                min(ux.date),
+                avg(ux.earnExp)
+            )
+        from UserExpHistoryJpaEntity ux
+        where ux.user.id = :id
+            and ux.date >= function('date_trunc', 'month', cast(:startDate as date))
+            and ux.date <= :endDate
+            and ux.actingCategory <> 'SEASON_RESET'
+        group by function('date_trunc', 'month', ux.date)
+        order by function('date_trunc', 'month', ux.date) asc
+    """)
+    List<UserEarnedExp> findUserMonthlyEarnedExpByUserIdAndPeriod(
+            @Param("id") Long id,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
 }

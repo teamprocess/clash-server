@@ -1,9 +1,11 @@
 package com.process.clash.adapter.web.compete.rival.battle.dto;
 
 import com.process.clash.application.compete.rival.battle.data.AnalyzeBattleInfoData;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class AnalyzeBattleInfoDto {
 
+    @Schema(name = "AnalyzeBattleInfoDtoResponse")
     public record Response(
             String category,
             Long id,

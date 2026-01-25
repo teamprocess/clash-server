@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.compete.rival.rival.docs.response;
 
 import com.process.clash.adapter.web.common.docs.response.SuccessMessageResponseDoc;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import java.util.List;
 
 @Schema(description = "라이벌과 비교 응답")
@@ -17,10 +18,10 @@ public class CompareWithRivalsResponseDoc extends SuccessMessageResponseDoc {
     public DataDoc data;
 
     public static class DataDoc {
-        @Schema(description = "비교 카테고리", example = "CLASH")
+        @Schema(description = "비교 카테고리", example = "GITHUB")
         public String category;
 
-        @Schema(description = "비교 기간", example = "WEEKLY")
+        @Schema(description = "비교 기간", example = "WEEK")
         public String period;
 
         @Schema(description = "전체 데이터 (본인 + 라이벌)")
@@ -29,21 +30,20 @@ public class CompareWithRivalsResponseDoc extends SuccessMessageResponseDoc {
 
     public static class TotalDataDoc {
         @Schema(description = "사용자 ID", example = "1")
-        public Long userId;
+        public Long id;
 
         @Schema(description = "이름", example = "홍길동")
         public String name;
 
-        @Schema(description = "사용자명", example = "gildong")
-        public String username;
+        @Schema(description = "데이터 포인트 목록")
+        public List<DataPointDoc> dataPoint;
+    }
 
-        @Schema(description = "프로필 이미지 URL", example = "https://cdn.example.com/profile/1.png")
-        public String profileImage;
+    public static class DataPointDoc {
+        @Schema(description = "날짜", example = "2025-01-01")
+        public LocalDate date;
 
-        @Schema(description = "총 활동 시간 (초)", example = "37800")
-        public Long totalTime;
-
-        @Schema(description = "순위", example = "2")
-        public Integer rank;
+        @Schema(description = "포인트", example = "150.5")
+        public Double point;
     }
 }

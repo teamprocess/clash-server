@@ -6,5 +6,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class ModifyBattleRequestDoc {
 
     @Schema(description = "배틀 ID", example = "1")
-    public Long battleId;
+    public Long id;
 }

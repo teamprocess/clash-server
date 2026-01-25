@@ -4,7 +4,6 @@ import com.process.clash.adapter.web.compete.rival.battle.docs.request.*;
 import com.process.clash.adapter.web.compete.rival.battle.docs.response.*;
 import com.process.clash.adapter.web.compete.rival.battle.dto.*;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData;
 import com.process.clash.domain.common.enums.TargetCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,8 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.time.LocalDate;
 
 @Tag(name = "배틀 API", description = "라이벌과의 배틀 신청/관리 및 조회")
 public interface BattleControllerDocument {
@@ -116,7 +113,7 @@ public interface BattleControllerDocument {
                                     "data": {
                                       "rivals": [
                                           {
-                                              "id": "1",
+                                              "id": 1,
                                               "name": "오용준",
                                               "profileImage": "p-i-g"
                                           }
@@ -167,18 +164,18 @@ public interface BattleControllerDocument {
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
-                                    "message": "배틀을 신청할 라이벌 목록을 성공적으로 반환하였습니다.",
+                                    "message": "라이벌과의 배틀 정보를 성공적으로 반환했습니다.",
                                     "data": {
-                                      "rivals": [
+                                      "battles": [
                                         {
                                           "id": 3,
                                           "enemy": {
-                                              "id": "1",
+                                              "id": 1,
                                               "name": "오용준",
                                               "profileImage": "p-i-g"
                                           },
                                           "expireDate": "2026-01-29",
-                                          "result": "WINNING" // WON, LOST, WINNING, LOSING, DRAW, PENDING
+                                          "result": "WINNING"
                                         }
                                       ]
                                     }

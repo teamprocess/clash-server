@@ -58,6 +58,6 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
         double totalAverageExp = myAverageExp + enemyAverageExp;
         double myOverallPercentage = (totalAverageExp == 0) ? 0 : (myAverageExp / totalAverageExp) * 100;
 
-        return FindDetailedBattleInfoData.Result.from(battle, user, myOverallPercentage);
+        return FindDetailedBattleInfoData.Result.of(battle, user, myOverallPercentage);
     }
 }
