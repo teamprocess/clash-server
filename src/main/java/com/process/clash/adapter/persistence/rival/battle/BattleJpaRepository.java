@@ -18,7 +18,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
         FROM battles b
         JOIN rivals r ON b.fk_rival_id = r.id
-        WHERE b.battle_status <> 'DONE'
+        WHERE b.battle_status not in ('REJECTED', 'PENDING')
           AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     boolean existsActiveBattleByUserId(@Param("userId") Long userId);
@@ -45,7 +45,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         FROM battles b
         JOIN rivals r ON b.fk_rival_id = r.id
         WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
-            AND b.battle_status <> 'REJECTED'
+            AND b.battle_status not in ('REJECTED', 'PENDING')
     """, nativeQuery = true)
     List<BattleJpaEntity> findByUserIdWithOutRejected(@Param("userId") Long userId);
 
@@ -56,7 +56,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         SELECT b.*
         FROM battles b
         JOIN rivals r ON b.fk_rival_id = r.id
-        WHERE b.battle_status <> 'DONE'
+        WHERE b.battle_status NOT IN ('DONE', 'REJECTED')
           AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
         LIMIT 1
     """, nativeQuery = true)
