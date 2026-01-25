@@ -136,7 +136,7 @@ public interface MyCompeteControllerDocument {
                                       "success": true,
                                       "message": "내 활동 분석 결과를 성공적으로 반환했습니다.",
                                       "data": {
-                                        "category": "SERVER",
+                                        "category": "GITHUB",
                                         "streaks": [
                                           {
                                             "date": "2025-01-01",
@@ -156,7 +156,7 @@ public interface MyCompeteControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<AnalyzeMyActivityDto.Response> analyzeMyActivity(
             @Parameter(hidden = true) Actor actor,
-            @Parameter(description = "활동 카테고리", example = "SERVER", required = true)
+            @Parameter(description = "활동 카테고리 (GITHUB, SOLVED_AC, ACTIVE_TIME, EXP)", example = "GITHUB", required = true)
             @PathVariable TargetCategory category
     );
 
@@ -168,7 +168,7 @@ public interface MyCompeteControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
-                                      "message": "내 기록을 성공적으로 반환했습니다.",
+                                      "message": "성장도 분석 결과를 성공적으로 반환했습니다.",
                                       "data": {
                                         "dataPoint": [
                                           {
@@ -191,7 +191,7 @@ public interface MyCompeteControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyGrowthRateDto.Response> getMyGrowthRate(
             @Parameter(hidden = true) Actor actor,
-            @Parameter(description = "조회 기준 (예: WEEKLY, MONTHLY)", example = "WEEKLY", required = true)
+            @Parameter(description = "조회 기준 (DAY, WEEK, MONTH)", example = "WEEK", required = true)
             @RequestParam String standard
     );
 
@@ -215,7 +215,7 @@ public interface MyCompeteControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<CompareMyActivityDto.Response> compareMyActivity(
             @Parameter(hidden = true) Actor actor,
-            @Parameter(description = "비교 기준 (예: WEEKLY, MONTHLY)", example = "WEEKLY", required = true)
+            @Parameter(description = "비교 기준 (TODAY, YESTERDAY, LAST_WEEK, LAST_MONTH)", example = "LAST_WEEK", required = true)
             @RequestParam String standard
     );
 }

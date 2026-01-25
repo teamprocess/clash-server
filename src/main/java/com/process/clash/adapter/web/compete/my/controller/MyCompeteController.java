@@ -69,7 +69,7 @@ public class MyCompeteController implements MyCompeteControllerDocument {
         GetMyGrowthRateData.Command command = GetMyGrowthRateData.Command.of(actor, standard);
         GetMyGrowthRateData.Result result = getMyGrowthRateUseCase.execute(command);
         GetMyGrowthRateDto.Response response = GetMyGrowthRateDto.Response.from(result);
-        return ApiResponse.success(response, "내 기록을 성공적으로 반환했습니다.");
+        return ApiResponse.success(response, "성장도 분석 결과를 성공적으로 반환했습니다.");
     }
 
     // 나와의 경쟁 - 내 기록 비교
