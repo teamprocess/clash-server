@@ -18,7 +18,7 @@ public class AnalyzeMyActivityResponseDoc extends SuccessResponseDoc {
     public DataDoc data;
 
     public static class DataDoc {
-        @Schema(description = "카테고리", example = "SERVER")
+        @Schema(description = "카테고리", example = "GITHUB")
         public String category;
 
         @Schema(description = "연속 기록 목록")

@@ -11,7 +11,7 @@ public class GetMyGrowthRateResponseDoc extends SuccessResponseDoc {
     @Schema(description = "성공 여부", example = "true")
     public Boolean success;
 
-    @Schema(description = "응답 메시지", example = "내 기록을 성공적으로 반환했습니다.")
+    @Schema(description = "응답 메시지", example = "성장도 분석 결과를 성공적으로 반환했습니다.")
     public String message;
 
     @Schema(description = "응답 데이터")
