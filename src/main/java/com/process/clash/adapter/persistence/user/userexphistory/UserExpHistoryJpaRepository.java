@@ -46,7 +46,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('week', CAST(:startDate AS date))
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('week', date)
         ORDER BY fk_user_id, date_trunc('week', date) ASC
@@ -68,7 +68,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('month', CAST(:startDate AS date))
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('month', date)
         ORDER BY fk_user_id, date_trunc('month', date) ASC
@@ -178,7 +178,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :id
-            and ux.date > :startDate
+            and ux.date >= function('date_trunc', 'week', cast(:startDate as date))
             and ux.date <= :endDate
             and ux.actingCategory <> 'SEASON_RESET'
         group by function('date_trunc', 'week', ux.date)
@@ -198,7 +198,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :id
-            and ux.date > :startDate
+            and ux.date >= function('date_trunc', 'month', cast(:startDate as date))
             and ux.date <= :endDate
             and ux.actingCategory <> 'SEASON_RESET'
         group by function('date_trunc', 'month', ux.date)
