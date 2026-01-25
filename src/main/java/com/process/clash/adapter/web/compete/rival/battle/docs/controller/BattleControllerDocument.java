@@ -4,7 +4,6 @@ import com.process.clash.adapter.web.compete.rival.battle.docs.request.*;
 import com.process.clash.adapter.web.compete.rival.battle.docs.response.*;
 import com.process.clash.adapter.web.compete.rival.battle.dto.*;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData;
 import com.process.clash.domain.common.enums.TargetCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,8 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.time.LocalDate;
 
 @Tag(name = "배틀 API", description = "라이벌과의 배틀 신청/관리 및 조회")
 public interface BattleControllerDocument {
