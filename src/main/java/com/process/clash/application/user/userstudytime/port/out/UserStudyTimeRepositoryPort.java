@@ -2,6 +2,7 @@ package com.process.clash.application.user.userstudytime.port.out;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import org.springframework.data.domain.PageRequest;
 

@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.github;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.ranking.data.UserRanking;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -120,6 +121,35 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
         order by month(g.studyDate) asc
     """)
     List<Variation> findVariationByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+    @Query("""
+        select new com.process.clash.application.ranking.data.UserRanking(
+                u.name,
+                u.profileImage,
+                case when max(r.id) is not null then true else false end,
+                u.username,
+                cast(
+                    coalesce(
+                        sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount), 0
+                    ) as long
+                )
+            )
+        from UserJpaEntity u
+        left join GitHubDailyStatsJpaEntity g on
+            g.userId = u.id
+            and g.studyDate between :startDate and :endDate
+        left join RivalJpaEntity r on
+            (u.id in (r.firstUser.id, r.secondUser.id)
+                and :userId in (r.firstUser.id, r.secondUser.id)
+                and r.rivalLinkingStatus = 'ACCEPTED')
+        group by u.id, u.name, u.profileImage, u.username
+        order by sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount) desc
+    """)
+    List<UserRanking> findGitHubRankingByUserIdAndPeriod(
             @Param("userId") Long userId,
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate

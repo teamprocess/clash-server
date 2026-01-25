@@ -25,22 +25,18 @@ public class GetRankingData {
     }
 
     public record Result(
-            TargetCategory category,
-            PeriodCategory period,
-            List<Ranking> rankings
+            String category,
+            String period,
+            List<UserRanking> rankings
     ) {
 
-//        public static Result from() {
-//
-//        }
-    }
+        public static Result of(TargetCategory category, PeriodCategory period, List<UserRanking> rankings) {
 
-    public record Ranking(
-            String name,
-            String username,
-            String profileImage,
-            Boolean isRival,
-            String linkedId,
-            Integer point
-    ) {}
+            return new Result(
+                    category.toString(),
+                    period.toString(),
+                    rankings
+            );
+        }
+    }
 }

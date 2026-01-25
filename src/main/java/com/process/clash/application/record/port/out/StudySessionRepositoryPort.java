@@ -1,6 +1,8 @@
 package com.process.clash.application.record.port.out;
 
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.domain.record.model.entity.StudySession;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -18,4 +20,5 @@ public interface StudySessionRepositoryPort {
     Boolean existsActiveSessionByTaskId(Long taskId);
     Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
     Map<Long, Long> getTotalStudyTimeInSecondsByUserIds(List<Long> userIds, LocalDateTime startTime, LocalDateTime endTime);
+    List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 }

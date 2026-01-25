@@ -2,6 +2,7 @@ package com.process.clash.application.github.port.out;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import org.springframework.data.domain.PageRequest;
 
@@ -19,4 +20,6 @@ public interface GitHubDailyStatsQueryPort {
     double findAverageContributionByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
     List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate);
     List<Variation> findVaricationByUserId(Long userId, LocalDate startDate, LocalDate endDate);
+
+    List<UserRanking> findGitHubRankingByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
 }
