@@ -21,7 +21,7 @@ public class CompareWithRivalsResponseDoc extends SuccessMessageResponseDoc {
         @Schema(description = "비교 카테고리", example = "GITHUB")
         public String category;
 
-        @Schema(description = "비교 기간", example = "WEEKLY")
+        @Schema(description = "비교 기간", example = "WEEK")
         public String period;
 
         @Schema(description = "전체 데이터 (본인 + 라이벌)")

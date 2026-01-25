@@ -202,7 +202,7 @@ public interface RivalCompeteControllerDocument {
                                       "message": "라이벌과의 비교 정보를 성공적으로 반환했습니다.",
                                       "data": {
                                         "category": "GITHUB",
-                                        "period": "WEEKLY",
+                                        "period": "WEEK",
                                         "totalData": [
                                           {
                                             "id": 1,
@@ -248,9 +248,9 @@ public interface RivalCompeteControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<CompareWithRivalsDto.Response> compareWithRivals(
             @Parameter(hidden = true) Actor actor,
-            @Parameter(description = "비교 카테고리 (CLASH, GITHUB 등)", example = "CLASH", required = true)
+            @Parameter(description = "비교 카테고리 (ACTIVE_TIME, GITHUB 등)", example = "GITHUB", required = true)
             @PathVariable TargetCategory category,
-            @Parameter(description = "비교 기간 (DAILY, WEEKLY, MONTHLY 등)", example = "WEEKLY", required = true)
+            @Parameter(description = "비교 기간 (DAY, WEEK, MONTH 등)", example = "WEEK", required = true)
             @PathVariable PeriodCategory period
     );
 }
