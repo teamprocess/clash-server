@@ -116,7 +116,7 @@ public interface BattleControllerDocument {
                                     "data": {
                                       "rivals": [
                                           {
-                                              "id": "1",
+                                              "id": 1,
                                               "name": "오용준",
                                               "profileImage": "p-i-g"
                                           }
@@ -167,18 +167,18 @@ public interface BattleControllerDocument {
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
-                                    "message": "배틀을 신청할 라이벌 목록을 성공적으로 반환하였습니다.",
+                                    "message": "라이벌과의 배틀 정보를 성공적으로 반환했습니다.",
                                     "data": {
-                                      "rivals": [
+                                      "battles": [
                                         {
                                           "id": 3,
                                           "enemy": {
-                                              "id": "1",
+                                              "id": 1,
                                               "name": "오용준",
                                               "profileImage": "p-i-g"
                                           },
                                           "expireDate": "2026-01-29",
-                                          "result": "WINNING" // WON, LOST, WINNING, LOSING, DRAW, PENDING
+                                          "result": "WINNING"
                                         }
                                       ]
                                     }

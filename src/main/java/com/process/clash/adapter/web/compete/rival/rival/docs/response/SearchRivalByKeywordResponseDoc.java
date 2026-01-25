@@ -23,12 +23,15 @@ public class SearchRivalByKeywordResponseDoc extends SuccessMessageResponseDoc {
 
     public static class UserDoc {
         @Schema(description = "사용자 ID", example = "3")
-        public Long id;
+        public Long userId;
 
         @Schema(description = "이름", example = "성춘향")
-        public String name;
+        public String userName;
 
         @Schema(description = "깃허브 아이디", example = "chunhyang")
-        public String githubId;
+        public String gitHubId;
+
+        @Schema(description = "프로필 이미지 URL", example = "https://cdn.example.com/profile/3.png")
+        public String profileImage;
     }
 }

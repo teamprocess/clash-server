@@ -3,6 +3,8 @@ package com.process.clash.adapter.web.compete.rival.battle.docs.response;
 import com.process.clash.adapter.web.common.docs.response.SuccessMessageResponseDoc;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.LocalDate;
+
 @Schema(description = "배틀 상세 정보 조회 응답")
 public class FindDetailedBattleInfoResponseDoc extends SuccessMessageResponseDoc {
 
@@ -23,7 +25,7 @@ public class FindDetailedBattleInfoResponseDoc extends SuccessMessageResponseDoc
         public EnemyDoc enemy;
 
         @Schema(description = "배틀 종료일", example = "2026-01-29")
-        public String expireDate;
+        public LocalDate expireDate;
 
         @Schema(description = "내 전체 승률 (%)", example = "65.5")
         public Double myOverallPercentage;
