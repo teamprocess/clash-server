@@ -48,7 +48,7 @@ public class GroupJpaEntity {
     @Column(nullable = false)
     private Integer maxMembers;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column(nullable = false)
