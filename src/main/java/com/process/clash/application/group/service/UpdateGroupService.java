@@ -3,11 +3,11 @@ package com.process.clash.application.group.service;
 import com.process.clash.application.common.exception.exception.ValidationException;
 import com.process.clash.application.group.data.UpdateGroupData;
 import com.process.clash.application.group.exception.exception.badrequest.GroupMemberLimitTooSmallException;
-import com.process.clash.application.group.exception.exception.badrequest.GroupPasswordRequiredException;
 import com.process.clash.application.group.exception.exception.notfound.GroupNotFoundException;
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.UpdateGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class UpdateGroupService implements UpdateGroupUseCase {
 
     private final GroupRepositoryPort groupRepositoryPort;
+    private final UserRepositoryPort userRepositoryPort;
     private final GroupPolicy groupPolicy;
     private final PasswordEncoder passwordEncoder;
 
@@ -56,7 +57,7 @@ public class UpdateGroupService implements UpdateGroupUseCase {
             password,
             command.passwordRequired(),
             command.category(),
-            group.owner()
+            group.ownerId()
         );
 
         groupRepositoryPort.save(updatedGroup);

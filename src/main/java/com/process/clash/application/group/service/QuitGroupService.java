@@ -23,7 +23,7 @@ public class QuitGroupService implements QuitGroupUseCase {
         Group group = groupRepositoryPort.findById(command.groupId())
             .orElseThrow(GroupNotFoundException::new);
 
-        if (group.owner().id().equals(command.actor().id())) {
+        if (group.ownerId().equals(command.actor().id())) {
             throw new GroupOwnerCannotQuitException();
         }
 

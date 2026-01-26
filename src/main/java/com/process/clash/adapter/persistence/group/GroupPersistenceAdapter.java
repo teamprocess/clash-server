@@ -29,7 +29,7 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
 
     @Override
     public Group save(Group group) {
-        UserJpaEntity owner = userJpaRepository.getReferenceById(group.owner().id());
+        UserJpaEntity owner = userJpaRepository.getReferenceById(group.ownerId());
         GroupJpaEntity entity = groupJpaMapper.toJpaEntity(group, owner);
         GroupJpaEntity saved = groupJpaRepository.save(entity);
         return groupJpaMapper.toDomain(saved);

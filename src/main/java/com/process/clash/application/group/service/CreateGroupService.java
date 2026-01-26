@@ -48,7 +48,7 @@ public class CreateGroupService implements CreateGroupUseCase {
             password,
             command.passwordRequired(),
             command.category(),
-            owner
+            owner.id()
         );
 
         Group savedGroup = groupRepositoryPort.save(group);

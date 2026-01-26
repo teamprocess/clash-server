@@ -2,6 +2,7 @@ package com.process.clash.application.group.vo;
 
 import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.group.enums.GroupCategory;
+import com.process.clash.domain.user.user.entity.User;
 
 public record GroupSummaryVo(
     Long id,
@@ -13,7 +14,7 @@ public record GroupSummaryVo(
     Boolean passwordRequired,
     GroupOwnerVo owner
 ) {
-    public static GroupSummaryVo from(Group group, Integer currentMemberCount) {
+    public static GroupSummaryVo from(Group group, User owner, Integer currentMemberCount) {
         return new GroupSummaryVo(
             group.id(),
             group.name(),
@@ -22,7 +23,7 @@ public record GroupSummaryVo(
             currentMemberCount,
             group.category(),
             group.passwordRequired(),
-            GroupOwnerVo.from(group.owner())
+            GroupOwnerVo.from(owner)
         );
     }
 }

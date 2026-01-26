@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class GroupPolicy {
 
     public void validateOwnership(Actor actor, Group group) {
-        if (!group.owner().id().equals(actor.id())) {
+        if (!group.ownerId().equals(actor.id())) {
             throw new GroupAccessDeniedException();
         }
     }
