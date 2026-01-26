@@ -39,8 +39,9 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
 
     @Override
     public GetGroupActivityData.Result execute(GetGroupActivityData.Command command) {
-        Group group = groupRepositoryPort.findById(command.groupId())
-            .orElseThrow(GroupNotFoundException::new);
+        if(!groupRepositoryPort.existsById(command.groupId())) {
+            throw new GroupNotFoundException();
+        }
 
         boolean isMember = groupRepositoryPort.existsMember(command.groupId(), command.actor().id());
         groupPolicy.validateMembership(isMember);

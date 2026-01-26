@@ -22,6 +22,8 @@ public interface GroupRepositoryPort {
 
     boolean existsMember(Long groupId, Long userId);
 
+    boolean existsById(Long groupId);
+
     void addMember(Long groupId, Long userId);
 
     void removeMember(Long groupId, Long userId);

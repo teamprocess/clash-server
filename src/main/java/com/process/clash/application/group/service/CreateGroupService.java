@@ -1,6 +1,5 @@
 package com.process.clash.application.group.service;
 
-import com.process.clash.application.common.exception.exception.ValidationException;
 import com.process.clash.application.group.data.CreateGroupData;
 import com.process.clash.application.group.exception.exception.badrequest.GroupPasswordRequiredException;
 import com.process.clash.application.group.policy.GroupPolicy;
