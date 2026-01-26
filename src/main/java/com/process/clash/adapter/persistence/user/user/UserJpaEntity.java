@@ -14,10 +14,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "users")
 public class UserJpaEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,7 +2,7 @@ package com.process.clash.adapter.persistence.task;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
-import com.process.clash.domain.record.model.entity.Task;
+import com.process.clash.domain.record.entity.Task;
 import org.springframework.stereotype.Component;
 
 @Component

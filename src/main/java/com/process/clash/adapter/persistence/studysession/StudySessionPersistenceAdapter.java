@@ -7,9 +7,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.record.exception.exception.notfound.StudySessionNotFound;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.domain.record.model.entity.StudySession;
-
-import java.time.LocalDate;
+import com.process.clash.domain.record.entity.StudySession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

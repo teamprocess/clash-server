@@ -8,7 +8,7 @@ import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.infrastructure.config.RecordProperties;
 import com.process.clash.application.user.userpomodorosetting.exception.exception.notfound.UserPomodoroSettingNotFoundException;
 import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;
-import com.process.clash.domain.record.model.entity.StudySession;
+import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.user.user.entity.User;
 import java.time.Instant;
 import java.time.LocalDate;

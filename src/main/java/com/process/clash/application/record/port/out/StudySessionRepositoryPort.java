@@ -1,8 +1,7 @@
 package com.process.clash.application.record.port.out;
 
 import com.process.clash.application.ranking.data.UserRanking;
-import com.process.clash.domain.record.model.entity.StudySession;
-
+import com.process.clash.domain.record.entity.StudySession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
