@@ -5,11 +5,13 @@ import com.process.clash.adapter.web.group.docs.request.CreateGroupRequestDoc;
 import com.process.clash.adapter.web.group.docs.request.JoinGroupRequestDoc;
 import com.process.clash.adapter.web.group.docs.request.UpdateGroupRequestDoc;
 import com.process.clash.adapter.web.group.docs.response.GetAllGroupsResponseDoc;
+import com.process.clash.adapter.web.group.docs.response.GetGroupDetailResponseDoc;
 import com.process.clash.adapter.web.group.docs.response.GetGroupActivityResponseDoc;
 import com.process.clash.adapter.web.group.docs.response.GetMyGroupsResponseDoc;
 import com.process.clash.adapter.web.group.dto.CreateGroupDto;
 import com.process.clash.adapter.web.group.dto.GetAllGroupsDto;
 import com.process.clash.adapter.web.group.dto.GetGroupActivityDto;
+import com.process.clash.adapter.web.group.dto.GetGroupDetailDto;
 import com.process.clash.adapter.web.group.dto.GetMyGroupsDto;
 import com.process.clash.adapter.web.group.dto.JoinGroupDto;
 import com.process.clash.adapter.web.group.dto.UpdateGroupDto;
@@ -88,6 +90,16 @@ public interface GroupControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<GetMyGroupsDto.Response> getMyGroups(
         @Parameter(hidden = true) Actor actor,
         @ParameterObject GetMyGroupsDto.Request request
+    );
+
+    @Operation(summary = "그룹 상세 조회", description = "그룹 상세 정보를 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = GetGroupDetailResponseDoc.class)))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetGroupDetailDto.Response> getGroupDetail(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "그룹 ID", example = "1") @PathVariable Long groupId
     );
 
     @Operation(summary = "그룹 생성", description = "그룹을 생성합니다.")
