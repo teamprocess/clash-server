@@ -1,8 +1,6 @@
 package com.process.clash.application.group.service;
 
-import com.process.clash.application.common.exception.exception.ValidationException;
 import com.process.clash.application.group.data.UpdateGroupData;
-import com.process.clash.application.group.exception.exception.badrequest.GroupMemberLimitTooSmallException;
 import com.process.clash.application.group.exception.exception.notfound.GroupNotFoundException;
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.UpdateGroupUseCase;

@@ -33,4 +33,12 @@ public class GroupSummaryAssembler {
             .map(group -> GroupSummaryVo.from(group, groupOwners.getOrDefault(group.ownerId(), null), memberCounts.getOrDefault(group.id(), 0)))
             .toList();
     }
+
+    public GroupSummaryVo toSummary(Group group) {
+        Map<Long, User> groupOwners = userRepositoryPort.findAllByIds(List.of(group.ownerId()))
+            .stream()
+            .collect(Collectors.toMap(User::id, user -> user));
+        int memberCount = groupRepositoryPort.countMembers(group.id());
+        return GroupSummaryVo.from(group, groupOwners.get(group.ownerId()), memberCount);
+    }
 }

@@ -5,6 +5,7 @@ import com.process.clash.adapter.web.group.docs.controller.GroupControllerDocume
 import com.process.clash.adapter.web.group.dto.CreateGroupDto;
 import com.process.clash.adapter.web.group.dto.GetAllGroupsDto;
 import com.process.clash.adapter.web.group.dto.GetGroupActivityDto;
+import com.process.clash.adapter.web.group.dto.GetGroupDetailDto;
 import com.process.clash.adapter.web.group.dto.GetMyGroupsDto;
 import com.process.clash.adapter.web.group.dto.JoinGroupDto;
 import com.process.clash.adapter.web.group.dto.UpdateGroupDto;
@@ -14,6 +15,7 @@ import com.process.clash.application.group.data.CreateGroupData;
 import com.process.clash.application.group.data.DeleteGroupData;
 import com.process.clash.application.group.data.GetAllGroupsData;
 import com.process.clash.application.group.data.GetGroupActivityData;
+import com.process.clash.application.group.data.GetGroupDetailData;
 import com.process.clash.application.group.data.GetMyGroupsData;
 import com.process.clash.application.group.data.JoinGroupData;
 import com.process.clash.application.group.data.QuitGroupData;
@@ -22,6 +24,7 @@ import com.process.clash.application.group.port.in.CreateGroupUseCase;
 import com.process.clash.application.group.port.in.DeleteGroupUseCase;
 import com.process.clash.application.group.port.in.GetAllGroupsUseCase;
 import com.process.clash.application.group.port.in.GetGroupActivityUseCase;
+import com.process.clash.application.group.port.in.GetGroupDetailUseCase;
 import com.process.clash.application.group.port.in.GetMyGroupsUseCase;
 import com.process.clash.application.group.port.in.JoinGroupUseCase;
 import com.process.clash.application.group.port.in.QuitGroupUseCase;
@@ -51,6 +54,7 @@ public class GroupController implements GroupControllerDocument {
     private final JoinGroupUseCase joinGroupUseCase;
     private final QuitGroupUseCase quitGroupUseCase;
     private final GetGroupActivityUseCase getGroupActivityUseCase;
+    private final GetGroupDetailUseCase getGroupDetailUseCase;
 
     @GetMapping
     public ApiResponse<GetAllGroupsDto.Response> getAllGroups(
@@ -72,6 +76,17 @@ public class GroupController implements GroupControllerDocument {
         GetMyGroupsData.Result result = getMyGroupsUseCase.execute(command);
         GetMyGroupsDto.Response response = GetMyGroupsDto.Response.from(result);
         return ApiResponse.success(response, "참여한 그룹 목록 조회를 성공했습니다.");
+    }
+
+    @GetMapping("/{groupId}")
+    public ApiResponse<GetGroupDetailDto.Response> getGroupDetail(
+        @AuthenticatedActor Actor actor,
+        @PathVariable Long groupId
+    ) {
+        GetGroupDetailData.Command command = new GetGroupDetailData.Command(actor, groupId);
+        GetGroupDetailData.Result result = getGroupDetailUseCase.execute(command);
+        GetGroupDetailDto.Response response = GetGroupDetailDto.Response.from(result);
+        return ApiResponse.success(response, "그룹 상세 조회를 성공했습니다.");
     }
 
     @PostMapping
