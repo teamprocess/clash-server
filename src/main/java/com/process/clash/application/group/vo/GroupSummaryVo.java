@@ -13,13 +13,13 @@ public record GroupSummaryVo(
     Boolean passwordRequired,
     GroupOwnerVo owner
 ) {
-    public static GroupSummaryVo from(Group group) {
+    public static GroupSummaryVo from(Group group, Integer currentMemberCount) {
         return new GroupSummaryVo(
             group.id(),
             group.name(),
             group.description(),
             group.maxMembers(),
-            group.currentMemberCount(),
+            currentMemberCount,
             group.category(),
             group.passwordRequired(),
             GroupOwnerVo.from(group.owner())

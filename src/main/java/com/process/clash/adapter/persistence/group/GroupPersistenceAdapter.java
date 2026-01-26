@@ -32,14 +32,13 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
         UserJpaEntity owner = userJpaRepository.getReferenceById(group.owner().id());
         GroupJpaEntity entity = groupJpaMapper.toJpaEntity(group, owner);
         GroupJpaEntity saved = groupJpaRepository.save(entity);
-        int memberCount = Math.toIntExact(groupMemberJpaRepository.countByGroupId(saved.getId()));
-        return groupJpaMapper.toDomain(saved, memberCount);
+        return groupJpaMapper.toDomain(saved);
     }
 
     @Override
     public Optional<Group> findById(Long groupId) {
         return groupJpaRepository.findById(groupId)
-            .map(entity -> groupJpaMapper.toDomain(entity, Math.toIntExact(groupMemberJpaRepository.countByGroupId(groupId))));
+            .map(groupJpaMapper::toDomain);
     }
 
     @Override
@@ -103,16 +102,15 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
         return new MemberPageResult(members, pageResult.getTotalElements());
     }
 
+    @Override
+    public Map<Long, Integer> countMembersByGroupIds(List<Long> groupIds) {
+        return fetchMemberCounts(groupIds);
+    }
+
     private PageResult mapPageResult(Page<GroupJpaEntity> pageResult) {
         List<GroupJpaEntity> entities = pageResult.getContent();
-        List<Long> groupIds = entities.stream().map(GroupJpaEntity::getId).toList();
-        Map<Long, Integer> memberCounts = fetchMemberCounts(groupIds);
-
         List<Group> groups = entities.stream()
-            .map(entity -> groupJpaMapper.toDomain(
-                entity,
-                memberCounts.getOrDefault(entity.getId(), 0)
-            ))
+            .map(groupJpaMapper::toDomain)
             .toList();
 
         return new PageResult(groups, pageResult.getTotalElements());

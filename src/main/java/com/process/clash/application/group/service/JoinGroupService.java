@@ -31,7 +31,7 @@ public class JoinGroupService implements JoinGroupUseCase {
             throw new GroupAlreadyMemberException();
         }
 
-        int currentMemberCount = group.currentMemberCount() == null ? 0 : group.currentMemberCount();
+        long currentMemberCount = groupRepositoryPort.countMembers(command.groupId());
         if (currentMemberCount >= group.maxMembers()) {
             throw new GroupMemberLimitReachedException();
         }

@@ -39,7 +39,7 @@ public class UpdateGroupService implements UpdateGroupUseCase {
             throw new ValidationException();
         }
 
-        int currentMemberCount = group.currentMemberCount() == null ? 0 : group.currentMemberCount();
+        long currentMemberCount = groupRepositoryPort.countMembers(command.groupId());
         if (command.maxMembers() < currentMemberCount) {
             throw new GroupMemberLimitTooSmallException();
         }
@@ -53,7 +53,6 @@ public class UpdateGroupService implements UpdateGroupUseCase {
             command.name(),
             command.description(),
             command.maxMembers(),
-            currentMemberCount,
             password,
             command.passwordRequired(),
             command.category(),

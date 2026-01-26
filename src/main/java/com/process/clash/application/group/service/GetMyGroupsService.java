@@ -16,14 +16,13 @@ public class GetMyGroupsService implements GetMyGroupsUseCase {
     private static final int PAGE_SIZE = 10;
 
     private final GroupRepositoryPort groupRepositoryPort;
+    private final GroupSummaryAssembler groupSummaryAssembler;
 
     @Override
     public GetMyGroupsData.Result execute(GetMyGroupsData.Command command) {
         GroupRepositoryPort.PageResult pageResult =
             groupRepositoryPort.findAllByMemberUserId(command.actor().id(), command.page(), PAGE_SIZE);
-        List<GroupSummaryVo> groups = pageResult.groups().stream()
-            .map(GroupSummaryVo::from)
-            .toList();
+        List<GroupSummaryVo> groups = groupSummaryAssembler.toSummaries(pageResult.groups());
         Pagination pagination =
             Pagination.from(command.page(), PAGE_SIZE, pageResult.totalCount());
 

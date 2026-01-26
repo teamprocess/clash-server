@@ -3,6 +3,7 @@ package com.process.clash.application.group.port.out;
 import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.user.user.entity.User;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface GroupRepositoryPort {
@@ -26,6 +27,8 @@ public interface GroupRepositoryPort {
     void removeMember(Long groupId, Long userId);
 
     long countMembers(Long groupId);
+
+    Map<Long, Integer> countMembersByGroupIds(List<Long> groupIds);
 
     MemberPageResult findMembersByGroupId(Long groupId, Integer page, Integer size);
 

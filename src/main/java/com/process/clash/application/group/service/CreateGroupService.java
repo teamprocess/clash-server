@@ -45,7 +45,6 @@ public class CreateGroupService implements CreateGroupUseCase {
             command.name(),
             command.description(),
             command.maxMembers(),
-            1,
             password,
             command.passwordRequired(),
             command.category(),

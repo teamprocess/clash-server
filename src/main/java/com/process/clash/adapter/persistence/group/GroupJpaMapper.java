@@ -27,8 +27,7 @@ public class GroupJpaMapper {
         );
     }
 
-    public Group toDomain(GroupJpaEntity groupJpaEntity, Integer currentMemberCount) {
-
+    public Group toDomain(GroupJpaEntity groupJpaEntity) {
         return new Group(
                 groupJpaEntity.getId(),
                 groupJpaEntity.getCreatedAt(),
@@ -36,7 +35,6 @@ public class GroupJpaMapper {
                 groupJpaEntity.getName(),
                 groupJpaEntity.getDescription(),
                 groupJpaEntity.getMaxMembers(),
-                currentMemberCount,
                 groupJpaEntity.getPassword(),
                 groupJpaEntity.getPasswordRequired(),
                 groupJpaEntity.getCategory(),
