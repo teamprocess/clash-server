@@ -3,12 +3,14 @@ package com.process.clash.adapter.persistence.group;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(
     name = "group_members",
     uniqueConstraints = {
@@ -28,10 +30,4 @@ public class GroupMemberJpaEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
-
-    public GroupMemberJpaEntity(Long id, GroupJpaEntity group, UserJpaEntity user) {
-        this.id = id;
-        this.group = group;
-        this.user = user;
-    }
 }
