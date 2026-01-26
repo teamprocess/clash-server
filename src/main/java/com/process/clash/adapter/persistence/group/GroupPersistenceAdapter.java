@@ -88,7 +88,7 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     }
 
     @Override
-    public long countMembers(Long groupId) {
+    public int countMembers(Long groupId) {
         return groupMemberJpaRepository.countByGroupId(groupId);
     }
 

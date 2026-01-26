@@ -6,6 +6,7 @@ import com.process.clash.application.group.exception.exception.badrequest.GroupP
 import com.process.clash.application.group.exception.exception.conflict.AlreadyInThisGroupException;
 import com.process.clash.application.group.exception.exception.conflict.GroupMemberLimitReachedException;
 import com.process.clash.application.group.exception.exception.notfound.GroupNotFoundException;
+import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.JoinGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
@@ -21,6 +22,7 @@ public class JoinGroupService implements JoinGroupUseCase {
 
     private final GroupRepositoryPort groupRepositoryPort;
     private final PasswordEncoder passwordEncoder;
+    private final GroupPolicy policy;
 
     @Override
     public void execute(JoinGroupData.Command command) {
@@ -31,10 +33,8 @@ public class JoinGroupService implements JoinGroupUseCase {
             throw new AlreadyInThisGroupException();
         }
 
-        long currentMemberCount = groupRepositoryPort.countMembers(command.groupId());
-        if (currentMemberCount >= group.maxMembers()) {
-            throw new GroupMemberLimitReachedException();
-        }
+        int currentMemberCount = groupRepositoryPort.countMembers(command.groupId());
+        policy.validateMemberLimit(group.maxMembers(), currentMemberCount);
 
         validatePassword(group, command.password());
 

@@ -7,7 +7,6 @@ import com.process.clash.application.group.exception.exception.notfound.GroupNot
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.UpdateGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
-import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -21,8 +20,7 @@ import org.springframework.stereotype.Service;
 public class UpdateGroupService implements UpdateGroupUseCase {
 
     private final GroupRepositoryPort groupRepositoryPort;
-    private final UserRepositoryPort userRepositoryPort;
-    private final GroupPolicy groupPolicy;
+    private final GroupPolicy policy;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -30,20 +28,10 @@ public class UpdateGroupService implements UpdateGroupUseCase {
         Group group = groupRepositoryPort.findById(command.groupId())
             .orElseThrow(GroupNotFoundException::new);
 
-        groupPolicy.validateOwnership(command.actor(), group);
-
-        if (command.maxMembers() == null || command.maxMembers() < 1) {
-            throw new ValidationException();
-        }
-
-        if (command.passwordRequired() == null) {
-            throw new ValidationException();
-        }
-
-        long currentMemberCount = groupRepositoryPort.countMembers(command.groupId());
-        if (command.maxMembers() < currentMemberCount) {
-            throw new GroupMemberLimitTooSmallException();
-        }
+        int currentMemberCount = groupRepositoryPort.countMembers(command.groupId());
+        policy.validateOwnership(command.actor(), group);
+        policy.validateMaxMembers(command.maxMembers());
+        policy.validateMemberLimit(group.maxMembers(), currentMemberCount);
 
         String password = resolvePassword(command.passwordRequired(), command.password(), group.password());
 

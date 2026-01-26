@@ -3,6 +3,7 @@ package com.process.clash.application.group.service;
 import com.process.clash.application.common.exception.exception.ValidationException;
 import com.process.clash.application.group.data.CreateGroupData;
 import com.process.clash.application.group.exception.exception.badrequest.GroupPasswordRequiredException;
+import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.CreateGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
@@ -22,19 +23,14 @@ public class CreateGroupService implements CreateGroupUseCase {
     private final GroupRepositoryPort groupRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
+    private final GroupPolicy policy;
 
     @Override
     public void execute(CreateGroupData.Command command) {
         User owner = userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
-        if (command.maxMembers() == null || command.maxMembers() < 1) {
-            throw new ValidationException();
-        }
-
-        if (command.passwordRequired() == null) {
-            throw new ValidationException();
-        }
+        policy.validateMaxMembers(command.maxMembers());
 
         String password = resolvePassword(command.passwordRequired(), command.password());
 

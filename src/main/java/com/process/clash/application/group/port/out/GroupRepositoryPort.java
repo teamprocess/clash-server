@@ -26,7 +26,7 @@ public interface GroupRepositoryPort {
 
     void removeMember(Long groupId, Long userId);
 
-    long countMembers(Long groupId);
+    int countMembers(Long groupId);
 
     Map<Long, Integer> countMembersByGroupIds(List<Long> groupIds);
 
