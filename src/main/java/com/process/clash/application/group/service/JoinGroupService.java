@@ -3,7 +3,7 @@ package com.process.clash.application.group.service;
 import com.process.clash.application.group.data.JoinGroupData;
 import com.process.clash.application.group.exception.exception.badrequest.GroupPasswordMismatchException;
 import com.process.clash.application.group.exception.exception.badrequest.GroupPasswordRequiredException;
-import com.process.clash.application.group.exception.exception.conflict.GroupAlreadyMemberException;
+import com.process.clash.application.group.exception.exception.conflict.AlreadyInThisGroupException;
 import com.process.clash.application.group.exception.exception.conflict.GroupMemberLimitReachedException;
 import com.process.clash.application.group.exception.exception.notfound.GroupNotFoundException;
 import com.process.clash.application.group.port.in.JoinGroupUseCase;
@@ -28,7 +28,7 @@ public class JoinGroupService implements JoinGroupUseCase {
             .orElseThrow(GroupNotFoundException::new);
 
         if (groupRepositoryPort.existsMember(command.groupId(), command.actor().id())) {
-            throw new GroupAlreadyMemberException();
+            throw new AlreadyInThisGroupException();
         }
 
         long currentMemberCount = groupRepositoryPort.countMembers(command.groupId());

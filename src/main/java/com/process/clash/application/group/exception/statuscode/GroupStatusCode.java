@@ -15,8 +15,8 @@ public enum GroupStatusCode implements StatusCode {
         ErrorCategory.NOT_FOUND
     ),
 
-    GROUP_ALREADY_MEMBER(
-        "GROUP_ALREADY_MEMBER",
+    ALREADY_IN_THIS_GROUP(
+        "ALREADY_IN_THIS_GROUP",
         "이미 그룹에 참여 중입니다.",
         ErrorCategory.CONFLICT
     ),
