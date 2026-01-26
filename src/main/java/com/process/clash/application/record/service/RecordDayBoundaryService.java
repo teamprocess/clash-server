@@ -1,7 +1,7 @@
 package com.process.clash.application.record.service;
 
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.domain.record.model.entity.StudySession;
+import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.infrastructure.config.RecordProperties;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;

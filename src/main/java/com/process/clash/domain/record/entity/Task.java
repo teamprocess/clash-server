@@ -1,4 +1,4 @@
-package com.process.clash.domain.record.model.entity;
+package com.process.clash.domain.record.entity;
 
 import com.process.clash.domain.user.user.entity.User;
 import java.time.LocalDateTime;

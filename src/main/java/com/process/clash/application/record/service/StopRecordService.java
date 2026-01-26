@@ -4,7 +4,7 @@ import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
 import com.process.clash.application.record.port.in.StopRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.domain.record.model.entity.StudySession;
+import com.process.clash.domain.record.entity.StudySession;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
