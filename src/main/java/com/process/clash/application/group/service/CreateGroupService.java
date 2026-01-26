@@ -34,10 +34,7 @@ public class CreateGroupService implements CreateGroupUseCase {
 
         String password = resolvePassword(command.passwordRequired(), command.password());
 
-        Group group = new Group(
-            null,
-            null,
-            null,
+        Group group = Group.createDefault(
             command.name(),
             command.description(),
             command.maxMembers(),

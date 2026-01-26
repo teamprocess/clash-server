@@ -14,4 +14,28 @@ public record Group (
     Boolean passwordRequired,
     GroupCategory category,
     Long ownerId
-) {}
+) {
+
+    public static Group createDefault(
+        String name,
+        String description,
+        Integer maxMembers,
+        String password,
+        Boolean passwordRequired,
+        GroupCategory category,
+        Long ownerId
+    ) {
+        return new Group(
+            null,
+            null,
+            null,
+            name,
+            description,
+            maxMembers,
+            password,
+            passwordRequired,
+            category,
+            ownerId
+        );
+    }
+}
