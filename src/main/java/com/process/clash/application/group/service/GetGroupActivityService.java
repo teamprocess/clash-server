@@ -9,7 +9,7 @@ import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.group.vo.GroupMemberVo;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
-import com.process.clash.domain.group.entity.GroupMember;
+import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.infrastructure.config.RecordProperties;
 import jakarta.transaction.Transactional;
@@ -47,9 +47,9 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
 
         GroupRepositoryPort.MemberPageResult memberPage =
             groupRepositoryPort.findMembersByGroupId(command.groupId(), command.page(), PAGE_SIZE);
-        List<GroupMember> members = memberPage.members();
+        List<User> members = memberPage.members();
         List<Long> memberIds = members.stream()
-            .map(GroupMember::id)
+            .map(User::id)
             .toList();
 
         Map<Long, Long> studyTimes = fetchTodayStudyTimes(memberIds);

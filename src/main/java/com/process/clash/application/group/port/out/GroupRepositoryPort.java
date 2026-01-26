@@ -1,7 +1,7 @@
 package com.process.clash.application.group.port.out;
 
 import com.process.clash.domain.group.entity.Group;
-import com.process.clash.domain.group.entity.GroupMember;
+import com.process.clash.domain.user.user.entity.User;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,5 +31,5 @@ public interface GroupRepositoryPort {
 
     record PageResult(List<Group> groups, long totalCount) {}
 
-    record MemberPageResult(List<GroupMember> members, long totalCount) {}
+    record MemberPageResult(List<User> members, long totalCount) {}
 }

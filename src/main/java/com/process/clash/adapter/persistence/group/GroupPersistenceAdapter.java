@@ -1,10 +1,11 @@
 package com.process.clash.adapter.persistence.group;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
-import com.process.clash.domain.group.entity.GroupMember;
+import com.process.clash.domain.user.user.entity.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     private final GroupJpaRepository groupJpaRepository;
     private final GroupMemberJpaRepository groupMemberJpaRepository;
     private final UserJpaRepository userJpaRepository;
+    private final UserJpaMapper userJpaMapper;
 
     @Override
     public Group save(Group group) {
@@ -95,14 +97,8 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     public MemberPageResult findMembersByGroupId(Long groupId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "id"));
         Page<GroupMemberJpaEntity> pageResult = groupMemberJpaRepository.findAllByGroupId(groupId, pageable);
-        List<GroupMember> members = pageResult.getContent().stream()
-            .map(member -> new GroupMember(
-                member.getUser().getId(),
-                member.getUser().getName(),
-                0L,
-                false,
-                groupId
-            ))
+        List<User> members = pageResult.getContent().stream()
+            .map(member -> userJpaMapper.toDomain(member.getUser()))
             .toList();
         return new MemberPageResult(members, pageResult.getTotalElements());
     }
