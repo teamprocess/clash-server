@@ -17,6 +17,10 @@ public class GetGroupActivityData {
                 page = 1;
             }
         }
+
+        public static Command of(Actor actor, Long groupId, Integer page) {
+            return new Command(actor, groupId, page);
+        }
     }
 
     public record Result(

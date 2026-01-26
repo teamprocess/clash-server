@@ -122,7 +122,7 @@ public class GroupController implements GroupControllerDocument {
         @AuthenticatedActor Actor actor,
         @PathVariable Long groupId
     ) {
-        QuitGroupData.Command command = new QuitGroupData.Command(actor, groupId);
+        QuitGroupData.Command command = QuitGroupData.Command.of(actor, groupId);
         quitGroupUseCase.execute(command);
         return ApiResponse.success("그룹 탈퇴를 성공했습니다.");
     }
@@ -133,7 +133,7 @@ public class GroupController implements GroupControllerDocument {
         @PathVariable Long groupId,
         @ModelAttribute GetGroupActivityDto.Request request
     ) {
-        GetGroupActivityData.Command command = new GetGroupActivityData.Command(actor, groupId, request.page());
+        GetGroupActivityData.Command command = GetGroupActivityData.Command.of(actor, groupId, request.page());
         GetGroupActivityData.Result result = getGroupActivityUseCase.execute(command);
         GetGroupActivityDto.Response response = GetGroupActivityDto.Response.from(result);
         return ApiResponse.success(response, "그룹 활동 조회를 성공했습니다.");
