@@ -29,7 +29,7 @@ public class GetAllTasksService implements GetAllTasksUseCase {
         Map<Long, Long> studyTimeByTaskId = sessions.stream()
             .collect(Collectors.groupingBy(
                 session -> session.task().id(),
-                Collectors.summingLong(session -> ChronoUnit.MILLIS.between(
+                Collectors.summingLong(session -> ChronoUnit.SECONDS.between(
                     session.startedAt(),
                     session.endedAt() == null ? now : session.endedAt()
                 ))

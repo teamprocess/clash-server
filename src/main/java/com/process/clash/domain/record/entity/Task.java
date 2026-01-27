@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record Task(
     Long id,
     String name,
-    Long studyTime, // ms
+    Long studyTime, // s
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
     User user
