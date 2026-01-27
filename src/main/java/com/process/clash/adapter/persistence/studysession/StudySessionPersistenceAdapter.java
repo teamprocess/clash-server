@@ -4,6 +4,7 @@ import com.process.clash.adapter.persistence.task.TaskJpaEntity;
 import com.process.clash.adapter.persistence.task.TaskJpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.record.exception.exception.notfound.StudySessionNotFound;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.entity.StudySession;
@@ -153,5 +154,11 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
                         StudySessionJpaRepository.UserStudyTimeProjection::getUserId,
                         StudySessionJpaRepository.UserStudyTimeProjection::getTotalSeconds
                 ));
+    }
+
+    @Override
+    public List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
+
+        return studySessionJpaRepository.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
     }
 }

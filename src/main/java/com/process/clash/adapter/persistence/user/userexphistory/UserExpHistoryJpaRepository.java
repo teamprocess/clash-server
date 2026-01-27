@@ -3,6 +3,7 @@ package com.process.clash.adapter.persistence.user.userexphistory;
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.UserEarnedExp;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.ranking.data.UserRanking;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -209,5 +210,29 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate,
             Pageable pageable
+    );
+
+    @Query("""
+        select new com.process.clash.application.ranking.data.UserRanking(
+                ux.user.name,
+                ux.user.profileImage,
+                case when count(r) > 0 then true else false end,
+                ux.user.username,
+                cast(sum(ux.earnExp) as long)
+            )
+        from UserExpHistoryJpaEntity ux
+        left join RivalJpaEntity r on
+            (ux.user.id in (r.firstUser.id, r.secondUser.id)
+                and :userId in (r.firstUser.id, r.secondUser.id)
+                and r.rivalLinkingStatus = 'ACCEPTED')
+        where ux.actingCategory <> 'SEASON_RESET'
+            and ux.date between :startDate and :endDate
+        group by ux.user.id, ux.user.name, ux.user.profileImage, ux.user.username
+        order by sum(ux.earnExp) desc
+    """)
+    List<UserRanking> findExpRankingByUserIdAndPeriod(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 }

@@ -3,6 +3,7 @@ package com.process.clash.adapter.persistence.github;
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -59,5 +60,11 @@ public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPor
     public List<Variation> findVaricationByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return repository.findVariationByUserId(userId, startDate, endDate);
+    }
+
+    @Override
+    public List<UserRanking> findGitHubRankingByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        return repository.findGitHubRankingByUserIdAndPeriod(userId, startDate, endDate);
     }
 }
