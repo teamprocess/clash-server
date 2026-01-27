@@ -1,6 +1,7 @@
 package com.process.clash.application.group.port.out;
 
 import com.process.clash.domain.group.entity.Group;
+import com.process.clash.domain.group.enums.GroupCategory;
 import com.process.clash.domain.user.user.entity.User;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,11 @@ public interface GroupRepositoryPort {
 
     PageResult findAllByPage(Integer page, Integer size);
 
+    PageResult findAllByPageAndCategory(Integer page, Integer size, GroupCategory category);
+
     PageResult findAllByMemberUserId(Long userId, Integer page, Integer size);
+
+    PageResult findAllByMemberUserIdAndCategory(Long userId, Integer page, Integer size, GroupCategory category);
 
     List<Long> findGroupIdsByMemberUserIdAndGroupIds(Long userId, List<Long> groupIds);
 
