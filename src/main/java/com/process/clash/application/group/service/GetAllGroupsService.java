@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetAllGroupsService implements GetAllGroupsUseCase {
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 6;
 
     private final GroupRepositoryPort groupRepositoryPort;
     private final GroupSummaryAssembler groupSummaryAssembler;
