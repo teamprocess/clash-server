@@ -128,6 +128,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
 
     @Query("""
         select new com.process.clash.application.ranking.data.UserRanking(
+                ug.user.id,
                 ug.user.name,
                 ug.user.profileImage,
                 case when count(r) > 0 then true else false end,
