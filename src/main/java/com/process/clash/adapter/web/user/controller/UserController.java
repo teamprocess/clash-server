@@ -52,7 +52,7 @@ public class UserController implements UserControllerDocument {
         return ApiResponse.success(response, "내 프로필을 성공적으로 조회했습니다.");
     }
 
-    @GetMapping("/github")
+    @GetMapping("/me/github")
     public ApiResponse<GetMyGitHubActivityDto.Response> getMyGitHubActivity(
         @AuthenticatedActor Actor actor,
         @RequestParam PeriodCategory period
@@ -63,7 +63,7 @@ public class UserController implements UserControllerDocument {
         return ApiResponse.success(response, "특정 기간 동안의 깃허브 활동을 성공적으로 조회했습니다.");
     }
 
-    @GetMapping("/github/{date}")
+    @GetMapping("/me/github/{date}")
     public ApiResponse<GetMyGitHubActivityDetailDto.Response> getMyGitHubActivityDetail(
         @AuthenticatedActor Actor actor,
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
@@ -74,7 +74,7 @@ public class UserController implements UserControllerDocument {
         return ApiResponse.success(response, "특정 날짜의 깃허브 활동을 성공적으로 조회했습니다.");
     }
 
-    @GetMapping("/items")
+    @GetMapping("/me/items")
     public ApiResponse<GetMyItemsDto.Response> getMyItems(
         @AuthenticatedActor Actor actor,
         @RequestParam(defaultValue = "ALL") UserItemCategory category
@@ -85,7 +85,7 @@ public class UserController implements UserControllerDocument {
         return ApiResponse.success(response, "보유한 아이템 목록을 성공적으로 조회했습니다.");
     }
 
-    @GetMapping("/calendar")
+    @GetMapping("/me/calendar")
     public ApiResponse<GetMyCalendarDto.Response> getMyCalendar(
         @AuthenticatedActor Actor actor,
         @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth date
