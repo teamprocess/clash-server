@@ -8,12 +8,15 @@ import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRe
 import com.process.clash.application.github.exception.exception.notfound.GithubDailyStatsNotFoundException;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
+import com.process.clash.infrastructure.config.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -23,11 +26,18 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
+    private final RecordProperties recordProperties;
+    private final ZoneId recordZoneId;
 
     @Override
     public GetCompareWithYesterdayData.Result execute(GetCompareWithYesterdayData.Command command) {
 
-        LocalDate today = LocalDate.now();
+        ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
+        int boundaryHour = recordProperties.dayBoundaryHour();
+        LocalDate today = nowZoned.toLocalDate();
+        if (nowZoned.getHour() < boundaryHour) {
+            today = today.minusDays(1);
+        }
 
         LocalDate yesterday = today.minusDays(1);
 
@@ -36,8 +46,8 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
                         .orElseThrow(UserStudyTimeNotFoundException::new)
                         .totalStudyTimeSeconds();
 
-        LocalDateTime startOfDay = today.atTime(6, 0, 0);
-        LocalDateTime endOfDay = today.plusDays(1).atTime(6, 0, 0);
+        LocalDateTime startOfDay = today.atTime(boundaryHour, 0, 0);
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
 
         Long todayActiveTime = studySessionRepositoryPort.getTotalStudyTimeInSeconds(
                 command.actor().id(),

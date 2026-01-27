@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.shop.product.dto;
 
+import com.process.clash.application.common.pagination.Pagination;
 import com.process.clash.application.common.exception.exception.ValidationException;
 import com.process.clash.application.shop.product.data.GetAllProductsData;
 import com.process.clash.application.shop.product.vo.ProductVo;
@@ -41,28 +42,7 @@ public class GetAllProductsDto {
             List<CommonProductDto> products = result.products().stream()
                     .map(CommonProductDto::from)
                     .toList();
-            Pagination pagination = Pagination.from(result.pagination());
-            return new Response(products, pagination);
-        }
-    }
-
-    public record Pagination(
-            Integer currentPage,
-            Integer totalPages,
-            Long totalItems,
-            Integer pageSize,
-            Boolean hasNext,
-            Boolean hasPrevious
-    ) {
-        public static Pagination from(GetAllProductsData.PaginationInfo info) {
-            return new Pagination(
-                    info.currentPage(),
-                    info.totalPages(),
-                    info.totalItems(),
-                    info.pageSize(),
-                    info.hasNext(),
-                    info.hasPrevious()
-            );
+            return new Response(products, result.pagination());
         }
     }
 }

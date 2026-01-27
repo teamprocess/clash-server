@@ -9,12 +9,15 @@ import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.rival.rival.enums.RivalCurrentStatus;
 import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.infrastructure.config.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +31,8 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
-    private static final int DAY_START_HOUR = 6;
+    private final RecordProperties recordProperties;
+    private final ZoneId recordZoneId;
 
     @Override
     public GetMyRivalActingData.Result execute(GetMyRivalActingData.Command command) {
@@ -39,9 +43,14 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
             return GetMyRivalActingData.Result.from(List.of());
         }
 
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atTime(DAY_START_HOUR, 0);
-        LocalDateTime endOfDay = today.plusDays(1).atTime(DAY_START_HOUR, 0);
+        int boundaryHour = recordProperties.dayBoundaryHour();
+        ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
+        LocalDate recordDate = nowZoned.toLocalDate();
+        if (nowZoned.getHour() < boundaryHour) {
+            recordDate = recordDate.minusDays(1);
+        }
+        LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
 
         List<Long> opponentIds = Stream.concat(
                 rivals.stream()

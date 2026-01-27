@@ -7,7 +7,7 @@ import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.DeleteTaskUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
-import com.process.clash.domain.record.model.entity.Task;
+import com.process.clash.domain.record.entity.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

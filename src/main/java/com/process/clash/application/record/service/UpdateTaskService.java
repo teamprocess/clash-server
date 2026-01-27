@@ -5,7 +5,7 @@ import com.process.clash.application.record.exception.exception.notfound.TaskNot
 import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.UpdateTaskUseCase;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
-import com.process.clash.domain.record.model.entity.Task;
+import com.process.clash.domain.record.entity.Task;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
