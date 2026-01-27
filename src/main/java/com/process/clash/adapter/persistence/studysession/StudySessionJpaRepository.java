@@ -3,6 +3,8 @@ package com.process.clash.adapter.persistence.studysession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import com.process.clash.application.ranking.data.UserRanking;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -43,7 +45,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     @Query(value = """
         select coalesce(sum(
             extract(epoch from (
-                least(coalesce(s.ended_at, current_timestamp), cast(:endOfDay as timestamp)) - 
+                least(coalesce(s.ended_at, current_timestamp), cast(:endOfDay as timestamp)) -
                 greatest(s.started_at, cast(:startOfDay as timestamp))
             ))
         ), 0)
@@ -62,7 +64,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         select s.fk_user_id as userId,
                coalesce(sum(
                    extract(epoch from (
-                       least(coalesce(s.ended_at, current_timestamp), cast(:endOfDay as timestamp)) - 
+                       least(coalesce(s.ended_at, current_timestamp), cast(:endOfDay as timestamp)) -
                        greatest(s.started_at, cast(:startOfDay as timestamp))
                    ))
                ), 0) as totalSeconds
@@ -82,4 +84,41 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         Long getUserId();
         Long getTotalSeconds();
     }
+
+    @Query("""
+        select new com.process.clash.application.ranking.data.UserRanking(
+                u.name,
+                u.profileImage,
+                case when count(r) > 0 then true else false end,
+                u.username,
+                cast(
+                    coalesce(
+                        sum(
+                            function('date_part', 'epoch',
+                                coalesce(ss.endedAt, current_timestamp) - ss.startedAt
+                            )
+                        ), 0
+                    ) as long
+                )
+            )
+        from StudySessionJpaEntity ss
+        inner join ss.user u
+        left join RivalJpaEntity r on
+            (u.id in (r.firstUser.id, r.secondUser.id)
+                and :userId in (r.firstUser.id, r.secondUser.id)
+                and r.rivalLinkingStatus = 'ACCEPTED')
+        where ss.startedAt >= :startDate
+            and ss.startedAt < :endDate
+        group by u.id, u.name, u.profileImage, u.username
+        order by sum(
+            function('date_part', 'epoch',
+                coalesce(ss.endedAt, current_timestamp) - ss.startedAt
+            )
+        ) desc
+    """)
+    List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 }

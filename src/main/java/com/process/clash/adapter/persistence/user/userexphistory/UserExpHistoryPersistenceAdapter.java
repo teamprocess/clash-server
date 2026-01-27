@@ -5,6 +5,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.UserEarnedExp;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
@@ -105,5 +106,11 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     public List<UserEarnedExp> findUserMonthlyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
         return userExpHistoryJpaRepository.findUserMonthlyEarnedExpByUserIdAndPeriod(id, startDate, endDate, pageRequest);
+    }
+
+    @Override
+    public List<UserRanking> findExpRankingByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        return userExpHistoryJpaRepository.findExpRankingByUserIdAndPeriod(userId, startDate, endDate);
     }
 }
