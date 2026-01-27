@@ -87,6 +87,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
 
     @Query("""
         select new com.process.clash.application.ranking.data.UserRanking(
+                u.id,
                 u.name,
                 u.profileImage,
                 case when count(r) > 0 then true else false end,

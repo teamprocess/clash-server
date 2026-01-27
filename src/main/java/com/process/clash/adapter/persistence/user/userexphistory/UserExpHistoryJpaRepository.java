@@ -214,6 +214,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
 
     @Query("""
         select new com.process.clash.application.ranking.data.UserRanking(
+                ux.user.id,
                 ux.user.name,
                 ux.user.profileImage,
                 case when count(r) > 0 then true else false end,
