@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.group;
 
+import com.process.clash.domain.group.enums.GroupCategory;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,9 @@ public interface GroupJpaRepository extends JpaRepository<GroupJpaEntity, Long> 
     Page<GroupJpaEntity> findAll(Pageable pageable);
 
     @EntityGraph(attributePaths = {"owner"})
+    Page<GroupJpaEntity> findAllByCategory(GroupCategory category, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"owner"})
     Optional<GroupJpaEntity> findById(Long id);
 
     @EntityGraph(attributePaths = {"owner"})
@@ -26,4 +30,18 @@ public interface GroupJpaRepository extends JpaRepository<GroupJpaEntity, Long> 
         where gm.user.id = :userId
     """)
     Page<GroupJpaEntity> findAllByMemberUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"owner"})
+    @Query("""
+        select g
+        from GroupJpaEntity g
+        join GroupMemberJpaEntity gm on gm.group = g
+        where gm.user.id = :userId
+        and g.category = :category
+    """)
+    Page<GroupJpaEntity> findAllByMemberUserIdAndCategory(
+        @Param("userId") Long userId,
+        @Param("category") GroupCategory category,
+        Pageable pageable
+    );
 }

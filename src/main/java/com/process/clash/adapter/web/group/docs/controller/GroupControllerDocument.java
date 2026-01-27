@@ -34,7 +34,8 @@ public interface GroupControllerDocument {
 
     @Operation(summary = "그룹 목록 조회", description = "전체 그룹 목록을 조회합니다.")
     @Parameters({
-        @Parameter(name = "page", description = "페이지 번호 (1부터)", example = "1")
+        @Parameter(name = "page", description = "페이지 번호 (1부터)", example = "1"),
+        @Parameter(name = "category", description = "카테고리 (ALL | CLASS | CLUB | TEAM | NARSHA | ETC)", example = "ALL")
     })
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공",
@@ -81,7 +82,8 @@ public interface GroupControllerDocument {
 
     @Operation(summary = "내 그룹 목록 조회", description = "내가 참여한 그룹 목록을 조회합니다.")
     @Parameters({
-        @Parameter(name = "page", description = "페이지 번호 (1부터)", example = "1")
+        @Parameter(name = "page", description = "페이지 번호 (1부터)", example = "1"),
+        @Parameter(name = "category", description = "카테고리 (ALL | CLASS | CLUB | TEAM | NARSHA | ETC)", example = "ALL")
     })
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공",

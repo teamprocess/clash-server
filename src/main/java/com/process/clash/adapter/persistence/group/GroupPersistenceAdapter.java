@@ -5,6 +5,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
+import com.process.clash.domain.group.enums.GroupCategory;
 import com.process.clash.domain.user.user.entity.User;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +56,23 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     }
 
     @Override
+    public PageResult findAllByPageAndCategory(Integer page, Integer size, GroupCategory category) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<GroupJpaEntity> pageResult = groupJpaRepository.findAllByCategory(category, pageable);
+        return mapPageResult(pageResult);
+    }
+
+    @Override
     public PageResult findAllByMemberUserId(Long userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<GroupJpaEntity> pageResult = groupJpaRepository.findAllByMemberUserId(userId, pageable);
+        return mapPageResult(pageResult);
+    }
+
+    @Override
+    public PageResult findAllByMemberUserIdAndCategory(Long userId, Integer page, Integer size, GroupCategory category) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<GroupJpaEntity> pageResult = groupJpaRepository.findAllByMemberUserIdAndCategory(userId, category, pageable);
         return mapPageResult(pageResult);
     }
 
