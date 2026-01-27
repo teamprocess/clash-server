@@ -4,16 +4,20 @@ import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.user.docs.controller.UserControllerDocument;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
+import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.profile.data.GetMyGitHubActivityDetailData;
 import com.process.clash.application.profile.data.GetMyGitHubActivityData;
+import com.process.clash.application.profile.data.GetMyItemsData;
 import com.process.clash.application.profile.data.GetMyProfileData;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityDetailUsecase;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityUsecase;
+import com.process.clash.application.profile.port.in.GetMyItemsUsecase;
 import com.process.clash.application.profile.port.in.GetMyProfileUsecase;
 import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.domain.common.enums.UserItemCategory;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +35,7 @@ public class UserController implements UserControllerDocument {
     private final GetMyProfileUsecase getMyProfileUsecase;
     private final GetMyGitHubActivityUsecase getMyGitHubActivityUsecase;
     private final GetMyGitHubActivityDetailUsecase getMyGitHubActivityDetailUsecase;
+    private final GetMyItemsUsecase getMyItemsUsecase;
 
     @GetMapping("/me")
     public ApiResponse<GetMyProfileDto.Response> getMyProfile(
@@ -62,5 +67,16 @@ public class UserController implements UserControllerDocument {
         GetMyGitHubActivityDetailData.Result result = getMyGitHubActivityDetailUsecase.execute(command);
         GetMyGitHubActivityDetailDto.Response response = GetMyGitHubActivityDetailDto.Response.from(result);
         return ApiResponse.success(response, "특정 날짜의 깃허브 활동을 성공적으로 조회했습니다.");
+    }
+
+    @GetMapping("/items")
+    public ApiResponse<GetMyItemsDto.Response> getMyItems(
+        @AuthenticatedActor Actor actor,
+        @RequestParam(defaultValue = "ALL") UserItemCategory category
+    ) {
+        GetMyItemsData.Command command = new GetMyItemsData.Command(actor, category);
+        GetMyItemsData.Result result = getMyItemsUsecase.execute(command);
+        GetMyItemsDto.Response response = GetMyItemsDto.Response.from(result);
+        return ApiResponse.success(response, "보유한 아이템 목록을 성공적으로 조회했습니다.");
     }
 }

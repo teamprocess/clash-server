@@ -3,11 +3,14 @@ package com.process.clash.adapter.web.user.docs.controller;
 import com.process.clash.adapter.web.user.docs.response.GetMyProfileResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityDetailResponseDoc;
+import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDoc;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
+import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.domain.common.enums.UserItemCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,5 +57,17 @@ public interface UserControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<GetMyGitHubActivityDetailDto.Response> getMyGitHubActivityDetail(
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "조회 날짜 (yyyy-MM-dd)", required = true) LocalDate date
+    );
+
+    @Operation(summary = "보유한 아이템 목록 조회", description = "보유한 아이템 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetMyItemsResponseDoc.class)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyItemsDto.Response> getMyItems(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "카테고리 (ALL, INSIGNIA, NAMEPLATE, BANNER)", required = true) UserItemCategory category
     );
 }

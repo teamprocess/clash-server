@@ -35,7 +35,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
 
     @Override
     public List<Product> findAllByIdIn(List<Long> productIds) {
-        return productJpaRepository.findAllById(productIds)
+        return productJpaRepository.findByIdIn(productIds)
                 .stream()
                 .map(productJpaMapper::toDomain)
                 .toList();

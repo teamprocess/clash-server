@@ -6,6 +6,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.user.usergoodshistory.port.out.UserGoodsHistoryRepositoryPort;
 import com.process.clash.domain.user.usergoodshistory.entity.UserGoodsHistory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -26,5 +27,10 @@ public class UserGoodsHistoryPersistenceAdapter implements UserGoodsHistoryRepos
                 productJpaRepository.getReferenceById(userGoodsHistory.productId()) : null;
         UserGoodsHistoryJpaEntity savedEntity = userGoodsHistoryJpaRepository.save(userGoodsHistoryJpaMapper.toJpaEntity(userGoodsHistory, userJpaEntity, productJpaEntity));
         return userGoodsHistoryJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public List<Long> findDistinctProductIdsByUserId(Long userId) {
+        return userGoodsHistoryJpaRepository.findDistinctProductIdsByUserId(userId);
     }
 }
