@@ -4,9 +4,11 @@ import com.process.clash.adapter.web.user.docs.response.GetMyProfileResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityDetailResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDoc;
+import com.process.clash.adapter.web.user.docs.response.GetMyCalendarResponseDoc;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
 import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
+import com.process.clash.adapter.web.user.dto.GetMyCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;
@@ -20,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
+import java.time.YearMonth;
 
 @Tag(name = "유저 API", description = "내 계정/프로필 정보")
 public interface UserControllerDocument {
@@ -69,5 +72,17 @@ public interface UserControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<GetMyItemsDto.Response> getMyItems(
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "카테고리 (ALL, INSIGNIA, NAMEPLATE, BANNER)", required = true) UserItemCategory category
+    );
+
+    @Operation(summary = "활동 캘린더 조회", description = "특정 월의 활동 캘린더를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetMyCalendarResponseDoc.class)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyCalendarDto.Response> getMyCalendar(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "조회 월 (yyyy-MM)", required = true) YearMonth date
     );
 }

@@ -4,21 +4,25 @@ import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.user.docs.controller.UserControllerDocument;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
+import com.process.clash.adapter.web.user.dto.GetMyCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.profile.data.GetMyGitHubActivityDetailData;
 import com.process.clash.application.profile.data.GetMyGitHubActivityData;
+import com.process.clash.application.profile.data.GetMyCalendarData;
 import com.process.clash.application.profile.data.GetMyItemsData;
 import com.process.clash.application.profile.data.GetMyProfileData;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityDetailUsecase;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityUsecase;
+import com.process.clash.application.profile.port.in.GetMyCalendarUsecase;
 import com.process.clash.application.profile.port.in.GetMyItemsUsecase;
 import com.process.clash.application.profile.port.in.GetMyProfileUsecase;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.UserItemCategory;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +40,7 @@ public class UserController implements UserControllerDocument {
     private final GetMyGitHubActivityUsecase getMyGitHubActivityUsecase;
     private final GetMyGitHubActivityDetailUsecase getMyGitHubActivityDetailUsecase;
     private final GetMyItemsUsecase getMyItemsUsecase;
+    private final GetMyCalendarUsecase getMyCalendarUsecase;
 
     @GetMapping("/me")
     public ApiResponse<GetMyProfileDto.Response> getMyProfile(
@@ -78,5 +83,16 @@ public class UserController implements UserControllerDocument {
         GetMyItemsData.Result result = getMyItemsUsecase.execute(command);
         GetMyItemsDto.Response response = GetMyItemsDto.Response.from(result);
         return ApiResponse.success(response, "보유한 아이템 목록을 성공적으로 조회했습니다.");
+    }
+
+    @GetMapping("/calendar")
+    public ApiResponse<GetMyCalendarDto.Response> getMyCalendar(
+        @AuthenticatedActor Actor actor,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth date
+    ) {
+        GetMyCalendarData.Command command = new GetMyCalendarData.Command(actor, date);
+        GetMyCalendarData.Result result = getMyCalendarUsecase.execute(command);
+        GetMyCalendarDto.Response response = GetMyCalendarDto.Response.from(result);
+        return ApiResponse.success(response, "활동 캘린더 정보를 성공적으로 조회했습니다.");
     }
 }
