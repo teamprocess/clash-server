@@ -2,9 +2,9 @@ package com.process.clash.application.profile.service;
 
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.profile.data.GetMyGitHubActivityData;
+import com.process.clash.application.profile.exception.exception.badrequest.InvalidPeriodCategoryException;
 import com.process.clash.application.profile.policy.ProfilePolicy;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityUsecase;
-import com.process.clash.application.user.user.exception.exception.badrequest.InvalidPeriodCategoryException;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import java.sql.Date;
 import java.time.LocalDate;
