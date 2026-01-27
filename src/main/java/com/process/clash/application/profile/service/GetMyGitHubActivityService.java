@@ -8,6 +8,7 @@ import com.process.clash.application.profile.port.in.GetMyGitHubActivityUsecase;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +29,7 @@ public class GetMyGitHubActivityService implements GetMyGitHubActivityUsecase {
 
         LocalDate endDate = LocalDate.now().plusDays(1);
         LocalDate startDate = resolveStartDate(command.period(), endDate);
-        int limit = resolveLimit(command.period(), endDate);
+        int limit = (int) ChronoUnit.DAYS.between(startDate, endDate);
 
         List<Object[]> rows = gitHubDailyStatsQueryPort.findDailyContributionsByUserIds(
                 List.of(command.actor().id()),
@@ -58,15 +59,6 @@ public class GetMyGitHubActivityService implements GetMyGitHubActivityUsecase {
             case WEEK -> endDate.minusWeeks(1);
             case MONTH -> endDate.minusMonths(1);
             case YEAR -> endDate.minusYears(1);
-            default -> throw new InvalidPeriodCategoryException();
-        };
-    }
-
-    private int resolveLimit(PeriodCategory period, LocalDate endDate) {
-        return switch (period) {
-            case WEEK -> 7;
-            case MONTH -> endDate.minusMonths(1).lengthOfMonth();
-            case YEAR -> endDate.minusYears(1).lengthOfYear();
             default -> throw new InvalidPeriodCategoryException();
         };
     }
