@@ -45,7 +45,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     @Query(value = """
         select coalesce(sum(
             extract(epoch from (
-                least(coalesce(s.ended_at, current_timestamp), cast(:endOfDay as timestamp)) -
+                least(coalesce(s.ended_at, cast(:now as timestamp)), cast(:endOfDay as timestamp)) -
                 greatest(s.started_at, cast(:startOfDay as timestamp))
             ))
         ), 0)
@@ -57,14 +57,15 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     Long getTotalStudyTimeInSeconds(
             @Param("userId") Long userId,
             @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay
+            @Param("endOfDay") LocalDateTime endOfDay,
+            @Param("now") LocalDateTime now
     );
 
     @Query(value = """
         select s.fk_user_id as userId,
                coalesce(sum(
                    extract(epoch from (
-                       least(coalesce(s.ended_at, current_timestamp), cast(:endOfDay as timestamp)) -
+                       least(coalesce(s.ended_at, cast(:now as timestamp)), cast(:endOfDay as timestamp)) -
                        greatest(s.started_at, cast(:startOfDay as timestamp))
                    ))
                ), 0) as totalSeconds
@@ -77,7 +78,8 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     List<UserStudyTimeProjection> getTotalStudyTimeInSecondsByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay
+            @Param("endOfDay") LocalDateTime endOfDay,
+            @Param("now") LocalDateTime now
     );
 
     interface UserStudyTimeProjection {
