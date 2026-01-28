@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.group.dto;
 
+import com.process.clash.adapter.web.group.util.GroupCategoryConverter;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.common.pagination.Pagination;
 import com.process.clash.application.group.data.GetAllGroupsData;
@@ -8,10 +9,11 @@ import java.util.List;
 public class GetAllGroupsDto {
 
     public record Request(
-        Integer page
+        Integer page,
+        String category
     ) {
         public GetAllGroupsData.Command toCommand(Actor actor) {
-            return new GetAllGroupsData.Command(actor, page);
+            return new GetAllGroupsData.Command(actor, page, GroupCategoryConverter.toCategoryFilter(category));
         }
     }
 

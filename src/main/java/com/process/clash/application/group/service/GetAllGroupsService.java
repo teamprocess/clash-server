@@ -25,7 +25,9 @@ public class GetAllGroupsService implements GetAllGroupsUseCase {
 
     @Override
     public GetAllGroupsData.Result execute(GetAllGroupsData.Command command) {
-        GroupRepositoryPort.PageResult pageResult = groupRepositoryPort.findAllByPage(command.page(), PAGE_SIZE);
+        GroupRepositoryPort.PageResult pageResult = command.category() == null
+            ? groupRepositoryPort.findAllByPage(command.page(), PAGE_SIZE)
+            : groupRepositoryPort.findAllByPageAndCategory(command.page(), PAGE_SIZE, command.category());
         List<Long> pageGroupIds = pageResult.groups().stream()
             .map(Group::id)
             .toList();

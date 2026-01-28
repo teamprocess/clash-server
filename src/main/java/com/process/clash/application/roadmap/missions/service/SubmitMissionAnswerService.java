@@ -79,11 +79,24 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         if (progress != null && progress.getCurrentChapterId() != null) {
             Chapter currentChapter = chapterRepositoryPort.findById(progress.getCurrentChapterId())
                     .orElseThrow(ChapterNotFoundException::new);
-            if (currentChapter.getOrderIndex() < chapter.getOrderIndex()) {
+            Integer currentOrderIndex = currentChapter.getOrderIndex();
+            Integer targetOrderIndex = chapter.getOrderIndex();
+
+            // orderIndex가 null이면 비교 불가 (잠김 처리)
+            if (currentOrderIndex == null || targetOrderIndex == null) {
+                throw new ChapterLockedException();
+            }
+
+            if (currentOrderIndex < targetOrderIndex) {
                 throw new ChapterLockedException();
             }
         } else {
-            throw new ChapterLockedException();
+            // progress가 없거나 currentChapterId가 null인 경우
+            // 첫 번째 챕터(orderIndex = 0)에만 접근 가능
+            Integer targetOrderIndex = chapter.getOrderIndex();
+            if (targetOrderIndex == null || targetOrderIndex != 0) {
+                throw new ChapterLockedException();
+            }
         }
 
         // 3. 질문 조회
@@ -159,8 +172,19 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         // [수정] 섹션 진행도 업데이트 (조건 강화: 챕터 클리어 AND 현재 진행중인 챕터일 경우에만)
         // 기존: 미션 하나만 깨도 다음 챕터 열림 -> 수정: 챕터 전체 클리어 시 열림
         // 기존: 과거 챕터 다시 풀면 진행도 롤백 -> 수정: 현재 진행 중인 챕터일 때만 전진
-        if (isChapterCleared && chapter.getId().equals(progress.getCurrentChapterId())) {
-            updateSectionProgress(chapter, progress);
+        if (isChapterCleared) {
+            // progress가 없거나 currentChapterId가 null인 경우
+            Integer chapterOrderIndex = chapter.getOrderIndex();
+            if ((progress == null || progress.getCurrentChapterId() == null) && chapterOrderIndex != null && chapterOrderIndex == 0) {
+                // 첫 번째 챕터 클리어 시 progress 생성 또는 초기화
+                if (progress == null) {
+                    progress = UserSectionProgress.start(actor.id(), chapter.getSectionId(), chapter.getId());
+                }
+                updateSectionProgress(chapter, progress);
+            } else if (progress != null && chapter.getId().equals(progress.getCurrentChapterId())) {
+                // 일반적인 경우: 현재 진행 중인 챕터를 클리어한 경우
+                updateSectionProgress(chapter, progress);
+            }
         }
 
         // 7. 응답 데이터 계산
@@ -228,8 +252,17 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
 
     private void updateSectionProgress(Chapter chapter, UserSectionProgress progress) {
         List<Chapter> chaptersInSection = chapterRepositoryPort.findAllBySectionId(chapter.getSectionId());
+        Integer currentOrderIndex = chapter.getOrderIndex();
+
+        // orderIndex가 null이면 다음 챕터를 찾을 수 없음
+        if (currentOrderIndex == null) {
+            progress.completeSection();
+            userSectionProgressRepositoryPort.save(progress);
+            return;
+        }
+
         Optional<Chapter> nextChapterOpt = chaptersInSection.stream()
-                .filter(c -> c.getOrderIndex() > chapter.getOrderIndex())
+                .filter(c -> c.getOrderIndex() != null && c.getOrderIndex() > currentOrderIndex)
                 .min((c1, c2) -> Integer.compare(c1.getOrderIndex(), c2.getOrderIndex()));
 
         if (nextChapterOpt.isPresent()) {

@@ -55,6 +55,12 @@ public enum GroupStatusCode implements StatusCode {
         "GROUP_NOT_MEMBER",
         "그룹에 참여하지 않았습니다.",
         ErrorCategory.BAD_REQUEST
+    ),
+
+    INVALID_CATEGORY(
+        "INVALID_CATEGORY",
+        "유효하지 않은 카테고리입니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;

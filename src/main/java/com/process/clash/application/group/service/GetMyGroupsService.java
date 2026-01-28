@@ -22,8 +22,14 @@ public class GetMyGroupsService implements GetMyGroupsUseCase {
 
     @Override
     public GetMyGroupsData.Result execute(GetMyGroupsData.Command command) {
-        GroupRepositoryPort.PageResult pageResult =
-            groupRepositoryPort.findAllByMemberUserId(command.actor().id(), command.page(), PAGE_SIZE);
+        GroupRepositoryPort.PageResult pageResult = command.category() == null
+            ? groupRepositoryPort.findAllByMemberUserId(command.actor().id(), command.page(), PAGE_SIZE)
+            : groupRepositoryPort.findAllByMemberUserIdAndCategory(
+                command.actor().id(),
+                command.page(),
+                PAGE_SIZE,
+                command.category()
+            );
         List<GroupSummaryVo> groups = groupSummaryAssembler.toSummaries(pageResult.groups());
         Pagination pagination =
             Pagination.from(command.page(), PAGE_SIZE, pageResult.totalCount());

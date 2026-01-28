@@ -128,6 +128,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
 
     @Query("""
         select new com.process.clash.application.ranking.data.UserRanking(
+                ug.user.id,
                 ug.user.name,
                 ug.user.profileImage,
                 case when count(r) > 0 then true else false end,
@@ -146,7 +147,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             (ug.user.id in (r.firstUser.id, r.secondUser.id)
                 and :userId in (r.firstUser.id, r.secondUser.id)
                 and r.rivalLinkingStatus = 'ACCEPTED')
-        group by ug.user.id, ug.user.name, ug.user.profileImage, ug.user.username
+        group by ug.user.id, ug.user.name, ug.user.profileImage, ug.user.username, ug.gitHubId
         order by sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount) desc
     """)
     List<UserRanking> findGitHubRankingByUserIdAndPeriod(
