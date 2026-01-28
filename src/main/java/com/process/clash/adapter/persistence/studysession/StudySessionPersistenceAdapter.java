@@ -9,6 +9,7 @@ import com.process.clash.application.record.exception.exception.notfound.StudySe
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.entity.StudySession;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     private final StudySessionJpaMapper studySessionJpaMapper;
     private final UserJpaRepository userJpaRepository;
     private final TaskJpaRepository taskJpaRepository;
+    private final ZoneId recordZoneId;
 
     @Override
     public StudySession save(StudySession studySession) {
@@ -134,7 +136,8 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
 
     @Override
     public Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
-        return studySessionJpaRepository.getTotalStudyTimeInSeconds(userId, startOfDay, endOfDay);
+        LocalDateTime now = LocalDateTime.now(recordZoneId);
+        return studySessionJpaRepository.getTotalStudyTimeInSeconds(userId, startOfDay, endOfDay, now);
     }
 
     @Override
@@ -147,8 +150,9 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
             return Map.of();
         }
 
+        LocalDateTime now = LocalDateTime.now(recordZoneId);
         return studySessionJpaRepository
-                .getTotalStudyTimeInSecondsByUserIds(userIds, startTime, endTime)
+                .getTotalStudyTimeInSecondsByUserIds(userIds, startTime, endTime, now)
                 .stream()
                 .collect(Collectors.toMap(
                         StudySessionJpaRepository.UserStudyTimeProjection::getUserId,
