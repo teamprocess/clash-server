@@ -22,6 +22,10 @@ public class UserSectionProgress {
 
     private Boolean isCompleted;
 
+    public static UserSectionProgress start(Long userId, Long sectionId, Long firstChapterId) {
+        return new UserSectionProgress(null, userId, sectionId, firstChapterId, 0, false);
+    }
+
     public void moveToNextChapter(Long nextChapterId) {
         this.currentChapterId = nextChapterId;
         this.completedChapters += 1;

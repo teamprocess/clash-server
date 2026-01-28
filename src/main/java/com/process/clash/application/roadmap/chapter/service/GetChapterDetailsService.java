@@ -2,13 +2,16 @@ package com.process.clash.application.roadmap.chapter.service;
 
 import com.process.clash.application.roadmap.chapter.data.GetChapterDetailsData;
 import com.process.clash.application.roadmap.chapter.port.in.GetChapterDetailsUseCase;
+import com.process.clash.application.roadmap.missions.exception.exception.badrequest.ChapterLockedException;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.ChapterNotFoundException;
 import com.process.clash.application.roadmap.port.out.ChapterRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
+import com.process.clash.application.roadmap.port.out.UserSectionProgressRepositoryPort;
 import com.process.clash.domain.roadmap.entity.Chapter;
 import com.process.clash.domain.roadmap.entity.Mission;
 import com.process.clash.domain.roadmap.entity.MissionQuestion;
 import com.process.clash.domain.roadmap.entity.UserMissionHistory;
+import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +26,37 @@ public class GetChapterDetailsService implements GetChapterDetailsUseCase {
 
     private final ChapterRepositoryPort chapterRepositoryPort;
     private final UserMissionHistoryRepositoryPort userMissionHistoryRepositoryPort;
+    private final UserSectionProgressRepositoryPort userSectionProgressRepositoryPort;
 
     @Override
     public GetChapterDetailsData.Result execute(GetChapterDetailsData.Command command) {
         Chapter chapter = chapterRepositoryPort.findById(command.chapterId())
                 .orElseThrow(ChapterNotFoundException::new);
+
+        // 챕터 접근 권한 확인
+        UserSectionProgress progress = userSectionProgressRepositoryPort
+                .findByUserIdAndSectionId(command.actor().id(), chapter.getSectionId())
+                .orElse(null);
+
+        if (progress != null && progress.getCurrentChapterId() != null) {
+            Chapter currentChapter = chapterRepositoryPort.findById(progress.getCurrentChapterId())
+                    .orElseThrow(ChapterNotFoundException::new);
+            Integer currentOrderIndex = currentChapter.getOrderIndex();
+            Integer targetOrderIndex = chapter.getOrderIndex();
+
+            if (currentOrderIndex == null || targetOrderIndex == null) {
+                throw new ChapterLockedException();
+            }
+
+            if (currentOrderIndex < targetOrderIndex) {
+                throw new ChapterLockedException();
+            }
+        } else {
+            Integer targetOrderIndex = chapter.getOrderIndex();
+            if (targetOrderIndex == null || targetOrderIndex != 0) {
+                throw new ChapterLockedException();
+            }
+        }
 
         Long userId = command.actor().id();
 
