@@ -66,7 +66,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
                 if (!effectiveEnd.isAfter(effectiveStart)) {
                     return 0L;
                 }
-                return ChronoUnit.MILLIS.between(effectiveStart, effectiveEnd);
+                return ChronoUnit.SECONDS.between(effectiveStart, effectiveEnd);
             })
             .sum();
         Instant studyStoppedAt = todaySessions.stream()
