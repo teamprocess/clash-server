@@ -21,4 +21,7 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
 
     @EntityGraph(attributePaths = "season")
     Page<ProductJpaEntity> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = "season")
+    List<ProductJpaEntity> findByIdIn(List<Long> ids);
 }
