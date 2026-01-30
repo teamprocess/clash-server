@@ -27,7 +27,7 @@ public class GetMyGitHubActivityService implements GetMyGitHubActivityUsecase {
     public GetMyGitHubActivityData.Result execute(GetMyGitHubActivityData.Command command) {
         profilePolicy.validateGithubPeriod(command.period());
 
-        LocalDate endDate = LocalDate.now().plusDays(1);
+        LocalDate endDate = LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1);
         LocalDate startDate = resolveStartDate(command.period(), endDate);
         int limit = (int) ChronoUnit.DAYS.between(startDate, endDate);
 
