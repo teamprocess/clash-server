@@ -14,6 +14,7 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
@@ -38,6 +39,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     private static final DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ISO_INSTANT;
     private static final int PAGE_SIZE = 100;
 
+    @Qualifier("githubWebClient")
     private final WebClient githubWebClient;
     private final ObjectMapper objectMapper;
     private final GithubGraphqlQueries queries;

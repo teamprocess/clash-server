@@ -56,6 +56,11 @@ github:
     timezone: ${GITHUB_TIMEZONE:Asia/Seoul}
     day-boundary-hour: ${GITHUB_DAY_BOUNDARY_HOUR:6}
     max-concurrency: ${GITHUB_MAX_CONCURRENCY:1}
+  oauth:
+    client-id: ${GITHUB_CLIENT_ID}
+    client-secret: ${GITHUB_CLIENT_SECRET}
+    oauth-base-url: ${GITHUB_OAUTH_BASE_URL:https://github.com}
+    api-base-url: ${GITHUB_OAUTH_API_BASE_URL:https://api.github.com}
 
 record:
   timezone: ${RECORD_TIMEZONE:Asia/Seoul}
