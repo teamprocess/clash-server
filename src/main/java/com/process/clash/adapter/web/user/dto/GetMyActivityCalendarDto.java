@@ -1,14 +1,14 @@
 package com.process.clash.adapter.web.user.dto;
 
-import com.process.clash.application.profile.data.GetMyCalendarData;
+import com.process.clash.application.profile.data.GetMyActivityCalendarData;
 import java.util.List;
 
-public class GetMyCalendarDto {
+public class GetMyActivityCalendarDto {
 
     public record Response(
         List<CalendarDay> calendar
     ) {
-        public static Response from(GetMyCalendarData.Result result) {
+        public static Response from(GetMyActivityCalendarData.Result result) {
             List<CalendarDay> calendar = result.calendar().stream()
                     .map(CalendarDay::from)
                     .toList();
@@ -20,7 +20,7 @@ public class GetMyCalendarDto {
         String date,
         int studyTime
     ) {
-        public static CalendarDay from(GetMyCalendarData.CalendarDay day) {
+        public static CalendarDay from(GetMyActivityCalendarData.CalendarDay day) {
             return new CalendarDay(day.date(), day.studyTime());
         }
     }

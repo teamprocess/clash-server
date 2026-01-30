@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(description = "활동 캘린더 데이터")
-public class GetMyCalendarDataDoc {
+public class GetMyActivityCalendarDataDoc {
 
-    @ArraySchema(schema = @Schema(implementation = GetMyCalendarDayDoc.class))
-    public List<GetMyCalendarDayDoc> calendar;
+    @ArraySchema(schema = @Schema(implementation = GetMyActivityCalendarDayDoc.class))
+    public List<GetMyActivityCalendarDayDoc> calendar;
 }

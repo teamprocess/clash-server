@@ -4,7 +4,7 @@ import com.process.clash.application.common.actor.Actor;
 import java.time.YearMonth;
 import java.util.List;
 
-public class GetMyCalendarData {
+public class GetMyActivityCalendarData {
 
     public record Command(
         Actor actor,

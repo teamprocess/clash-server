@@ -4,11 +4,11 @@ import com.process.clash.adapter.web.user.docs.response.GetMyProfileResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityDetailResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDoc;
-import com.process.clash.adapter.web.user.docs.response.GetMyCalendarResponseDoc;
+import com.process.clash.adapter.web.user.docs.response.GetMyActivityCalendarResponseDoc;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
 import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
-import com.process.clash.adapter.web.user.dto.GetMyCalendarDto;
+import com.process.clash.adapter.web.user.dto.GetMyActivityCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;
@@ -78,10 +78,10 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyCalendarResponseDoc.class)
+                            schema = @Schema(implementation = GetMyActivityCalendarResponseDoc.class)
                     ))
     })
-    com.process.clash.adapter.web.common.ApiResponse<GetMyCalendarDto.Response> getMyCalendar(
+    com.process.clash.adapter.web.common.ApiResponse<GetMyActivityCalendarDto.Response> getMyActivityCalendar(
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "조회 월 (yyyy-MM)", required = true) YearMonth date
     );

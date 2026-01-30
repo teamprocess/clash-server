@@ -20,8 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
             }
             """
 )
-public class GetMyCalendarResponseDoc extends SuccessResponseDoc {
+public class GetMyActivityCalendarResponseDoc extends SuccessResponseDoc {
 
     @Schema(description = "활동 캘린더")
-    public GetMyCalendarDataDoc data;
+    public GetMyActivityCalendarDataDoc data;
 }

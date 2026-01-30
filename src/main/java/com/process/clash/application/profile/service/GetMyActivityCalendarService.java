@@ -1,7 +1,7 @@
 package com.process.clash.application.profile.service;
 
-import com.process.clash.application.profile.data.GetMyCalendarData;
-import com.process.clash.application.profile.port.in.GetMyCalendarUsecase;
+import com.process.clash.application.profile.data.GetMyActivityCalendarData;
+import com.process.clash.application.profile.port.in.GetMyActivityCalendarUsecase;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class GetMyCalendarService implements GetMyCalendarUsecase {
+public class GetMyActivityCalendarService implements GetMyActivityCalendarUsecase {
 
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
 
     @Override
-    public GetMyCalendarData.Result execute(GetMyCalendarData.Command command) {
+    public GetMyActivityCalendarData.Result execute(GetMyActivityCalendarData.Command command) {
         YearMonth month = command.month();
         LocalDate startDate = month.atDay(1);
         LocalDate endDate = month.plusMonths(1).atDay(1);
@@ -33,14 +33,14 @@ public class GetMyCalendarService implements GetMyCalendarUsecase {
                 PageRequest.of(0, limit)
         );
 
-        List<GetMyCalendarData.CalendarDay> calendar = rows.stream()
+        List<GetMyActivityCalendarData.CalendarDay> calendar = rows.stream()
                 .map(row -> {
                     LocalDate date = ((Date) row[1]).toLocalDate();
                     int studyTime = ((Number) row[2]).intValue();
-                    return GetMyCalendarData.CalendarDay.of(date.toString(), studyTime);
+                    return GetMyActivityCalendarData.CalendarDay.of(date.toString(), studyTime);
                 })
                 .toList();
 
-        return GetMyCalendarData.Result.from(calendar);
+        return GetMyActivityCalendarData.Result.from(calendar);
     }
 }
