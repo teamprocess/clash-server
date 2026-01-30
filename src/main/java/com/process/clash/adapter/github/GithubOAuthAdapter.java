@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -21,16 +20,23 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Component
-@RequiredArgsConstructor
 public class GithubOAuthAdapter implements GithubOAuthPort {
 
     private final GithubOAuthProperties properties;
 
-    @Qualifier("githubOAuthWebClient")
     private final WebClient githubOAuthWebClient;
 
-    @Qualifier("githubApiWebClient")
     private final WebClient githubApiWebClient;
+
+    public GithubOAuthAdapter(
+            GithubOAuthProperties properties,
+            @Qualifier("githubOAuthWebClient") WebClient githubOAuthWebClient,
+            @Qualifier("githubApiWebClient") WebClient githubApiWebClient
+    ) {
+        this.properties = properties;
+        this.githubOAuthWebClient = githubOAuthWebClient;
+        this.githubApiWebClient = githubApiWebClient;
+    }
 
     @Override
     public GithubOAuthToken exchangeCodeForAccessToken(String code) {
