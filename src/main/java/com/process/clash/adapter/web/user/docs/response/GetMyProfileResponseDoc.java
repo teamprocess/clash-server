@@ -19,12 +19,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 "role": "USER",
                 "profileImage": "https://cdn.example.com/profile/1.png",
                 "totalExp": 1200,
-                "totalCookie": 300,
-                "totalToken": 20,
-                "major": "SERVER",
-                "userStatus": "ACTIVE"
-              }
+              "totalCookie": 300,
+              "totalToken": 20,
+              "major": "SERVER",
+              "userStatus": "ACTIVE",
+              "githubLinked": true
             }
+          }
             """
 )
 public class GetMyProfileResponseDoc extends SuccessResponseDoc {

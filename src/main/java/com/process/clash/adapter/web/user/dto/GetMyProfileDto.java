@@ -21,7 +21,8 @@ public class GetMyProfileDto {
         int totalCookie,
         int totalToken,
         Major major,
-        UserStatus userStatus
+        UserStatus userStatus,
+        boolean githubLinked
     ) {
         public static GetMyProfileDto.Response from(GetMyProfileData.Result result) {
             return new Response(
@@ -37,7 +38,8 @@ public class GetMyProfileDto {
               result.totalCookie(),
               result.totalToken(),
               result.major(),
-              result.userStatus()
+              result.userStatus(),
+              result.githubLinked()
             );
         }
     }
