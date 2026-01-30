@@ -29,7 +29,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
           AND date >= date_trunc('day', CAST(:startDate AS date))
           AND date < :endDate
         GROUP BY fk_user_id, date_trunc('day', date)
-        ORDER BY fk_user_id, date ASC
+        ORDER BY fk_user_id, date_trunc('day', date) ASC
     """, nativeQuery = true)
     List<Object[]> findDailyDataByUserIds(
             @Param("userIds") List<Long> userIds,
