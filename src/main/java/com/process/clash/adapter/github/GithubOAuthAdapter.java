@@ -49,7 +49,7 @@ public class GithubOAuthAdapter implements GithubOAuthPort {
                 throw new GithubOAuthTokenRequestFailedException();
             }
             if (response.error() != null && !response.error().isBlank()) {
-                System.out.println(response.error() + ": " + response.error_description() + " (" + response.error_uri() + ")");
+                log.warn("GitHub OAuth Error: {}: {} ({})", response.error(), response.error_description(), response.error_uri());
                 throw new GithubOAuthInvalidCodeException();
             }
             if (response.access_token() == null || response.access_token().isBlank()) {
