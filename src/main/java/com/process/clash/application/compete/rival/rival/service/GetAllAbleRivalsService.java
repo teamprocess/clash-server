@@ -4,7 +4,7 @@ import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRi
 import com.process.clash.application.compete.rival.rival.data.GetAllAbleRivalsData;
 import com.process.clash.application.compete.rival.rival.port.in.GetAllAbleRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
-import com.process.clash.application.user.usergithub.port.out.UserGitHubRepositoryPort;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
-    private final UserGitHubRepositoryPort userGitHubRepositoryPort;
+    private final UserRepositoryPort userRepositoryPort;
 
     @Override
     public GetAllAbleRivalsData.Result execute(GetAllAbleRivalsData.Command command) {
@@ -40,7 +40,7 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
         ).distinct().toList();
 
 
-        List<AbleRivalInfoForRival> ableRivalInfoForRivals = userGitHubRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
+        List<AbleRivalInfoForRival> ableRivalInfoForRivals = userRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
 
         return GetAllAbleRivalsData.Result.from(ableRivalInfoForRivals);
     }

@@ -22,12 +22,13 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     @Query(value = """
         SELECT 
             fk_user_id AS "userId",
-            date AS "date",
-            earn_exp AS point
+            date_trunc('day', date) AS "date",
+            AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('day', CAST(:startDate AS date))
           AND date < :endDate
+        GROUP BY fk_user_id, date_trunc('day', date)
         ORDER BY fk_user_id, date ASC
     """, nativeQuery = true)
     List<Object[]> findDailyDataByUserIds(

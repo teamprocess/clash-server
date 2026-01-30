@@ -1,6 +1,9 @@
 package com.process.clash.application.user.user.port.out;
 
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import com.process.clash.domain.user.user.entity.User;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +18,8 @@ public interface UserRepositoryPort {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(List<Long> excludedUserIds);
 
     Optional<User> findByEmail(String email);
 

@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,5 +24,18 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 
 	List<UserJpaEntity> findByIdIn(Set<Long> ids);
 
-
+	@Query("""
+        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival(
+            u.id,
+            u.name,
+            ug.gitHubId,
+            u.profileImage
+        )
+        from UserJpaEntity u
+        left join UserGitHubJpaEntity ug on u.id = ug.user.id
+        where u.id not in :excludedUserIds
+    """)
+	List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(
+			@Param("excludedUserIds") List<Long> excludedUserIds
+	);
 }
