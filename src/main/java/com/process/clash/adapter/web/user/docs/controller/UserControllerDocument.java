@@ -83,6 +83,6 @@ public interface UserControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyActivityCalendarDto.Response> getMyActivityCalendar(
             @Parameter(hidden = true) Actor actor,
-            @Parameter(description = "조회 월 (yyyy-MM)", required = true) YearMonth date
+            @Parameter(description = "조회 월 (yyyy-MM)", required = true) YearMonth month
     );
 }
