@@ -4,7 +4,6 @@ import com.process.clash.application.realtime.data.RefetchNotice;
 import com.process.clash.application.realtime.event.RefetchEvent;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

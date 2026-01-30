@@ -22,11 +22,9 @@ public class RefetchEventListener {
             return;
         }
         Collection<Long> userIds = event.userIds();
-        Set<Long> deduped = new LinkedHashSet<>(userIds);
-        deduped.removeIf(id -> id == null);
-        if (deduped.isEmpty()) {
+        if (userIds.isEmpty()) {
             return;
         }
-        broadcastRefetchPort.broadcastRefetchToUsers(event.notice(), deduped);
+        broadcastRefetchPort.broadcastRefetchToUsers(event.notice(), userIds);
     }
 }
