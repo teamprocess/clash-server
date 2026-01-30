@@ -12,8 +12,8 @@ public class GetMyGitHubActivityDetailData {
 
     public record Result(
         String date,
-        int contributionsCount,
-        int contributionsLevel,
+        int contributionCount,
+        int contributionLevel,
         int commitsCount,
         int issuesCount,
         int prCount,
@@ -23,8 +23,8 @@ public class GetMyGitHubActivityDetailData {
     ) {
         public static Result of(
             String date,
-            int contributionsCount,
-            int contributionsLevel,
+            int contributionCount,
+            int contributionLevel,
             int commitsCount,
             int issuesCount,
             int prCount,
@@ -34,8 +34,8 @@ public class GetMyGitHubActivityDetailData {
         ) {
             return new Result(
                 date,
-                contributionsCount,
-                contributionsLevel,
+                contributionCount,
+                contributionLevel,
                 commitsCount,
                 issuesCount,
                 prCount,

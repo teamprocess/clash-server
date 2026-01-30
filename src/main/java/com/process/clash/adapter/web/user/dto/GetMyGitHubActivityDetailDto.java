@@ -6,8 +6,8 @@ public class GetMyGitHubActivityDetailDto {
 
     public record Response(
         String date,
-        int contributionsCount,
-        int contributionsLevel,
+        int contributionCount,
+        int contributionLevel,
         int commitsCount,
         int issuesCount,
         int prCount,
@@ -18,8 +18,8 @@ public class GetMyGitHubActivityDetailDto {
         public static Response from(GetMyGitHubActivityDetailData.Result result) {
             return new Response(
                     result.date(),
-                    result.contributionsCount(),
-                    result.contributionsLevel(),
+                    result.contributionCount(),
+                    result.contributionLevel(),
                     result.commitsCount(),
                     result.issuesCount(),
                     result.prCount(),

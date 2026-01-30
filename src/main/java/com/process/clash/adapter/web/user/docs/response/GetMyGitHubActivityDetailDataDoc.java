@@ -9,10 +9,10 @@ public class GetMyGitHubActivityDetailDataDoc {
     public String date;
 
     @Schema(description = "기여 수", example = "4")
-    public Integer contributionsCount;
+    public Integer contributionCount;
 
     @Schema(description = "기여 레벨 (0~4)", example = "1")
-    public Integer contributionsLevel;
+    public Integer contributionLevel;
 
     @Schema(description = "커밋 수", example = "2")
     public Integer commitsCount;
