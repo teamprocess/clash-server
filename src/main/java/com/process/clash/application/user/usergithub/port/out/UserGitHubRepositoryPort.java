@@ -8,6 +8,5 @@ import java.util.List;
 public interface UserGitHubRepositoryPort {
 
     UserGitHub save(UserGitHub userGitHub);
-    List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(List<Long> ids);
     List<AbleRivalInfoForRival> findAbleRivalsWithUserInfoByKeyword(List<Long> ids, String keyword);
 }
