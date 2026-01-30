@@ -118,7 +118,7 @@ application/
 
 #### 3. Adapter Layer (`adapter`)
 - 외부 세계와의 통신 담당
-- Web, Persistence, External API 등
+- Web, Persistence, External API, ExceptionHandler 등
 
 **구조:**
 ```
@@ -138,7 +138,7 @@ adapter/
 
 #### 4. Infrastructure Layer (`infrastructure`)
 - 기술적 설정 및 공통 인프라
-- Config, Security, Exception Handler 등
+- Config, Security 등
 
 ---
 

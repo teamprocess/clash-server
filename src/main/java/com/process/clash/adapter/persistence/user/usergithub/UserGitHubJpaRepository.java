@@ -43,21 +43,6 @@ public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEnti
         from UserGitHubJpaEntity ug
         join ug.user u
         where u.id not in :excludedUserIds
-    """)
-    List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(
-            @Param("excludedUserIds") List<Long> excludedUserIds
-    );
-
-    @Query("""
-        select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival(
-            u.id,
-            u.name,
-            ug.gitHubId,
-            u.profileImage
-        )
-        from UserGitHubJpaEntity ug
-        join ug.user u
-        where u.id not in :excludedUserIds
             and (lower(ug.gitHubId) like lower(concat('%', :keyword, '%'))
                 or lower(u.name) like lower(concat('%', :keyword, '%')))
     """)

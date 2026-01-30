@@ -119,9 +119,9 @@ public class UserController implements UserControllerDocument {
     @GetMapping("/me/calendar")
     public ApiResponse<GetMyActivityCalendarDto.Response> getMyActivityCalendar(
         @AuthenticatedActor Actor actor,
-        @RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth date
+        @RequestParam("month") @DateTimeFormat(pattern = "yyyy-MM") YearMonth month
     ) {
-        GetMyActivityCalendarData.Command command = new GetMyActivityCalendarData.Command(actor, date);
+        GetMyActivityCalendarData.Command command = new GetMyActivityCalendarData.Command(actor, month);
         GetMyActivityCalendarData.Result result = getMyActivityCalendarUsecase.execute(command);
         GetMyActivityCalendarDto.Response response = GetMyActivityCalendarDto.Response.from(result);
         return ApiResponse.success(response, "활동 캘린더 정보를 성공적으로 조회했습니다.");

@@ -8,6 +8,7 @@ import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.record.entity.Task;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,12 +21,13 @@ public class GetAllTasksService implements GetAllTasksUseCase {
 
     private final TaskRepositoryPort taskRepositoryPort;
     private final StudySessionRepositoryPort studySessionRepositoryPort;
+    private final ZoneId recordZoneId;
 
     public GetAllTasksData.Result execute(GetAllTasksData.Command command) {
 
         List<Task> taskList = taskRepositoryPort.findAllByUserId(command.actor().id());
         List<StudySession> sessions = studySessionRepositoryPort.findAllByUserId(command.actor().id());
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(recordZoneId);
         Map<Long, Long> studyTimeByTaskId = sessions.stream()
             .collect(Collectors.groupingBy(
                 session -> session.task().id(),

@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.github;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.github.data.GitHubDailyContributionDto;
 import com.process.clash.application.ranking.data.UserRanking;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,11 +19,29 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
 
     Optional<GitHubDailyStatsJpaEntity> findByUserIdAndStudyDate(Long userId, LocalDate studyDate);
 
+    @Query("""
+        select new com.process.clash.application.github.data.GitHubDailyContributionDto(
+                g.studyDate,
+                g.commitCount + g.prCount + g.reviewCount + g.issueCount
+            )
+        from GitHubDailyStatsJpaEntity g
+        where g.userId = :userId
+          and g.studyDate >= :startDate
+          and g.studyDate < :endDate
+        order by g.studyDate asc
+    """)
+    List<GitHubDailyContributionDto> findDailyContributionsByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
+
     // DAY: 여러 유저의 일별 깃허브 기여도 데이터
     @Query(value = """
         SELECT
-            user_id AS "userId",
-            study_date AS "date",
+            user_id AS userId,
+            study_date AS recordedDate,
             (commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)
@@ -40,8 +59,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     // WEEK: 여러 유저의 주별 평균 깃허브 기여도
     @Query(value = """
         SELECT
-            user_id AS "userId",
-            date_trunc('week', study_date) AS "date",
+            user_id AS userId,
+            cast(date_trunc('week', study_date) as date) AS recordedDate,
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)
@@ -60,8 +79,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     // MONTH: 여러 유저의 월별 평균 깃허브 기여도
     @Query(value = """
         SELECT
-            user_id AS "userId",
-            date_trunc('month', study_date) AS "date",
+            user_id AS userId,
+            cast(date_trunc('month', study_date) as date) AS recordedDate,
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)

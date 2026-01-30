@@ -70,3 +70,13 @@ mail:
   sender:
     address: ${MAIL_SENDER_ADDRESS:no-reply@clash.kr}
     name: ${MAIL_SENDER_NAME:Clash}
+
+realtime:
+  socketio:
+    host: ${SOCKETIO_HOST:0.0.0.0}
+    port: ${SOCKETIO_PORT:9092}
+    path: ${SOCKETIO_PATH:/socket.io}
+    allowed-origins: ${SOCKETIO_ALLOWED_ORIGINS:*}
+    ping-interval-ms: ${SOCKETIO_PING_INTERVAL_MS:25000}
+    ping-timeout-ms: ${SOCKETIO_PING_TIMEOUT_MS:60000}
+    token-ttl-seconds: ${SOCKETIO_TOKEN_TTL_SECONDS:300}

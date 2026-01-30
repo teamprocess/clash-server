@@ -4,6 +4,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.user.userstudytime.data.UserStudyTimeDailyDto;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,12 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
 
         return userStudyTimeJpaRepository.findByUserIdAndDate(userId, date)
                 .map(userStudyTimeJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<UserStudyTimeDailyDto> findDailyDataByUserId(Long userId, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+
+        return userStudyTimeJpaRepository.findDailyDataByUserId(userId, startDate, endDate, pageRequest);
     }
 
     @Override

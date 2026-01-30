@@ -1,13 +1,14 @@
 package com.process.clash.application.profile.service;
 
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.github.data.GitHubDailyContributionDto;
 import com.process.clash.application.profile.data.GetMyGitHubActivityData;
 import com.process.clash.application.profile.exception.exception.badrequest.InvalidPeriodCategoryException;
 import com.process.clash.application.profile.policy.ProfilePolicy;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityUsecase;
 import com.process.clash.domain.common.enums.PeriodCategory;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +28,12 @@ public class GetMyGitHubActivityService implements GetMyGitHubActivityUsecase {
     public GetMyGitHubActivityData.Result execute(GetMyGitHubActivityData.Command command) {
         profilePolicy.validateGithubPeriod(command.period());
 
-        LocalDate endDate = LocalDate.now().plusDays(1);
+        LocalDate endDate = LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1);
         LocalDate startDate = resolveStartDate(command.period(), endDate);
         int limit = (int) ChronoUnit.DAYS.between(startDate, endDate);
 
-        List<Object[]> rows = gitHubDailyStatsQueryPort.findDailyContributionsByUserIds(
-                List.of(command.actor().id()),
+        List<GitHubDailyContributionDto> rows = gitHubDailyStatsQueryPort.findDailyContributionsByUserId(
+                command.actor().id(),
                 startDate,
                 endDate,
                 PageRequest.of(0, limit)
@@ -40,10 +41,12 @@ public class GetMyGitHubActivityService implements GetMyGitHubActivityUsecase {
 
         List<GetMyGitHubActivityData.Contribution> contributions = rows.stream()
                 .map(row -> {
-                    LocalDate date = ((Date) row[1]).toLocalDate();
-                    int count = ((Number) row[2]).intValue();
-                    int level = GitHubContributionLevelCalculator.fromCount(count);
-                    return GetMyGitHubActivityData.Contribution.of(date.toString(), count, level);
+                    int level = GitHubContributionLevelCalculator.fromCount(row.count());
+                    return GetMyGitHubActivityData.Contribution.of(
+                            row.date().toString(),
+                            row.count(),
+                            level
+                    );
                 })
                 .toList();
 

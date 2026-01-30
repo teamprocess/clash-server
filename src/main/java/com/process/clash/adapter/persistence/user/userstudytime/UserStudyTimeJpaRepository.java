@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.user.userstudytime;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.user.userstudytime.data.UserStudyTimeDailyDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,13 +18,31 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
 
     Optional<UserStudyTimeJpaEntity> findByUserIdAndDate(Long userId, LocalDate date);
 
+    @Query("""
+        select new com.process.clash.application.user.userstudytime.data.UserStudyTimeDailyDto(
+                us.date,
+                us.totalStudyTimeSeconds
+            )
+        from UserStudyTimeJpaEntity us
+        where us.user.id = :userId
+          and us.date >= :startDate
+          and us.date < :endDate
+        order by us.date asc
+    """)
+    List<UserStudyTimeDailyDto> findDailyDataByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
+
     /**
      * DAY: 유저별 일별 학습시간
      */
     @Query(value = """
         SELECT 
-            fk_user_id as "userId",
-            date as "date",
+            fk_user_id as userId,
+            date as recordedDate,
             total_study_time_seconds as point
         FROM user_study_times
         WHERE fk_user_id IN (:userIds)
@@ -43,8 +62,8 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
      */
     @Query(value = """
         SELECT 
-            fk_user_id as "userId",
-            date_trunc('week', date) as "date",
+            fk_user_id as userId,
+            cast(date_trunc('week', date) as date) as recordedDate,
             AVG(total_study_time_seconds) as point
         FROM user_study_times
         WHERE fk_user_id IN (:userIds)
@@ -65,8 +84,8 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
      */
     @Query(value = """
         SELECT 
-            fk_user_id as "userId",
-            date_trunc('month', date) as "date",
+            fk_user_id as userId,
+            cast(date_trunc('month', date) as date) as recordedDate,
             AVG(total_study_time_seconds) as point
         FROM user_study_times
         WHERE fk_user_id IN (:userIds)
