@@ -44,7 +44,7 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
     @Query(value = """
         SELECT 
             fk_user_id as userId,
-            cast(date_trunc('week', date)) as recordedDate,
+            cast(date_trunc('week', date) as date) as recordedDate,
             AVG(total_study_time_seconds) as point
         FROM user_study_times
         WHERE fk_user_id IN (:userIds)
@@ -66,7 +66,7 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
     @Query(value = """
         SELECT 
             fk_user_id as userId,
-            cast(date_trunc('month', date)) as recordedDate,
+            cast(date_trunc('month', date) as date) as recordedDate,
             AVG(total_study_time_seconds) as point
         FROM user_study_times
         WHERE fk_user_id IN (:userIds)

@@ -41,7 +41,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     @Query(value = """
         SELECT
             user_id AS userId,
-            cast(date_trunc('week', study_date)) AS recordedDate,
+            cast(date_trunc('week', study_date) as date) AS recordedDate,
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)
@@ -61,7 +61,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     @Query(value = """
         SELECT
             user_id AS userId,
-            cast(date_trunc('month', study_date)) AS recordedDate,
+            cast(date_trunc('month', study_date) as date) AS recordedDate,
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)
