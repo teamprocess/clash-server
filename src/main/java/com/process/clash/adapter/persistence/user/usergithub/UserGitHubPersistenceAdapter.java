@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,6 +26,20 @@ public class UserGitHubPersistenceAdapter implements UserGitHubRepositoryPort {
         UserGitHubJpaEntity savedEntity =
                 userGitHubJpaRepository.save(userGitHubJpaMapper.toJpaEntity(userGitHub, userJpaEntity));
         return userGitHubJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<UserGitHub> findByUserId(Long userId) {
+
+        return userGitHubJpaRepository.findByUserIdWithUser(userId)
+                .map(userGitHubJpaMapper::toDomain);
+    }
+
+    @Override
+    public Optional<UserGitHub> findByGitHubId(String gitHubId) {
+
+        return userGitHubJpaRepository.findByGitHubIdWithUser(gitHubId)
+                .map(userGitHubJpaMapper::toDomain);
     }
 
     @Override
