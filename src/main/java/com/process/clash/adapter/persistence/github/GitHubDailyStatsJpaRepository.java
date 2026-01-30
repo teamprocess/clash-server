@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.github;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.github.data.GitHubDailyContributionDto;
 import com.process.clash.application.ranking.data.UserRanking;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,24 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     List<GitHubDailyStatsJpaEntity> findByUserIdAndStudyDateIn(Long userId, List<LocalDate> studyDates);
 
     Optional<GitHubDailyStatsJpaEntity> findByUserIdAndStudyDate(Long userId, LocalDate studyDate);
+
+    @Query("""
+        select new com.process.clash.application.github.data.GitHubDailyContributionDto(
+                g.studyDate,
+                g.commitCount + g.prCount + g.reviewCount + g.issueCount
+            )
+        from GitHubDailyStatsJpaEntity g
+        where g.userId = :userId
+          and g.studyDate >= :startDate
+          and g.studyDate < :endDate
+        order by g.studyDate asc
+    """)
+    List<GitHubDailyContributionDto> findDailyContributionsByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
 
     // DAY: 여러 유저의 일별 깃허브 기여도 데이터
     @Query(value = """

@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.user.userstudytime;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.user.userstudytime.data.UserStudyTimeDailyDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +17,24 @@ import java.util.Optional;
 public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJpaEntity, Long> {
 
     Optional<UserStudyTimeJpaEntity> findByUserIdAndDate(Long userId, LocalDate date);
+
+    @Query("""
+        select new com.process.clash.application.user.userstudytime.data.UserStudyTimeDailyDto(
+                us.date,
+                us.totalStudyTimeSeconds
+            )
+        from UserStudyTimeJpaEntity us
+        where us.user.id = :userId
+          and us.date >= :startDate
+          and us.date < :endDate
+        order by us.date asc
+    """)
+    List<UserStudyTimeDailyDto> findDailyDataByUserId(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
 
     /**
      * DAY: 유저별 일별 학습시간

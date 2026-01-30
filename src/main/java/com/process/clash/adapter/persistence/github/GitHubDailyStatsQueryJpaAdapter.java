@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.github;
 
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
+import com.process.clash.application.github.data.GitHubDailyContributionDto;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
@@ -24,6 +25,12 @@ public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPor
     public Optional<GitHubDailyStats> findByUserIdAndStudyDate(Long userId, LocalDate studyDate) {
         return repository.findByUserIdAndStudyDate(userId, studyDate)
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<GitHubDailyContributionDto> findDailyContributionsByUserId(Long userId, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+
+        return repository.findDailyContributionsByUserId(userId, startDate, endDate, pageRequest);
     }
 
     @Override
