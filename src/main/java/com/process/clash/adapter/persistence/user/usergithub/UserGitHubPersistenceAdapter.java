@@ -28,12 +28,6 @@ public class UserGitHubPersistenceAdapter implements UserGitHubRepositoryPort {
     }
 
     @Override
-    public List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(List<Long> ids) {
-
-        return userGitHubJpaRepository.findAbleRivalsWithUserInfo(ids);
-    }
-
-    @Override
     public List<AbleRivalInfoForRival> findAbleRivalsWithUserInfoByKeyword(List<Long> ids, String keyword) {
 
         return userGitHubJpaRepository.findAbleRivalsWithUserInfoByKeyword(ids, keyword);

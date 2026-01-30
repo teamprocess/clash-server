@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.user.user;
 
+import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,11 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     public void flush() {
 
         userJpaRepository.flush();
+    }
+
+    @Override
+    public List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(List<Long> excludedUserIds) {
+        return userJpaRepository.findAbleRivalsWithUserInfo(excludedUserIds);
     }
 
     @Override

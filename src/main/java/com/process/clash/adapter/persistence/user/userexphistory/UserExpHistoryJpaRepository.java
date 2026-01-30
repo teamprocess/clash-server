@@ -21,14 +21,15 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
      */
     @Query(value = """
         SELECT 
-            fk_user_id AS "userId",
-            date AS "date",
-            earn_exp AS point
+            fk_user_id AS userId,
+            cast(date_trunc('day', date) as date) AS recordedDate,
+            AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)
-          AND date >= :startDate
+          AND date >= date_trunc('day', CAST(:startDate AS date))
           AND date < :endDate
-        ORDER BY fk_user_id, date ASC
+        GROUP BY fk_user_id, date_trunc('day', date)
+        ORDER BY fk_user_id, date_trunc('day', date) ASC
     """, nativeQuery = true)
     List<Object[]> findDailyDataByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -42,8 +43,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
      */
     @Query(value = """
         SELECT 
-            fk_user_id AS "userId",
-            date_trunc('week', date) AS "date",
+            fk_user_id AS userId,
+            cast(date_trunc('week', date) as date) AS recordedDate,
             AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)
@@ -64,8 +65,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
      */
     @Query(value = """
         SELECT 
-            fk_user_id AS "userId",
-            date_trunc('month', date) AS "date",
+            fk_user_id AS userId,
+            cast(date_trunc('month', date) as date) AS recordedDate,
             AVG(earn_exp) AS point
         FROM user_exp_history
         WHERE fk_user_id IN (:userIds)

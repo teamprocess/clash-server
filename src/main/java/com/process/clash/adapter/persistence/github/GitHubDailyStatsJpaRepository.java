@@ -21,8 +21,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     // DAY: 여러 유저의 일별 깃허브 기여도 데이터
     @Query(value = """
         SELECT
-            user_id AS "userId",
-            study_date AS "date",
+            user_id AS userId,
+            study_date AS recordedDate,
             (commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)
@@ -40,8 +40,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     // WEEK: 여러 유저의 주별 평균 깃허브 기여도
     @Query(value = """
         SELECT
-            user_id AS "userId",
-            date_trunc('week', study_date) AS "date",
+            user_id AS userId,
+            cast(date_trunc('week', study_date) as date) AS recordedDate,
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)
@@ -60,8 +60,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     // MONTH: 여러 유저의 월별 평균 깃허브 기여도
     @Query(value = """
         SELECT
-            user_id AS "userId",
-            date_trunc('month', study_date) AS "date",
+            user_id AS userId,
+            cast(date_trunc('month', study_date) as date) AS recordedDate,
             AVG(commit_count + pr_count + review_count + issue_count) AS point
         FROM github_daily_stats
         WHERE user_id IN (:userIds)
