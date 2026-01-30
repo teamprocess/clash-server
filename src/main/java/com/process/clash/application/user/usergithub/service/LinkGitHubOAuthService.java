@@ -63,11 +63,6 @@ public class LinkGitHubOAuthService implements LinkGitHubOAuthUsecase {
         if (emails == null || emails.isEmpty()) {
             return null;
         }
-        return emails.stream()
-                .map(String::trim)
-                .filter(value -> !value.isBlank())
-                .distinct()
-                .reduce((left, right) -> left + "," + right)
-                .orElse(null);
+        return String.join(",", emails);
     }
 }
