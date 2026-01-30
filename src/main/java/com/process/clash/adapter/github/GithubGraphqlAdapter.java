@@ -11,7 +11,6 @@ import com.process.clash.application.github.service.GithubReviewAggregator;
 import com.process.clash.application.github.service.StudyDateCalculator;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import java.io.IOException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,20 +31,34 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
     private static final DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ISO_INSTANT;
     private static final int PAGE_SIZE = 100;
 
-    @Qualifier("githubWebClient")
     private final WebClient githubWebClient;
     private final ObjectMapper objectMapper;
     private final GithubGraphqlQueries queries;
     private final StudyDateCalculator studyDateCalculator;
     private final GithubReviewAggregator reviewAggregator;
     private final Clock clock;
+
+    public GithubGraphqlAdapter(
+            @Qualifier("githubWebClient") WebClient githubWebClient,
+            ObjectMapper objectMapper,
+            GithubGraphqlQueries queries,
+            StudyDateCalculator studyDateCalculator,
+            GithubReviewAggregator reviewAggregator,
+            Clock clock
+    ) {
+        this.githubWebClient = githubWebClient;
+        this.objectMapper = objectMapper;
+        this.queries = queries;
+        this.studyDateCalculator = studyDateCalculator;
+        this.reviewAggregator = reviewAggregator;
+        this.clock = clock;
+    }
 
     @Override
     public List<GitHubDailyStats> fetchDailyStats(GithubSyncTarget target, List<LocalDate> studyDates) {
