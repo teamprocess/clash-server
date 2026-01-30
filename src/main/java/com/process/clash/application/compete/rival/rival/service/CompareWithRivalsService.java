@@ -38,6 +38,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     public CompareWithRivalsData.Result execute(CompareWithRivalsData.Command command) {
 
         List<Long> rivalIds = rivalRepositoryPort.findOpponentIdByUserId(command.actor().id());
+        rivalIds.add(command.actor().id());
 
         LocalDate endDate = LocalDate.now();
         LocalDate startDate = switch (command.period()) {
