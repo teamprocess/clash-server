@@ -2,7 +2,7 @@ package com.process.clash.adapter.realtime.socketio;
 
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public final class SocketIoRoom {
 
     private static final String USER_ROOM_PREFIX = "user:";
