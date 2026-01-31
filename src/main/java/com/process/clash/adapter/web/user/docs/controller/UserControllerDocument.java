@@ -3,13 +3,17 @@ package com.process.clash.adapter.web.user.docs.controller;
 import com.process.clash.adapter.web.user.docs.response.GetMyProfileResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityDetailResponseDoc;
+import com.process.clash.adapter.web.user.docs.response.GetMyGitHubLinkStatusResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDoc;
 import com.process.clash.adapter.web.user.docs.response.GetMyActivityCalendarResponseDoc;
+import com.process.clash.adapter.web.user.docs.response.LinkGitHubOAuthResponseDoc;
+import com.process.clash.adapter.web.user.dto.GetMyGitHubLinkStatusDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
 import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyActivityCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
+import com.process.clash.adapter.web.user.dto.LinkGitHubOAuthDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.UserItemCategory;
@@ -18,6 +22,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,6 +65,58 @@ public interface UserControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<GetMyGitHubActivityDetailDto.Response> getMyGitHubActivityDetail(
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "조회 날짜 (yyyy-MM-dd)", required = true) LocalDate date
+    );
+
+    @Operation(summary = "GitHub OAuth 연동", description = "GitHub OAuth 인증 코드를 교환해 계정을 연동합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "연동 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = LinkGitHubOAuthResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "GitHub 계정 연동을 완료했습니다.",
+                                      "data": {
+                                        "gitHubId": "octocat",
+                                        "linked": true
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<LinkGitHubOAuthDto.Response> linkGitHubOAuth(
+            @Parameter(hidden = true) Actor actor,
+            @RequestBody(description = "GitHub OAuth 코드", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = LinkGitHubOAuthDto.Request.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "code": "github_oauth_code"
+                                    }
+                                    """)
+                    ))
+            LinkGitHubOAuthDto.Request request
+    );
+
+    @Operation(summary = "GitHub 연동 상태 조회", description = "현재 로그인한 사용자의 GitHub 연동 여부를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetMyGitHubLinkStatusResponseDoc.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "GitHub 연동 상태를 성공적으로 조회했습니다.",
+                                      "data": {
+                                        "linked": true,
+                                        "gitHubId": "octocat"
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyGitHubLinkStatusDto.Response> getMyGitHubLinkStatus(
+            @Parameter(hidden = true) Actor actor
     );
 
     @Operation(summary = "보유한 아이템 목록 조회", description = "보유한 아이템 목록을 조회합니다.")

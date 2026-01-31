@@ -28,9 +28,10 @@ public class GetMyProfileData {
         int totalCookie,
         int totalToken,
         Major major,
-        UserStatus userStatus
+        UserStatus userStatus,
+        boolean githubLinked
     ) {
-        public static Result from(User user) {
+        public static Result from(User user, boolean githubLinked) {
             return new Result(
                 user.id(),
                 user.createdAt().atZone(ZoneId.of("Asia/Seoul")).toInstant(),
@@ -44,7 +45,8 @@ public class GetMyProfileData {
                 user.totalCookie(),
                 user.totalToken(),
                 user.major(),
-                user.userStatus()
+                user.userStatus(),
+                githubLinked
             );
         }
     }
