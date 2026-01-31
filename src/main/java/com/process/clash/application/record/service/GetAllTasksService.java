@@ -4,10 +4,10 @@ import com.process.clash.application.record.data.GetAllTasksData;
 import com.process.clash.application.record.port.in.GetAllTasksUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
+import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.record.entity.Task;
 import com.process.clash.infrastructure.config.RecordProperties;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -32,11 +32,7 @@ public class GetAllTasksService implements GetAllTasksUseCase {
         List<Task> taskList = taskRepositoryPort.findAllByUserId(command.actor().id());
         ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
         int boundaryHour = recordProperties.dayBoundaryHour();
-        LocalDate recordDate = nowZoned.toLocalDate();
-        if (nowZoned.getHour() < boundaryHour) {
-            recordDate = recordDate.minusDays(1);
-        }
-        LocalDateTime dayStart = recordDate.atTime(boundaryHour, 0);
+        LocalDateTime dayStart = RecordDateCalculator.startOfRecordDay(nowZoned, boundaryHour);
         LocalDateTime dayEnd = dayStart.plusDays(1);
         LocalDateTime now = nowZoned.toLocalDateTime();
         LocalDateTime endLimit = now.isBefore(dayEnd) ? now : dayEnd;
