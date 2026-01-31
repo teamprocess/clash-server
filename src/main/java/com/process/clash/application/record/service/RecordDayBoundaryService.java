@@ -26,6 +26,9 @@ public class RecordDayBoundaryService {
         int boundaryHour = recordProperties.dayBoundaryHour();
         ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
         LocalDate boundaryDate = nowZoned.toLocalDate();
+        if (nowZoned.getHour() < boundaryHour) {
+            boundaryDate = boundaryDate.minusDays(1);
+        }
         LocalDateTime boundaryStart = boundaryDate.atTime(boundaryHour, 0);
         LocalDateTime boundaryEndOfPrevious = boundaryStart.minusSeconds(1);
 
