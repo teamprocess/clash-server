@@ -43,4 +43,7 @@ public class GetMyProfileDataDoc {
 
     @Schema(description = "유저 상태", example = "ACTIVE")
     public String userStatus;
+
+    @Schema(description = "GitHub 연동 여부", example = "true")
+    public Boolean githubLinked;
 }

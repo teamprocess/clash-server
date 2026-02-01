@@ -56,6 +56,11 @@ github:
     timezone: ${GITHUB_TIMEZONE:Asia/Seoul}
     day-boundary-hour: ${GITHUB_DAY_BOUNDARY_HOUR:6}
     max-concurrency: ${GITHUB_MAX_CONCURRENCY:1}
+  oauth:
+    client-id: ${GITHUB_CLIENT_ID}
+    client-secret: ${GITHUB_CLIENT_SECRET}
+    oauth-base-url: ${GITHUB_OAUTH_BASE_URL:https://github.com}
+    api-base-url: ${GITHUB_OAUTH_API_BASE_URL:https://api.github.com}
 
 record:
   timezone: ${RECORD_TIMEZONE:Asia/Seoul}
@@ -65,3 +70,13 @@ mail:
   sender:
     address: ${MAIL_SENDER_ADDRESS:no-reply@clash.kr}
     name: ${MAIL_SENDER_NAME:Clash}
+
+realtime:
+  socketio:
+    host: ${SOCKETIO_HOST:0.0.0.0}
+    port: ${SOCKETIO_PORT:9092}
+    path: ${SOCKETIO_PATH:/socket.io}
+    allowed-origins: ${SOCKETIO_ALLOWED_ORIGINS:*}
+    ping-interval-ms: ${SOCKETIO_PING_INTERVAL_MS:25000}
+    ping-timeout-ms: ${SOCKETIO_PING_TIMEOUT_MS:60000}
+    token-ttl-seconds: ${SOCKETIO_TOKEN_TTL_SECONDS:300}

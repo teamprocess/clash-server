@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEntity, Long> {
@@ -15,6 +16,22 @@ public interface UserGitHubJpaRepository extends JpaRepository<UserGitHubJpaEnti
 
     @Query("select ug from UserGitHubJpaEntity ug join fetch ug.user where ug.gitHubId is not null")
     List<UserGitHubJpaEntity> findAllWithUserAndGitHubId();
+
+    @Query("""
+        select ug
+        from UserGitHubJpaEntity ug
+        join fetch ug.user u
+        where u.id = :userId
+    """)
+    Optional<UserGitHubJpaEntity> findByUserIdWithUser(@Param("userId") Long userId);
+
+    @Query("""
+        select ug
+        from UserGitHubJpaEntity ug
+        join fetch ug.user u
+        where lower(ug.gitHubId) = lower(:gitHubId)
+    """)
+    Optional<UserGitHubJpaEntity> findByGitHubIdWithUser(@Param("gitHubId") String gitHubId);
 
     @Query("""
         select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival(

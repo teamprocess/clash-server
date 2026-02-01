@@ -3,6 +3,7 @@ package com.process.clash.application.record.service;
 import com.process.clash.application.record.data.GetTodayRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.infrastructure.config.RecordProperties;
@@ -40,10 +41,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
             .orElseThrow(UserNotFoundException::new);
         ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
         int boundaryHour = recordProperties.dayBoundaryHour();
-        LocalDate recordDate = nowZoned.toLocalDate();
-        if (nowZoned.getHour() < boundaryHour) {
-            recordDate = recordDate.minusDays(1);
-        }
+        LocalDate recordDate = RecordDateCalculator.recordDate(nowZoned, boundaryHour);
         String date = recordDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
         LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
