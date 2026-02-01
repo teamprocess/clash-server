@@ -52,18 +52,18 @@
 ```
 ┌─────────────────────────────────────────────────┐
 │              Adapter Layer                      │
-│  ┌──────────────┐  ┌──────────────────────┐    │
-│  │     Web      │  │    Persistence       │    │
-│  │  (Controller)│  │   (JpaRepository)    │    │
-│  └──────┬───────┘  └──────────┬───────────┘    │
-└─────────┼────────────────────┼─────────────────┘
-          │                    │
-┌─────────▼────────────────────▼─────────────────┐
+│  ┌──────────────┐  ┌──────────────────────┐     │
+│  │     Web      │  │    Persistence       │     │
+│  │  (Controller)│  │   (JpaRepository)    │     │
+│  └──────┬───────┘  └──────────┬───────────┘     │
+└─────────┼─────────────────────┼─────────────────┘
+          │                     │
+┌─────────▼─────────────────────▼─────────────────┐
 │           Application Layer                     │
-│  ┌──────────────┐  ┌──────────────────────┐    │
-│  │   Port-In    │  │      Service         │    │
-│  │  (UseCase)   │  │  (Business Logic)    │    │
-│  └──────────────┘  └──────────────────────┘    │
+│  ┌──────────────┐  ┌──────────────────────┐     │
+│  │   Port-In    │  │      Service         │     │
+│  │  (UseCase)   │  │  (Business Logic)    │     │
+│  └──────────────┘  └──────────────────────┘     │
 └─────────────────────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────┐
@@ -426,26 +426,27 @@ ApiResponse.error("에러 메시지");
 ```
 
 ### 4. Native Query 활용
-복잡한 쿼리는 **Native Query + Object[] 반환**을 사용합니다.
+복잡한 쿼리는 **Native Query + 커스텀 record 반환**을 사용합니다.
++만약 서비스 Layer애서 추가적인 타입 변환이 바로 필요하거나 확장성이 떨어진다고 판단된다면
+ **Native Query + Object[] 반환**을 사용합니다.
 
 ```java
-@Query(value = """
-    SELECT userId, userName, profileImage, totalCompleted, userRank
-    FROM (
-        SELECT
-            u.id as userId,
-            u.name as userName,
-            u.profile_image as profileImage,
-            SUM(usp.completed_chapters) as totalCompleted,
-            RANK() OVER (ORDER BY SUM(usp.completed_chapters) DESC) as userRank
-        FROM users u
-        JOIN user_section_progress usp ON u.id = usp.fk_user_id
-        GROUP BY u.id
-    ) rankTable
-    WHERE userId = :targetUserId OR userRank <= 20
-    ORDER BY userRank ASC
-    """, nativeQuery = true)
-List<Object[]> findRankingsWithMyRank(@Param("targetUserId") Long targetUserId);
+@Query("""
+    select new com.process.clash.application.compete.my.data.Streak(
+        g.studyDate,
+        g.commitCount + g.prCount + g.reviewCount + g.issueCount
+    )
+    from GitHubDailyStatsJpaEntity g
+    where g.userId = :userId
+        and g.studyDate >= :startDate
+        and g.studyDate < :endDate
+    order by g.studyDate asc
+""")
+List<Streak> findStreakByUserId(
+    @Param("userId") Long userId,
+    @Param("startDate") LocalDate startDate,
+    @Param("endDate") LocalDate endDate
+);
 ```
 
 **장점:**
@@ -547,4 +548,4 @@ http://localhost:8080/swagger-ui.html
 
 ---
 
-**마지막 업데이트**: 2026-01-25
+**마지막 업데이트**: 2026-02-02
