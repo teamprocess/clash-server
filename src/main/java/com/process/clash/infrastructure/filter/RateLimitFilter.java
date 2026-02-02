@@ -96,7 +96,8 @@ public class RateLimitFilter extends GenericFilterBean {
 
         if (!probe.isConsumed()) {
             long waitTimeNanos = probe.getNanosToWaitForRefill();
-            long waitTimeSeconds = TimeUnit.NANOSECONDS.toSeconds(waitTimeNanos);
+
+            long waitTimeSeconds = (long) Math.ceil(waitTimeNanos / 1_000_000_000.0);
 
             httpResponse.setStatus(429);
             httpResponse.setHeader("Retry-After", String.valueOf(waitTimeSeconds));
