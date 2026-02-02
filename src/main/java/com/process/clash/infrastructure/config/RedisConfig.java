@@ -25,7 +25,6 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
-@RequiredArgsConstructor
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
@@ -36,8 +35,6 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.password:}")
     private String redisPassword;
-
-    private final LettuceConnectionFactory connectionFactory;
 
     @Bean
     public RedisTemplate<String, PendingUserDto> redisTemplate(RedisConnectionFactory connectionFactory) {

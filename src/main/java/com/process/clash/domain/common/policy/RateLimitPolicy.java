@@ -8,12 +8,13 @@ import java.time.Duration;
 public class RateLimitPolicy {
 
     private static final int USER_REQUESTS_PER_MINUTE = 100;
-    private static final Duration USER_RATE_LIMIT_PERIOD = Duration.ofMinutes(1);
+    private static final int ADMIN_REQUESTS_PER_MINUTE = 1000;
+    private static final Duration RATE_LIMIT_PERIOD = Duration.ofMinutes(1);
 
     public RateLimitRule getRuleFor(boolean isAdmin) {
         if (isAdmin) {
-            return null;  // ADMIN은 제한 없음
+            return new RateLimitRule(ADMIN_REQUESTS_PER_MINUTE, RATE_LIMIT_PERIOD);
         }
-        return new RateLimitRule(USER_REQUESTS_PER_MINUTE, USER_RATE_LIMIT_PERIOD);  // USER: 1분당 60회
+        return new RateLimitRule(USER_REQUESTS_PER_MINUTE, RATE_LIMIT_PERIOD);  // USER: 1분당 60회
     }
 }
