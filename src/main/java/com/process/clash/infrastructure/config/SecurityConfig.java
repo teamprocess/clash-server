@@ -35,8 +35,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -60,6 +58,14 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable)
                 .csrf(csrf -> csrf
                                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                                // reCAPTCHA로 보호되는 인증 엔드포인트는 CSRF 제외
+                                .ignoringRequestMatchers(
+                                        "/api/auth/sign-in",
+                                        "/api/auth/sign-up",
+                                        "/api/auth/signin",
+                                        "/api/auth/signup",
+                                        "/api/auth/verify-email"
+                                )
                 )
                 .sessionManagement(session -> session
                         .sessionFixation().changeSessionId() // 로그인 시 세션 ID를 새로 발급
