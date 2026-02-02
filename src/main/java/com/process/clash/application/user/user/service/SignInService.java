@@ -3,7 +3,6 @@ package com.process.clash.application.user.user.service;
 import com.process.clash.application.common.data.AccessContext;
 import com.process.clash.application.user.user.data.AuthPrincipal;
 import com.process.clash.application.user.user.data.SignInData;
-import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.exception.exception.unauthorized.InvalidCredentialsException;
 import com.process.clash.application.user.user.port.in.SignInUseCase;
 import com.process.clash.application.user.user.port.out.AuthEventRepositoryPort;
@@ -26,7 +25,7 @@ public class SignInService implements SignInUseCase {
 	@Override
 	public SignInData.Result execute(SignInData.Command command) {
 		User user = userRepositoryPort.findByUsername(command.username())
-				.orElseThrow(UserNotFoundException::new);
+				.orElseThrow(InvalidCredentialsException::new);
 
 		boolean matches = passwordEncoder.matches(command.password(), user.password());
 		if (!matches) {
