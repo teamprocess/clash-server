@@ -30,6 +30,7 @@ import org.springframework.security.web.authentication.rememberme.TokenBasedReme
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -57,11 +58,9 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
-//                .csrf(csrf -> csrf
-//                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                )
-                // 프로덕선 환경에서는 밑의 코드를 지우고 위 코드를 활성화하세요
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .sessionManagement(session -> session
                         .sessionFixation().changeSessionId() // 로그인 시 세션 ID를 새로 발급
                 )
