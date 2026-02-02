@@ -72,14 +72,14 @@ public class RecaptchaFilter extends GenericFilterBean {
         return PROTECTED_PATHS.stream().anyMatch(path::startsWith);
     }
 
-    private void sendRecaptchaRequiredResponse(HttpServletResponse response) throws IOException {
+    private void sendErrorResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .code("RECAPTCHA_REQUIRED")
-                .message("Recaptcha 인증이 필요합니다.")
+                .code(errorCode)
+                .message(errorMessage)
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -92,23 +92,11 @@ public class RecaptchaFilter extends GenericFilterBean {
         response.getWriter().write(objectMapper.writeValueAsString(commonResponse));
     }
 
+    private void sendRecaptchaRequiredResponse(HttpServletResponse response) throws IOException {
+        sendErrorResponse(response, "RECAPTCHA_REQUIRED", "Recaptcha 인증이 필요합니다.");
+    }
+
     private void sendRecaptchaInvalidResponse(HttpServletResponse response) throws IOException {
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .code("RECAPTCHA_INVALID")
-                .message("Recaptcha 인증에 실패했습니다.")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        CommonResponse<Void> commonResponse = CommonResponse.<Void>builder()
-                .success(false)
-                .error(errorResponse)
-                .status(HttpServletResponse.SC_FORBIDDEN)
-                .build();
-
-        response.getWriter().write(objectMapper.writeValueAsString(commonResponse));
+        sendErrorResponse(response, "RECAPTCHA_INVALID", "Recaptcha 인증에 실패했습니다.");
     }
 }
