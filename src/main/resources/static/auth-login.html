@@ -139,7 +139,7 @@
 <body>
     <div class="container">
         <div class="logo">
-            <h1>🚀 Clash</h1>
+            <h1>Clash</h1>
             <p>데스크톱 앱 로그인</p>
         </div>
 
@@ -248,10 +248,8 @@
                     throw new Error('Recaptcha가 아직 로드되지 않았습니다.');
                 }
 
-                // grecaptcha가 로드될 때까지 대기
-                while (typeof grecaptcha === 'undefined' || !grecaptcha.execute) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
-                }
+                // grecaptcha.ready()로 라이브러리 로딩 대기
+                await new Promise(resolve => grecaptcha.ready(resolve));
 
                 // Recaptcha v3 토큰 받기
                 const recaptchaToken = await grecaptcha.execute(recaptchaSiteKey, {
@@ -279,27 +277,11 @@
                 if (response.type === 'opaqueredirect' || response.status === 0 || response.status === 302) {
                     // 302 리다이렉트 - Location 헤더에서 Deep Link URL 추출
                     const location = response.headers.get('Location');
-                    if (location) {
-                        // Deep Link로 리다이렉트
-                        window.location.href = location;
-                    } else {
-                        // 응답 본문에서 리다이렉트 URL 파싱
-                        const text = await response.text();
-                        const match = text.match(/href="([^"]+)"/);
-                        if (match && match[1]) {
-                            window.location.href = match[1];
-                        } else {
-                            throw new Error('리다이렉트 URL을 찾을 수 없습니다.');
-                        }
+                    if (!location) {
+                        throw new Error('서버 오류: Location 헤더가 누락되었습니다.');
                     }
-                } else if (response.ok) {
-                    // 정상 응답인 경우에도 처리
-                    const data = await response.json();
-                    if (data.redirectUri) {
-                        window.location.href = data.redirectUri;
-                    } else {
-                        throw new Error('로그인에 성공했지만 리다이렉트 정보가 없습니다.');
-                    }
+                    // Deep Link로 리다이렉트
+                    window.location.href = location;
                 } else {
                     // 에러 응답
                     const errorData = await response.json().catch(() => null);

@@ -35,9 +35,6 @@ public class ElectronAuthService {
 	private final SessionManager sessionManager;
 	private final AuthEventRepositoryPort authEventRepositoryPort;
 
-	@Value("${google.recaptcha.min-score:0.5}")
-	private double minRecaptchaScore;
-
 	public ElectronAuthDto.StartResponse start() {
 		if (props.getAllowedRedirectUris() == null || props.getAllowedRedirectUris().isEmpty()) {
 			throw new IllegalStateException("electron.auth.allowed-redirect-uris is not configured");
