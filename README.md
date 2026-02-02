@@ -41,7 +41,9 @@
 - **SpringDoc OpenAPI 3** (Swagger)
 
 ### Build Tool
-- **Gradle 8.x**
+- **Gradle 8.x부터 동작**
+- **Gradle 8.14.3 최적**
+- **Gradle 8.5+ 권장**
 
 ---
 
@@ -318,7 +320,7 @@ if (userId.equals(command.actor().id())) {
 - 메서드명/변수명으로 충분히 설명되는 경우
 
 ### 5. 예외 처리
-`GlobalExceptionHandler`에서 전역 예외를 처리합니다.
+추상 클래스를 이용한 상속을 통해 최종적으로 `GlobalExceptionHandler`에서 전역 예외를 처리합니다.
 
 ```java
 // Service에서는 비즈니스 예외를 던짐
@@ -377,6 +379,7 @@ public interface GetChapterRankingUseCase {
 // Service가 UseCase를 구현
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GetChapterRankingService implements GetChapterRankingUseCase {
     @Override
     public GetChapterRankingData.Result execute(GetChapterRankingData.Command command) {
