@@ -41,7 +41,7 @@ class RecaptchaAdapterTest {
                 "score", 0.9
         );
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(response);
 
         // when
@@ -61,7 +61,7 @@ class RecaptchaAdapterTest {
                 "score", 0.3
         );
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(response);
 
         // when
@@ -81,7 +81,7 @@ class RecaptchaAdapterTest {
                 "score", 0.5
         );
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(response);
 
         // when
@@ -121,7 +121,7 @@ class RecaptchaAdapterTest {
                 "error-codes", new String[]{"invalid-input-response"}
         );
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(response);
 
         // when
@@ -137,7 +137,7 @@ class RecaptchaAdapterTest {
         // given
         String token = "valid-token";
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(null);
 
         // when
@@ -153,7 +153,7 @@ class RecaptchaAdapterTest {
         // given
         String token = "valid-token";
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenThrow(new RestClientException("Connection failed"));
 
         // when
@@ -172,7 +172,7 @@ class RecaptchaAdapterTest {
                 "success", true
         );
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(response);
 
         // when
@@ -192,7 +192,7 @@ class RecaptchaAdapterTest {
                 "score", 1  // Integer instead of Double
         );
 
-        when(restTemplate.postForObject(anyString(), isNull(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
                 .thenReturn(response);
 
         // when

@@ -4,7 +4,12 @@ import com.process.clash.application.google.port.out.RecaptchaPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,8 +38,16 @@ public class RecaptchaAdapter implements RecaptchaPort {
         }
 
         try {
-            String url = String.format("%s?secret=%s&response=%s", verifyUrl, secretKey, token);
-            Map<String, Object> response = restTemplate.postForObject(url, null, Map.class);
+            // POST 본문에 파라미터 담기
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("secret", secretKey);
+            params.add("response", token);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+            Map<String, Object> response = restTemplate.postForObject(verifyUrl, request, Map.class);
 
             if (response == null) {
                 log.error("Recaptcha response is null");
