@@ -12,6 +12,6 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "electron.auth")
 public class ElectronAuthProps {
-    private List<String> allowedRedirectUris;
-    private String authWebUrl;
+	private List<String> allowedRedirectUris;
+	private String authWebUrl;
 }

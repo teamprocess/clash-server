@@ -27,110 +27,116 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ElectronAuthService {
 
-    private final ElectronAuthStore store;
-    private final RecaptchaAdapter recaptchaAdapter;
-    private final ElectronAuthProps props;
-    private final UserRepositoryPort userRepositoryPort;
-    private final PasswordEncoder passwordEncoder;
-    private final SessionManager sessionManager;
-    private final AuthEventRepositoryPort authEventRepositoryPort;
+	private final ElectronAuthStore store;
+	private final RecaptchaAdapter recaptchaAdapter;
+	private final ElectronAuthProps props;
+	private final UserRepositoryPort userRepositoryPort;
+	private final PasswordEncoder passwordEncoder;
+	private final SessionManager sessionManager;
+	private final AuthEventRepositoryPort authEventRepositoryPort;
 
-    public ElectronAuthDto.StartResponse start() {
-        String state = UUID.randomUUID().toString().replace("-", "");
-        store.saveState(state);
+	@Value("${google.recaptcha.min-score:0.5}")
+	private double minRecaptchaScore;
 
-        String redirectUri = props.getAllowedRedirectUris().get(0);
-        String loginUrl = props.getAuthWebUrl()
-                + "?state=" + enc(state)
-                + "&redirectUri=" + enc(redirectUri);
+	public ElectronAuthDto.StartResponse start() {
+		if (props.getAllowedRedirectUris() == null || props.getAllowedRedirectUris().isEmpty()) {
+			throw new IllegalStateException("electron.auth.allowed-redirect-uris is not configured");
+		}
 
-        return new ElectronAuthDto.StartResponse(loginUrl, state);
-    }
+		String state = UUID.randomUUID().toString().replace("-", "");
+		store.saveState(state);
 
-    public String loginAndRedirect(ElectronAuthDto.LoginRequest req) {
-        // 1. redirectUri 검증
-        if (!props.getAllowedRedirectUris().contains(req.redirectUri())) {
-            throw new InvalidRedirectUriException();
-        }
+		String redirectUri = props.getAllowedRedirectUris().get(0);
+		String loginUrl = props.getAuthWebUrl()
+				+ "?state=" + enc(state)
+				+ "&redirectUri=" + enc(redirectUri);
 
-        // 2. state 검증 및 소비
-        if (!store.consumeState(req.state())) {
-            throw new InvalidStateException();
-        }
+		return new ElectronAuthDto.StartResponse(loginUrl, state);
+	}
 
-        // 3. Recaptcha 검증
-        boolean recaptchaValid = recaptchaAdapter.verifyToken(req.recaptchaToken());
-        if (!recaptchaValid) {
-            throw new RecaptchaVerificationFailedException();
-        }
+	public String loginAndRedirect(ElectronAuthDto.LoginRequest req) {
+		// redirectUri 검증
+		if (!props.getAllowedRedirectUris().contains(req.redirectUri())) {
+			throw new InvalidRedirectUriException();
+		}
 
-        // 4. 사용자 인증
-        User user = userRepositoryPort.findByUsername(req.username())
-                .orElseThrow(InvalidCredentialsException::new);
+		// state 검증 및 소비
+		if (!store.consumeState(req.state())) {
+			throw new InvalidStateException();
+		}
 
-        boolean matches = passwordEncoder.matches(req.password(), user.password());
-        if (!matches) {
-            throw new InvalidCredentialsException();
-        }
+		// recaptcha 검증
+		boolean recaptchaValid = recaptchaAdapter.verifyToken(req.recaptchaToken());
+		if (!recaptchaValid) {
+			throw new RecaptchaVerificationFailedException();
+		}
 
-        // 5. 일회성 코드 생성
-        String code = UUID.randomUUID().toString().replace("-", "");
-        store.saveOneTimeCode(code, req.state(), user.id());
+		// 사용자 인증
+		User user = userRepositoryPort.findByUsername(req.username())
+				.orElseThrow(InvalidCredentialsException::new);
 
-        // 6. Deep Link URL 생성
-        return req.redirectUri()
-                + "?code=" + enc(code)
-                + "&state=" + enc(req.state());
-    }
+		boolean matches = passwordEncoder.matches(req.password(), user.password());
+		if (!matches) {
+			throw new InvalidCredentialsException();
+		}
 
-    public ElectronAuthDto.ExchangeResponse exchange(
-            ElectronAuthDto.ExchangeRequest req,
-            HttpServletRequest httpRequest
-    ) {
-        // 1. 일회성 코드 검증 및 소비
-        ElectronAuthStore.OneTimeCodePayload payload = store.consumeOneTimeCode(req.code());
-        if (payload == null) {
-            throw new InvalidAuthCodeException();
-        }
-        if (!payload.state().equals(req.state())) {
-            throw new StateMismatchException();
-        }
+		// 일회성 코드 생성
+		String code = UUID.randomUUID().toString().replace("-", "");
+		store.saveOneTimeCode(code, req.state(), user.id());
 
-        // 2. User 조회
-        User user = userRepositoryPort.findById(payload.userId())
-                .orElseThrow(UserNotFoundInAuthException::new);
+		// deep link URL 생성
+		return req.redirectUri()
+				+ "?code=" + enc(code)
+				+ "&state=" + enc(req.state());
+	}
 
-        // 3. 세션 생성
-        AuthPrincipal principal = AuthPrincipal.from(user);
-        sessionManager.createSession(principal, false);
+	public ElectronAuthDto.ExchangeResponse exchange(
+			ElectronAuthDto.ExchangeRequest req,
+			HttpServletRequest httpRequest
+	) {
+		// 일회성 코드 검증 및 소비
+		ElectronAuthStore.OneTimeCodePayload payload = store.consumeOneTimeCode(req.code());
+		if (payload == null) {
+			throw new InvalidAuthCodeException();
+		}
+		if (!payload.state().equals(req.state())) {
+			throw new StateMismatchException();
+		}
 
-        // 4. 로그인 이벤트 기록
-        AccessContext ctx = extractAccessContext(httpRequest);
-        authEventRepositoryPort.recordLogin(user.username(), ctx.ipAddress(), ctx.userAgent());
+		// user 조회
+		User user = userRepositoryPort.findById(payload.userId())
+				.orElseThrow(UserNotFoundInAuthException::new);
 
-        // 5. 사용자 정보 반환 (세션 쿠키는 자동으로 Set-Cookie)
-        return new ElectronAuthDto.ExchangeResponse(
-                user.id(),
-                user.username(),
-                user.role().name()
-        );
-    }
+		// 세션 생성
+		AuthPrincipal principal = AuthPrincipal.from(user);
+		sessionManager.createSession(principal, false);
 
-    private AccessContext extractAccessContext(HttpServletRequest request) {
-        String ip = extractIpAddress(request);
-        String userAgent = request.getHeader("User-Agent");
-        return AccessContext.of(ip, userAgent);
-    }
+		// 로그인 이벤트 기록
+		AccessContext ctx = extractAccessContext(httpRequest);
+		authEventRepositoryPort.recordLogin(user.username(), ctx.ipAddress(), ctx.userAgent());
 
-    private String extractIpAddress(HttpServletRequest request) {
-        String xff = request.getHeader("X-Forwarded-For");
-        if (xff != null && !xff.isEmpty()) {
-            return xff.split(",")[0].trim();
-        }
-        return request.getRemoteAddr();
-    }
+		return new ElectronAuthDto.ExchangeResponse(
+				user.id(),
+				user.username(),
+				user.role().name()
+		);
+	}
 
-    private String enc(String v) {
-        return URLEncoder.encode(v, StandardCharsets.UTF_8);
-    }
+	private AccessContext extractAccessContext(HttpServletRequest request) {
+		String ip = extractIpAddress(request);
+		String userAgent = request.getHeader("User-Agent");
+		return AccessContext.of(ip, userAgent);
+	}
+
+	private String extractIpAddress(HttpServletRequest request) {
+		String xff = request.getHeader("X-Forwarded-For");
+		if (xff != null && !xff.isEmpty()) {
+			return xff.split(",")[0].trim();
+		}
+		return request.getRemoteAddr();
+	}
+
+	private String enc(String v) {
+		return URLEncoder.encode(v, StandardCharsets.UTF_8);
+	}
 }

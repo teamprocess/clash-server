@@ -89,6 +89,7 @@ realtime:
 google:
   recaptcha:
     key:
+      site: ${RECAPTCHA_SITE_KEY}
       secret: ${RECAPTCHA_SECRET_KEY}
       url: https://www.google.com/recaptcha/api/siteverify
 
