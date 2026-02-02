@@ -13,8 +13,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -47,26 +45,24 @@ public class RecaptchaAdapter implements RecaptchaPort {
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
             HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-            Map<String, Object> response = restTemplate.postForObject(verifyUrl, request, Map.class);
+            RecaptchaResponse response = restTemplate.postForObject(verifyUrl, request, RecaptchaResponse.class);
 
             if (response == null) {
                 log.error("Recaptcha response is null");
                 return false;
             }
 
-            Boolean success = (Boolean) response.get("success");
-            if (success == null || !success) {
-                log.warn("Recaptcha verification failed: {}", response.get("error-codes"));
+            if (!response.success()) {
+                log.warn("Recaptcha verification failed: {}", response.errorCodes());
                 return false;
             }
 
-            Object scoreObj = response.get("score");
-            if (scoreObj == null) {
+            if (response.score() == null) {
                 log.warn("Recaptcha score is null");
                 return false;
             }
 
-            double score = ((Number) scoreObj).doubleValue();
+            double score = response.score();
             boolean isValid = score >= MIN_SCORE;
 
             if (!isValid) {
@@ -77,9 +73,6 @@ public class RecaptchaAdapter implements RecaptchaPort {
 
         } catch (RestClientException e) {
             log.error("Failed to verify recaptcha token", e);
-            return false;
-        } catch (ClassCastException e) {
-            log.error("Failed to parse recaptcha response", e);
             return false;
         }
     }

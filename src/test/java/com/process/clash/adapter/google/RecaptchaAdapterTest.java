@@ -10,7 +10,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -36,12 +36,9 @@ class RecaptchaAdapterTest {
     void verifyToken_ValidTokenWithHighScore_ReturnsTrue() {
         // given
         String token = "valid-token";
-        Map<String, Object> response = Map.of(
-                "success", true,
-                "score", 0.9
-        );
+        RecaptchaResponse response = new RecaptchaResponse(true, 0.9, null);
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenReturn(response);
 
         // when
@@ -56,12 +53,9 @@ class RecaptchaAdapterTest {
     void verifyToken_ValidTokenWithLowScore_ReturnsFalse() {
         // given
         String token = "valid-token";
-        Map<String, Object> response = Map.of(
-                "success", true,
-                "score", 0.3
-        );
+        RecaptchaResponse response = new RecaptchaResponse(true, 0.3, null);
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenReturn(response);
 
         // when
@@ -76,12 +70,9 @@ class RecaptchaAdapterTest {
     void verifyToken_ScoreExactlyMinimum_ReturnsTrue() {
         // given
         String token = "valid-token";
-        Map<String, Object> response = Map.of(
-                "success", true,
-                "score", 0.5
-        );
+        RecaptchaResponse response = new RecaptchaResponse(true, 0.5, null);
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenReturn(response);
 
         // when
@@ -116,12 +107,13 @@ class RecaptchaAdapterTest {
     void verifyToken_ApiReturnsFailure_ReturnsFalse() {
         // given
         String token = "invalid-token";
-        Map<String, Object> response = Map.of(
-                "success", false,
-                "error-codes", new String[]{"invalid-input-response"}
+        RecaptchaResponse response = new RecaptchaResponse(
+                false,
+                null,
+                List.of("invalid-input-response")
         );
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenReturn(response);
 
         // when
@@ -137,7 +129,7 @@ class RecaptchaAdapterTest {
         // given
         String token = "valid-token";
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenReturn(null);
 
         // when
@@ -153,7 +145,7 @@ class RecaptchaAdapterTest {
         // given
         String token = "valid-token";
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenThrow(new RestClientException("Connection failed"));
 
         // when
@@ -168,11 +160,9 @@ class RecaptchaAdapterTest {
     void verifyToken_MissingScore_ReturnsFalse() {
         // given
         String token = "valid-token";
-        Map<String, Object> response = Map.of(
-                "success", true
-        );
+        RecaptchaResponse response = new RecaptchaResponse(true, null, null);
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenReturn(response);
 
         // when
@@ -187,12 +177,9 @@ class RecaptchaAdapterTest {
     void verifyToken_ScoreAsInteger_ReturnsTrue() {
         // given
         String token = "valid-token";
-        Map<String, Object> response = Map.of(
-                "success", true,
-                "score", 1  // Integer instead of Double
-        );
+        RecaptchaResponse response = new RecaptchaResponse(true, 1.0, null);
 
-        when(restTemplate.postForObject(anyString(), any(), eq(Map.class)))
+        when(restTemplate.postForObject(anyString(), any(), eq(RecaptchaResponse.class)))
                 .thenReturn(response);
 
         // when
