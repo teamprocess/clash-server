@@ -99,7 +99,6 @@ public class SecurityConfig {
                         .securityContextRepository(securityContextRepository())
                 )
                 .addFilterAfter(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
-        ;
 
         return http.build();
     }
