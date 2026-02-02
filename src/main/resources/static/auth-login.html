@@ -256,7 +256,9 @@
                     action: 'login'
                 });
 
-                // 2. 로그인 API 호출 (OAuth2 표준: 302 리다이렉트 자동 추적)
+                // 2. 로그인 API 호출
+                // 주의: fetch는 custom scheme(clashapp://)으로 302 리다이렉트할 수 없음
+                // 서버는 200 + JSON으로 deep link URL을 반환해야 함
                 const response = await fetch('/api/auth/electron/login', {
                     method: 'POST',
                     headers: {
@@ -270,19 +272,22 @@
                         state: state,
                         redirectUri: redirectUri
                     })
-                    // redirect 기본값('follow')으로 302를 자동 추적
-                    // 성공 시: 브라우저가 clashapp://auth?code=xxx로 자동 이동
                 });
 
-                // 3. 응답 처리 (에러만 처리, 성공 시 이미 deep link로 이동됨)
+                // 3. 응답 처리
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => null);
                     const errorMessage = errorData?.error?.message || errorData?.message || '로그인에 실패했습니다.';
                     throw new Error(errorMessage);
                 }
                 
-                // 이 줄에 도달하면 성공 (실제로는 deep link로 이동하므로 거의 실행 안 됨)
-                // 혹시 302 리다이렉트가 처리되지 않았다면 대기
+                // 4. 성공: 서버에서 받은 deep link URL로 이동
+                const data = await response.json();
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    throw new Error('서버 응답에 redirectUrl이 없습니다.');
+                }
 
             } catch (err) {
                 console.error('Login error:', err);
