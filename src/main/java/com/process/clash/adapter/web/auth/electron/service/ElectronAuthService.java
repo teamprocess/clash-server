@@ -15,7 +15,6 @@ import com.process.clash.infrastructure.auth.ElectronAuthStore;
 import com.process.clash.infrastructure.config.ElectronAuthProps;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +25,10 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ElectronAuthService {
+
+	// 타이밍 공격 방지를 위한 더미 BCrypt 해시
+	// 원본: "dummy-password-for-timing-attack-prevention"을 BCrypt로 인코딩한 결과
+	private static final String DUMMY_PASSWORD_HASH = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
 	private final ElectronAuthStore store;
 	private final RecaptchaAdapter recaptchaAdapter;
@@ -72,7 +75,7 @@ public class ElectronAuthService {
 		User user = userRepositoryPort.findByUsername(req.username()).orElse(null);
 		
 		// 사용자가 존재하지 않아도 더미 비밀번호 비교를 수행하여 실행 시간을 일정하게 유지
-		String passwordToCheck = (user != null) ? user.password() : "$2a$10$dummyHashToPreventTimingAttack1234567890123456789012";
+		String passwordToCheck = (user != null) ? user.password() : DUMMY_PASSWORD_HASH;
 		boolean matches = passwordEncoder.matches(req.password(), passwordToCheck);
 		
 		if (user == null || !matches) {
