@@ -44,7 +44,6 @@ public class RateLimitFilter extends GenericFilterBean {
             "/api/auth/sign-up",
             "/api/auth/signin",
             "/api/auth/signup",
-            "/api/auth/username-duplicate-check",
             "/api/auth/verify-email",
             "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html",
             "/actuator/**"

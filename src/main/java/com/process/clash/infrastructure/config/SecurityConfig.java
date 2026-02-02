@@ -6,6 +6,7 @@ import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
 import com.process.clash.infrastructure.filter.RateLimitFilter;
+import com.process.clash.infrastructure.filter.RecaptchaFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -40,6 +42,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final RateLimitFilter rateLimitFilter;
+    private final RecaptchaFilter recaptchaFilter;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService customUserDetailsService;
     private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 30;
@@ -98,7 +101,8 @@ public class SecurityConfig {
                 .securityContext(securityContext -> securityContext
                         .securityContextRepository(securityContextRepository())
                 )
-                .addFilterAfter(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(recaptchaFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitFilter, SecurityContextHolderFilter.class);
 
         return http.build();
     }
