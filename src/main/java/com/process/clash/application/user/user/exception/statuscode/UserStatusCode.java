@@ -18,7 +18,7 @@ public enum UserStatusCode implements StatusCode {
     VERIFICATION_CODE_MISMATCH("VERIFICATION_CODE_MISMATCH", "인증 코드가 일치하지 않습니다.", ErrorCategory.BAD_REQUEST),
 
     // 401
-    INVALID_CREDENTIALS("INVALID_CREDENTIALS", "유효하지 않은 자격 증명입니다.", ErrorCategory.UNAUTHORIZED),
+    INVALID_CREDENTIALS("INVALID_CREDENTIALS", "아이디 또는 비밀번호가 올바르지 않습니다.", ErrorCategory.UNAUTHORIZED),
     NOT_AUTHENTICATED("NOT_AUTHENTICATED", "인증된 사용자가 아닙니다.", ErrorCategory.UNAUTHORIZED),
     UNVERIFIED_EMAIL("UNVERIFIED_EMAIL", "이메일이 인증되지 않았습니다.", ErrorCategory.UNAUTHORIZED),
 

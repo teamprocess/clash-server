@@ -5,9 +5,12 @@ import com.process.clash.adapter.web.auth.service.CustomUserDetailsService;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
+import com.process.clash.infrastructure.filter.RateLimitFilter;
+import com.process.clash.infrastructure.filter.RecaptchaFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -22,9 +25,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -37,9 +43,13 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final RateLimitFilter rateLimitFilter;
+    private final RecaptchaFilter recaptchaFilter;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService customUserDetailsService;
-    private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 30;
+    private static final int TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30;
+    @Value("${security.remember-me.key}")
+    private String rememberMeKey;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
@@ -48,16 +58,14 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
-//                .csrf(csrf -> csrf
-//                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                )
-                // 프로덕선 환경에서는 밑의 코드를 지우고 위 코드를 활성화하세요
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .sessionManagement(session -> session
                         .sessionFixation().changeSessionId() // 로그인 시 세션 ID를 새로 발급
                 )
                 .rememberMe(remember -> remember
-                        .key("UniqueKey") // 프로덕선 환경에서는 키를 노출시키지 마세요
+                        .key(rememberMeKey)
                         .rememberMeParameter("remember-me")
                         .alwaysRemember(false)
                         .userDetailsService(customUserDetailsService)
@@ -94,7 +102,9 @@ public class SecurityConfig {
                 )
                 .securityContext(securityContext -> securityContext
                         .securityContextRepository(securityContextRepository())
-                );
+                )
+                .addFilterBefore(recaptchaFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitFilter, SecurityContextHolderFilter.class);
 
         return http.build();
     }
@@ -116,7 +126,7 @@ public class SecurityConfig {
 
     @Bean
     public RememberMeServices rememberMeServices(CustomUserDetailsService customUserDetailsService) {
-        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService) {
+        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices(rememberMeKey, customUserDetailsService) {
             @Override
             protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
                 super.setCookie(tokens, maxAge, request, response);

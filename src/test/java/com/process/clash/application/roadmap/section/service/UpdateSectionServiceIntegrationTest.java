@@ -9,8 +9,10 @@ import com.process.clash.application.roadmap.section.port.in.CreateSectionUseCas
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
+import com.process.clash.domain.user.user.enums.Role;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import java.util.List;
 
