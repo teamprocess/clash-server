@@ -73,9 +73,8 @@ public class RedisConfig {
         return template;
     }
 
-    @Bean
-    public LettuceBasedProxyManager<String> bucketProxyManager() {
-
+    @Bean(destroyMethod = "shutdown")
+    public RedisClient bucket4jRedisClient() {
         RedisURI.Builder uriBuilder = RedisURI.builder()
                 .withHost(redisHost)
                 .withPort(redisPort);
@@ -84,14 +83,21 @@ public class RedisConfig {
             uriBuilder.withPassword(redisPassword.toCharArray());
         }
 
-        RedisClient redisClient = RedisClient.create(uriBuilder.build());
+        return RedisClient.create(uriBuilder.build());
+    }
 
-        StatefulRedisConnection<String, byte[]> connection =
-                redisClient.connect(
-                        RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE)
-                );
+    @Bean(destroyMethod = "close")
+    public StatefulRedisConnection<String, byte[]> bucket4jRedisConnection(RedisClient bucket4jRedisClient) {
+        return bucket4jRedisClient.connect(
+                RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE)
+        );
+    }
 
-        return LettuceBasedProxyManager.builderFor(connection)
+    @Bean
+    public LettuceBasedProxyManager<String> bucketProxyManager(
+            StatefulRedisConnection<String, byte[]> bucket4jRedisConnection
+    ) {
+        return LettuceBasedProxyManager.builderFor(bucket4jRedisConnection)
                 .build();
     }
 }
