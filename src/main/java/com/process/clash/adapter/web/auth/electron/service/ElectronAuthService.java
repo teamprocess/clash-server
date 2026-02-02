@@ -68,12 +68,14 @@ public class ElectronAuthService {
 			throw new RecaptchaVerificationFailedException();
 		}
 
-		// 사용자 인증
-		User user = userRepositoryPort.findByUsername(req.username())
-				.orElseThrow(InvalidCredentialsException::new);
-
-		boolean matches = passwordEncoder.matches(req.password(), user.password());
-		if (!matches) {
+		// 사용자 인증 (타이밍 공격 방지)
+		User user = userRepositoryPort.findByUsername(req.username()).orElse(null);
+		
+		// 사용자가 존재하지 않아도 더미 비밀번호 비교를 수행하여 실행 시간을 일정하게 유지
+		String passwordToCheck = (user != null) ? user.password() : "$2a$10$dummyHashToPreventTimingAttack1234567890123456789012";
+		boolean matches = passwordEncoder.matches(req.password(), passwordToCheck);
+		
+		if (user == null || !matches) {
 			throw new InvalidCredentialsException();
 		}
 
