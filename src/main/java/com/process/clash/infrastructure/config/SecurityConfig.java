@@ -5,6 +5,7 @@ import com.process.clash.adapter.web.auth.service.CustomUserDetailsService;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
+import com.process.clash.infrastructure.filter.RateLimitFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -37,6 +39,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final RateLimitFilter rateLimitFilter;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService customUserDetailsService;
     private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 30;
@@ -94,7 +97,9 @@ public class SecurityConfig {
                 )
                 .securityContext(securityContext -> securityContext
                         .securityContextRepository(securityContextRepository())
-                );
+                )
+                .addFilterAfter(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+        ;
 
         return http.build();
     }
