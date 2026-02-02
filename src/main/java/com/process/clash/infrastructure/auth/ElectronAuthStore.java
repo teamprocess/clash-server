@@ -1,16 +1,21 @@
 package com.process.clash.infrastructure.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ElectronAuthStore {
 
 	private final StringRedisTemplate redis;
+	private final ObjectMapper objectMapper;
 
 	private static final Duration STATE_TTL = Duration.ofMinutes(5);
 	private static final Duration CODE_TTL = Duration.ofSeconds(60);
@@ -27,8 +32,14 @@ public class ElectronAuthStore {
 	}
 
 	public void saveOneTimeCode(String code, String state, Long userId) {
-		String value = state + "|" + userId;
-		redis.opsForValue().set(codeKey(code), value, CODE_TTL);
+		try {
+			OneTimeCodePayload payload = new OneTimeCodePayload(state, userId);
+			String value = objectMapper.writeValueAsString(payload);
+			redis.opsForValue().set(codeKey(code), value, CODE_TTL);
+		} catch (JsonProcessingException e) {
+			log.error("Failed to serialize OneTimeCodePayload", e);
+			throw new IllegalStateException("Failed to save one-time code", e);
+		}
 	}
 
 	public OneTimeCodePayload consumeOneTimeCode(String code) {
@@ -37,10 +48,12 @@ public class ElectronAuthStore {
 		String value = redis.opsForValue().getAndDelete(key);
 		if (value == null) return null;
 
-		String[] parts = value.split("\\|", 2);
-		if (parts.length != 2) return null;
-
-		return new OneTimeCodePayload(parts[0], Long.parseLong(parts[1]));
+		try {
+			return objectMapper.readValue(value, OneTimeCodePayload.class);
+		} catch (JsonProcessingException e) {
+			log.error("Failed to deserialize OneTimeCodePayload: {}", value, e);
+			return null;
+		}
 	}
 
 	private String stateKey(String state) {
