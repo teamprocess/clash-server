@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -25,10 +26,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RecaptchaFilter extends GenericFilterBean {
 
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private static final String RECAPTCHA_HEADER = "X-Recaptcha-Token";
+
     private final RecaptchaPort recaptchaPort;
     private final ObjectMapper objectMapper;
-
-    private static final String RECAPTCHA_HEADER = "X-Recaptcha-Token";
 
     private static final Set<String> PROTECTED_PATHS = Set.of(
             "/api/auth/sign-up",
@@ -70,7 +72,7 @@ public class RecaptchaFilter extends GenericFilterBean {
     }
 
     private boolean isProtectedPath(String path) {
-        return PROTECTED_PATHS.contains(path);
+        return PROTECTED_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
     }
 
     private void sendErrorResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
