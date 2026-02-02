@@ -33,7 +33,8 @@ public class RecaptchaFilter extends GenericFilterBean {
             "/api/auth/sign-up",
             "/api/auth/sign-in",
             "/api/auth/signup",
-            "/api/auth/signin"
+            "/api/auth/signin",
+            "/api/auth/verify-email"
     );
 
     @Override

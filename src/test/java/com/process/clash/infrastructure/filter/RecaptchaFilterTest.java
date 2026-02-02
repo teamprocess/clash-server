@@ -180,6 +180,23 @@ class RecaptchaFilterTest {
     }
 
     @Test
+    @DisplayName("/api/auth/verify-email 경로도 보호됨")
+    void doFilter_VerifyEmailPath_IsProtected() throws ServletException, IOException {
+        // given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRequestURI("/api/auth/verify-email");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // when
+        recaptchaFilter.doFilter(request, response, filterChain);
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(403);
+        assertThat(response.getContentAsString()).contains("RECAPTCHA_REQUIRED");
+        verify(filterChain, never()).doFilter(request, response);
+    }
+
+    @Test
     @DisplayName("응답 형식이 CommonResponse 구조를 따름")
     void doFilter_ResponseFormat_FollowsCommonResponseStructure() throws ServletException, IOException {
         // given
