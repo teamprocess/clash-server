@@ -10,6 +10,7 @@ import com.process.clash.infrastructure.filter.RecaptchaFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -45,7 +46,9 @@ public class SecurityConfig {
     private final RecaptchaFilter recaptchaFilter;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService customUserDetailsService;
-    private static final int TOKEN_VALIDITY_SECONDS =  60 * 60 * 24 * 30;
+    private static final int TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30;
+    @Value("${security.remember-me.key}")
+    private String rememberMeKey;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
@@ -63,7 +66,7 @@ public class SecurityConfig {
                         .sessionFixation().changeSessionId() // 로그인 시 세션 ID를 새로 발급
                 )
                 .rememberMe(remember -> remember
-                        .key("UniqueKey") // 프로덕선 환경에서는 키를 노출시키지 마세요
+                        .key(rememberMeKey)
                         .rememberMeParameter("remember-me")
                         .alwaysRemember(false)
                         .userDetailsService(customUserDetailsService)
@@ -124,7 +127,7 @@ public class SecurityConfig {
 
     @Bean
     public RememberMeServices rememberMeServices(CustomUserDetailsService customUserDetailsService) {
-        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices("UniqueKey", customUserDetailsService) {
+        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices(rememberMeKey, customUserDetailsService) {
             @Override
             protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
                 super.setCookie(tokens, maxAge, request, response);

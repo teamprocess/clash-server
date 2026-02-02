@@ -91,3 +91,7 @@ google:
     key:
       secret: ${RECAPTCHA_SECRET_KEY}
       url: https://www.google.com/recaptcha/api/siteverify
+
+security:
+  remember-me:
+    key: ${REMEMBER_ME_KEY:UniqueKey}
