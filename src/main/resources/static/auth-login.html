@@ -256,7 +256,7 @@
                     action: 'login'
                 });
 
-                // 2. 로그인 API 호출
+                // 2. 로그인 API 호출 (OAuth2 표준: 302 리다이렉트 자동 추적)
                 const response = await fetch('/api/auth/electron/login', {
                     method: 'POST',
                     headers: {
@@ -269,25 +269,20 @@
                         action: 'login',
                         state: state,
                         redirectUri: redirectUri
-                    }),
-                    redirect: 'manual'  // 302 리다이렉트 직접 처리
+                    })
+                    // redirect 기본값('follow')으로 302를 자동 추적
+                    // 성공 시: 브라우저가 clashapp://auth?code=xxx로 자동 이동
                 });
 
-                // 3. 응답 처리
-                if (response.type === 'opaqueredirect' || response.status === 0 || response.status === 302) {
-                    // 302 리다이렉트 - Location 헤더에서 Deep Link URL 추출
-                    const location = response.headers.get('Location');
-                    if (!location) {
-                        throw new Error('서버 오류: Location 헤더가 누락되었습니다.');
-                    }
-                    // Deep Link로 리다이렉트
-                    window.location.href = location;
-                } else {
-                    // 에러 응답
+                // 3. 응답 처리 (에러만 처리, 성공 시 이미 deep link로 이동됨)
+                if (!response.ok) {
                     const errorData = await response.json().catch(() => null);
                     const errorMessage = errorData?.error?.message || errorData?.message || '로그인에 실패했습니다.';
                     throw new Error(errorMessage);
                 }
+                
+                // 이 줄에 도달하면 성공 (실제로는 deep link로 이동하므로 거의 실행 안 됨)
+                // 혹시 302 리다이렉트가 처리되지 않았다면 대기
 
             } catch (err) {
                 console.error('Login error:', err);
