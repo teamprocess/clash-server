@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.util.Set;
 public class RateLimitFilter extends GenericFilterBean {
 
     private static final String RATE_LIMIT_KEY_PREFIX = "rl:";
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     private final LettuceBasedProxyManager<String> bucketProxyManager;
     private final RateLimitPolicy rateLimitPolicy;
@@ -45,11 +47,10 @@ public class RateLimitFilter extends GenericFilterBean {
             "/api/auth/signin",
             "/api/auth/signup",
             "/api/auth/verify-email",
-            "/swagger-ui/",
-            "/swagger-ui.html",
-            "/v3/api-docs/",
-            "/api-docs/",
-            "/actuator/"
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/api-docs/**",
+            "/actuator/**"
     );
 
     @Override
@@ -132,6 +133,6 @@ public class RateLimitFilter extends GenericFilterBean {
     }
 
     private boolean isExcludedPath(String path) {
-        return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
+        return EXCLUDED_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
     }
 }
