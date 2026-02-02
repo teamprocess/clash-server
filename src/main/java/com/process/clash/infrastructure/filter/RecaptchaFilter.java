@@ -70,7 +70,7 @@ public class RecaptchaFilter extends GenericFilterBean {
     }
 
     private boolean isProtectedPath(String path) {
-        return PROTECTED_PATHS.stream().anyMatch(path::startsWith);
+        return PROTECTED_PATHS.contains(path);
     }
 
     private void sendErrorResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
