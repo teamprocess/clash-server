@@ -97,8 +97,8 @@ electron:
   auth:
     allowed-redirect-uris:
       - "clashapp://auth"
-    auth-web-url: ${ELECTRON_AUTH_WEB_URL:https://api.clash.kr/auth-login.html}
-    signup-web-url: ${ELECTRON_SIGNUP_WEB_URL:https://api.clash.kr/auth-signup.html}
+    auth-web-url: "https://clash.kr/#/sign-in"
+    signup-web-url: "https://clash.kr/#/sign-up"
 
 security:
   remember-me:

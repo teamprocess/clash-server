@@ -1,7 +1,6 @@
 package com.process.clash.adapter.web.auth.docs.controller;
 
 import com.process.clash.adapter.web.auth.docs.request.SignInRequestDoc;
-import com.process.clash.adapter.web.auth.docs.request.SignUpRequestDoc;
 import com.process.clash.adapter.web.auth.docs.response.SignInResponseDoc;
 import com.process.clash.adapter.web.auth.docs.response.SignOutResponseDoc;
 import com.process.clash.adapter.web.auth.docs.response.SignUpResponseDoc;
@@ -53,7 +52,7 @@ public interface AuthControllerDocument {
                                     }
                                     """)
                     ))
-            SignUpDto.Request request
+            @Valid SignUpDto.Request request
     );
 
     @Operation(summary = "로그인", description = "아이디/비밀번호로 로그인합니다.")
@@ -86,7 +85,7 @@ public interface AuthControllerDocument {
                                     }
                                     """)
                     ))
-            SignInDto.Request request,
+            @Valid SignInDto.Request request,
             @Parameter(hidden = true) HttpServletRequest httpRequest
     );
 
@@ -149,6 +148,6 @@ public interface AuthControllerDocument {
                                     }
                                     """)
                     ))
-            VerifyEmailDto.Request request
+            @Valid VerifyEmailDto.Request request
     );
 }
