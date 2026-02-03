@@ -19,11 +19,24 @@ public class ElectronAuthStore {
 
 	private static final Duration STATE_TTL = Duration.ofMinutes(5);
 	private static final Duration CODE_TTL = Duration.ofSeconds(60);
+	private static final Duration SIGNUP_SESSION_TTL = Duration.ofMinutes(10);
 
 	public void saveState(String state) {
 		redis.opsForValue().set(stateKey(state), "1", STATE_TTL);
 	}
 
+	/**
+	 * State 존재 여부 검증 (소비하지 않음)
+	 */
+	public boolean validateState(String state) {
+		String key = stateKey(state);
+		String value = redis.opsForValue().get(key);
+		return value != null;
+	}
+
+	/**
+	 * State 소비 (검증 + 삭제를 원자적으로 수행)
+	 */
 	public boolean consumeState(String state) {
 		// 원자적 연산으로 race condition 방지
 		String key = stateKey(state);
@@ -62,6 +75,26 @@ public class ElectronAuthStore {
 
 	private String codeKey(String code) {
 		return "electron:auth:code:" + code;
+	}
+
+	private String signupSessionKey(String state) {
+		return "electron:auth:signup:" + state;
+	}
+
+	// 회원가입 세션 저장 (state -> redirectUri)
+	public void saveSignupSession(String state, String redirectUri) {
+		redis.opsForValue().set(signupSessionKey(state), redirectUri, SIGNUP_SESSION_TTL);
+	}
+
+	// 회원가입 세션 조회
+	public String getSignupSession(String state) {
+		return redis.opsForValue().get(signupSessionKey(state));
+	}
+
+	// 회원가입 세션 소비
+	public String consumeSignupSession(String state) {
+		String key = signupSessionKey(state);
+		return redis.opsForValue().getAndDelete(key);
 	}
 
 	public record OneTimeCodePayload(String state, Long userId) {}

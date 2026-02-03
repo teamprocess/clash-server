@@ -39,3 +39,8 @@ out/
 db_data
 AGENTS.md
 src/main/resources/graphql/schema/
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
