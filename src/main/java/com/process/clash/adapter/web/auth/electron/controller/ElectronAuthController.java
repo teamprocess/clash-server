@@ -22,12 +22,12 @@ public class ElectronAuthController {
 
 	private final ElectronAuthService electronAuthService;
 
-	@PostMapping("/start")
+	@PostMapping("/sign-in/start")
 	public ApiResponse<ElectronAuthDto.StartResponse> start() {
 		return ApiResponse.success(electronAuthService.start());
 	}
 
-	@PostMapping("/login")
+	@PostMapping("/sign-in")
 	public ApiResponse<Map<String, String>> login(@Valid @RequestBody ElectronAuthDto.LoginRequest req) {
 		String redirectUrl = electronAuthService.loginAndRedirect(req);
 		// fetch API는 custom scheme(clashapp://)으로 302 리다이렉트할 수 없음
@@ -35,7 +35,7 @@ public class ElectronAuthController {
 		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
     }
 
-	@PostMapping("/exchange")
+	@PostMapping("/sign-in/exchange")
 	public ApiResponse<ElectronAuthDto.ExchangeResponse> exchange(
 			@Valid @RequestBody ElectronAuthDto.ExchangeRequest req,
 			HttpServletRequest httpRequest
@@ -46,24 +46,24 @@ public class ElectronAuthController {
 
 	// ========== 회원가입 관련 엔드포인트 ==========
 
-	@PostMapping("/signup/start")
+	@PostMapping("/sign-up/start")
 	public ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup() {
 		return ApiResponse.success(electronAuthService.startSignup());
 	}
 
-	@PostMapping("/signup")
+	@PostMapping("/sign-up")
 	public ApiResponse<Void> signup(@Valid @RequestBody ElectronAuthDto.SignupRequest req) {
 		electronAuthService.signupAndSendEmail(req);
 		return ApiResponse.success("회원가입 요청이 완료되었습니다. 이메일 인증을 진행해주세요.");
 	}
 
-	@PostMapping("/signup/verify-email")
+	@PostMapping("/sign-up/verify-email")
 	public ApiResponse<Map<String, String>> verifyEmail(@Valid @RequestBody ElectronAuthDto.VerifyEmailRequest req) {
 		String redirectUrl = electronAuthService.verifyEmailAndRedirect(req);
 		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
 	}
 
-	@GetMapping("/signup/username-check")
+	@GetMapping("/sign-up/username-check")
 	public ApiResponse<Map<String, Boolean>> checkUsername(
 			@RequestParam
 			@NotBlank(message = "유저네임은 필수 입력값입니다.")
