@@ -7,12 +7,12 @@ import jakarta.validation.constraints.Size;
 public class VerifyEmailDto {
 
     public record Request(
-            @NotBlank
+            @NotBlank(message = "인증 코드는 필수 입력값입니다.")
             @Size(min = 6, max = 6, message = "인증 코드는 6자리입니다.")
-            String code
+            String verificationCode
     ) {
         public VerifyEmailData.Command toCommand(String token) {
-            return new VerifyEmailData.Command(token, this.code);
+            return new VerifyEmailData.Command(token, this.verificationCode);
         }
     }
 }

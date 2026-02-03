@@ -14,4 +14,5 @@ import java.util.List;
 public class ElectronAuthProps {
 	private List<String> allowedRedirectUris;
 	private String authWebUrl;
+	private String signupWebUrl;
 }

@@ -5,12 +5,16 @@ import com.process.clash.adapter.web.auth.electron.service.ElectronAuthService;
 import com.process.clash.adapter.web.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Validated
 @RestController
 @RequestMapping("/api/auth/electron")
 @RequiredArgsConstructor
@@ -38,5 +42,39 @@ public class ElectronAuthController {
 	) {
 		ElectronAuthDto.ExchangeResponse response = electronAuthService.exchange(req, httpRequest);
 		return ApiResponse.success(response, "로그인을 성공했습니다.");
+	}
+
+	// ========== 회원가입 관련 엔드포인트 ==========
+
+	@PostMapping("/signup/start")
+	public ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup() {
+		return ApiResponse.success(electronAuthService.startSignup());
+	}
+
+	@PostMapping("/signup")
+	public ApiResponse<Void> signup(@Valid @RequestBody ElectronAuthDto.SignupRequest req) {
+		electronAuthService.signupAndSendEmail(req);
+		return ApiResponse.success("회원가입 요청이 완료되었습니다. 이메일 인증을 진행해주세요.");
+	}
+
+	@PostMapping("/signup/verify-email")
+	public ApiResponse<Map<String, String>> verifyEmail(@Valid @RequestBody ElectronAuthDto.VerifyEmailRequest req) {
+		String redirectUrl = electronAuthService.verifyEmailAndRedirect(req);
+		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
+	}
+
+	@GetMapping("/signup/username-check")
+	public ApiResponse<Map<String, Boolean>> checkUsername(
+			@RequestParam
+			@NotBlank(message = "유저네임은 필수 입력값입니다.")
+			@Size(min = 3, max = 20, message = "유저네임은 3~20자여야 합니다.")
+			@Pattern(
+					regexp = "^[a-zA-Z0-9_-]+$",
+					message = "유저네임은 영문, 숫자, _, -만 사용 가능합니다."
+			)
+			String username
+	) {
+		boolean isDuplicate = electronAuthService.checkUsernameDuplicate(username);
+		return ApiResponse.success(Map.of("isDuplicate", isDuplicate));
 	}
 }
