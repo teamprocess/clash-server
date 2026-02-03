@@ -262,13 +262,12 @@
                 const response = await fetch('/api/auth/electron/login', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-Recaptcha-Token': recaptchaToken
                     },
                     body: JSON.stringify({
                         username: username,
                         password: password,
-                        recaptchaToken: recaptchaToken,
-                        action: 'login',
                         state: state,
                         redirectUri: redirectUri
                     })

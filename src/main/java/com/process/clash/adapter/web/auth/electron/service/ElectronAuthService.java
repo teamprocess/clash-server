@@ -202,7 +202,7 @@ public class ElectronAuthService {
 		try {
 			// 사용자 정보 준비 (아직 DB에 저장하지 않음)
 			String encodedPassword = passwordEncoder.encode(req.password());
-			User pendingUser = User.createDefault(req.username(), req.email(), req.username(), encodedPassword);
+			User pendingUser = User.createDefault(req.username(), req.email(), req.name(), encodedPassword);
 
 			// 인증 코드 생성
 			String verificationCode = generateVerificationCode();

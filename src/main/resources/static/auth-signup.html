@@ -200,6 +200,20 @@
             </div>
 
             <div class="form-group">
+                <label for="name">이름</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="홍길동"
+                    required
+                    minlength="1"
+                    maxlength="50"
+                    autocomplete="name"
+                >
+            </div>
+
+            <div class="form-group">
                 <label for="password">비밀번호</label>
                 <input
                     type="password"
@@ -302,10 +316,11 @@
 
             const username = document.getElementById('username').value.trim();
             const email = document.getElementById('email').value.trim();
+            const name = document.getElementById('name').value.trim();
             const password = document.getElementById('password').value;
 
             // 유효성 검증
-            if (!username || !email || !password) {
+            if (!username || !email || !name || !password) {
                 showError('모든 필드를 입력해주세요.');
                 return;
             }
@@ -352,6 +367,7 @@
                     body: JSON.stringify({
                         username: username,
                         email: email,
+                        name: name,
                         password: password,
                         state: state,
                         redirectUri: redirectUri
