@@ -22,6 +22,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -57,18 +58,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
-                .csrf(csrf -> csrf
-                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                // reCAPTCHA로 보호되는 인증 엔드포인트는 CSRF 제외
-                                .ignoringRequestMatchers(
-                                        "/api/auth/sign-in",
-                                        "/api/auth/sign-up",
-                                        "/api/auth/signin",
-                                        "/api/auth/signup",
-                                        "/api/auth/verify-email",
-                                        "/api/auth/electron/**"
-                                )
-                )
+                .csrf(CsrfConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionFixation().changeSessionId() // 로그인 시 세션 ID를 새로 발급
                 )
