@@ -74,7 +74,12 @@ public class RateLimitFilter extends GenericFilterBean {
         }
 
         // 3. User 정보 추출
-        AuthUser userDetails = (AuthUser) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof AuthUser)) {
+            chain.doFilter(request, response);
+            return;
+        }
+        AuthUser userDetails = (AuthUser) principal;
         Long userId = userDetails.id();
         boolean isAdmin = userDetails.role().equals(Role.ADMIN);
 
