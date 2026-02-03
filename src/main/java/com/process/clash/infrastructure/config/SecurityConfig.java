@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -80,8 +81,8 @@ public class SecurityConfig {
                         .rememberMeServices(rememberMeServices)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/api/auth/electron/**").permitAll()
                         .requestMatchers("/api/auth/sign-in", "/api/auth/sign-up", "/api/auth/signin", "/api/auth/signup", "/api/auth/username-duplicate-check", "/api/auth/verify-email", "/api/auth/csrf-token").permitAll()
-                        .requestMatchers("/api/auth/electron/**").permitAll()
                         .requestMatchers("/api/config/public").permitAll()
                         .requestMatchers("/auth-login.html").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll()
