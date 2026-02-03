@@ -18,9 +18,6 @@ public class ElectronAuthDto {
 			@Size(min = 8, max = 100, message = "비밀번호는 8~100자여야 합니다.")
 			String password,
 
-			@NotBlank(message = "Recaptcha 토큰은 필수 입력값입니다.")
-			String recaptchaToken,
-
 			String action,
 
 			@NotBlank(message = "State는 필수 입력값입니다.")
@@ -60,9 +57,6 @@ public class ElectronAuthDto {
 			@NotBlank(message = "비밀번호는 필수 입력값입니다.")
 			@Size(min = 8, max = 100, message = "비밀번호는 8~100자여야 합니다.")
 			String password,
-
-			@NotBlank(message = "Recaptcha 토큰은 필수 입력값입니다.")
-			String recaptchaToken,
 
 			@NotBlank(message = "State는 필수 입력값입니다.")
 			String state,

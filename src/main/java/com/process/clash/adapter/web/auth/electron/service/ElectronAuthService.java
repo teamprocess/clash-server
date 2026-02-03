@@ -1,6 +1,5 @@
 package com.process.clash.adapter.web.auth.electron.service;
 
-import com.process.clash.adapter.google.RecaptchaAdapter;
 import com.process.clash.adapter.web.auth.electron.dto.ElectronAuthDto;
 import com.process.clash.application.auth.electron.exception.exception.badrequest.*;
 import com.process.clash.application.auth.electron.exception.exception.notfound.UserNotFoundInAuthException;
@@ -43,7 +42,6 @@ public class ElectronAuthService {
 	private static final long PENDING_USER_CACHE_TTL_MS = 10 * 60 * 1000L;
 
 	private final ElectronAuthStore store;
-	private final RecaptchaAdapter recaptchaAdapter;
 	private final ElectronAuthProps props;
 	private final UserRepositoryPort userRepositoryPort;
 	private final PasswordEncoder passwordEncoder;
@@ -80,11 +78,7 @@ public class ElectronAuthService {
 			throw new InvalidStateException();
 		}
 
-		// recaptcha 검증
-		boolean recaptchaValid = recaptchaAdapter.verifyToken(req.recaptchaToken());
-		if (!recaptchaValid) {
-			throw new RecaptchaVerificationFailedException();
-		}
+		// recaptcha 검증은 RecaptchaFilter에서 이미 완료됨
 
 		// 사용자 인증 (타이밍 공격 방지)
 		User user = userRepositoryPort.findByUsername(req.username()).orElse(null);
@@ -192,11 +186,7 @@ public class ElectronAuthService {
 			throw new InvalidStateException();
 		}
 
-		// recaptcha 검증
-		boolean recaptchaValid = recaptchaAdapter.verifyToken(req.recaptchaToken());
-		if (!recaptchaValid) {
-			throw new RecaptchaVerificationFailedException();
-		}
+		// recaptcha 검증은 RecaptchaFilter에서 이미 완료됨
 
 		// 유저네임 중복 체크
 		if (userRepositoryPort.existsByUsername(req.username())) {
