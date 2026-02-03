@@ -19,8 +19,8 @@ public class ElectronAuthController {
 	private final ElectronAuthService electronAuthService;
 
 	@PostMapping("/start")
-	public ElectronAuthDto.StartResponse start() {
-		return electronAuthService.start();
+	public ApiResponse<ElectronAuthDto.StartResponse> start() {
+		return ApiResponse.success(electronAuthService.start());
 	}
 
 	@PostMapping("/login")
