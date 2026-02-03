@@ -79,7 +79,10 @@ public class SecurityConfig {
                         .rememberMeServices(rememberMeServices)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/sign-in", "/api/auth/sign-up", "/api/auth/signin", "/api/auth/signup", "/api/auth/username-duplicate-check", "/api/auth/verify-email").permitAll()
+                        .requestMatchers("/api/auth/sign-in", "/api/auth/sign-up", "/api/auth/signin", "/api/auth/signup", "/api/auth/username-duplicate-check", "/api/auth/verify-email", "/api/auth/csrf-token").permitAll()
+                        .requestMatchers("/api/auth/electron/**").permitAll()
+                        .requestMatchers("/api/config/public").permitAll()
+                        .requestMatchers("/auth-login.html").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/groups/**").authenticated()
