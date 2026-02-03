@@ -64,7 +64,8 @@ public class SecurityConfig {
                                         "/api/auth/sign-up",
                                         "/api/auth/signin",
                                         "/api/auth/signup",
-                                        "/api/auth/verify-email"
+                                        "/api/auth/verify-email",
+                                        "/api/auth/electron/**"
                                 )
                 )
                 .sessionManagement(session -> session
