@@ -89,8 +89,15 @@ realtime:
 google:
   recaptcha:
     key:
+      site: ${RECAPTCHA_SITE_KEY}
       secret: ${RECAPTCHA_SECRET_KEY}
       url: https://www.google.com/recaptcha/api/siteverify
+
+electron:
+  auth:
+    allowed-redirect-uris:
+      - "clashapp://auth"
+    auth-web-url: ${ELECTRON_AUTH_WEB_URL:https://api.clash.kr/auth-login.html}
 
 security:
   remember-me:
