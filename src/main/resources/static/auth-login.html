@@ -280,11 +280,11 @@
                     const errorMessage = errorData?.error?.message || errorData?.message || '로그인에 실패했습니다.';
                     throw new Error(errorMessage);
                 }
-                
+
                 // 4. 성공: 서버에서 받은 deep link URL로 이동
-                const data = await response.json();
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl;
+                const result = await response.json();
+                if (result.data && result.data.redirectUrl) {
+                    window.location.href = result.data.redirectUrl;
                 } else {
                     throw new Error('서버 응답에 redirectUrl이 없습니다.');
                 }
