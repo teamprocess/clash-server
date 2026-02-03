@@ -19,7 +19,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -81,19 +80,6 @@ public class AuthController implements AuthControllerDocument {
 		AccessContext context = extractAccessContext(httpRequest);
 		signOutUseCase.execute(context);
 		return ApiResponse.success("로그아웃 되었습니다.");
-	}
-
-	@GetMapping("/csrf-token")
-	public ApiResponse<Map<String, String>> getCsrfToken(HttpServletRequest request) {
-		CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-		if (csrfToken == null) {
-			return ApiResponse.success(Map.of("token", ""));
-		}
-		return ApiResponse.success(Map.of(
-				"token", csrfToken.getToken(),
-				"headerName", csrfToken.getHeaderName(),
-				"parameterName", csrfToken.getParameterName()
-		));
 	}
 
 	@GetMapping("/username-duplicate-check")
