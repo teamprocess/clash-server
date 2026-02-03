@@ -358,7 +358,7 @@
                 });
 
                 // 회원가입 API 호출
-                const response = await fetch('/api/auth/electron/signup', {
+                const response = await fetch('/api/auth/electron/sign-up', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -414,7 +414,7 @@
                 });
 
                 // 이메일 인증 API 호출
-                const response = await fetch('/api/auth/electron/signup/verify-email', {
+                const response = await fetch('/api/auth/electron/sign-up/verify-email', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

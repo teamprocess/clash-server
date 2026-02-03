@@ -38,13 +38,13 @@ public class RecaptchaFilter extends GenericFilterBean {
             "/api/auth/signin",
             "/api/auth/verify-email",
             "/api/auth/username-duplicate-check",
-            "/api/auth/electron/start",
-            "/api/auth/electron/login",
-            "/api/auth/electron/exchange",
-            "/api/auth/electron/signup/start",
-            "/api/auth/electron/signup",
-            "/api/auth/electron/signup/username-check",
-            "/api/auth/electron/signup/verify-email"
+            "/api/auth/electron/sign-in/start",
+            "/api/auth/electron/sign-in",
+            "/api/auth/electron/sign-in/exchange",
+            "/api/auth/electron/sign-up/start",
+            "/api/auth/electron/sign-up",
+            "/api/auth/electron/sign-up/username-check",
+            "/api/auth/electron/sign-up/verify-email"
     );
 
     @Override

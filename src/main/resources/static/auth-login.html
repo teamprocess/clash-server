@@ -259,7 +259,7 @@
                 // 2. 로그인 API 호출
                 // 주의: fetch는 custom scheme(clashapp://)으로 302 리다이렉트할 수 없음
                 // 서버는 200 + JSON으로 deep link URL을 반환해야 함
-                const response = await fetch('/api/auth/electron/login', {
+                const response = await fetch('/api/auth/electron/sign-in', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
