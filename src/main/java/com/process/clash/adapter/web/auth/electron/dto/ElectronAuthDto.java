@@ -18,8 +18,6 @@ public class ElectronAuthDto {
 			@Size(min = 8, max = 100, message = "비밀번호는 8~100자여야 합니다.")
 			String password,
 
-			String action,
-
 			@NotBlank(message = "State는 필수 입력값입니다.")
 			String state,
 
