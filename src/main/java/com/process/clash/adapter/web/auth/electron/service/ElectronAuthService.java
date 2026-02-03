@@ -111,7 +111,7 @@ public class ElectronAuthService {
 
 		// 세션 생성
 		AuthPrincipal principal = AuthPrincipal.from(user);
-		sessionManager.createSession(principal, false);
+		sessionManager.createSession(principal, true);
 
 		// 로그인 이벤트 기록
 		AccessContext ctx = extractAccessContext(httpRequest);
