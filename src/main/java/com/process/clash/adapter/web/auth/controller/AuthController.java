@@ -14,7 +14,11 @@ import com.process.clash.application.user.user.port.in.*;
 import com.process.clash.application.user.user.data.SignUpData;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Validated
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -83,8 +88,16 @@ public class AuthController implements AuthControllerDocument {
 	}
 
 	@GetMapping("/username-duplicate-check")
-	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(@RequestParam String username) {
-
+	public ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(
+			@RequestParam
+			@NotBlank(message = "유저네임은 필수 입력값입니다.")
+			@Size(min = 3, max = 20, message = "유저네임은 3~20자여야 합니다.")
+			@Pattern(
+					regexp = "^[a-zA-Z0-9_-]+$",
+					message = "유저네임은 영문, 숫자, _, -만 사용 가능합니다."
+			)
+			String username
+	) {
 		CheckDuplicateUsernameData.Command command = CheckDuplicateUsernameData.Command.fromString(username);
 		boolean duplicate = checkDuplicatedUsernameUseCase.execute(command);
 		CheckDuplicateUsernameDto.Response response = new CheckDuplicateUsernameDto.Response(duplicate);
