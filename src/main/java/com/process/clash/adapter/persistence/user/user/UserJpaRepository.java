@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import jakarta.persistence.LockModeType;
 import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,4 +40,8 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 	List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(
 			@Param("excludedUserIds") List<Long> excludedUserIds
 	);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select u from UserJpaEntity u where u.id = :id")
+    Optional<UserJpaEntity> findByIdForUpdate(@Param("id") Long id);
 }
