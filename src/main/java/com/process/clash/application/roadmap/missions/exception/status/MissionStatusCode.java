@@ -37,6 +37,12 @@ public enum MissionStatusCode implements StatusCode {
             "CHAPTER_NOT_FOUND",
             "챕터를 찾을 수 없습니다.",
             ErrorCategory.NOT_FOUND
+    ),
+
+    INVALID_QUESTION_ORDER(
+            "INVALID_QUESTION_ORDER",
+            "문제를 순서대로 제출해야 합니다.",
+            ErrorCategory.BAD_REQUEST
     );
 
     private final String code;
