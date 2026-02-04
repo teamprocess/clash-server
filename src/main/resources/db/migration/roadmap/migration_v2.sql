@@ -13,8 +13,8 @@
 -- ============================================
 -- 단계 2: 챕터 마이그레이션 (1:1 복사)
 -- ============================================
-INSERT INTO chapters_v2 (fk_section_id, title, description, order_index, created_at, updated_at)
-SELECT fk_section_id, title, description, order_index, created_at, updated_at
+INSERT INTO chapters_v2 (fk_section_id, title, description, order_index, study_material_url, created_at, updated_at)
+SELECT fk_section_id, title, description, order_index, NULL as study_material_url, created_at, updated_at
 FROM chapters
 ON CONFLICT DO NOTHING;
 

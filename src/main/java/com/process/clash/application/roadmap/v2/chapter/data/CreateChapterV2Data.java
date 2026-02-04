@@ -12,7 +12,8 @@ public class CreateChapterV2Data {
             Long sectionId,
             String title,
             String description,
-            Integer orderIndex
+            Integer orderIndex,
+            String studyMaterialUrl
     ) {
         public ChapterV2 toDomain() {
             return new ChapterV2(
@@ -21,6 +22,7 @@ public class CreateChapterV2Data {
                     title,
                     description,
                     orderIndex,
+                    studyMaterialUrl,
                     List.of()
             );
         }
@@ -31,7 +33,8 @@ public class CreateChapterV2Data {
             Long sectionId,
             String title,
             String description,
-            Integer orderIndex
+            Integer orderIndex,
+            String studyMaterialUrl
     ) {
         public static Result from(ChapterV2 chapter) {
             return new Result(
@@ -39,7 +42,8 @@ public class CreateChapterV2Data {
                     chapter.getSectionId(),
                     chapter.getTitle(),
                     chapter.getDescription(),
-                    chapter.getOrderIndex()
+                    chapter.getOrderIndex(),
+                    chapter.getStudyMaterialUrl()
             );
         }
     }

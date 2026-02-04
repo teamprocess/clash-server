@@ -27,6 +27,7 @@ public class UpdateChapterV2Service implements UpdateChapterV2UseCase {
                 command.title(),
                 command.description(),
                 command.orderIndex(),
+                command.studyMaterialUrl(),
                 chapter.getQuestions()
         );
 

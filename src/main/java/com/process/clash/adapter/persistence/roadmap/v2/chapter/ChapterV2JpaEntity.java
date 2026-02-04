@@ -37,6 +37,9 @@ public class ChapterV2JpaEntity {
     @Column(nullable = false)
     private Integer orderIndex;
 
+    @Column(length = 500)
+    private String studyMaterialUrl;
+
     @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionV2JpaEntity> questions = new ArrayList<>();
 

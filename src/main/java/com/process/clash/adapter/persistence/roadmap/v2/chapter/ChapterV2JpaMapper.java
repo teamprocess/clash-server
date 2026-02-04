@@ -26,6 +26,7 @@ public class ChapterV2JpaMapper {
                 chapter.getTitle(),
                 chapter.getDescription(),
                 chapter.getOrderIndex(),
+                chapter.getStudyMaterialUrl(),
                 new ArrayList<>(),
                 null, // createdAt은 @CreationTimestamp가 자동으로 설정
                 null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
@@ -47,6 +48,7 @@ public class ChapterV2JpaMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 entity.getOrderIndex(),
+                entity.getStudyMaterialUrl(),
                 Optional.ofNullable(entity.getQuestions()).orElse(Collections.emptyList())
                         .stream().map(questionV2JpaMapper::toDomain).toList()
         );

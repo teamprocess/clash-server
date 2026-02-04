@@ -16,10 +16,12 @@ public class UpdateChapterV2Dto {
             String description,
 
             @NotNull(message = "orderIndex는 필수 입력값입니다.")
-            Integer orderIndex
+            Integer orderIndex,
+
+            String studyMaterialUrl
     ) {
         public UpdateChapterV2Data.Command toCommand(Actor actor, Long chapterId) {
-            return new UpdateChapterV2Data.Command(actor, chapterId, title, description, orderIndex);
+            return new UpdateChapterV2Data.Command(actor, chapterId, title, description, orderIndex, studyMaterialUrl);
         }
     }
 
@@ -28,14 +30,16 @@ public class UpdateChapterV2Dto {
             Long chapterId,
             String title,
             String description,
-            Integer orderIndex
+            Integer orderIndex,
+            String studyMaterialUrl
     ) {
         public static Response from(UpdateChapterV2Data.Result result) {
             return new Response(
                     result.chapterId(),
                     result.title(),
                     result.description(),
-                    result.orderIndex()
+                    result.orderIndex(),
+                    result.studyMaterialUrl()
             );
         }
     }

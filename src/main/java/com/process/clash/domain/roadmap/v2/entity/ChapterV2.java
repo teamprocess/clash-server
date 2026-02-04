@@ -22,5 +22,7 @@ public class ChapterV2 {
 
     private Integer orderIndex;
 
+    private String studyMaterialUrl;
+
     private List<QuestionV2> questions;
 }

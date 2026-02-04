@@ -19,10 +19,12 @@ public class CreateChapterV2Dto {
             String description,
 
             @NotNull(message = "orderIndex는 필수 입력값입니다.")
-            Integer orderIndex
+            Integer orderIndex,
+
+            String studyMaterialUrl
     ) {
         public CreateChapterV2Data.Command toCommand(Actor actor) {
-            return new CreateChapterV2Data.Command(actor, sectionId, title, description, orderIndex);
+            return new CreateChapterV2Data.Command(actor, sectionId, title, description, orderIndex, studyMaterialUrl);
         }
     }
 
@@ -32,7 +34,8 @@ public class CreateChapterV2Dto {
             Long sectionId,
             String title,
             String description,
-            Integer orderIndex
+            Integer orderIndex,
+            String studyMaterialUrl
     ) {
         public static Response from(CreateChapterV2Data.Result result) {
             return new Response(
@@ -40,7 +43,8 @@ public class CreateChapterV2Dto {
                     result.sectionId(),
                     result.title(),
                     result.description(),
-                    result.orderIndex()
+                    result.orderIndex(),
+                    result.studyMaterialUrl()
             );
         }
     }

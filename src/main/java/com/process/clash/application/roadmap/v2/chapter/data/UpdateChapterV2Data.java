@@ -10,7 +10,8 @@ public class UpdateChapterV2Data {
             Long chapterId,
             String title,
             String description,
-            Integer orderIndex
+            Integer orderIndex,
+            String studyMaterialUrl
     ) {
     }
 
@@ -18,14 +19,16 @@ public class UpdateChapterV2Data {
             Long chapterId,
             String title,
             String description,
-            Integer orderIndex
+            Integer orderIndex,
+            String studyMaterialUrl
     ) {
         public static Result from(ChapterV2 chapter) {
             return new Result(
                     chapter.getId(),
                     chapter.getTitle(),
                     chapter.getDescription(),
-                    chapter.getOrderIndex()
+                    chapter.getOrderIndex(),
+                    chapter.getStudyMaterialUrl()
             );
         }
     }

@@ -16,4 +16,7 @@ public class CreateChapterV2RequestDoc {
 
     @Schema(description = "정렬 순서", example = "0")
     public Integer orderIndex;
+
+    @Schema(description = "학습 자료 URL (선택)", example = "https://example.com/java-basics")
+    public String studyMaterialUrl;
 }
