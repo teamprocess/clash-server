@@ -25,6 +25,21 @@ public class ChapterV2PersistenceAdapter implements ChapterV2RepositoryPort {
         return chapterV2JpaMapper.toDomain(savedEntity);
     }
 
+    /**
+     * 챕터 메타데이터만 업데이트합니다. (JPA 더티 체킹 활용)
+     * questions 컬렉션을 로딩하지 않아 성능이 최적화됩니다.
+     */
+    public ChapterV2 updateMetadata(Long chapterId, String title, String description, 
+                                     Integer orderIndex, String studyMaterialUrl) {
+        ChapterV2JpaEntity entity = chapterV2JpaRepository.findByIdWithoutQuestions(chapterId)
+                .orElseThrow(() -> new IllegalArgumentException("Chapter not found: " + chapterId));
+        
+        entity.updateMetadata(title, description, orderIndex, studyMaterialUrl);
+        // @Transactional에 의해 자동으로 UPDATE 쿼리 실행 (더티 체킹)
+        
+        return chapterV2JpaMapper.toDomain(entity);
+    }
+
     @Override
     public Optional<ChapterV2> findById(Long id) {
         return chapterV2JpaRepository.findById(id).map(chapterV2JpaMapper::toDomain);

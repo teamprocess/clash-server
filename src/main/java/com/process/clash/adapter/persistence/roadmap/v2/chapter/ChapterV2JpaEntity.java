@@ -51,4 +51,15 @@ public class ChapterV2JpaEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    /**
+     * 챕터 메타데이터를 수정합니다. (JPA 더티 체킹 활용)
+     * questions 컬렉션은 건드리지 않아 성능 최적화됩니다.
+     */
+    public void updateMetadata(String title, String description, Integer orderIndex, String studyMaterialUrl) {
+        this.title = title;
+        this.description = description;
+        this.orderIndex = orderIndex;
+        this.studyMaterialUrl = studyMaterialUrl;
+    }
+
 }
