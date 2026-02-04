@@ -15,7 +15,6 @@ import com.process.clash.application.user.useritem.port.out.UserItemRepositoryPo
 import com.process.clash.domain.common.enums.GoodsActingCategory;
 import com.process.clash.domain.common.enums.GoodsType;
 import com.process.clash.domain.shop.product.entity.Product;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import com.process.clash.domain.shop.purchase.entity.Purchase;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.usergoodshistory.entity.UserGoodsHistory;
@@ -52,7 +51,7 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
 
         long price = calculatePrice(product);
         int amount = toIntPrice(price);
-        GoodsType goodsType = toGoodsType(product.type());
+        GoodsType goodsType = product.type().toGoodsType();
 
         if (!hasEnoughGoods(user, goodsType, amount)) {
             throw new InsufficientGoodsException();
@@ -96,13 +95,6 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
             throw new PriceTooLargeException();
         }
         return (int) price;
-    }
-
-    private GoodsType toGoodsType(ProductGoodsType goodsType) {
-        return switch (goodsType) {
-            case COOKIE -> GoodsType.COOKIE;
-            case TOKEN -> GoodsType.TOKEN;
-        };
     }
 
     private boolean hasEnoughGoods(User user, GoodsType goodsType, int amount) {
