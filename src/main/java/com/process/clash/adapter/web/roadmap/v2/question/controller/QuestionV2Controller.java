@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.roadmap.v2.question.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.controller.QuestionV2ControllerDocument;
 import com.process.clash.adapter.web.roadmap.v2.question.dto.GetChapterV2ResultDto;
 import com.process.clash.adapter.web.roadmap.v2.question.dto.SubmitQuestionV2AnswerDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v2")
 @RequiredArgsConstructor
-public class QuestionV2Controller {
+public class QuestionV2Controller implements QuestionV2ControllerDocument {
 
     private final SubmitQuestionV2AnswerUseCase submitQuestionV2AnswerUseCase;
     private final GetChapterV2ResultUseCase getChapterV2ResultUseCase;

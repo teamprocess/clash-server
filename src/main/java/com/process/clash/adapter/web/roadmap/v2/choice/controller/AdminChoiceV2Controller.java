@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.roadmap.v2.choice.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.roadmap.v2.choice.docs.controller.AdminChoiceV2ControllerDocument;
 import com.process.clash.adapter.web.roadmap.v2.choice.dto.CreateChoiceV2Dto;
 import com.process.clash.adapter.web.roadmap.v2.choice.dto.UpdateChoiceV2Dto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v2/admin/choices")
 @RequiredArgsConstructor
-public class AdminChoiceV2Controller {
+public class AdminChoiceV2Controller implements AdminChoiceV2ControllerDocument {
 
     private final CreateChoiceV2UseCase createChoiceV2UseCase;
     private final UpdateChoiceV2UseCase updateChoiceV2UseCase;
