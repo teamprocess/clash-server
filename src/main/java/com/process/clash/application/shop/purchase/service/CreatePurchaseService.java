@@ -3,6 +3,7 @@ package com.process.clash.application.shop.purchase.service;
 import com.process.clash.application.shop.purchase.data.CreatePurchaseData;
 import com.process.clash.application.shop.purchase.exception.exception.badrequest.InsufficientGoodsException;
 import com.process.clash.application.shop.purchase.exception.exception.conflict.AlreadyOwnedProductException;
+import com.process.clash.application.shop.purchase.exception.exception.badrequest.PriceTooLargeException;
 import com.process.clash.application.shop.purchase.port.in.CreatePurchaseUseCase;
 import com.process.clash.application.shop.purchase.port.out.PurchaseRepositoryPort;
 import com.process.clash.application.shop.product.exception.exception.notfound.ProductNotFoundException;
@@ -91,7 +92,10 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
     }
 
     private int toIntPrice(long price) {
-        return Math.toIntExact(price);
+        if (price > Integer.MAX_VALUE) {
+            throw new PriceTooLargeException();
+        }
+        return (int) price;
     }
 
     private GoodsType toGoodsType(ProductGoodsType goodsType) {
