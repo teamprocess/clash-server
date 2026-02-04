@@ -11,7 +11,13 @@ public record Purchase(
         Long productId,
         Long userId
 ) {
-    public static Purchase create(GoodsType goodsType, Long price, Long productId, Long userId) {
+    public static Purchase create(
+            GoodsType goodsType,
+            Long price,
+            Long productId,
+            Long userId
+    )
+    {
         return new Purchase(null, null, goodsType, price, productId, userId);
     }
 }
