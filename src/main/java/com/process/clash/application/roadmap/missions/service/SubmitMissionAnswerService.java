@@ -163,7 +163,8 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
             );
 
             // 처음 제출하는 경우, 첫 번째 문제(orderIndex=0)만 가능
-            if (question.getOrderIndex() != null && question.getOrderIndex() != 0) {
+            // orderIndex가 null이거나 0이 아닌 경우 모두 예외
+            if (!Integer.valueOf(0).equals(question.getOrderIndex())) {
                 throw new InvalidQuestionOrderException();
             }
         }
