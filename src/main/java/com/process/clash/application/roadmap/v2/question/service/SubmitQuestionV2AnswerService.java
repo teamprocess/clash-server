@@ -41,13 +41,19 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         QuestionV2 question = questionV2RepositoryPort.findById(command.questionId())
                 .orElseThrow(QuestionV2NotFoundException::new);
 
-        // 2. 챕터 조회 및 접근 권한 확인
+        // 2. 챕터 조회
         ChapterV2 chapter = chapterV2RepositoryPort.findById(question.getChapterId())
                 .orElseThrow(ChapterV2NotFoundException::new);
 
-        validateChapterAccess(actor, chapter);
+        // 3. 사용자 섹션 진행도 조회 (한 번만 조회하여 재사용)
+        UserSectionProgress progress = userSectionProgressRepositoryPort
+                .findByUserIdAndSectionId(actor.id(), chapter.getSectionId())
+                .orElse(null);
 
-        // 3. 선택지 검증 및 정답 확인
+        // 4. 접근 권한 확인
+        validateChapterAccess(chapter, progress);
+
+        // 5. 선택지 검증 및 정답 확인
         List<ChoiceV2> choices = Optional.ofNullable(question.getChoices()).orElse(List.of());
 
         ChoiceV2 submittedChoice = choices.stream()
@@ -63,7 +69,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
                 .map(ChoiceV2::getId)
                 .orElse(null);
 
-        // 4. 사용자 챕터 히스토리 업데이트
+        // 6. 사용자 챕터 히스토리 업데이트
         Optional<UserQuestionHistoryV2> historyOpt = userQuestionHistoryV2RepositoryPort
                 .findByUserIdAndChapterId(actor.id(), chapter.getId());
 
@@ -82,18 +88,15 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
 
         userQuestionHistoryV2RepositoryPort.save(history);
 
-        // 5. 챕터 클리어 여부 확인
+        // 7. 챕터 클리어 여부 확인
         boolean isChapterCleared = history.isCleared();
 
-        // 6. 챕터 클리어 시 섹션 진행도 업데이트
+        // 8. 챕터 클리어 시 섹션 진행도 업데이트 (조회된 progress 재사용)
         Long nextChapterId = null;
         Integer nextChapterOrderIndex = null;
 
         if (isChapterCleared) {
-            UserSectionProgress progress = userSectionProgressRepositoryPort
-                    .findByUserIdAndSectionId(actor.id(), chapter.getSectionId())
-                    .orElse(null);
-
+            // progress가 없고 첫 번째 챕터인 경우 새로 생성
             if (progress == null && chapter.getOrderIndex() == 0) {
                 progress = UserSectionProgress.start(actor.id(), chapter.getSectionId(), chapter.getId());
             }
@@ -117,7 +120,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
             }
         }
 
-        // 7. 응답 반환
+        // 9. 응답 반환
         return new SubmitQuestionV2AnswerData.Result(
                 isCorrect,
                 question.getExplanation(),
@@ -130,11 +133,13 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         );
     }
 
-    private void validateChapterAccess(Actor actor, ChapterV2 chapter) {
-        UserSectionProgress progress = userSectionProgressRepositoryPort
-                .findByUserIdAndSectionId(actor.id(), chapter.getSectionId())
-                .orElse(null);
-
+    /**
+     * 챕터 접근 권한을 검증합니다.
+     * 
+     * @param chapter 접근하려는 챕터
+     * @param progress 사용자의 섹션 진행도 (이미 조회된 객체)
+     */
+    private void validateChapterAccess(ChapterV2 chapter, UserSectionProgress progress) {
         if (progress != null && progress.getCurrentChapterId() != null) {
             ChapterV2 currentChapter = chapterV2RepositoryPort.findById(progress.getCurrentChapterId())
                     .orElseThrow(ChapterV2NotFoundException::new);
