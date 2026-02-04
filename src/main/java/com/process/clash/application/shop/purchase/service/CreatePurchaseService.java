@@ -46,7 +46,7 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
             throw new AlreadyOwnedProductException();
         }
 
-        User user = userRepositoryPort.findById(userId)
+        User user = userRepositoryPort.findByIdForUpdate(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         long price = calculatePrice(product);
