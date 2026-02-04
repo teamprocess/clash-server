@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
-@Table(name = "purchases")
+@Table(
+        name = "purchases",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "fk_product_id"})
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
