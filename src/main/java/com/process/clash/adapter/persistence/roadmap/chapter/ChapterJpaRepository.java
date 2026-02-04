@@ -13,5 +13,5 @@ public interface ChapterJpaRepository extends JpaRepository<ChapterJpaEntity, Lo
 	@EntityGraph(attributePaths = {"missions.questions.choices"})
 	Optional<ChapterJpaEntity> findById(Long id);
 
-	List<ChapterJpaEntity> findAllBySectionId(Long sectionId);
+	List<ChapterJpaEntity> findAllBySectionIdOrderByOrderIndexAsc(Long sectionId);
 }

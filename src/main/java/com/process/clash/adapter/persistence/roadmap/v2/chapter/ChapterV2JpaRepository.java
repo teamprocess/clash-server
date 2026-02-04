@@ -19,8 +19,8 @@ public interface ChapterV2JpaRepository extends JpaRepository<ChapterV2JpaEntity
      * 메타데이터만 필요한 경우 JPA 기본 findById()를 사용하세요. (Lazy Loading)
      */
     @EntityGraph(attributePaths = {"questions.choices"})
-    @Query("SELECT c FROM ChapterV2JpaEntity c WHERE c.id = :id")
+    @Query("SELECT c FROM ChapterV2JpaEntity c WHERE c.id = :id ORDER BY c.orderIndex ASC")
     Optional<ChapterV2JpaEntity> findByIdWithQuestionsAndChoices(@Param("id") Long id);
 
-    List<ChapterV2JpaEntity> findAllBySectionId(Long sectionId);
+    List<ChapterV2JpaEntity> findAllBySectionIdOrderByOrderIndexAsc(Long sectionId);
 }

@@ -32,7 +32,7 @@ public class QuestionV2PersistenceAdapter implements QuestionV2RepositoryPort {
 
     @Override
     public List<QuestionV2> findAllByChapterId(Long chapterId) {
-        return questionV2JpaRepository.findAllByChapterId(chapterId).stream().map(questionV2JpaMapper::toDomain).toList();
+        return questionV2JpaRepository.findAllByChapterIdOrderByOrderIndexAsc(chapterId).stream().map(questionV2JpaMapper::toDomain).toList();
     }
 
     @Override

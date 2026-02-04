@@ -59,7 +59,7 @@ public class ChapterV2PersistenceAdapter implements ChapterV2RepositoryPort {
 
     @Override
     public List<ChapterV2> findAllBySectionId(Long sectionId) {
-        return chapterV2JpaRepository.findAllBySectionId(sectionId).stream().map(chapterV2JpaMapper::toDomain).toList();
+        return chapterV2JpaRepository.findAllBySectionIdOrderByOrderIndexAsc(sectionId).stream().map(chapterV2JpaMapper::toDomain).toList();
     }
 
     @Override

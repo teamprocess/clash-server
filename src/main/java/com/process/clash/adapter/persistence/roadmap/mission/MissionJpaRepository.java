@@ -10,11 +10,12 @@ import java.util.Optional;
 
 @Repository
 public interface MissionJpaRepository extends JpaRepository<MissionJpaEntity, Long> {
-	List<MissionJpaEntity> findAllByChapterId(Long chapterId);
-	List<MissionJpaEntity> findAllByChapterIdIn(List<Long> chapterIds);
+	List<MissionJpaEntity> findAllByChapterIdOrderByOrderIndexAsc(Long chapterId);
+	List<MissionJpaEntity> findAllByChapterIdInOrderByOrderIndexAsc(List<Long> chapterIds);
 
 	@Query("SELECT m FROM MissionJpaEntity m " +
 		   "LEFT JOIN FETCH m.questions q " +
-		   "WHERE m.id = :id")
+		   "WHERE m.id = :id " +
+		   "ORDER BY q.orderIndex ASC")
 	Optional<MissionJpaEntity> findByIdWithQuestions(@Param("id") Long id);
 }

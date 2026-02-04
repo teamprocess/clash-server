@@ -9,14 +9,16 @@ public class CreateChoiceV2Data {
             Actor actor,
             Long questionId,
             String content,
-            boolean isCorrect
+            boolean isCorrect,
+            Integer orderIndex
     ) {
         public ChoiceV2 toDomain() {
             return new ChoiceV2(
                     null,
                     questionId,
                     content,
-                    isCorrect
+                    isCorrect,
+                    orderIndex
             );
         }
     }
@@ -25,14 +27,16 @@ public class CreateChoiceV2Data {
             Long choiceId,
             Long questionId,
             String content,
-            boolean isCorrect
+            boolean isCorrect,
+            Integer orderIndex
     ) {
         public static Result from(ChoiceV2 choice) {
             return new Result(
                     choice.getId(),
                     choice.getQuestionId(),
                     choice.getContent(),
-                    choice.isCorrect()
+                    choice.isCorrect(),
+                    choice.getOrderIndex()
             );
         }
     }

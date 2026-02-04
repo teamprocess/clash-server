@@ -41,6 +41,7 @@ public class QuestionV2JpaEntity {
     private Integer difficulty;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orderIndex ASC")
     private List<ChoiceV2JpaEntity> choices = new ArrayList<>();
 
     @CreationTimestamp

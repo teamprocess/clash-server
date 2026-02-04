@@ -39,6 +39,7 @@ public class MissionJpaEntity {
     private Integer orderIndex;
 
     @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orderIndex ASC")
     private List<MissionQuestionJpaEntity> questions = new ArrayList<>();
 
     @CreationTimestamp
