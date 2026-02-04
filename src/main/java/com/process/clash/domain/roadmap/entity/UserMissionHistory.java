@@ -37,8 +37,13 @@ public class UserMissionHistory {
         checkCleared();
     }
 
-    public void recordQuestionAttempt() {
-        this.currentQuestionIndex = this.currentQuestionIndex + 1;
+    public void recordQuestionAttempt(Integer questionOrderIndex) {
+        // 순서대로 제출: 현재 진행도를 제출한 문제의 다음 순서로 업데이트
+        // orderIndex는 0부터 시작 (문제1=0, 문제2=1, ...)
+        // currentQuestionIndex는 "다음에 풀어야 할 문제의 순서"를 의미
+        if (questionOrderIndex != null) {
+            this.currentQuestionIndex = Math.max(this.currentQuestionIndex, questionOrderIndex + 1);
+        }
     }
 
     public void checkCleared() {

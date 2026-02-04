@@ -4,6 +4,7 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.missions.data.SubmitMissionAnswerData;
 import com.process.clash.application.roadmap.missions.exception.exception.badrequest.ChapterLockedException;
 import com.process.clash.application.roadmap.missions.exception.exception.badrequest.InvalidChoiceException;
+import com.process.clash.application.roadmap.missions.exception.exception.badrequest.InvalidQuestionOrderException;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.ChapterNotFoundException;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.MissionNotFoundException;
 import com.process.clash.application.roadmap.missions.exception.exception.notfound.QuestionNotFoundException;
@@ -128,18 +129,50 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         UserMissionHistory history;
         if (historyOpt.isPresent()) {
             history = historyOpt.get();
+
+            Integer questionOrderIndex = question.getOrderIndex();
+            
+            // 🔄 하이브리드 리셋 로직: 클리어한 미션을 다시 시작하는 경우
+            if (history.isCleared()) {
+                if (questionOrderIndex != null && questionOrderIndex == 0) {
+                    // 문제 1을 제출하면 자동으로 리셋하고 다시 시작
+                    history.reset();
+                } else {
+                    // 문제 1이 아닌 다른 문제는 금지 (처음부터 다시 시작해야 함)
+                    throw new InvalidQuestionOrderException();
+                }
+            } else {
+                // 일반적인 순서 검증 (미션이 클리어되지 않은 경우)
+                // currentQuestionIndex는 "다음에 풀어야 할 문제의 orderIndex"를 의미
+                // 예: currentQuestionIndex=0 → orderIndex=0 제출 가능
+                //     currentQuestionIndex=3 → orderIndex=3 제출 가능
+                if (questionOrderIndex != null && questionOrderIndex < history.getCurrentQuestionIndex()) {
+                    // 이미 제출한 문제 (과거 문제)
+                    throw new InvalidQuestionOrderException();
+                }
+                if (questionOrderIndex != null && questionOrderIndex > history.getCurrentQuestionIndex()) {
+                    // 아직 제출할 수 없는 문제 (미래 문제)
+                    throw new InvalidQuestionOrderException();
+                }
+            }
         } else {
             history = UserMissionHistory.create(
                     actor.id(),
                     command.missionId(),
                     Optional.ofNullable(mission.getQuestions()).map(List::size).orElse(0)
             );
+
+            // 처음 제출하는 경우, 첫 번째 문제(orderIndex=0)만 가능
+            // orderIndex가 null이거나 0이 아닌 경우 모두 예외
+            if (!Integer.valueOf(0).equals(question.getOrderIndex())) {
+                throw new InvalidQuestionOrderException();
+            }
         }
 
         if (isCorrect) {
             history.recordCorrectAnswer();
         }
-        history.recordQuestionAttempt(); // 정답 여부와 무관하게 시도 횟수/인덱스 증가
+        history.recordQuestionAttempt(question.getOrderIndex()); // 문제의 orderIndex 전달
 
         userMissionHistoryRepositoryPort.save(history);
 
