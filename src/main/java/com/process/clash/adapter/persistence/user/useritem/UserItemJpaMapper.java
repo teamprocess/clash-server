@@ -12,6 +12,7 @@ public class UserItemJpaMapper {
         return new UserItemJpaEntity(
                 userItem.id(),
                 userItem.createdAt(),
+                null,
                 userJpaEntity,
                 productJpaEntity
         );

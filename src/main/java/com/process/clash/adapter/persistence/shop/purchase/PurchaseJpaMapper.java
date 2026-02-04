@@ -12,6 +12,7 @@ public class PurchaseJpaMapper {
         return new PurchaseJpaEntity(
                 purchase.id(),
                 purchase.createdAt(),
+                null,
                 purchase.goodsType(),
                 purchase.price(),
                 productJpaEntity,
