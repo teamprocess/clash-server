@@ -3,6 +3,7 @@ package com.process.clash.adapter.persistence.roadmap.v2.chapter;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
 import com.process.clash.application.roadmap.v2.port.out.ChapterV2RepositoryPort;
+import com.process.clash.application.roadmap.v2.question.exception.exception.notfound.ChapterV2NotFoundException;
 import com.process.clash.domain.roadmap.v2.entity.ChapterV2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,8 +32,9 @@ public class ChapterV2PersistenceAdapter implements ChapterV2RepositoryPort {
      */
     public ChapterV2 updateMetadata(Long chapterId, String title, String description, 
                                      Integer orderIndex, String studyMaterialUrl) {
-        ChapterV2JpaEntity entity = chapterV2JpaRepository.findByIdWithoutQuestions(chapterId)
-                .orElseThrow(() -> new IllegalArgumentException("Chapter not found: " + chapterId));
+        // JPA 기본 findById 사용 (Lazy Loading으로 questions는 로드되지 않음)
+        ChapterV2JpaEntity entity = chapterV2JpaRepository.findById(chapterId)
+                .orElseThrow(ChapterV2NotFoundException::new);
         
         entity.updateMetadata(title, description, orderIndex, studyMaterialUrl);
         // @Transactional에 의해 자동으로 UPDATE 쿼리 실행 (더티 체킹)
@@ -43,6 +45,11 @@ public class ChapterV2PersistenceAdapter implements ChapterV2RepositoryPort {
     @Override
     public Optional<ChapterV2> findById(Long id) {
         return chapterV2JpaRepository.findById(id).map(chapterV2JpaMapper::toDomain);
+    }
+
+    @Override
+    public Optional<ChapterV2> findByIdWithQuestionsAndChoices(Long id) {
+        return chapterV2JpaRepository.findByIdWithQuestionsAndChoices(id).map(chapterV2JpaMapper::toDomain);
     }
 
     @Override

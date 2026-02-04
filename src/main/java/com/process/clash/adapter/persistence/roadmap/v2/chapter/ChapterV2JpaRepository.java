@@ -12,15 +12,15 @@ import java.util.Optional;
 @Repository
 public interface ChapterV2JpaRepository extends JpaRepository<ChapterV2JpaEntity, Long> {
 
-    @EntityGraph(attributePaths = {"questions.choices"})
-    Optional<ChapterV2JpaEntity> findById(Long id);
-
     /**
-     * 질문 컬렉션 없이 챕터 메타데이터만 조회합니다. (성능 최적화)
+     * 챕터의 모든 질문과 선택지를 함께 조회합니다.
+     * 챕터 상세 조회 시에만 사용하세요.
+     * 
+     * 메타데이터만 필요한 경우 JPA 기본 findById()를 사용하세요. (Lazy Loading)
      */
-    @EntityGraph(attributePaths = {})
+    @EntityGraph(attributePaths = {"questions.choices"})
     @Query("SELECT c FROM ChapterV2JpaEntity c WHERE c.id = :id")
-    Optional<ChapterV2JpaEntity> findByIdWithoutQuestions(@Param("id") Long id);
+    Optional<ChapterV2JpaEntity> findByIdWithQuestionsAndChoices(@Param("id") Long id);
 
     List<ChapterV2JpaEntity> findAllBySectionId(Long sectionId);
 }

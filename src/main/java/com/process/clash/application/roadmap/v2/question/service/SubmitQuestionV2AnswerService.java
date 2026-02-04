@@ -41,8 +41,8 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         QuestionV2 question = questionV2RepositoryPort.findById(command.questionId())
                 .orElseThrow(QuestionV2NotFoundException::new);
 
-        // 2. 챕터 조회
-        ChapterV2 chapter = chapterV2RepositoryPort.findById(question.getChapterId())
+        // 2. 챕터 조회 (questions와 choices 필요)
+        ChapterV2 chapter = chapterV2RepositoryPort.findByIdWithQuestionsAndChoices(question.getChapterId())
                 .orElseThrow(ChapterV2NotFoundException::new);
 
         // 3. 사용자 섹션 진행도 조회 (한 번만 조회하여 재사용)
@@ -141,6 +141,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
      */
     private void validateChapterAccess(ChapterV2 chapter, UserSectionProgress progress) {
         if (progress != null && progress.getCurrentChapterId() != null) {
+            // orderIndex만 필요하므로 JPA 기본 findById 사용 (Lazy Loading)
             ChapterV2 currentChapter = chapterV2RepositoryPort.findById(progress.getCurrentChapterId())
                     .orElseThrow(ChapterV2NotFoundException::new);
 

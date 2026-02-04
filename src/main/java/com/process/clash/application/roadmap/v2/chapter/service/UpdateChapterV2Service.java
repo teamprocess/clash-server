@@ -20,11 +20,8 @@ public class UpdateChapterV2Service implements UpdateChapterV2UseCase {
     @Override
     @Transactional
     public UpdateChapterV2Data.Result execute(UpdateChapterV2Data.Command command) {
-        // 챕터 존재 여부 확인
-        chapterV2RepositoryPort.findById(command.chapterId())
-                .orElseThrow(ChapterV2NotFoundException::new);
-
         // JPA 더티 체킹을 활용한 메타데이터만 업데이트 (성능 최적화)
+        // updateMetadata 내부에서 존재 여부 확인 및 예외 발생
         ChapterV2 updatedChapter = chapterV2PersistenceAdapter.updateMetadata(
                 command.chapterId(),
                 command.title(),

@@ -79,7 +79,7 @@ INSERT INTO user_question_history_v2 (
 )
 SELECT
     umh.fk_user_id,
-    m.fk_chapter_id,
+    c2.id as fk_chapter_id,  -- 새로운 chapters_v2 테이블의 ID 사용
     -- 챕터 내 모든 미션이 클리어되었을 때만 챕터가 클리어됨
     BOOL_AND(umh.is_cleared) as is_cleared,
     -- 챕터 내 모든 미션의 정답 수 합계
@@ -98,7 +98,7 @@ INNER JOIN chapters c ON m.fk_chapter_id = c.id
 INNER JOIN chapters_v2 c2 ON c2.fk_section_id = c.fk_section_id
     AND c2.title = c.title
     AND c2.order_index = c.order_index
-GROUP BY umh.fk_user_id, m.fk_chapter_id, c2.id
+GROUP BY umh.fk_user_id, c2.id
 ON CONFLICT (fk_user_id, fk_chapter_id) DO UPDATE SET
     is_cleared = EXCLUDED.is_cleared,
     correct_count = EXCLUDED.correct_count,
