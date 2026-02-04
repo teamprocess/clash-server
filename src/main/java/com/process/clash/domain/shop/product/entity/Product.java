@@ -61,4 +61,23 @@ public record Product(
                 season != null
         );
     }
+
+    public Product increasePopularity() {
+        long nextPopularity = this.popularity != null ? this.popularity + 1 : 1L;
+        return new Product(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.title,
+                this.category,
+                this.image,
+                this.type,
+                this.price,
+                this.discount,
+                this.description,
+                nextPopularity,
+                this.season,
+                this.isSeasonal
+        );
+    }
 }
