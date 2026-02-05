@@ -57,6 +57,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         // 5. 선택지 검증 및 정답 확인
         List<ChoiceV2> choices = Optional.ofNullable(question.getChoices()).orElse(List.of());
 
+        // 제출한 선택지 확인
         ChoiceV2 submittedChoice = choices.stream()
                 .filter(c -> c.getId().equals(command.submittedChoiceId()))
                 .findFirst()
@@ -75,6 +76,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
                 .findByUserIdAndChapterId(actor.id(), chapter.getId());
 
         UserQuestionHistoryV2 history;
+
         if (historyOpt.isPresent()) {
             history = historyOpt.get();
 
