@@ -57,6 +57,9 @@ CREATE INDEX IF NOT EXISTS idx_choices_v2_order_index ON choices_v2(order_index)
 -- 1.3.1 기존 choices_v2 테이블에 order_index 추가 (마이그레이션용)
 ALTER TABLE choices_v2 ADD COLUMN IF NOT EXISTS order_index INTEGER;
 
+-- 1.3.2 V1 choices 테이블에도 order_index 추가 (V1 데이터 마이그레이션을 위해 필요)
+ALTER TABLE choices ADD COLUMN IF NOT EXISTS order_index INTEGER;
+
 -- 1.4 user_question_history_v2 테이블 생성
 CREATE TABLE IF NOT EXISTS user_question_history_v2 (
     id BIGSERIAL PRIMARY KEY,
