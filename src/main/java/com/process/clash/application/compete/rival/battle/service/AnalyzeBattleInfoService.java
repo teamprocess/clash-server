@@ -27,20 +27,16 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
-    private final BattleRepositoryPort battleRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final GetBattleInfoPolicy getBattleInfoPolicy;
 
     @Override
     public AnalyzeBattleInfoData.Result execute(AnalyzeBattleInfoData.Command command) {
 
-        getBattleInfoPolicy.check(command.id());
+        Battle battle = getBattleInfoPolicy.check(command.id());
 
         Long userId = command.actor().id();
         TargetCategory category = command.category();
-
-        Battle battle = battleRepositoryPort.findById(command.id())
-                .orElseThrow(BattleNotFoundException::new);
 
         // Rival 정보 조회
         Rival rival = rivalRepositoryPort.findById(battle.rivalId())

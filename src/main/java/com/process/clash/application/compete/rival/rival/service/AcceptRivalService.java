@@ -25,10 +25,7 @@ public class AcceptRivalService implements AcceptRivalUseCase {
     @Override
     public void execute(ModifyRivalData.Command command) {
 
-        acceptRivalPolicy.check(command.actor(), command.id());
-
-        Rival rival = rivalRepositoryPort.findById(command.id())
-                .orElseThrow(RivalNotFoundException::new);
+        Rival rival = acceptRivalPolicy.check(command.actor(), command.id());
 
         Rival updatedRival = rival.accept();
 

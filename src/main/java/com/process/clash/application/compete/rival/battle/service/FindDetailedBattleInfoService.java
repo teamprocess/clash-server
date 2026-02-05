@@ -27,17 +27,13 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
 
     private final UserRepositoryPort userRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
-    private final BattleRepositoryPort battleRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final GetBattleInfoPolicy getBattleInfoPolicy;
 
     @Override
     public FindDetailedBattleInfoData.Result execute(FindDetailedBattleInfoData.Command command) {
 
-        getBattleInfoPolicy.check(command.id());
-
-        Battle battle = battleRepositoryPort.findById(command.id())
-                .orElseThrow(BattleNotFoundException::new);
+        Battle battle = getBattleInfoPolicy.check(command.id());
 
         Rival rival = rivalRepositoryPort.findById(battle.rivalId())
                 .orElseThrow(RivalNotFoundException::new);

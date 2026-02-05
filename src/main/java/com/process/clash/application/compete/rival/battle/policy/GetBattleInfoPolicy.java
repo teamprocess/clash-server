@@ -14,7 +14,7 @@ public class GetBattleInfoPolicy {
 
     private final BattleRepositoryPort battleRepositoryPort;
 
-    public void check(Long id) {
+    public Battle check(Long id) {
 
         Battle battle = battleRepositoryPort.findById(id)
                 .orElseThrow(BattleNotFoundException::new);
@@ -22,5 +22,7 @@ public class GetBattleInfoPolicy {
         if (battle.battleStatus().equals(BattleStatus.PENDING) || battle.battleStatus().equals(BattleStatus.REJECTED)) {
             throw new NotAcceptedBattleException();
         }
+
+        return battle;
     }
 }
