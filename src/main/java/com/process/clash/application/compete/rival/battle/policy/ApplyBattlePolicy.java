@@ -1,6 +1,6 @@
 package com.process.clash.application.compete.rival.battle.policy;
 
-import com.process.clash.application.compete.rival.battle.exception.exception.badrequest.AlreadyInBattleException;
+import com.process.clash.application.compete.rival.battle.exception.exception.conflict.AlreadyInBattleException;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

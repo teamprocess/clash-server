@@ -2,7 +2,7 @@ package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
-import com.process.clash.application.compete.rival.rival.policy.ModifyRivalPolicy;
+import com.process.clash.application.compete.rival.rival.policy.AcceptRivalPolicy;
 import com.process.clash.application.compete.rival.rival.port.in.AcceptRivalUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
@@ -19,16 +19,13 @@ import org.springframework.stereotype.Service;
 public class AcceptRivalService implements AcceptRivalUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
-    private final ModifyRivalPolicy modifyRivalPolicy;
+    private final AcceptRivalPolicy acceptRivalPolicy;
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
 
     @Override
     public void execute(ModifyRivalData.Command command) {
 
-        modifyRivalPolicy.check(command.actor());
-
-        Rival rival = rivalRepositoryPort.findById(command.id())
-                .orElseThrow(RivalNotFoundException::new);
+        Rival rival = acceptRivalPolicy.check(command.actor(), command.id());
 
         Rival updatedRival = rival.accept();
 

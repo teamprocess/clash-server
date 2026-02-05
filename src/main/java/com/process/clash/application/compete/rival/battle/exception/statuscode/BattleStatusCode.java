@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BattleStatusCode implements StatusCode {
 
+    // 400
+    NOT_ACCEPTED_BATTLE("NOT_ACCEPTED_BATTLE", "배틀이 승인되지 않았습니다.", ErrorCategory.BAD_REQUEST),
+
     // 404
     BATTLE_NOT_FOUND("BATTLE_NOT_FOUND", "배틀이 존재하지 않습니다.", ErrorCategory.NOT_FOUND),
 
