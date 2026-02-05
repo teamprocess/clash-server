@@ -48,6 +48,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
     implementation "io.netty:netty-resolver-dns-native-macos:4.1.115.Final:osx-aarch_64"
+    implementation 'org.flywaydb:flyway-core'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'

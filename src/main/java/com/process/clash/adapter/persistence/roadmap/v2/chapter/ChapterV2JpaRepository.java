@@ -22,5 +22,5 @@ public interface ChapterV2JpaRepository extends JpaRepository<ChapterV2JpaEntity
     @Query("SELECT c FROM ChapterV2JpaEntity c WHERE c.id = :id")
     Optional<ChapterV2JpaEntity> findByIdWithQuestionsAndChoices(@Param("id") Long id);
 
-    List<ChapterV2JpaEntity> findAllBySectionId(Long sectionId);
+    List<ChapterV2JpaEntity> findAllBySectionIdOrderByOrderIndexAsc(Long sectionId);
 }

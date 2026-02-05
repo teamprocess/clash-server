@@ -8,5 +8,5 @@ import java.util.List;
 @Repository
 public interface QuestionV2JpaRepository extends JpaRepository<QuestionV2JpaEntity, Long> {
 
-    List<QuestionV2JpaEntity> findAllByChapterId(Long chapterId);
+    List<QuestionV2JpaEntity> findAllByChapterIdOrderByOrderIndexAsc(Long chapterId);
 }

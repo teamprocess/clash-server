@@ -37,6 +37,7 @@ public class ChapterJpaEntity {
     private Integer orderIndex; // 순서
 
     @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orderIndex ASC")
     private List<MissionJpaEntity> missions = new ArrayList<>();
 
     @CreationTimestamp

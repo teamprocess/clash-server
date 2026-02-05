@@ -35,12 +35,12 @@ public class MissionPersistenceAdapter implements MissionRepositoryPort {
 
     @Override
     public List<Mission> findAllByChapterId(Long chapterId) {
-        return missionJpaRepository.findAllByChapterId(chapterId).stream().map(missionJpaMapper::toDomain).toList();
+        return missionJpaRepository.findAllByChapterIdOrderByOrderIndexAsc(chapterId).stream().map(missionJpaMapper::toDomain).toList();
     }
 
     @Override
     public List<Mission> findAllByChapterIdIn(List<Long> chapterIds) {
-        return missionJpaRepository.findAllByChapterIdIn(chapterIds).stream().map(missionJpaMapper::toDomain).toList();
+        return missionJpaRepository.findAllByChapterIdInOrderByOrderIndexAsc(chapterIds).stream().map(missionJpaMapper::toDomain).toList();
     }
 
     @Override
