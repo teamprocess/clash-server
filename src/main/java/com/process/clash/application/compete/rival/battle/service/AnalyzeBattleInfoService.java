@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.data.AnalyzeBattleInfoData;
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
+import com.process.clash.application.compete.rival.battle.policy.GetBattleInfoPolicy;
 import com.process.clash.application.compete.rival.battle.port.in.AnalyzeBattleInfoUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
@@ -28,9 +29,13 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
     private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
     private final BattleRepositoryPort battleRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
+    private final GetBattleInfoPolicy getBattleInfoPolicy;
 
     @Override
     public AnalyzeBattleInfoData.Result execute(AnalyzeBattleInfoData.Command command) {
+
+        getBattleInfoPolicy.check(command.id());
+
         Long userId = command.actor().id();
         TargetCategory category = command.category();
 

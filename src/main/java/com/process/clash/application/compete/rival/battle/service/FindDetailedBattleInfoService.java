@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.data.FindDetailedBattleInfoData;
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
+import com.process.clash.application.compete.rival.battle.policy.GetBattleInfoPolicy;
 import com.process.clash.application.compete.rival.battle.port.in.FindDetailedBattleInfoUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
@@ -28,9 +29,12 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
     private final RivalRepositoryPort rivalRepositoryPort;
     private final BattleRepositoryPort battleRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
+    private final GetBattleInfoPolicy getBattleInfoPolicy;
 
     @Override
     public FindDetailedBattleInfoData.Result execute(FindDetailedBattleInfoData.Command command) {
+
+        getBattleInfoPolicy.check(command.id());
 
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
