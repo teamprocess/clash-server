@@ -1,5 +1,6 @@
 package com.process.clash.domain.user.user.entity;
 
+import com.process.clash.domain.common.enums.GoodsType;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
@@ -97,6 +98,33 @@ public record User(
                 this.totalExp,
                 this.totalCookie,
                 this.totalToken,
+                this.major,
+                this.userStatus
+        );
+    }
+
+    public User spendGoods(GoodsType goodsType, int amount) {
+        int nextTotalCookie = this.totalCookie;
+        int nextTotalToken = this.totalToken;
+
+        switch (goodsType) {
+            case COOKIE -> nextTotalCookie -= amount;
+            case TOKEN -> nextTotalToken -= amount;
+        }
+
+        return new User(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                this.profileImage,
+                this.totalExp,
+                nextTotalCookie,
+                nextTotalToken,
                 this.major,
                 this.userStatus
         );
