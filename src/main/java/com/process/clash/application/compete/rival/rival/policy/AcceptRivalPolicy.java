@@ -8,14 +8,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ModifyRivalPolicy {
+public class AcceptRivalPolicy {
 
     private final RivalRepositoryPort rivalRepositoryPort;
     private static final int MAX_RIVAL_COUNT = 4;
 
-    public void check(Actor actor) {
+    public void check(Actor actor, Long id) {
 
         if (rivalRepositoryPort.countAllByUserId(actor.id()) >= MAX_RIVAL_COUNT)
+            throw new TooMuchRivalsException();
+
+        Long rivalId = rivalRepositoryPort.findOpponentIdByIdAndUserId(id, actor.id());
+
+        if (rivalRepositoryPort.countAllByUserId(rivalId) >= MAX_RIVAL_COUNT)
             throw new TooMuchRivalsException();
     }
 }
