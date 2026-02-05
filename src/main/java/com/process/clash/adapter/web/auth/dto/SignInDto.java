@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.process.clash.application.common.data.AccessContext;
 import com.process.clash.application.user.user.data.SignInData;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -17,7 +18,16 @@ public class SignInDto {
             String password,
             @JsonProperty("rememberMe")
             boolean rememberMe
-    ) { }
+    ) {
+        public static SignInData.Command toCommand(Request request, AccessContext context) {
+            return new SignInData.Command(
+                    request.username,
+                    request.password,
+                    request.rememberMe,
+                    context
+            );
+        }
+    }
 
     @Schema(name = "SignInDtoResponse")
 
