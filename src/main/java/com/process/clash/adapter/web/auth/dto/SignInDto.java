@@ -19,7 +19,7 @@ public class SignInDto {
             @JsonProperty("rememberMe")
             boolean rememberMe
     ) {
-        public static SignInData.Command toCommand(Request request, AccessContext context) {
+        public SignInData.Command toCommand(Request request, AccessContext context) {
             return new SignInData.Command(
                     request.username,
                     request.password,

@@ -68,7 +68,7 @@ public class AuthController implements AuthControllerDocument {
 	) {
 		AccessContext context = extractAccessContext(httpRequest);
 
-		SignInData.Command command = SignInDto.Request.toCommand(request, context);
+		SignInData.Command command = request.toCommand(request, context);
 		SignInData.Result result = signInUseCase.execute(command);
 
 		SignInDto.Response response = SignInDto.Response.fromResult(result);
