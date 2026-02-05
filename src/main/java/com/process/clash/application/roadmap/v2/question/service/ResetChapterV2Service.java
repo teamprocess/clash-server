@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@Deprecated
 @RequiredArgsConstructor
+// 챕터 통과 직후에 다시 첫 문제를 풀어 리셋하지 않으면 리셋 불가 처리하도록 로직이 변경되어 만료된 서비스
 public class ResetChapterV2Service implements ResetChapterV2UseCase {
 
     private final UserQuestionHistoryV2RepositoryPort userQuestionHistoryV2RepositoryPort;

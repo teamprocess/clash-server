@@ -173,6 +173,9 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
     // 첫 질문 다시 시도
     private void retryFirstQuestion(UserQuestionHistoryV2 history, QuestionV2 question) {
 
+        // 1. 챕터를 클리어 했는데 다시 첫 문제를 시도 -> 기록 리셋
+        // 2. 챕터를 클리어 하지 않았다면 -> 제출 가능 검증
+
         Integer questionOrderIndex = question.getOrderIndex();
 
         if (history.isCleared()) {
