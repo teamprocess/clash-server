@@ -434,21 +434,23 @@ ApiResponse.error("에러 메시지");
  **Native Query + Object[] 반환**을 사용합니다.
 
 ```java
-@Query("""
-    select new com.process.clash.application.compete.my.data.Streak(
-        g.studyDate,
-        g.commitCount + g.prCount + g.reviewCount + g.issueCount
-    )
-    from GitHubDailyStatsJpaEntity g
-    where g.userId = :userId
-        and g.studyDate >= :startDate
-        and g.studyDate < :endDate
-    order by g.studyDate asc
-""")
-List<Streak> findStreakByUserId(
-    @Param("userId") Long userId,
+@Query(value = """
+    SELECT
+        user_id AS userId,
+        cast(date_trunc('week', study_date) as date) AS recordedDate,
+        AVG(commit_count + pr_count + review_count + issue_count) AS point
+    FROM github_daily_stats
+    WHERE user_id IN (:userIds)
+        AND study_date >= date_trunc('week', CAST(:startDate AS date))
+        AND study_date < :endDate
+    GROUP BY user_id, date_trunc('week', study_date)
+    ORDER BY user_id, date_trunc('week', study_date) ASC
+""", nativeQuery = true)
+List<Object[]> findWeeklyContributionsByUserIds(
+    @Param("userIds") List<Long> userIds,
     @Param("startDate") LocalDate startDate,
-    @Param("endDate") LocalDate endDate
+    @Param("endDate") LocalDate endDate,
+    Pageable pageable
 );
 ```
 
@@ -551,4 +553,4 @@ http://localhost:8080/swagger-ui.html
 
 ---
 
-**마지막 업데이트**: 2026-02-02
+**마지막 업데이트**: 2026-02-06
