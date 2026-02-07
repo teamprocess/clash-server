@@ -31,6 +31,9 @@ public class ChoiceJpaEntity {
     @Column(nullable = false)
     private boolean isCorrect;
 
+    @Column(nullable = false)
+    private Integer orderIndex;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

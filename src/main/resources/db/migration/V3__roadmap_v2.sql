@@ -1,14 +1,92 @@
 -- ============================================
 -- Roadmap V2 마이그레이션 스크립트
 -- ============================================
--- 이 스크립트는 v1 테이블의 데이터를 v2 테이블로 마이그레이션합니다
--- JPA에 의해 v2 테이블이 생성된 후에 실행하세요
+-- 이 스크립트는 v2 테이블을 생성하고 v1 테이블의 데이터를 마이그레이션합니다
 
 -- ============================================
--- 단계 1: V2 테이블 생성 (JPA가 자동 처리)
+-- 단계 1: V2 테이블 생성
 -- ============================================
--- 테이블: chapters_v2, questions_v2, choices_v2, user_question_history_v2
--- 애플리케이션 시작 시 JPA 엔티티에 의해 자동으로 생성됩니다
+
+-- 1.1 chapters_v2 테이블 생성
+CREATE TABLE IF NOT EXISTS chapters_v2 (
+    id BIGSERIAL PRIMARY KEY,
+    fk_section_id BIGINT NOT NULL REFERENCES sections(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    order_index INTEGER NOT NULL,
+    study_material_url VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 인덱스 생성
+CREATE INDEX IF NOT EXISTS idx_chapters_v2_section_id ON chapters_v2(fk_section_id);
+CREATE INDEX IF NOT EXISTS idx_chapters_v2_order_index ON chapters_v2(order_index);
+
+-- 1.2 questions_v2 테이블 생성
+CREATE TABLE IF NOT EXISTS questions_v2 (
+    id BIGSERIAL PRIMARY KEY,
+    fk_chapter_id BIGINT NOT NULL REFERENCES chapters_v2(id) ON DELETE CASCADE,
+    content VARCHAR(1000) NOT NULL,
+    explanation TEXT,
+    order_index INTEGER NOT NULL,
+    difficulty INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 인덱스 생성
+CREATE INDEX IF NOT EXISTS idx_questions_v2_chapter_id ON questions_v2(fk_chapter_id);
+CREATE INDEX IF NOT EXISTS idx_questions_v2_order_index ON questions_v2(order_index);
+
+-- 1.3 choices_v2 테이블 생성
+CREATE TABLE IF NOT EXISTS choices_v2 (
+    id BIGSERIAL PRIMARY KEY,
+    fk_question_id BIGINT NOT NULL REFERENCES questions_v2(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    is_correct BOOLEAN NOT NULL,
+    order_index INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 인덱스 생성
+CREATE INDEX IF NOT EXISTS idx_choices_v2_question_id ON choices_v2(fk_question_id);
+CREATE INDEX IF NOT EXISTS idx_choices_v2_order_index ON choices_v2(order_index);
+
+-- 1.3.1 V1 choices 테이블에 order_index 추가 (V1→V2 데이터 마이그레이션을 위해 필요)
+-- Step 1: NULL 허용으로 컬럼 추가
+ALTER TABLE choices ADD COLUMN IF NOT EXISTS order_index INTEGER;
+
+-- Step 2: 기존 데이터에 order_index 값 채우기 (문제별로 ID 순서대로 0부터 시작)
+UPDATE choices
+SET order_index = subquery.row_num - 1
+FROM (
+    SELECT id, ROW_NUMBER() OVER (PARTITION BY fk_question_id ORDER BY id) AS row_num
+    FROM choices
+) AS subquery
+WHERE choices.id = subquery.id AND choices.order_index IS NULL;
+
+-- Step 3: NOT NULL 제약 조건 추가 (JPA Entity와 일치)
+ALTER TABLE choices ALTER COLUMN order_index SET NOT NULL;
+
+-- 1.4 user_question_history_v2 테이블 생성
+CREATE TABLE IF NOT EXISTS user_question_history_v2 (
+    id BIGSERIAL PRIMARY KEY,
+    fk_user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    fk_chapter_id BIGINT NOT NULL REFERENCES chapters_v2(id) ON DELETE CASCADE,
+    is_cleared BOOLEAN NOT NULL DEFAULT FALSE,
+    correct_count INTEGER NOT NULL DEFAULT 0,
+    total_count INTEGER NOT NULL DEFAULT 0,
+    current_question_index INTEGER DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uk_user_chapter_v2 UNIQUE (fk_user_id, fk_chapter_id)
+);
+
+-- 인덱스 생성
+CREATE INDEX IF NOT EXISTS idx_user_question_history_v2_user_id ON user_question_history_v2(fk_user_id);
+CREATE INDEX IF NOT EXISTS idx_user_question_history_v2_chapter_id ON user_question_history_v2(fk_chapter_id);
 
 -- ============================================
 -- 단계 2: 챕터 마이그레이션 (1:1 복사)
@@ -45,11 +123,13 @@ ON CONFLICT DO NOTHING;
 -- 동일한 로직을 사용하여 choices를 새로운 questions_v2에 매핑
 -- content 일치를 기반으로 해당하는 question_v2.id를 찾아야 함
 
-INSERT INTO choices_v2 (fk_question_id, content, is_correct, created_at, updated_at)
+INSERT INTO choices_v2 (fk_question_id, content, is_correct, order_index, created_at, updated_at)
 SELECT
     q2.id as fk_question_id,
     c.content,
     c.is_correct,
+    -- order_index: choices 테이블에 order_index가 있으면 사용, 없으면 ROW_NUMBER() 사용
+    COALESCE(c.order_index, ROW_NUMBER() OVER (PARTITION BY c.fk_question_id ORDER BY c.id) - 1) as order_index,
     c.created_at,
     c.updated_at
 FROM choices c

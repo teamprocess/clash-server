@@ -15,6 +15,7 @@ public class ChoiceV2JpaMapper {
                 questionEntity,
                 choice.getContent(),
                 choice.isCorrect(),
+                choice.getOrderIndex(),
                 null, // createdAt은 @CreationTimestamp가 자동으로 설정
                 null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
         );
@@ -25,7 +26,8 @@ public class ChoiceV2JpaMapper {
                 entity.getId(),
                 entity.getQuestion() != null ? entity.getQuestion().getId() : null,
                 entity.getContent(),
-                entity.isCorrect()
+                entity.isCorrect(),
+                entity.getOrderIndex()
         );
     }
 }

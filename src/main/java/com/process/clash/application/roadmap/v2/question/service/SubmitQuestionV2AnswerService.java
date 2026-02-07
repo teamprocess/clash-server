@@ -8,6 +8,7 @@ import com.process.clash.application.roadmap.v2.port.out.UserQuestionHistoryV2Re
 import com.process.clash.application.roadmap.v2.question.data.SubmitQuestionV2AnswerData;
 import com.process.clash.application.roadmap.v2.question.exception.exception.badrequest.ChapterV2LockedException;
 import com.process.clash.application.roadmap.v2.question.exception.exception.badrequest.InvalidChoiceV2Exception;
+import com.process.clash.application.roadmap.v2.question.exception.exception.badrequest.InvalidQuestionOrderV2Exception;
 import com.process.clash.application.roadmap.v2.question.exception.exception.notfound.ChapterV2NotFoundException;
 import com.process.clash.application.roadmap.v2.question.exception.exception.notfound.QuestionV2NotFoundException;
 import com.process.clash.application.roadmap.v2.question.port.in.SubmitQuestionV2AnswerUseCase;
@@ -56,6 +57,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         // 5. 선택지 검증 및 정답 확인
         List<ChoiceV2> choices = Optional.ofNullable(question.getChoices()).orElse(List.of());
 
+        // 제출한 선택지 확인
         ChoiceV2 submittedChoice = choices.stream()
                 .filter(c -> c.getId().equals(command.submittedChoiceId()))
                 .findFirst()
@@ -74,17 +76,27 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
                 .findByUserIdAndChapterId(actor.id(), chapter.getId());
 
         UserQuestionHistoryV2 history;
+
         if (historyOpt.isPresent()) {
             history = historyOpt.get();
+
+            retryFirstQuestion(history, question);
+
         } else {
             int totalQuestions = Optional.ofNullable(chapter.getQuestions()).map(List::size).orElse(0);
             history = UserQuestionHistoryV2.create(actor.id(), chapter.getId(), totalQuestions);
+
+            // 처음 제출하는 경우, 첫 번째 문제(orderIndex=0)만 가능
+            // orderIndex가 null이거나 0이 아닌 경우 모두 예외
+            if (!Integer.valueOf(0).equals(question.getOrderIndex())) {
+                throw new InvalidQuestionOrderV2Exception();
+            }
         }
 
         if (isCorrect) {
             history.recordCorrectAnswer();
         }
-        history.recordQuestionAttempt();
+        history.recordQuestionAttempt(question.getOrderIndex());
 
         userQuestionHistoryV2RepositoryPort.save(history);
 
@@ -133,12 +145,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         );
     }
 
-    /**
-     * 챕터 접근 권한을 검증합니다.
-     * 
-     * @param chapter 접근하려는 챕터
-     * @param progress 사용자의 섹션 진행도 (이미 조회된 객체)
-     */
+    // 챕터 접근 권한 검증
     private void validateChapterAccess(ChapterV2 chapter, UserSectionProgress progress) {
         if (progress != null && progress.getCurrentChapterId() != null) {
             // orderIndex만 필요하므로 JPA 기본 findById 사용 (Lazy Loading)
@@ -159,6 +166,36 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
             Integer targetOrderIndex = chapter.getOrderIndex();
             if (targetOrderIndex == null || targetOrderIndex != 0) {
                 throw new ChapterV2LockedException();
+            }
+        }
+    }
+
+    // 첫 질문 다시 시도
+    private void retryFirstQuestion(UserQuestionHistoryV2 history, QuestionV2 question) {
+
+        // 1. 챕터를 클리어 했는데 다시 첫 문제를 시도 -> 기록 리셋
+        // 2. 챕터를 클리어 하지 않았다면 -> 제출 가능 검증
+
+        Integer questionOrderIndex = question.getOrderIndex();
+
+        if (history.isCleared()) {
+            if (questionOrderIndex != null && questionOrderIndex == 0) {
+                // 문제 1을 제출하면 자동으로 리셋하고 다시 시작
+                history.reset();
+            } else {
+                // 문제 1이 아닌 다른 문제는 금지 (처음부터 다시 시작해야 함)
+                throw new InvalidQuestionOrderV2Exception();
+            }
+        } else {
+            // 일반적인 순서 검증 (챕터가 클리어되지 않은 경우)
+            // currentQuestionIndex는 "다음에 풀어야 할 문제의 orderIndex"를 의미
+            if (questionOrderIndex != null && questionOrderIndex < history.getCurrentQuestionIndex()) {
+                // 이미 제출한 문제 (과거 문제)
+                throw new InvalidQuestionOrderV2Exception();
+            }
+            if (questionOrderIndex != null && questionOrderIndex > history.getCurrentQuestionIndex()) {
+                // 아직 제출할 수 없는 문제 (미래 문제)
+                throw new InvalidQuestionOrderV2Exception();
             }
         }
     }

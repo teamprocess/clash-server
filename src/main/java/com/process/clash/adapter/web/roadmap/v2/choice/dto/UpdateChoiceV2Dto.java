@@ -14,14 +14,18 @@ public class UpdateChoiceV2Dto {
             String content,
 
             @NotNull(message = "isCorrect는 필수 입력값입니다.")
-            Boolean isCorrect
+            Boolean isCorrect,
+
+            @NotNull(message = "orderIndex는 필수 입력값입니다.")
+            Integer orderIndex
     ) {
         public UpdateChoiceV2Data.Command toCommand(Actor actor, Long choiceId) {
             return new UpdateChoiceV2Data.Command(
                     actor,
                     choiceId,
                     content,
-                    isCorrect
+                    isCorrect,
+                    orderIndex
             );
         }
     }
@@ -30,13 +34,15 @@ public class UpdateChoiceV2Dto {
     public record Response(
             Long choiceId,
             String content,
-            boolean isCorrect
+            boolean isCorrect,
+            Integer orderIndex
     ) {
         public static Response from(UpdateChoiceV2Data.Result result) {
             return new Response(
                     result.choiceId(),
                     result.content(),
-                    result.isCorrect()
+                    result.isCorrect(),
+                    result.orderIndex()
             );
         }
     }

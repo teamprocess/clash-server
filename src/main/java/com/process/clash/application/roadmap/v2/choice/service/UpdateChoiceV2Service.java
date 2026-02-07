@@ -25,7 +25,8 @@ public class UpdateChoiceV2Service implements UpdateChoiceV2UseCase {
                 choice.getId(),
                 choice.getQuestionId(),
                 command.content(),
-                command.isCorrect()
+                command.isCorrect(),
+                command.orderIndex()
         );
 
         ChoiceV2 savedChoice = choiceV2RepositoryPort.save(updatedChoice);

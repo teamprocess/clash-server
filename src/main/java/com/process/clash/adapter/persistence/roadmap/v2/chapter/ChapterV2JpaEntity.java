@@ -41,6 +41,7 @@ public class ChapterV2JpaEntity {
     private String studyMaterialUrl;
 
     @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("orderIndex ASC")
     private List<QuestionV2JpaEntity> questions = new ArrayList<>();
 
     @CreationTimestamp

@@ -17,4 +17,6 @@ public class ChoiceV2 {
     private String content;
 
     private boolean isCorrect;
+
+    private Integer orderIndex;
 }

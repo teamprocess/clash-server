@@ -37,6 +37,12 @@ public enum QuestionV2StatusCode implements StatusCode {
             "INVALID_CHOICE_V2",
             "유효하지 않은 선택지입니다.",
             ErrorCategory.BAD_REQUEST
+    ),
+
+    INVALID_QUESTION_ORDER_V2(
+            "INVALID_QUESTION_ORDER_V2",
+            "문제를 순서대로 제출해야 합니다.",
+            ErrorCategory.BAD_REQUEST
     );
 
     private final String code;

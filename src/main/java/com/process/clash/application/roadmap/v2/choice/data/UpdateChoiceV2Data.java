@@ -9,20 +9,23 @@ public class UpdateChoiceV2Data {
             Actor actor,
             Long choiceId,
             String content,
-            boolean isCorrect
+            boolean isCorrect,
+            Integer orderIndex
     ) {
     }
 
     public record Result(
             Long choiceId,
             String content,
-            boolean isCorrect
+            boolean isCorrect,
+            Integer orderIndex
     ) {
         public static Result from(ChoiceV2 choice) {
             return new Result(
                     choice.getId(),
                     choice.getContent(),
-                    choice.isCorrect()
+                    choice.isCorrect(),
+                    choice.getOrderIndex()
             );
         }
     }
