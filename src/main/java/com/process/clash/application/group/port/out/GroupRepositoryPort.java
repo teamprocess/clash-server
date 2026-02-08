@@ -23,7 +23,11 @@ public interface GroupRepositoryPort {
 
     PageResult findAllByMemberUserIdAndCategory(Long userId, Integer page, Integer size, GroupCategory category);
 
+    List<Long> findGroupIdsByMemberUserId(Long userId);
+
     List<Long> findGroupIdsByMemberUserIdAndGroupIds(Long userId, List<Long> groupIds);
+
+    List<Long> findMemberUserIdsByGroupIds(List<Long> groupIds);
 
     boolean existsMember(Long groupId, Long userId);
 
