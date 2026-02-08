@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.GenericFilterBean;
@@ -27,9 +28,12 @@ public class RecaptchaFilter extends GenericFilterBean {
 
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
     private static final String RECAPTCHA_HEADER = "X-Recaptcha-Token";
+    private static final String DEV_ENVIRONMENT = "dev";
 
     private final RecaptchaPort recaptchaPort;
     private final ObjectMapper objectMapper;
+    @Value("${ENVIRONMENT:prod}")
+    private String environment;
 
     private static final Set<String> PROTECTED_PATHS = Set.of(
             "/api/auth/sign-up",
@@ -57,6 +61,11 @@ public class RecaptchaFilter extends GenericFilterBean {
             return;
         }
 
+        if (isDevEnvironment()) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String path = httpRequest.getRequestURI();
 
         if (!isProtectedPath(path)) {
@@ -79,6 +88,10 @@ public class RecaptchaFilter extends GenericFilterBean {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private boolean isDevEnvironment() {
+        return environment != null && DEV_ENVIRONMENT.equalsIgnoreCase(environment.trim());
     }
 
     private boolean isProtectedPath(String path) {
