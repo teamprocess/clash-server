@@ -1,3 +1,19 @@
+-- Category
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (1, '2026-01-21 02:46:05.390065', 'Web Development', '2026-01-21 02:46:05.390065');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (2, '2026-01-21 02:46:05.390065', 'Backend Framework', '2026-01-21 02:46:05.390065');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (3, '2026-01-21 02:46:05.390065', 'Data Science', '2026-01-21 02:46:05.390065');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (4, '2026-01-21 07:26:31.004791', 'Web Frontend', '2026-01-21 07:26:31.004791');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (5, '2026-01-21 07:26:31.004791', 'Backend Server', '2026-01-21 07:26:31.004791');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (6, '2026-01-21 07:26:31.004791', 'Artificial Intelligence', '2026-01-21 07:26:31.004791');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (7, '2026-01-21 07:26:31.004791', 'Game Development', '2026-01-21 07:26:31.004791');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (8, '2026-01-21 07:30:08.91299', 'Web Frontend Quality Path', '2026-01-21 07:30:08.91299');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (9, '2026-01-21 07:37:06.858587', 'html', '2026-01-21 07:37:06.858587');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (10, '2026-01-21 07:37:06.859981', 'css', '2026-01-21 07:37:06.859981');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (11, '2026-01-21 07:37:06.861478', 'javascript', '2026-01-21 07:37:06.861478');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (12, '2026-01-21 09:00:02.894475', 'react', '2026-01-21 09:00:02.894475');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (13, '2026-01-21 09:00:34.076441', 'typescript', '2026-01-21 09:00:34.076441');
+INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (14, '2026-01-21 09:05:25.354709', 'next', '2026-01-21 09:05:25.354709');
+
 -- Section
 INSERT INTO public.sections (id, created_at, description, major, order_index, title, updated_at, category_id) VALUES (2, '2026-01-21 02:46:05.394152', '스프링 핵심 원리', 'SERVER', 1, 'Spring Core', '2026-01-21 02:46:05.394152', 2);
 INSERT INTO public.sections (id, created_at, description, major, order_index, title, updated_at, category_id) VALUES (3, '2026-01-21 02:46:05.394152', '파이썬 데이터 분석', 'AI', 2, 'Python Analysis', '2026-01-21 02:46:05.394152', 3);
@@ -72,67 +88,17 @@ INSERT INTO public.chapters (id, created_at, description, order_index, title, up
 INSERT INTO public.chapters (id, created_at, description, order_index, title, updated_at, section_id) VALUES (47, '2026-01-25 08:28:07.342492', 'html, head, body 태그의 역할과 DOCTYPE 선언에 대해 배웁니다.', 5, 'HTML 문서의 기본 구조', '2026-01-25 08:28:07.342492', 16);
 INSERT INTO public.chapters (id, created_at, description, order_index, title, updated_at, section_id) VALUES (38, '2026-01-25 05:55:37.867881', 'Practical applications and real-world examples', 3, 'Practical Applications', '2026-01-25 05:55:37.867881', 16);
 
--- Mission
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (4, '2026-01-21 02:46:29.445969', 1, 'SERVER 입문 과정', '2026-01-21 02:46:29.445969', 2, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (5, '2026-01-21 02:46:29.445969', 2, 'SERVER 중급 실습', '2026-01-21 02:46:29.445969', 2, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (6, '2026-01-21 02:46:29.445969', 3, 'SERVER 심화 문제', '2026-01-21 02:46:29.445969', 2, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (7, '2026-01-21 02:46:29.445969', 1, 'AI 입문 과정', '2026-01-21 02:46:29.445969', 3, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (8, '2026-01-21 02:46:29.445969', 2, 'AI 중급 실습', '2026-01-21 02:46:29.445969', 3, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (9, '2026-01-21 02:46:29.445969', 3, 'AI 심화 문제', '2026-01-21 02:46:29.445969', 3, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (13, '2026-01-21 07:26:40.991282', 1, 'IoC & DI Container (기초 다지기)', '2026-01-21 07:26:40.991282', 2, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (14, '2026-01-21 07:26:40.991282', 2, 'IoC & DI Container (실전 응용)', '2026-01-21 07:26:40.991282', 2, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (15, '2026-01-21 07:26:40.991282', 3, 'IoC & DI Container (심화 마스터)', '2026-01-21 07:26:40.991282', 2, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (16, '2026-01-21 07:26:40.991282', 1, 'Pandas Library (기초 다지기)', '2026-01-21 07:26:40.991282', 3, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (17, '2026-01-21 07:26:40.991282', 2, 'Pandas Library (실전 응용)', '2026-01-21 07:26:40.991282', 3, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (18, '2026-01-21 07:26:40.991282', 3, 'Pandas Library (심화 마스터)', '2026-01-21 07:26:40.991282', 3, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (22, '2026-01-21 07:26:40.991282', 1, 'Spring Core - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 5, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (23, '2026-01-21 07:26:40.991282', 2, 'Spring Core - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 5, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (24, '2026-01-21 07:26:40.991282', 3, 'Spring Core - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 5, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (25, '2026-01-21 07:26:40.991282', 1, 'Python Analysis - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 6, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (26, '2026-01-21 07:26:40.991282', 2, 'Python Analysis - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 6, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (27, '2026-01-21 07:26:40.991282', 3, 'Python Analysis - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 6, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (37, '2026-01-21 07:26:40.991282', 1, 'Java Programming - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 10, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (38, '2026-01-21 07:26:40.991282', 2, 'Java Programming - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 10, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (39, '2026-01-21 07:26:40.991282', 3, 'Java Programming - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 10, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (40, '2026-01-21 07:26:40.991282', 1, 'Spring Core Princicple - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 11, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (41, '2026-01-21 07:26:40.991282', 2, 'Spring Core Princicple - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 11, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (42, '2026-01-21 07:26:40.991282', 3, 'Spring Core Princicple - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 11, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (43, '2026-01-21 07:26:40.991282', 1, 'Database Design - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 12, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (44, '2026-01-21 07:26:40.991282', 2, 'Database Design - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 12, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (45, '2026-01-21 07:26:40.991282', 3, 'Database Design - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 12, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (46, '2026-01-21 07:26:40.991282', 1, 'Python for Data - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 13, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (47, '2026-01-21 07:26:40.991282', 2, 'Python for Data - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 13, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (48, '2026-01-21 07:26:40.991282', 3, 'Python for Data - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 13, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (49, '2026-01-21 07:26:40.991282', 1, 'Machine Learning - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 14, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (50, '2026-01-21 07:26:40.991282', 2, 'Machine Learning - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 14, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (51, '2026-01-21 07:26:40.991282', 3, 'Machine Learning - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 14, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (52, '2026-01-21 07:26:40.991282', 1, 'Deep Learning - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 15, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (53, '2026-01-21 07:26:40.991282', 2, 'Deep Learning - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 15, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (54, '2026-01-21 07:26:40.991282', 3, 'Deep Learning - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 15, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (55, '2026-01-21 07:26:40.991282', 1, 'Unity Interface - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 16, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (56, '2026-01-21 07:26:40.991282', 2, 'Unity Interface - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 16, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (57, '2026-01-21 07:26:40.991282', 3, 'Unity Interface - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 16, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (58, '2026-01-21 07:26:40.991282', 1, 'C# Game Scripting - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 17, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (59, '2026-01-21 07:26:40.991282', 2, 'C# Game Scripting - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 17, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (60, '2026-01-21 07:26:40.991282', 3, 'C# Game Scripting - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 17, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (61, '2026-01-21 07:26:40.991282', 1, '3D Graphics/Physics - 상세 학습 (기초 다지기)', '2026-01-21 07:26:40.991282', 18, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (62, '2026-01-21 07:26:40.991282', 2, '3D Graphics/Physics - 상세 학습 (실전 응용)', '2026-01-21 07:26:40.991282', 18, 1);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (63, '2026-01-21 07:26:40.991282', 3, '3D Graphics/Physics - 상세 학습 (심화 마스터)', '2026-01-21 07:26:40.991282', 18, 2);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (64, '2026-01-21 07:30:25.797552', 1, '기본 구조 설계', '2026-01-21 07:30:25.797552', 19, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (65, '2026-01-21 07:30:25.797552', 2, '사용자 경험을 높이는 폼 설계', '2026-01-21 07:30:25.797552', 20, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (66, '2026-01-21 07:30:25.797552', 3, '실전 WAI-ARIA 활용', '2026-01-21 07:30:25.797552', 21, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (67, '2026-01-21 07:31:17.615458', 1, '스타일 충돌 해결하기', '2026-01-21 07:31:17.615458', 22, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (68, '2026-01-21 07:31:17.615458', 2, 'Flexbox 마스터', '2026-01-21 07:31:17.615458', 23, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (69, '2026-01-21 07:31:17.615458', 3, '고성능 애니메이션 구현', '2026-01-21 07:31:17.615458', 24, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (70, '2026-01-21 07:32:43.215497', 1, '변수의 생명 주기', '2026-01-21 07:32:43.215497', 25, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (71, '2026-01-21 07:32:43.215497', 2, 'Promise와 Async 활용', '2026-01-21 07:32:43.215497', 26, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (72, '2026-01-21 07:32:43.215497', 3, 'JS 엔진의 내부 동작', '2026-01-21 07:32:43.215497', 27, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (73, '2026-01-21 09:00:09.234665', 1, 'React 핵심 원리 이해', '2026-01-21 09:00:09.234665', 28, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (74, '2026-01-21 09:00:09.234665', 2, '효율적인 상태 관리', '2026-01-21 09:00:09.234665', 29, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (75, '2026-01-21 09:00:09.234665', 3, '렌더링 성능 극대화', '2026-01-21 09:00:09.234665', 30, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (76, '2026-01-21 09:05:29.268099', 1, 'Next.js 프로젝트 구조 설계', '2026-01-21 09:05:29.268099', 33, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (77, '2026-01-21 09:05:29.268099', 2, '실시간 데이터와 성능의 균형', '2026-01-21 09:05:29.268099', 34, 0);
-INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (78, '2026-01-21 09:05:29.268099', 3, '현대적 웹 아키텍처', '2026-01-21 09:05:29.268099', 35, 0);
+-- Major Question
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (1, '웹사이트의 레이아웃을 잡고 시각적으로 예쁘게 꾸미는 것이 즐거운가요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 1, 0, 0, 0, 5);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (2, '서버 성능을 최적화하고 대규모 트래픽을 견디는 설계를 하는 데 흥미가 있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 0, 0, 5, 1);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (3, '내 손안의 스마트폰에서 돌아가는 앱을 직접 개발하고 배포하고 싶나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 5, 1, 0, 0);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (4, '화려한 3D 그래픽이나 게임 캐릭터의 움직임을 제어하는 로직을 만들고 싶나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 1, 5, 0, 0);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (5, '데이터를 학습시켜 인공지능이 스스로 판단하게 만드는 과정이 신기하고 재미있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 5, 0, 0, 1, 0);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (6, '브라우저에서 실행되는 복잡한 웹 애플리케이션의 기능을 구현하는 것을 좋아하나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 1, 0, 0, 3, 5);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (7, '다양한 기기 환경(모바일, 태블릿)에 맞춰 최적화된 화면을 만드는 것에 관심이 있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 5, 3, 0, 1);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (8, '수학적 알고리즘을 활용해 복잡한 문제를 효율적으로 해결하는 것을 선호하시나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 5, 1, 0, 4, 0);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (9, '사용자가 몰입할 수 있는 가상 세계나 인터랙티브한 콘텐츠 제작을 선호하시나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 2, 5, 0, 2);
+INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (10, '보이지 않는 곳에서 데이터를 안전하게 저장하고 관리하는 시스템 구축에 관심이 있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 1, 4, 0, 5, 0);
 
 -- Mission Question
 INSERT INTO public.missions (id, created_at, difficulty, title, updated_at, fk_chapter_id, order_index) VALUES (4, '2026-01-21 02:46:29.445969', 1, 'SERVER 입문 과정', '2026-01-21 02:46:29.445969', 2, 0);
@@ -1173,31 +1139,3 @@ INSERT INTO public.choices (id, content, created_at, is_correct, updated_at, que
 INSERT INTO public.choices (id, content, created_at, is_correct, updated_at, question_id) VALUES (1258, '보기 2번 답변 옵션', '2026-01-21 07:26:40.991282', false, '2026-01-21 07:26:40.991282', 315);
 INSERT INTO public.choices (id, content, created_at, is_correct, updated_at, question_id) VALUES (1259, '보기 3번 답변 옵션', '2026-01-21 07:26:40.991282', false, '2026-01-21 07:26:40.991282', 315);
 INSERT INTO public.choices (id, content, created_at, is_correct, updated_at, question_id) VALUES (1260, '보기 4번 답변 옵션', '2026-01-21 07:26:40.991282', false, '2026-01-21 07:26:40.991282', 315);
-
--- Category
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (1, '2026-01-21 02:46:05.390065', 'Web Development', '2026-01-21 02:46:05.390065');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (2, '2026-01-21 02:46:05.390065', 'Backend Framework', '2026-01-21 02:46:05.390065');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (3, '2026-01-21 02:46:05.390065', 'Data Science', '2026-01-21 02:46:05.390065');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (4, '2026-01-21 07:26:31.004791', 'Web Frontend', '2026-01-21 07:26:31.004791');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (5, '2026-01-21 07:26:31.004791', 'Backend Server', '2026-01-21 07:26:31.004791');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (6, '2026-01-21 07:26:31.004791', 'Artificial Intelligence', '2026-01-21 07:26:31.004791');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (7, '2026-01-21 07:26:31.004791', 'Game Development', '2026-01-21 07:26:31.004791');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (8, '2026-01-21 07:30:08.91299', 'Web Frontend Quality Path', '2026-01-21 07:30:08.91299');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (9, '2026-01-21 07:37:06.858587', 'html', '2026-01-21 07:37:06.858587');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (10, '2026-01-21 07:37:06.859981', 'css', '2026-01-21 07:37:06.859981');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (11, '2026-01-21 07:37:06.861478', 'javascript', '2026-01-21 07:37:06.861478');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (12, '2026-01-21 09:00:02.894475', 'react', '2026-01-21 09:00:02.894475');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (13, '2026-01-21 09:00:34.076441', 'typescript', '2026-01-21 09:00:34.076441');
-INSERT INTO public.categories (id, created_at, name, updated_at) VALUES (14, '2026-01-21 09:05:25.354709', 'next', '2026-01-21 09:05:25.354709');
-
--- Major Question
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (1, '웹사이트의 레이아웃을 잡고 시각적으로 예쁘게 꾸미는 것이 즐거운가요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 1, 0, 0, 0, 5);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (2, '서버 성능을 최적화하고 대규모 트래픽을 견디는 설계를 하는 데 흥미가 있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 0, 0, 5, 1);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (3, '내 손안의 스마트폰에서 돌아가는 앱을 직접 개발하고 배포하고 싶나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 5, 1, 0, 0);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (4, '화려한 3D 그래픽이나 게임 캐릭터의 움직임을 제어하는 로직을 만들고 싶나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 1, 5, 0, 0);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (5, '데이터를 학습시켜 인공지능이 스스로 판단하게 만드는 과정이 신기하고 재미있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 5, 0, 0, 1, 0);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (6, '브라우저에서 실행되는 복잡한 웹 애플리케이션의 기능을 구현하는 것을 좋아하나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 1, 0, 0, 3, 5);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (7, '다양한 기기 환경(모바일, 태블릿)에 맞춰 최적화된 화면을 만드는 것에 관심이 있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 5, 3, 0, 1);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (8, '수학적 알고리즘을 활용해 복잡한 문제를 효율적으로 해결하는 것을 선호하시나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 5, 1, 0, 4, 0);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (9, '사용자가 몰입할 수 있는 가상 세계나 인터랙티브한 콘텐츠 제작을 선호하시나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 2, 5, 0, 2);
-INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (10, '보이지 않는 곳에서 데이터를 안전하게 저장하고 관리하는 시스템 구축에 관심이 있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 1, 4, 0, 5, 0);
