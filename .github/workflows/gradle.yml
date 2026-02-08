@@ -58,6 +58,5 @@ jobs:
 
             export $(cat .deploy.env | xargs)
 
-            # ✅ 지정 서비스만 pull & up
             docker compose pull clash-db clash-server
             docker compose up -d --no-deps clash-db clash-server

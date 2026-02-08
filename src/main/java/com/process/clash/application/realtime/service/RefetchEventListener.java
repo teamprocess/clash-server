@@ -3,8 +3,6 @@ package com.process.clash.application.realtime.service;
 import com.process.clash.application.realtime.event.RefetchEvent;
 import com.process.clash.application.realtime.port.out.BroadcastRefetchPort;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -16,7 +14,7 @@ public class RefetchEventListener {
 
     private final BroadcastRefetchPort broadcastRefetchPort;
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
     public void onRefetchEvent(RefetchEvent event) {
         if (event == null || event.notice() == null || event.userIds() == null) {
             return;
