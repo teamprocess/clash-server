@@ -77,11 +77,27 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     }
 
     @Override
+    public List<Long> findGroupIdsByMemberUserId(Long userId) {
+        if (userId == null) {
+            return List.of();
+        }
+        return groupMemberJpaRepository.findGroupIdsByUserId(userId);
+    }
+
+    @Override
     public List<Long> findGroupIdsByMemberUserIdAndGroupIds(Long userId, List<Long> groupIds) {
-        if (groupIds.isEmpty()) {
+        if (userId == null || groupIds == null || groupIds.isEmpty()) {
             return List.of();
         }
         return groupMemberJpaRepository.findGroupIdsByUserIdAndGroupIds(userId, groupIds);
+    }
+
+    @Override
+    public List<Long> findMemberUserIdsByGroupIds(List<Long> groupIds) {
+        if (groupIds == null || groupIds.isEmpty()) {
+            return List.of();
+        }
+        return groupMemberJpaRepository.findDistinctUserIdsByGroupIds(groupIds);
     }
 
     @Override

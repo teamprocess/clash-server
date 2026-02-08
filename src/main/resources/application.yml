@@ -10,12 +10,12 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         default_batch_fetch_size: 100
         format_sql: true
-        show_sql: true
+        show_sql: ${SHOW_SQL:false}
         jdbc:
           batch_size: 50
           order_updates: true
@@ -43,9 +43,6 @@ spring:
           max-active: 50
           max-idle: 20
           min-idle: 10
-
-  flyway:
-    baseline-on-migrate: true
 
 server:
   servlet:

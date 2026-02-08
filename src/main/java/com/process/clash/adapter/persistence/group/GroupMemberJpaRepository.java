@@ -30,12 +30,26 @@ public interface GroupMemberJpaRepository extends JpaRepository<GroupMemberJpaEn
         select gm.group.id
         from GroupMemberJpaEntity gm
         where gm.user.id = :userId
+    """)
+    List<Long> findGroupIdsByUserId(@Param("userId") Long userId);
+
+    @Query("""
+        select gm.group.id
+        from GroupMemberJpaEntity gm
+        where gm.user.id = :userId
             and gm.group.id in :groupIds
     """)
     List<Long> findGroupIdsByUserIdAndGroupIds(
         @Param("userId") Long userId,
         @Param("groupIds") List<Long> groupIds
     );
+
+    @Query("""
+        select distinct gm.user.id
+        from GroupMemberJpaEntity gm
+        where gm.group.id in :groupIds
+    """)
+    List<Long> findDistinctUserIdsByGroupIds(@Param("groupIds") List<Long> groupIds);
 
     @Query("""
         select gm.group.id as groupId, count(gm.id) as memberCount

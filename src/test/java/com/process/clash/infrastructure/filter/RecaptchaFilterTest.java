@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 
@@ -47,6 +48,23 @@ class RecaptchaFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRequestURI("/api/users");
         MockHttpServletResponse response = new MockHttpServletResponse();
+
+        // when
+        recaptchaFilter.doFilter(request, response, filterChain);
+
+        // then
+        verify(filterChain).doFilter(request, response);
+        verify(recaptchaPort, never()).verifyToken(anyString());
+    }
+
+    @Test
+    @DisplayName("ENVIRONMENT가 dev면 보호 경로도 recaptcha 없이 통과")
+    void doFilter_DevEnvironment_PassesThroughWithoutRecaptcha() throws ServletException, IOException {
+        // given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRequestURI("/api/auth/sign-up");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ReflectionTestUtils.setField(recaptchaFilter, "environment", "dev");
 
         // when
         recaptchaFilter.doFilter(request, response, filterChain);
