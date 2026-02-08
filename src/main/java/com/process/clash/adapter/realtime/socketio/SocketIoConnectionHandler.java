@@ -16,6 +16,7 @@ public class SocketIoConnectionHandler {
     private final SocketIOServer socketIOServer;
     private final SocketIoAuthService socketIoAuthService;
     private static final String CONNECT_INIT = "connectInit";
+    private static final String USER_ID_KEY = "userId";
 
     @PostConstruct
     public void registerListeners() {
@@ -35,7 +36,7 @@ public class SocketIoConnectionHandler {
             return;
         }
         Long id = userId.get();
-        client.set("userId", id);
+        client.set(USER_ID_KEY, id);
         client.joinRoom(SocketIoRoom.userRoom(id));
         log.info("Socket.IO client connected: {}", client.getSessionId());
     }
