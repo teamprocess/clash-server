@@ -100,7 +100,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                     return GetMyRivalActingData.MyRival.of(
                             opponent,
                             activeTime,
-                            "CLASH",
+                            "CLASH", // TODO: 더미 변경 필요
                             activityStatus
                     );
                 })
