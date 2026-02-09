@@ -1,11 +1,11 @@
 package com.process.clash.adapter.web.record.docs.controller;
 
-import com.process.clash.adapter.web.record.docs.request.CreateTaskRequestDoc;
-import com.process.clash.adapter.web.record.docs.request.UpdateTaskRequestDoc;
-import com.process.clash.adapter.web.record.docs.response.CreateTaskResponseDoc;
-import com.process.clash.adapter.web.record.docs.response.DeleteTaskResponseDoc;
-import com.process.clash.adapter.web.record.docs.response.GetAllTasksResponseDoc;
-import com.process.clash.adapter.web.record.docs.response.UpdateTaskResponseDoc;
+import com.process.clash.adapter.web.record.docs.request.CreateTaskRequestDocument;
+import com.process.clash.adapter.web.record.docs.request.UpdateTaskRequestDocument;
+import com.process.clash.adapter.web.record.docs.response.CreateTaskResponseDocument;
+import com.process.clash.adapter.web.record.docs.response.DeleteTaskResponseDocument;
+import com.process.clash.adapter.web.record.docs.response.GetAllTasksResponseDocument;
+import com.process.clash.adapter.web.record.docs.response.UpdateTaskResponseDocument;
 import com.process.clash.adapter.web.record.dto.CreateTaskDto;
 import com.process.clash.adapter.web.record.dto.GetAllTasksDto;
 import com.process.clash.adapter.web.record.dto.UpdateTaskDto;
@@ -28,7 +28,7 @@ public interface TaskControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetAllTasksResponseDoc.class),
+                            schema = @Schema(implementation = GetAllTasksResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -55,7 +55,7 @@ public interface TaskControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateTaskResponseDoc.class),
+                            schema = @Schema(implementation = CreateTaskResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -68,7 +68,7 @@ public interface TaskControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "과목 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateTaskRequestDoc.class),
+                            schema = @Schema(implementation = CreateTaskRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "name": "알고리즘"
@@ -82,7 +82,7 @@ public interface TaskControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateTaskResponseDoc.class),
+                            schema = @Schema(implementation = UpdateTaskResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -101,7 +101,7 @@ public interface TaskControllerDocument {
             @Parameter(description = "과목 ID", example = "1") @PathVariable Long taskId,
             @RequestBody(description = "과목 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateTaskRequestDoc.class),
+                            schema = @Schema(implementation = UpdateTaskRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "name": "알고리즘 심화"
@@ -115,7 +115,7 @@ public interface TaskControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteTaskResponseDoc.class),
+                            schema = @Schema(implementation = DeleteTaskResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

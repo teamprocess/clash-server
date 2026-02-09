@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.shop.purchase.docs.controller;
 
-import com.process.clash.adapter.web.shop.purchase.docs.request.CreatePurchaseRequestDoc;
-import com.process.clash.adapter.web.shop.purchase.docs.response.CreatePurchaseResponseDoc;
+import com.process.clash.adapter.web.shop.purchase.docs.request.CreatePurchaseRequestDocument;
+import com.process.clash.adapter.web.shop.purchase.docs.response.CreatePurchaseResponseDocument;
 import com.process.clash.adapter.web.shop.purchase.dto.CreatePurchaseDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ public interface PurchaseControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "구매 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreatePurchaseResponseDoc.class),
+                            schema = @Schema(implementation = CreatePurchaseResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -37,7 +37,7 @@ public interface PurchaseControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "상품 구매 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreatePurchaseRequestDoc.class),
+                            schema = @Schema(implementation = CreatePurchaseRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "productId": 100

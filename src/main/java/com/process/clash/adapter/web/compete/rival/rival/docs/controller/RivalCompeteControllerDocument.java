@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.compete.rival.rival.docs.controller;
 
-import com.process.clash.adapter.web.compete.rival.rival.docs.request.ApplyRivalRequestDoc;
-import com.process.clash.adapter.web.compete.rival.rival.docs.request.ModifyRivalRequestDoc;
+import com.process.clash.adapter.web.compete.rival.rival.docs.request.ApplyRivalRequestDocument;
+import com.process.clash.adapter.web.compete.rival.rival.docs.request.ModifyRivalRequestDocument;
 import com.process.clash.adapter.web.compete.rival.rival.docs.response.*;
 import com.process.clash.adapter.web.compete.rival.rival.dto.*;
 import com.process.clash.application.common.actor.Actor;
@@ -26,7 +26,7 @@ public interface RivalCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyRivalActingResponseDoc.class),
+                            schema = @Schema(implementation = GetMyRivalActingResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -55,7 +55,7 @@ public interface RivalCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetAllAbleRivalsResponseDoc.class),
+                            schema = @Schema(implementation = GetAllAbleRivalsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -82,7 +82,7 @@ public interface RivalCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = SearchRivalByKeywordResponseDoc.class),
+                            schema = @Schema(implementation = SearchRivalByKeywordResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -111,7 +111,7 @@ public interface RivalCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "등록 성공",
                     content = @Content(
-                            schema = @Schema(implementation = ApplyRivalResponseDoc.class),
+                            schema = @Schema(implementation = ApplyRivalResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -124,7 +124,7 @@ public interface RivalCompeteControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "라이벌 신청 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ApplyRivalRequestDoc.class),
+                            schema = @Schema(implementation = ApplyRivalRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "ids": [
@@ -141,7 +141,7 @@ public interface RivalCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "승인 성공",
                     content = @Content(
-                            schema = @Schema(implementation = ModifyRivalResponseDoc.class),
+                            schema = @Schema(implementation = ModifyRivalResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -154,7 +154,7 @@ public interface RivalCompeteControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "라이벌 승인 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ModifyRivalRequestDoc.class),
+                            schema = @Schema(implementation = ModifyRivalRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "id": 3
@@ -168,7 +168,7 @@ public interface RivalCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "거절 성공",
                     content = @Content(
-                            schema = @Schema(implementation = ModifyRivalResponseDoc.class),
+                            schema = @Schema(implementation = ModifyRivalResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -181,7 +181,7 @@ public interface RivalCompeteControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "라이벌 거절 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ModifyRivalRequestDoc.class),
+                            schema = @Schema(implementation = ModifyRivalRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "id": 3
@@ -195,7 +195,7 @@ public interface RivalCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CompareWithRivalsResponseDoc.class),
+                            schema = @Schema(implementation = CompareWithRivalsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

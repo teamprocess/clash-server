@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.shop.product.docs.controller;
 
-import com.process.clash.adapter.web.shop.product.docs.request.CreateProductRequestDoc;
-import com.process.clash.adapter.web.shop.product.docs.response.CreateProductResponseDoc;
+import com.process.clash.adapter.web.shop.product.docs.request.CreateProductRequestDocument;
+import com.process.clash.adapter.web.shop.product.docs.response.CreateProductResponseDocument;
 import com.process.clash.adapter.web.shop.product.dto.CreateProductDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ public interface ProductAdminControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateProductResponseDoc.class),
+                            schema = @Schema(implementation = CreateProductResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -37,7 +37,7 @@ public interface ProductAdminControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "상품 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateProductRequestDoc.class),
+                            schema = @Schema(implementation = CreateProductRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "title": "프로세스 삼겹살 헌터",

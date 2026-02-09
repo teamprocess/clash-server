@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ModifyBattleDto {
 
-    @Schema(name = "ModifyBattleRequestDoc")
+    @Schema(name = "ModifyBattleRequestDocument")
     public record Request(
             Long id
     ) {

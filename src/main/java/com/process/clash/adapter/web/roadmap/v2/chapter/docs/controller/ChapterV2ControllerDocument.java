@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.roadmap.v2.chapter.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.GetChapterV2DetailsResponseDoc;
+import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.GetChapterV2DetailsResponseDocument;
 import com.process.clash.adapter.web.roadmap.v2.chapter.dto.GetChapterV2DetailsDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,7 @@ public interface ChapterV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetChapterV2DetailsResponseDoc.class),
+                            schema = @Schema(implementation = GetChapterV2DetailsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

@@ -1,8 +1,8 @@
 package com.process.clash.adapter.web.major.docs.controller;
 
-import com.process.clash.adapter.web.major.docs.request.MajorTestSubmitRequestDoc;
-import com.process.clash.adapter.web.major.docs.response.GetMajorQuestionResponseDoc;
-import com.process.clash.adapter.web.major.docs.response.MajorTestSubmitResponseDoc;
+import com.process.clash.adapter.web.major.docs.request.MajorTestSubmitRequestDocument;
+import com.process.clash.adapter.web.major.docs.response.GetMajorQuestionResponseDocument;
+import com.process.clash.adapter.web.major.docs.response.MajorTestSubmitResponseDocument;
 import com.process.clash.adapter.web.major.dto.GetMajorQuestionDto;
 import com.process.clash.adapter.web.major.dto.MajorTestSubmitDto;
 import com.process.clash.application.common.actor.Actor;
@@ -23,7 +23,7 @@ public interface MajorControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "질문 조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMajorQuestionResponseDoc.class),
+                            schema = @Schema(implementation = GetMajorQuestionResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -55,7 +55,7 @@ public interface MajorControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "제출 성공",
                     content = @Content(
-                            schema = @Schema(implementation = MajorTestSubmitResponseDoc.class),
+                            schema = @Schema(implementation = MajorTestSubmitResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -68,7 +68,7 @@ public interface MajorControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "전공 검사 결과", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = MajorTestSubmitRequestDoc.class),
+                            schema = @Schema(implementation = MajorTestSubmitRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "major": "SERVER"

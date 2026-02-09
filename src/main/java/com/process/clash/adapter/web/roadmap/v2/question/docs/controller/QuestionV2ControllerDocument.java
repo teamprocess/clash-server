@@ -1,8 +1,8 @@
 package com.process.clash.adapter.web.roadmap.v2.question.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.v2.question.docs.request.SubmitQuestionV2RequestDoc;
-import com.process.clash.adapter.web.roadmap.v2.question.docs.response.GetChapterV2ResultResponseDoc;
-import com.process.clash.adapter.web.roadmap.v2.question.docs.response.SubmitQuestionV2ResponseDoc;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.request.SubmitQuestionV2RequestDocument;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.response.GetChapterV2ResultResponseDocument;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.response.SubmitQuestionV2ResponseDocument;
 import com.process.clash.adapter.web.roadmap.v2.question.dto.GetChapterV2ResultDto;
 import com.process.clash.adapter.web.roadmap.v2.question.dto.SubmitQuestionV2AnswerDto;
 import com.process.clash.application.common.actor.Actor;
@@ -24,7 +24,7 @@ public interface QuestionV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "제출 성공",
                     content = @Content(
-                            schema = @Schema(implementation = SubmitQuestionV2ResponseDoc.class),
+                            schema = @Schema(implementation = SubmitQuestionV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -62,7 +62,7 @@ public interface QuestionV2ControllerDocument {
             @Parameter(description = "문제 ID", example = "1") @PathVariable Long questionId,
             @RequestBody(description = "답안 제출 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = SubmitQuestionV2RequestDoc.class),
+                            schema = @Schema(implementation = SubmitQuestionV2RequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "submittedChoiceId": 1
@@ -76,7 +76,7 @@ public interface QuestionV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetChapterV2ResultResponseDoc.class),
+                            schema = @Schema(implementation = GetChapterV2ResultResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

@@ -1,9 +1,9 @@
 package com.process.clash.adapter.web.shop.product.docs.controller;
 
-import com.process.clash.adapter.web.shop.product.docs.response.GetAllProductsResponseDoc;
-import com.process.clash.adapter.web.shop.product.docs.response.GetPopularProductsResponseDoc;
-import com.process.clash.adapter.web.shop.product.docs.response.GetProductDetailResponseDoc;
-import com.process.clash.adapter.web.shop.product.docs.response.GetRecommendedProductsResponseDoc;
+import com.process.clash.adapter.web.shop.product.docs.response.GetAllProductsResponseDocument;
+import com.process.clash.adapter.web.shop.product.docs.response.GetPopularProductsResponseDocument;
+import com.process.clash.adapter.web.shop.product.docs.response.GetProductDetailResponseDocument;
+import com.process.clash.adapter.web.shop.product.docs.response.GetRecommendedProductsResponseDocument;
 import com.process.clash.adapter.web.shop.product.dto.GetAllProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetPopularProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetProductDetailDto;
@@ -33,7 +33,7 @@ public interface ProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetAllProductsResponseDoc.class),
+                            schema = @Schema(implementation = GetAllProductsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -76,7 +76,7 @@ public interface ProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetProductDetailResponseDoc.class),
+                            schema = @Schema(implementation = GetProductDetailResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -109,7 +109,7 @@ public interface ProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetPopularProductsResponseDoc.class),
+                            schema = @Schema(implementation = GetPopularProductsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -142,7 +142,7 @@ public interface ProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetRecommendedProductsResponseDoc.class),
+                            schema = @Schema(implementation = GetRecommendedProductsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
