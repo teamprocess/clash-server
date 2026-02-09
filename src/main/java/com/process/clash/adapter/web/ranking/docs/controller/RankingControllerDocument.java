@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.ranking.docs.controller;
 
-import com.process.clash.adapter.web.ranking.docs.response.GetChapterRankingResponseDoc;
-import com.process.clash.adapter.web.ranking.docs.response.GetRankingResponseDoc;
+import com.process.clash.adapter.web.ranking.docs.response.GetChapterRankingResponseDocument;
+import com.process.clash.adapter.web.ranking.docs.response.GetRankingResponseDocument;
 import com.process.clash.adapter.web.ranking.dto.GetChapterRankingDto;
 import com.process.clash.adapter.web.ranking.dto.GetRankingDto;
 import com.process.clash.application.common.actor.Actor;
@@ -24,7 +24,7 @@ public interface RankingControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetRankingResponseDoc.class),
+                            schema = @Schema(implementation = GetRankingResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -65,7 +65,7 @@ public interface RankingControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetChapterRankingResponseDoc.class),
+                            schema = @Schema(implementation = GetChapterRankingResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

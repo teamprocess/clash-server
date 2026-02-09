@@ -23,7 +23,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "신청 성공",
                     content = @Content(
-                            schema = @Schema(implementation = ApplyBattleResponseDoc.class),
+                            schema = @Schema(implementation = ApplyBattleResponseDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
@@ -36,7 +36,7 @@ public interface BattleControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "배틀 신청 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ApplyBattleRequestDoc.class),
+                            schema = @Schema(implementation = ApplyBattleRequestDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "id": 3,
@@ -51,7 +51,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "승인 성공",
                     content = @Content(
-                            schema = @Schema(implementation = ModifyBattleResponseDoc.class),
+                            schema = @Schema(implementation = ModifyBattleResponseDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
@@ -64,7 +64,7 @@ public interface BattleControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "배틀 승인 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ModifyBattleRequestDoc.class),
+                            schema = @Schema(implementation = ModifyBattleRequestDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "id": 1
@@ -78,7 +78,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "거절 성공",
                     content = @Content(
-                            schema = @Schema(implementation = ModifyBattleResponseDoc.class),
+                            schema = @Schema(implementation = ModifyBattleResponseDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
@@ -91,7 +91,7 @@ public interface BattleControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "배틀 거절 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = ModifyBattleRequestDoc.class),
+                            schema = @Schema(implementation = ModifyBattleRequestDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "id": 1
@@ -105,7 +105,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = FindAbleRivalsResponseDoc.class),
+                            schema = @Schema(implementation = FindAbleRivalsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
@@ -131,7 +131,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = FindDetailedBattleInfoResponseDoc.class),
+                            schema = @Schema(implementation = FindDetailedBattleInfoResponseDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
@@ -160,7 +160,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = FindAllBattleInfoResponseDoc.class),
+                            schema = @Schema(implementation = FindAllBattleInfoResponseDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,
@@ -191,7 +191,7 @@ public interface BattleControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = AnalyzeBattleInfoResponseDoc.class),
+                            schema = @Schema(implementation = AnalyzeBattleInfoResponseDocument.class),
                             examples = @ExampleObject(value = """
                                   {
                                     "success": true,

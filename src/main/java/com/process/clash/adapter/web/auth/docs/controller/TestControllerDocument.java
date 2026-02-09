@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.auth.docs.controller;
 
-import com.process.clash.adapter.web.auth.docs.response.TestAdminResponseDoc;
-import com.process.clash.adapter.web.auth.docs.response.TestAuthResponseDoc;
+import com.process.clash.adapter.web.auth.docs.response.TestAdminResponseDocument;
+import com.process.clash.adapter.web.auth.docs.response.TestAuthResponseDocument;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +19,7 @@ public interface TestControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "인증 테스트 성공",
                     content = @Content(
-                            schema = @Schema(implementation = TestAuthResponseDoc.class),
+                            schema = @Schema(implementation = TestAuthResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -36,7 +36,7 @@ public interface TestControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "관리자 테스트 성공",
                     content = @Content(
-                            schema = @Schema(implementation = TestAdminResponseDoc.class),
+                            schema = @Schema(implementation = TestAdminResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

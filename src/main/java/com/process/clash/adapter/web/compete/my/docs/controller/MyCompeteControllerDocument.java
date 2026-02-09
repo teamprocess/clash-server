@@ -1,10 +1,10 @@
 package com.process.clash.adapter.web.compete.my.docs.controller;
 
-import com.process.clash.adapter.web.compete.my.docs.response.AnalyzeMyActivityResponseDoc;
-import com.process.clash.adapter.web.compete.my.docs.response.CompareGitHubResponseDoc;
-import com.process.clash.adapter.web.compete.my.docs.response.CompareMyActivityResponseDoc;
-import com.process.clash.adapter.web.compete.my.docs.response.GetCompareWithYesterdayResponseDoc;
-import com.process.clash.adapter.web.compete.my.docs.response.GetMyGrowthRateResponseDoc;
+import com.process.clash.adapter.web.compete.my.docs.response.AnalyzeMyActivityResponseDocument;
+import com.process.clash.adapter.web.compete.my.docs.response.CompareGitHubResponseDocument;
+import com.process.clash.adapter.web.compete.my.docs.response.CompareMyActivityResponseDocument;
+import com.process.clash.adapter.web.compete.my.docs.response.GetCompareWithYesterdayResponseDocument;
+import com.process.clash.adapter.web.compete.my.docs.response.GetMyGrowthRateResponseDocument;
 import com.process.clash.adapter.web.compete.my.dto.AnalyzeMyActivityDto;
 import com.process.clash.adapter.web.compete.my.dto.CompareGitHubDto;
 import com.process.clash.adapter.web.compete.my.dto.CompareMyActivityDto;
@@ -30,7 +30,7 @@ public interface MyCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetCompareWithYesterdayResponseDoc.class),
+                            schema = @Schema(implementation = GetCompareWithYesterdayResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -57,7 +57,7 @@ public interface MyCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CompareGitHubResponseDoc.class),
+                            schema = @Schema(implementation = CompareGitHubResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -130,7 +130,7 @@ public interface MyCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = AnalyzeMyActivityResponseDoc.class),
+                            schema = @Schema(implementation = AnalyzeMyActivityResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -164,7 +164,7 @@ public interface MyCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyGrowthRateResponseDoc.class),
+                            schema = @Schema(implementation = GetMyGrowthRateResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -199,7 +199,7 @@ public interface MyCompeteControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CompareMyActivityResponseDoc.class),
+                            schema = @Schema(implementation = CompareMyActivityResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

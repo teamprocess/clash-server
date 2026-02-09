@@ -1,13 +1,13 @@
 package com.process.clash.adapter.web.group.docs.controller;
 
-import com.process.clash.adapter.web.common.docs.response.SuccessMessageResponseDoc;
-import com.process.clash.adapter.web.group.docs.request.CreateGroupRequestDoc;
-import com.process.clash.adapter.web.group.docs.request.JoinGroupRequestDoc;
-import com.process.clash.adapter.web.group.docs.request.UpdateGroupRequestDoc;
-import com.process.clash.adapter.web.group.docs.response.GetAllGroupsResponseDoc;
-import com.process.clash.adapter.web.group.docs.response.GetGroupDetailResponseDoc;
-import com.process.clash.adapter.web.group.docs.response.GetGroupActivityResponseDoc;
-import com.process.clash.adapter.web.group.docs.response.GetMyGroupsResponseDoc;
+import com.process.clash.adapter.web.common.docs.response.SuccessMessageResponseDocument;
+import com.process.clash.adapter.web.group.docs.request.CreateGroupRequestDocument;
+import com.process.clash.adapter.web.group.docs.request.JoinGroupRequestDocument;
+import com.process.clash.adapter.web.group.docs.request.UpdateGroupRequestDocument;
+import com.process.clash.adapter.web.group.docs.response.GetAllGroupsResponseDocument;
+import com.process.clash.adapter.web.group.docs.response.GetGroupDetailResponseDocument;
+import com.process.clash.adapter.web.group.docs.response.GetGroupActivityResponseDocument;
+import com.process.clash.adapter.web.group.docs.response.GetMyGroupsResponseDocument;
 import com.process.clash.adapter.web.group.dto.CreateGroupDto;
 import com.process.clash.adapter.web.group.dto.GetAllGroupsDto;
 import com.process.clash.adapter.web.group.dto.GetGroupActivityDto;
@@ -40,7 +40,7 @@ public interface GroupControllerDocument {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(
-                schema = @Schema(implementation = GetAllGroupsResponseDoc.class),
+                schema = @Schema(implementation = GetAllGroupsResponseDocument.class),
                 examples = @ExampleObject(value = """
                     {
                       "success": true,
@@ -87,7 +87,7 @@ public interface GroupControllerDocument {
     })
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공",
-            content = @Content(schema = @Schema(implementation = GetMyGroupsResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = GetMyGroupsResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyGroupsDto.Response> getMyGroups(
         @Parameter(hidden = true) Actor actor,
@@ -97,7 +97,7 @@ public interface GroupControllerDocument {
     @Operation(summary = "그룹 상세 조회", description = "그룹 상세 정보를 조회합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공",
-            content = @Content(schema = @Schema(implementation = GetGroupDetailResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = GetGroupDetailResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetGroupDetailDto.Response> getGroupDetail(
         @Parameter(hidden = true) Actor actor,
@@ -107,7 +107,7 @@ public interface GroupControllerDocument {
     @Operation(summary = "그룹 생성", description = "그룹을 생성합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "생성 성공",
-            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> createGroup(
         @Parameter(hidden = true) Actor actor,
@@ -115,7 +115,7 @@ public interface GroupControllerDocument {
             required = true,
             description = "그룹 생성 요청",
             content = @Content(
-                schema = @Schema(implementation = CreateGroupRequestDoc.class),
+                schema = @Schema(implementation = CreateGroupRequestDocument.class),
                 examples = @ExampleObject(value = """
                     {
                       "name": "알고리즘 스터디",
@@ -133,7 +133,7 @@ public interface GroupControllerDocument {
     @Operation(summary = "그룹 수정", description = "그룹 정보를 수정합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "수정 성공",
-            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> updateGroup(
         @Parameter(hidden = true) Actor actor,
@@ -142,7 +142,7 @@ public interface GroupControllerDocument {
             required = true,
             description = "그룹 수정 요청",
             content = @Content(
-                schema = @Schema(implementation = UpdateGroupRequestDoc.class),
+                schema = @Schema(implementation = UpdateGroupRequestDocument.class),
                 examples = @ExampleObject(value = """
                     {
                       "name": "알고리즘 스터디",
@@ -160,7 +160,7 @@ public interface GroupControllerDocument {
     @Operation(summary = "그룹 삭제", description = "그룹을 삭제합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "삭제 성공",
-            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> deleteGroup(
         @Parameter(hidden = true) Actor actor,
@@ -170,7 +170,7 @@ public interface GroupControllerDocument {
     @Operation(summary = "그룹 참여", description = "그룹에 참여합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "참여 성공",
-            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> joinGroup(
         @Parameter(hidden = true) Actor actor,
@@ -179,7 +179,7 @@ public interface GroupControllerDocument {
             required = false,
             description = "그룹 참여 요청",
             content = @Content(
-                schema = @Schema(implementation = JoinGroupRequestDoc.class),
+                schema = @Schema(implementation = JoinGroupRequestDocument.class),
                 examples = @ExampleObject(value = """
                     {
                       "password": "1234"
@@ -192,7 +192,7 @@ public interface GroupControllerDocument {
     @Operation(summary = "그룹 탈퇴", description = "그룹을 탈퇴합니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "탈퇴 성공",
-            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = SuccessMessageResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> quitGroup(
         @Parameter(hidden = true) Actor actor,
@@ -205,7 +205,7 @@ public interface GroupControllerDocument {
     })
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공",
-            content = @Content(schema = @Schema(implementation = GetGroupActivityResponseDoc.class)))
+            content = @Content(schema = @Schema(implementation = GetGroupActivityResponseDocument.class)))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetGroupActivityDto.Response> getGroupActivity(
         @Parameter(hidden = true) Actor actor,

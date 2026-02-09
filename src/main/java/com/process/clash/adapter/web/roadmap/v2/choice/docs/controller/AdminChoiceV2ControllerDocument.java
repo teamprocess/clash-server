@@ -1,10 +1,10 @@
 package com.process.clash.adapter.web.roadmap.v2.choice.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.v2.choice.docs.request.CreateChoiceV2RequestDoc;
-import com.process.clash.adapter.web.roadmap.v2.choice.docs.request.UpdateChoiceV2RequestDoc;
-import com.process.clash.adapter.web.roadmap.v2.choice.docs.response.CreateChoiceV2ResponseDoc;
-import com.process.clash.adapter.web.roadmap.v2.choice.docs.response.DeleteChoiceV2ResponseDoc;
-import com.process.clash.adapter.web.roadmap.v2.choice.docs.response.UpdateChoiceV2ResponseDoc;
+import com.process.clash.adapter.web.roadmap.v2.choice.docs.request.CreateChoiceV2RequestDocument;
+import com.process.clash.adapter.web.roadmap.v2.choice.docs.request.UpdateChoiceV2RequestDocument;
+import com.process.clash.adapter.web.roadmap.v2.choice.docs.response.CreateChoiceV2ResponseDocument;
+import com.process.clash.adapter.web.roadmap.v2.choice.docs.response.DeleteChoiceV2ResponseDocument;
+import com.process.clash.adapter.web.roadmap.v2.choice.docs.response.UpdateChoiceV2ResponseDocument;
 import com.process.clash.adapter.web.roadmap.v2.choice.dto.CreateChoiceV2Dto;
 import com.process.clash.adapter.web.roadmap.v2.choice.dto.UpdateChoiceV2Dto;
 import com.process.clash.application.common.actor.Actor;
@@ -26,7 +26,7 @@ public interface AdminChoiceV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateChoiceV2ResponseDoc.class),
+                            schema = @Schema(implementation = CreateChoiceV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -45,7 +45,7 @@ public interface AdminChoiceV2ControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "선택지 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateChoiceV2RequestDoc.class),
+                            schema = @Schema(implementation = CreateChoiceV2RequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "questionId": 1,
@@ -61,7 +61,7 @@ public interface AdminChoiceV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateChoiceV2ResponseDoc.class),
+                            schema = @Schema(implementation = UpdateChoiceV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -80,7 +80,7 @@ public interface AdminChoiceV2ControllerDocument {
             @Parameter(description = "선택지 ID", example = "1") @PathVariable Long choiceId,
             @RequestBody(description = "선택지 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateChoiceV2RequestDoc.class),
+                            schema = @Schema(implementation = UpdateChoiceV2RequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "content": "객체지향 프로그래밍",
@@ -95,7 +95,7 @@ public interface AdminChoiceV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteChoiceV2ResponseDoc.class),
+                            schema = @Schema(implementation = DeleteChoiceV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

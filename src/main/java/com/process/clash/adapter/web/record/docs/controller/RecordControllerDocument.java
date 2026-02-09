@@ -1,11 +1,11 @@
 package com.process.clash.adapter.web.record.docs.controller;
 
-import com.process.clash.adapter.web.record.docs.request.RecordSettingRequestDoc;
-import com.process.clash.adapter.web.record.docs.request.StartRecordRequestDoc;
-import com.process.clash.adapter.web.record.docs.response.GetTodayRecordResponseDoc;
-import com.process.clash.adapter.web.record.docs.response.RecordSettingResponseDoc;
-import com.process.clash.adapter.web.record.docs.response.StartRecordResponseDoc;
-import com.process.clash.adapter.web.record.docs.response.StopRecordResponseDoc;
+import com.process.clash.adapter.web.record.docs.request.RecordSettingRequestDocument;
+import com.process.clash.adapter.web.record.docs.request.StartRecordRequestDocument;
+import com.process.clash.adapter.web.record.docs.response.GetTodayRecordResponseDocument;
+import com.process.clash.adapter.web.record.docs.response.RecordSettingResponseDocument;
+import com.process.clash.adapter.web.record.docs.response.StartRecordResponseDocument;
+import com.process.clash.adapter.web.record.docs.response.StopRecordResponseDocument;
 import com.process.clash.adapter.web.record.dto.GetTodayRecordDto;
 import com.process.clash.adapter.web.record.dto.RecordSettingDto;
 import com.process.clash.adapter.web.record.dto.StartRecordDto;
@@ -28,7 +28,7 @@ public interface RecordControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetTodayRecordResponseDoc.class),
+                            schema = @Schema(implementation = GetTodayRecordResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -61,7 +61,7 @@ public interface RecordControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = RecordSettingResponseDoc.class),
+                            schema = @Schema(implementation = RecordSettingResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -83,7 +83,7 @@ public interface RecordControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "변경 성공",
                     content = @Content(
-                            schema = @Schema(implementation = RecordSettingResponseDoc.class),
+                            schema = @Schema(implementation = RecordSettingResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -100,7 +100,7 @@ public interface RecordControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<RecordSettingDto.Response> updateRecordSetting(
             @RequestBody(description = "기록 설정 변경 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = RecordSettingRequestDoc.class),
+                            schema = @Schema(implementation = RecordSettingRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "pomodoroEnabled": true,
@@ -117,7 +117,7 @@ public interface RecordControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "시작 성공",
                     content = @Content(
-                            schema = @Schema(implementation = StartRecordResponseDoc.class),
+                            schema = @Schema(implementation = StartRecordResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -132,7 +132,7 @@ public interface RecordControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<StartRecordDto.Response> startRecord(
             @RequestBody(description = "기록 시작 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = StartRecordRequestDoc.class),
+                            schema = @Schema(implementation = StartRecordRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "taskId": 1
@@ -147,7 +147,7 @@ public interface RecordControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "종료 성공",
                     content = @Content(
-                            schema = @Schema(implementation = StopRecordResponseDoc.class),
+                            schema = @Schema(implementation = StopRecordResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

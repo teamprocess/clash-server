@@ -1,12 +1,12 @@
 package com.process.clash.adapter.web.shop.recommendedproduct.docs.controller;
 
-import com.process.clash.adapter.web.shop.recommendedproduct.docs.request.CreateRecommendedProductRequestDoc;
-import com.process.clash.adapter.web.shop.recommendedproduct.docs.request.UpdateRecommendedProductOrderRequestDoc;
-import com.process.clash.adapter.web.shop.recommendedproduct.docs.request.UpdateRecommendedProductRequestDoc;
-import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.CreateRecommendedProductResponseDoc;
-import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.DeleteRecommendedProductResponseDoc;
-import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.UpdateRecommendedProductOrderResponseDoc;
-import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.UpdateRecommendedProductResponseDoc;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.request.CreateRecommendedProductRequestDocument;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.request.UpdateRecommendedProductOrderRequestDocument;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.request.UpdateRecommendedProductRequestDocument;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.CreateRecommendedProductResponseDocument;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.DeleteRecommendedProductResponseDocument;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.UpdateRecommendedProductOrderResponseDocument;
+import com.process.clash.adapter.web.shop.recommendedproduct.docs.response.UpdateRecommendedProductResponseDocument;
 import com.process.clash.adapter.web.shop.recommendedproduct.dto.CreateRecommendedProductDto;
 import com.process.clash.adapter.web.shop.recommendedproduct.dto.UpdateRecommendedProductDto;
 import com.process.clash.adapter.web.shop.recommendedproduct.dto.UpdateRecommendedProductOrderDto;
@@ -29,7 +29,7 @@ public interface AdminRecommendedProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "등록 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateRecommendedProductResponseDoc.class),
+                            schema = @Schema(implementation = CreateRecommendedProductResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -51,7 +51,7 @@ public interface AdminRecommendedProductControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "추천 상품 등록 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateRecommendedProductRequestDoc.class),
+                            schema = @Schema(implementation = CreateRecommendedProductRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "productId": 100,
@@ -68,7 +68,7 @@ public interface AdminRecommendedProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateRecommendedProductResponseDoc.class),
+                            schema = @Schema(implementation = UpdateRecommendedProductResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -91,7 +91,7 @@ public interface AdminRecommendedProductControllerDocument {
             @Parameter(description = "추천 상품 ID", example = "1") @PathVariable Long recommendedProductId,
             @RequestBody(description = "추천 상품 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateRecommendedProductRequestDoc.class),
+                            schema = @Schema(implementation = UpdateRecommendedProductRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "displayOrder": 2,
@@ -108,7 +108,7 @@ public interface AdminRecommendedProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteRecommendedProductResponseDoc.class),
+                            schema = @Schema(implementation = DeleteRecommendedProductResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -126,7 +126,7 @@ public interface AdminRecommendedProductControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "변경 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateRecommendedProductOrderResponseDoc.class),
+                            schema = @Schema(implementation = UpdateRecommendedProductOrderResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -144,7 +144,7 @@ public interface AdminRecommendedProductControllerDocument {
             @Parameter(description = "추천 상품 ID", example = "1") @PathVariable Long recommendedProductId,
             @RequestBody(description = "추천 상품 순서 변경 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateRecommendedProductOrderRequestDoc.class),
+                            schema = @Schema(implementation = UpdateRecommendedProductOrderRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "displayOrder": 3

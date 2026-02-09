@@ -1,10 +1,10 @@
 package com.process.clash.adapter.web.roadmap.section.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.section.docs.request.CreateSectionRequestDoc;
-import com.process.clash.adapter.web.roadmap.section.docs.request.UpdateSectionRequestDoc;
-import com.process.clash.adapter.web.roadmap.section.docs.response.CreateSectionResponseDoc;
-import com.process.clash.adapter.web.roadmap.section.docs.response.DeleteSectionResponseDoc;
-import com.process.clash.adapter.web.roadmap.section.docs.response.UpdateSectionResponseDoc;
+import com.process.clash.adapter.web.roadmap.section.docs.request.CreateSectionRequestDocument;
+import com.process.clash.adapter.web.roadmap.section.docs.request.UpdateSectionRequestDocument;
+import com.process.clash.adapter.web.roadmap.section.docs.response.CreateSectionResponseDocument;
+import com.process.clash.adapter.web.roadmap.section.docs.response.DeleteSectionResponseDocument;
+import com.process.clash.adapter.web.roadmap.section.docs.response.UpdateSectionResponseDocument;
 import com.process.clash.adapter.web.roadmap.section.dto.CreateSectionDto;
 import com.process.clash.adapter.web.roadmap.section.dto.UpdateSectionDto;
 import com.process.clash.application.common.actor.Actor;
@@ -26,7 +26,7 @@ public interface AdminSectionControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateSectionResponseDoc.class),
+                            schema = @Schema(implementation = CreateSectionResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -51,7 +51,7 @@ public interface AdminSectionControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "로드맵 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateSectionRequestDoc.class),
+                            schema = @Schema(implementation = CreateSectionRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "major": "SERVER",
@@ -72,7 +72,7 @@ public interface AdminSectionControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateSectionResponseDoc.class),
+                            schema = @Schema(implementation = UpdateSectionResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -113,7 +113,7 @@ public interface AdminSectionControllerDocument {
             @Parameter(description = "로드맵 ID", example = "1") @PathVariable Long sectionId,
             @RequestBody(description = "로드맵 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateSectionRequestDoc.class),
+                            schema = @Schema(implementation = UpdateSectionRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "title": "스프링 심화",
@@ -135,7 +135,7 @@ public interface AdminSectionControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteSectionResponseDoc.class),
+                            schema = @Schema(implementation = DeleteSectionResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

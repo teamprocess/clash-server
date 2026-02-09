@@ -230,6 +230,8 @@ com.process.clash/
   - 예: `UserSectionProgressJpaRepository`
 - **Domain Entity**: `{명사}` (접미사 없음)
   - 예: `Task`, `User`
+- **Swagger docs 클래스** (`adapter/web/**/docs/**`): `{기능명}Document`
+  - 예: `CreateTaskRequestDocument`, `GetRankingResponseDocument`, `RankingControllerDocument`
 
 #### 메서드명
 - **UseCase 메서드**: `execute(Command command)`
