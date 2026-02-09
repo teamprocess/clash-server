@@ -106,14 +106,12 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
         }
 
         synchronized (monitor) {
-            Map<Long, UserActivityStatus> result = new HashMap<>();
-            for (Long userId : userIds) {
-                if (userId == null) {
-                    continue;
-                }
-                result.put(userId, resolveStatus(counterByUserId.get(userId)));
-            }
-            return result;
+            return userIds.stream()
+                .filter(java.util.Objects::nonNull)
+                .collect(java.util.stream.Collectors.toUnmodifiableMap(
+                    userId -> userId,
+                    userId -> resolveStatus(counterByUserId.get(userId))
+                ));
         }
     }
 
