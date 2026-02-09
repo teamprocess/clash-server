@@ -65,4 +65,22 @@ class CompeteRefetchNotifierTest {
         assertThat(notice.type()).isEqualTo(ChangeType.ACTIVITY_STOPPED);
         assertThat(userIdsCaptor.getValue()).containsExactlyElementsOf(userIds);
     }
+
+    @Test
+    @DisplayName("라이벌 상태 변경을 COMPETE 도메인으로 publish한다")
+    void notifyRivalStatusChanged_publishesCompeteStatusChanged() {
+        List<Long> userIds = List.of(2L, 3L);
+
+        competeRefetchNotifier.notifyRivalStatusChanged(userIds);
+
+        ArgumentCaptor<RefetchNotice> noticeCaptor = ArgumentCaptor.forClass(RefetchNotice.class);
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<Collection<Long>> userIdsCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(refetchEventPublisher).publish(noticeCaptor.capture(), userIdsCaptor.capture());
+
+        RefetchNotice notice = noticeCaptor.getValue();
+        assertThat(notice.domain()).isEqualTo(ChangeDomain.COMPETE);
+        assertThat(notice.type()).isEqualTo(ChangeType.STATUS_CHANGED);
+        assertThat(userIdsCaptor.getValue()).containsExactlyElementsOf(userIds);
+    }
 }

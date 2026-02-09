@@ -1,30 +1,66 @@
 package com.process.clash.application.realtime.service;
 
 import com.process.clash.application.realtime.data.UserActivityStatus;
+import com.process.clash.application.realtime.port.out.NotifyPresenceStatusChangedPort;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class UserPresenceServiceTest {
 
-    private final UserPresenceService userPresenceService = new UserPresenceService();
+    @Mock
+    private NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort;
+
+    private UserPresenceService userPresenceService;
+
+    @BeforeEach
+    void setUp() {
+        userPresenceService = new UserPresenceService(notifyPresenceStatusChangedPort);
+    }
 
     @Test
     @DisplayName("연결, 자리비움, 복귀, 연결해제 흐름에 따라 상태를 갱신한다")
     void presenceStatusTransitions() {
         userPresenceService.connected("conn-1", 1L);
         assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
+        verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
+            1L,
+            UserActivityStatus.OFFLINE,
+            UserActivityStatus.ONLINE
+        );
 
         userPresenceService.markedAway("conn-1");
         assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.AWAY);
+        verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
+            1L,
+            UserActivityStatus.ONLINE,
+            UserActivityStatus.AWAY
+        );
 
         userPresenceService.markedOnline("conn-1");
         assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
+        verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
+            1L,
+            UserActivityStatus.AWAY,
+            UserActivityStatus.ONLINE
+        );
 
         userPresenceService.disconnected("conn-1");
         assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.OFFLINE);
+        verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
+            1L,
+            UserActivityStatus.ONLINE,
+            UserActivityStatus.OFFLINE
+        );
     }
 
     @Test
@@ -60,5 +96,18 @@ class UserPresenceServiceTest {
         assertThat(statuses.get(1L)).isEqualTo(UserActivityStatus.ONLINE);
         assertThat(statuses.get(2L)).isEqualTo(UserActivityStatus.AWAY);
         assertThat(statuses.get(3L)).isEqualTo(UserActivityStatus.OFFLINE);
+    }
+
+    @Test
+    @DisplayName("상태가 바뀌지 않으면 알림을 보내지 않는다")
+    void doesNotNotifyWhenStatusUnchanged() {
+        userPresenceService.connected("conn-1", 1L);
+        userPresenceService.markedOnline("conn-1");
+
+        verify(notifyPresenceStatusChangedPort, never()).notifyStatusChanged(
+            1L,
+            UserActivityStatus.ONLINE,
+            UserActivityStatus.ONLINE
+        );
     }
 }

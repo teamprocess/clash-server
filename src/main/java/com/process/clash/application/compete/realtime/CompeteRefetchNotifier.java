@@ -22,6 +22,10 @@ public class CompeteRefetchNotifier {
         publish(ChangeType.ACTIVITY_STOPPED, userIds);
     }
 
+    public void notifyRivalStatusChanged(Collection<Long> userIds) {
+        publish(ChangeType.STATUS_CHANGED, userIds);
+    }
+
     private void publish(ChangeType type, Collection<Long> userIds) {
         refetchEventPublisher.publish(RefetchNotice.of(ChangeDomain.COMPETE, type), userIds);
     }

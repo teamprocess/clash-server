@@ -2,15 +2,23 @@ package com.process.clash.application.realtime.service;
 
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.in.ReportUserPresenceUseCase;
+import com.process.clash.application.realtime.port.out.NotifyPresenceStatusChangedPort;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserPresenceService implements ReportUserPresenceUseCase, UserPresencePort {
 
+    private final NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort;
     private final Object monitor = new Object();
     private final Map<String, SessionPresence> sessionByConnectionId = new HashMap<>();
     private final Map<Long, PresenceCounter> counterByUserId = new HashMap<>();
@@ -21,17 +29,30 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             return;
         }
 
+        List<StatusChange> statusChanges;
         synchronized (monitor) {
-            SessionPresence previous = sessionByConnectionId.put(
+            SessionPresence previous = sessionByConnectionId.get(connectionId);
+            Set<Long> impactedUserIds = new LinkedHashSet<>();
+            if (previous != null) {
+                impactedUserIds.add(previous.userId());
+            }
+            impactedUserIds.add(userId);
+
+            Map<Long, UserActivityStatus> beforeStatuses = snapshotStatuses(impactedUserIds);
+
+            SessionPresence replaced = sessionByConnectionId.put(
                 connectionId,
                 SessionPresence.online(userId)
             );
 
-            if (previous != null) {
-                decrease(previous.userId(), previous.away());
+            if (replaced != null) {
+                decrease(replaced.userId(), replaced.away());
             }
             increase(userId, false);
+
+            statusChanges = collectStatusChanges(impactedUserIds, beforeStatuses);
         }
+        dispatchStatusChanges(statusChanges);
     }
 
     @Override
@@ -40,13 +61,21 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             return;
         }
 
+        List<StatusChange> statusChanges;
         synchronized (monitor) {
-            SessionPresence removed = sessionByConnectionId.remove(connectionId);
-            if (removed == null) {
+            SessionPresence current = sessionByConnectionId.get(connectionId);
+            if (current == null) {
                 return;
             }
-            decrease(removed.userId(), removed.away());
+
+            Set<Long> impactedUserIds = Set.of(current.userId());
+            Map<Long, UserActivityStatus> beforeStatuses = snapshotStatuses(impactedUserIds);
+
+            sessionByConnectionId.remove(connectionId);
+            decrease(current.userId(), current.away());
+            statusChanges = collectStatusChanges(impactedUserIds, beforeStatuses);
         }
+        dispatchStatusChanges(statusChanges);
     }
 
     @Override
@@ -93,11 +122,15 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             return;
         }
 
+        List<StatusChange> statusChanges;
         synchronized (monitor) {
             SessionPresence current = sessionByConnectionId.get(connectionId);
             if (current == null || current.away() == away) {
                 return;
             }
+
+            Set<Long> impactedUserIds = Set.of(current.userId());
+            Map<Long, UserActivityStatus> beforeStatuses = snapshotStatuses(impactedUserIds);
 
             sessionByConnectionId.put(connectionId, current.changeAway(away));
             if (away) {
@@ -105,7 +138,10 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             } else {
                 decreaseAway(current.userId());
             }
+
+            statusChanges = collectStatusChanges(impactedUserIds, beforeStatuses);
         }
+        dispatchStatusChanges(statusChanges);
     }
 
     private void increase(Long userId, boolean away) {
@@ -175,6 +211,57 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
         return value == null || value.isBlank();
     }
 
+    private Map<Long, UserActivityStatus> snapshotStatuses(Collection<Long> userIds) {
+        Map<Long, UserActivityStatus> snapshot = new HashMap<>();
+        if (userIds == null) {
+            return snapshot;
+        }
+
+        for (Long userId : userIds) {
+            if (userId == null) {
+                continue;
+            }
+            snapshot.put(userId, resolveStatus(counterByUserId.get(userId)));
+        }
+        return snapshot;
+    }
+
+    private List<StatusChange> collectStatusChanges(
+        Collection<Long> userIds,
+        Map<Long, UserActivityStatus> beforeStatuses
+    ) {
+        List<StatusChange> changes = new ArrayList<>();
+        if (userIds == null) {
+            return changes;
+        }
+
+        for (Long userId : userIds) {
+            if (userId == null) {
+                continue;
+            }
+            UserActivityStatus previous = beforeStatuses.getOrDefault(userId, UserActivityStatus.OFFLINE);
+            UserActivityStatus current = resolveStatus(counterByUserId.get(userId));
+            if (previous != current) {
+                changes.add(new StatusChange(userId, previous, current));
+            }
+        }
+        return changes;
+    }
+
+    private void dispatchStatusChanges(List<StatusChange> statusChanges) {
+        if (statusChanges == null || statusChanges.isEmpty()) {
+            return;
+        }
+
+        for (StatusChange change : statusChanges) {
+            notifyPresenceStatusChangedPort.notifyStatusChanged(
+                change.userId(),
+                change.previousStatus(),
+                change.currentStatus()
+            );
+        }
+    }
+
     private record SessionPresence(Long userId, boolean away) {
         private static SessionPresence online(Long userId) {
             return new SessionPresence(userId, false);
@@ -189,4 +276,10 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
         private int connectedSessions;
         private int awaySessions;
     }
+
+    private record StatusChange(
+        Long userId,
+        UserActivityStatus previousStatus,
+        UserActivityStatus currentStatus
+    ) {}
 }
