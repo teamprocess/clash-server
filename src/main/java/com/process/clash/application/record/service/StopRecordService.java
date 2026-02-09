@@ -6,6 +6,7 @@ import com.process.clash.application.record.port.in.StopRecordUseCase;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.realtime.PublishToIncludedGroups;
 import com.process.clash.application.realtime.data.ChangeType;
+import com.process.clash.application.record.realtime.PublishToIncludedRivals;
 import com.process.clash.domain.record.entity.StudySession;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class StopRecordService implements StopRecordUseCase {
 
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final PublishToIncludedGroups publishToIncludedGroups;
+    private final PublishToIncludedRivals publishToIncludedRivals;
     private final ZoneId recordZoneId;
 
     public StopRecordData.Result execute(StopRecordData.Command command) {
@@ -31,6 +33,7 @@ public class StopRecordService implements StopRecordUseCase {
         StudySession updatedSession = studySession.changeEndedAt(endedAt);
         studySessionRepositoryPort.save(updatedSession);
         publishToIncludedGroups.publish(command.actor(), ChangeType.ACTIVITY_STOPPED);
+        publishToIncludedRivals.publish(command.actor(), ChangeType.ACTIVITY_STOPPED);
 
         return StopRecordData.Result.create(
                 updatedSession.task().id(),

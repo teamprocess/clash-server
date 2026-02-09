@@ -9,6 +9,7 @@ import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.application.record.realtime.PublishToIncludedGroups;
 import com.process.clash.application.realtime.data.ChangeType;
+import com.process.clash.application.record.realtime.PublishToIncludedRivals;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.entity.StudySession;
@@ -30,6 +31,7 @@ public class StartRecordService implements StartRecordUseCase {
     private final TaskRepositoryPort taskRepositoryPort;
     private final TaskPolicy taskPolicy;
     private final PublishToIncludedGroups publishToIncludedGroups;
+    private final PublishToIncludedRivals publishToIncludedRivals;
     private final ZoneId recordZoneId;
 
     @Override
@@ -60,6 +62,7 @@ public class StartRecordService implements StartRecordUseCase {
 
         studySessionRepositoryPort.save(newStudySession);
         publishToIncludedGroups.publish(command.actor(), ChangeType.ACTIVITY_STARTED);
+        publishToIncludedRivals.publish(command.actor(), ChangeType.ACTIVITY_STARTED);
 
         return StartRecordData.Result.from(
                 startedAt.atZone(recordZoneId).toInstant()
