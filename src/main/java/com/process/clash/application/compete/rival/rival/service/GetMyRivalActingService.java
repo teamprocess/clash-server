@@ -3,11 +3,12 @@ package com.process.clash.application.compete.rival.rival.service;
 import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingData;
 import com.process.clash.application.compete.rival.rival.port.in.GetMyRivalActingUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.realtime.data.UserActivityStatus;
+import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
-import com.process.clash.domain.rival.rival.enums.RivalCurrentStatus;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.infrastructure.config.RecordProperties;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final StudySessionRepositoryPort studySessionRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
+    private final UserPresencePort userPresencePort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
 
@@ -70,6 +72,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
         Map<Long, Long> studyTimeMap = studySessionRepositoryPort
                 .getTotalStudyTimeInSecondsByUserIds(opponentIds, startOfDay, endOfDay);
+        Map<Long, UserActivityStatus> activityStatusByUserId = userPresencePort.getStatuses(opponentIds);
 
         Long myId = command.actor().id();
 
@@ -89,12 +92,16 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                     }
 
                     Long activeTime = studyTimeMap.getOrDefault(opponentId, 0L);
+                    UserActivityStatus activityStatus = activityStatusByUserId.getOrDefault(
+                        opponentId,
+                        UserActivityStatus.OFFLINE
+                    );
 
                     return GetMyRivalActingData.MyRival.of(
                             opponent,
                             activeTime,
-                            "Intellij IDEA",      // TODO: 더미 수정 필요
-                            RivalCurrentStatus.ONLINE // TODO: 더미 수정 필요
+                            "CLASH", // TODO: 더미 변경 필요
+                            activityStatus
                     );
                 })
                 .toList();

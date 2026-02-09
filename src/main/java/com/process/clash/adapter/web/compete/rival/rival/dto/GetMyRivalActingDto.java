@@ -1,10 +1,9 @@
 package com.process.clash.adapter.web.compete.rival.rival.dto;
 
 import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingData;
-import com.process.clash.domain.rival.rival.enums.RivalCurrentStatus;
+import com.process.clash.application.realtime.data.UserActivityStatus;
 
 import java.util.List;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 public class GetMyRivalActingDto {
 
@@ -34,6 +33,6 @@ public class GetMyRivalActingDto {
             String profileImage,
             Long activeTime,
             String usingApp,
-            RivalCurrentStatus status
+            UserActivityStatus status
     ) {}
 }

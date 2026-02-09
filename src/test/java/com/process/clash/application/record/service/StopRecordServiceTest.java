@@ -3,9 +3,8 @@ package com.process.clash.application.record.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.application.record.realtime.PublishToIncludedGroups;
-import com.process.clash.application.realtime.data.ChangeType;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.record.entity.Task;
@@ -34,7 +33,7 @@ class StopRecordServiceTest {
     private StudySessionRepositoryPort studySessionRepositoryPort;
 
     @Mock
-    private PublishToIncludedGroups publishToIncludedGroups;
+    private RecordActivityNotifierPort recordActivityNotifierPort;
 
     private StopRecordService stopRecordService;
 
@@ -42,13 +41,13 @@ class StopRecordServiceTest {
     void setUp() {
         stopRecordService = new StopRecordService(
             studySessionRepositoryPort,
-            publishToIncludedGroups,
+            recordActivityNotifierPort,
             ZoneId.of("UTC")
         );
     }
 
     @Test
-    @DisplayName("기록 종료 시 포함된 그룹 멤버들에게 ACTIVITY_STOPPED를 publish한다")
+    @DisplayName("기록 종료 시 activity stopped 알림을 notify한다")
     void execute_publishesActivityStopped() {
         Actor actor = new Actor(1L);
         StopRecordData.Command command = new StopRecordData.Command(actor);
@@ -68,7 +67,7 @@ class StopRecordServiceTest {
         stopRecordService.execute(command);
 
         verify(studySessionRepositoryPort).save(any(StudySession.class));
-        verify(publishToIncludedGroups).publish(actor, ChangeType.ACTIVITY_STOPPED);
+        verify(recordActivityNotifierPort).notifyActivityStopped(actor);
     }
 
     @Test
@@ -83,7 +82,7 @@ class StopRecordServiceTest {
         assertThatThrownBy(() -> stopRecordService.execute(command))
             .isInstanceOf(ActiveSessionNotFound.class);
 
-        verify(publishToIncludedGroups, never()).publish(any(), any());
+        verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());
     }
 
     private User createUser(Long id) {
@@ -116,4 +115,3 @@ class StopRecordServiceTest {
         );
     }
 }
-

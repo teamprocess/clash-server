@@ -2,6 +2,8 @@ package com.process.clash.application.profile.service;
 
 import com.process.clash.application.profile.data.GetMyProfileData;
 import com.process.clash.application.profile.port.in.GetMyProfileUsecase;
+import com.process.clash.application.realtime.data.UserActivityStatus;
+import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.usergithub.port.out.UserGitHubRepositoryPort;
@@ -15,12 +17,14 @@ public class GetMyProfileService implements GetMyProfileUsecase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final UserGitHubRepositoryPort userGitHubRepositoryPort;
+    private final UserPresencePort userPresencePort;
 
     public GetMyProfileData.Result execute(GetMyProfileData.Command command) {
         User user = userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
         boolean githubLinked = userGitHubRepositoryPort.findByUserId(user.id()).isPresent();
-        return GetMyProfileData.Result.from(user, githubLinked);
+        UserActivityStatus activityStatus = userPresencePort.getStatus(user.id());
+        return GetMyProfileData.Result.from(user, githubLinked, activityStatus);
     }
 }

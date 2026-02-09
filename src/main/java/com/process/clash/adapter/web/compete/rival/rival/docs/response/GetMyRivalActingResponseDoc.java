@@ -37,7 +37,7 @@ public class GetMyRivalActingResponseDoc extends SuccessMessageResponseDoc {
         @Schema(description = "사용 중인 앱", example = "CLASH")
         public String usingApp;
 
-        @Schema(description = "현재 상태", example = "STUDYING")
+        @Schema(description = "현재 상태", example = "ONLINE")
         public String status;
     }
 }
