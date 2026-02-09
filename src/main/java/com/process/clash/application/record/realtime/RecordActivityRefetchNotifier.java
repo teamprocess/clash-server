@@ -63,6 +63,7 @@ public class RecordActivityRefetchNotifier implements RecordActivityNotifierPort
         if (includedGroupIds == null || includedGroupIds.isEmpty()) {
             return List.of();
         }
-        return groupRepositoryPort.findMemberUserIdsByGroupIds(includedGroupIds);
+        List<Long> memberUserIds = groupRepositoryPort.findMemberUserIdsByGroupIds(includedGroupIds);
+        return memberUserIds != null ? memberUserIds : List.of();
     }
 }
