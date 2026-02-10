@@ -2575,7 +2575,7 @@ VALUES (829, 208, '선택지 A', true, 0, '2026-01-21 10:00:00', '2026-01-21 10:
 INSERT INTO public.choices (id, question_id, content, is_correct, order_index, created_at, updated_at)
 VALUES (830, 208, '선택지 B', false, 1, '2026-01-21 10:00:00', '2026-01-21 10:00:00');
 INSERT INTO public.choices (id, question_id, content, is_correct, order_index, created_at, updated_at)
-VALUES (831, 208, '선택지 C', false, 2, '2계속오전 11:09026-01-21 10:00:00', '2026-01-21 10:00:00');
+VALUES (831, 208, '선택지 C', false, 2, '2026-01-21 11:09:00', '2026-01-21 10:00:00');
 INSERT INTO public.choices (id, question_id, content, is_correct, order_index, created_at, updated_at)
 VALUES (832, 208, '선택지 D', false, 3, '2026-01-21 10:00:00', '2026-01-21 10:00:00');
 -- Mission Question 209의 선택지
