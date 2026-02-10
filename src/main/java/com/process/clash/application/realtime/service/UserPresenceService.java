@@ -108,6 +108,7 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
         synchronized (monitor) {
             return userIds.stream()
                 .filter(java.util.Objects::nonNull)
+                .distinct()
                 .collect(java.util.stream.Collectors.toUnmodifiableMap(
                     userId -> userId,
                     userId -> resolveStatus(counterByUserId.get(userId))
