@@ -4,10 +4,9 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.StartRecordData;
 import com.process.clash.application.record.exception.exception.conflict.StudySessionAlreadyStartedException;
 import com.process.clash.application.record.policy.TaskPolicy;
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
-import com.process.clash.application.record.realtime.PublishToIncludedGroups;
-import com.process.clash.application.realtime.data.ChangeType;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.Task;
@@ -43,7 +42,7 @@ class StartRecordServiceTest {
     private TaskRepositoryPort taskRepositoryPort;
 
     @Mock
-    private PublishToIncludedGroups publishToIncludedGroups;
+    private RecordActivityNotifierPort recordActivityNotifierPort;
 
     private StartRecordService startRecordService;
 
@@ -54,13 +53,13 @@ class StartRecordServiceTest {
             userRepositoryPort,
             taskRepositoryPort,
             new TaskPolicy(),
-            publishToIncludedGroups,
+            recordActivityNotifierPort,
             ZoneId.of("UTC")
         );
     }
 
     @Test
-    @DisplayName("기록 시작 시 포함된 그룹 멤버들에게 ACTIVITY_STARTED를 publish한다")
+    @DisplayName("기록 시작 시 activity started 알림을 notify한다")
     void execute_publishesActivityStarted() {
         Actor actor = new Actor(1L);
         StartRecordData.Command command = new StartRecordData.Command(11L, actor);
@@ -74,7 +73,7 @@ class StartRecordServiceTest {
         startRecordService.execute(command);
 
         verify(studySessionRepositoryPort).save(any(StudySession.class));
-        verify(publishToIncludedGroups).publish(actor, ChangeType.ACTIVITY_STARTED);
+        verify(recordActivityNotifierPort).notifyActivityStarted(actor);
     }
 
     @Test
@@ -92,7 +91,7 @@ class StartRecordServiceTest {
         assertThatThrownBy(() -> startRecordService.execute(command))
             .isInstanceOf(StudySessionAlreadyStartedException.class);
 
-        verify(publishToIncludedGroups, never()).publish(any(), any());
+        verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
     }
 
     private User createUser(Long id) {
@@ -125,4 +124,3 @@ class StartRecordServiceTest {
         );
     }
 }
-

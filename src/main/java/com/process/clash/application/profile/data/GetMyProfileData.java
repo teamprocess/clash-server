@@ -1,13 +1,13 @@
 package com.process.clash.application.profile.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 public class GetMyProfileData {
 
@@ -29,9 +29,14 @@ public class GetMyProfileData {
         int totalToken,
         Major major,
         UserStatus userStatus,
-        boolean githubLinked
+        boolean githubLinked,
+        UserActivityStatus activityStatus
     ) {
-        public static Result from(User user, boolean githubLinked) {
+        public static Result from(
+            User user,
+            boolean githubLinked,
+            UserActivityStatus activityStatus
+        ) {
             return new Result(
                 user.id(),
                 user.createdAt().atZone(ZoneId.of("Asia/Seoul")).toInstant(),
@@ -46,7 +51,8 @@ public class GetMyProfileData {
                 user.totalToken(),
                 user.major(),
                 user.userStatus(),
-                githubLinked
+                githubLinked,
+                activityStatus
             );
         }
     }

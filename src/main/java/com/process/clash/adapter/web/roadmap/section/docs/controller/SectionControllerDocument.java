@@ -1,8 +1,8 @@
 package com.process.clash.adapter.web.roadmap.section.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.section.docs.response.GetSectionDetailsResponseDoc;
-import com.process.clash.adapter.web.roadmap.section.docs.response.GetSectionPreviewResponseDoc;
-import com.process.clash.adapter.web.roadmap.section.docs.response.GetSectionsResponseDoc;
+import com.process.clash.adapter.web.roadmap.section.docs.response.GetSectionDetailsResponseDocument;
+import com.process.clash.adapter.web.roadmap.section.docs.response.GetSectionPreviewResponseDocument;
+import com.process.clash.adapter.web.roadmap.section.docs.response.GetSectionsResponseDocument;
 import com.process.clash.adapter.web.roadmap.section.dto.GetSectionDetailsDto;
 import com.process.clash.adapter.web.roadmap.section.dto.GetSectionPreviewDto;
 import com.process.clash.adapter.web.roadmap.section.dto.GetSectionsDto;
@@ -26,7 +26,7 @@ public interface SectionControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetSectionsResponseDoc.class),
+                            schema = @Schema(implementation = GetSectionsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -59,7 +59,7 @@ public interface SectionControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetSectionPreviewResponseDoc.class),
+                            schema = @Schema(implementation = GetSectionPreviewResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -94,7 +94,7 @@ public interface SectionControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetSectionDetailsResponseDoc.class),
+                            schema = @Schema(implementation = GetSectionDetailsResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

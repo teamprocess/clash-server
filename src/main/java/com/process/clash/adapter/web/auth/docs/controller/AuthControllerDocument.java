@@ -1,9 +1,9 @@
 package com.process.clash.adapter.web.auth.docs.controller;
 
-import com.process.clash.adapter.web.auth.docs.request.SignInRequestDoc;
-import com.process.clash.adapter.web.auth.docs.response.SignInResponseDoc;
-import com.process.clash.adapter.web.auth.docs.response.SignOutResponseDoc;
-import com.process.clash.adapter.web.auth.docs.response.SignUpResponseDoc;
+import com.process.clash.adapter.web.auth.docs.request.SignInRequestDocument;
+import com.process.clash.adapter.web.auth.docs.response.SignInResponseDocument;
+import com.process.clash.adapter.web.auth.docs.response.SignOutResponseDocument;
+import com.process.clash.adapter.web.auth.docs.response.SignUpResponseDocument;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
@@ -29,7 +29,7 @@ public interface AuthControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원가입 성공",
                     content = @Content(
-                            schema = @Schema(implementation = SignUpResponseDoc.class),
+                            schema = @Schema(implementation = SignUpResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -59,7 +59,7 @@ public interface AuthControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인 성공",
                     content = @Content(
-                            schema = @Schema(implementation = SignInResponseDoc.class),
+                            schema = @Schema(implementation = SignInResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -76,7 +76,7 @@ public interface AuthControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<SignInDto.Response> signIn(
             @RequestBody(description = "로그인 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = SignInRequestDoc.class),
+                            schema = @Schema(implementation = SignInRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "username": "process",
@@ -93,7 +93,7 @@ public interface AuthControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
                     content = @Content(
-                            schema = @Schema(implementation = SignOutResponseDoc.class),
+                            schema = @Schema(implementation = SignOutResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -119,7 +119,7 @@ public interface AuthControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "인증 성공",
                     content = @Content(
-                            schema = @Schema(implementation = SignInResponseDoc.class),
+                            schema = @Schema(implementation = SignInResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

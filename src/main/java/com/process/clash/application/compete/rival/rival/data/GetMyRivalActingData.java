@@ -1,7 +1,7 @@
 package com.process.clash.application.compete.rival.rival.data;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.rival.rival.enums.RivalCurrentStatus;
+import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.domain.user.user.entity.User;
 
 import java.util.List;
@@ -34,10 +34,15 @@ public class GetMyRivalActingData {
             String profileImage,
             Long activeTime,
             String usingApp,
-            RivalCurrentStatus status
+            UserActivityStatus status
     ) {
 
-        public static MyRival of(User user, Long activeTime, String usingApp, RivalCurrentStatus status) {
+        public static MyRival of(
+            User user,
+            Long activeTime,
+            String usingApp,
+            UserActivityStatus status
+        ) {
 
             return new MyRival(
                     user.name(),

@@ -1,11 +1,11 @@
 package com.process.clash.adapter.web.roadmap.category.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.category.docs.request.CreateCategoryRequestDoc;
-import com.process.clash.adapter.web.roadmap.category.docs.request.UpdateCategoryRequestDoc;
-import com.process.clash.adapter.web.roadmap.category.docs.response.CreateCategoryResponseDoc;
-import com.process.clash.adapter.web.roadmap.category.docs.response.DeleteCategoryResponseDoc;
-import com.process.clash.adapter.web.roadmap.category.docs.response.GetCategoriesResponseDoc;
-import com.process.clash.adapter.web.roadmap.category.docs.response.UpdateCategoryResponseDoc;
+import com.process.clash.adapter.web.roadmap.category.docs.request.CreateCategoryRequestDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.request.UpdateCategoryRequestDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.response.CreateCategoryResponseDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.response.DeleteCategoryResponseDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.response.GetCategoriesResponseDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.response.UpdateCategoryResponseDocument;
 import com.process.clash.adapter.web.roadmap.category.dto.CreateCategoryDto;
 import com.process.clash.adapter.web.roadmap.category.dto.DeleteCategoryDto;
 import com.process.clash.adapter.web.roadmap.category.dto.GetCategoriesDto;
@@ -29,7 +29,7 @@ public interface AdminCategoryControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateCategoryResponseDoc.class),
+                            schema = @Schema(implementation = CreateCategoryResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -47,7 +47,7 @@ public interface AdminCategoryControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "카테고리 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateCategoryRequestDoc.class),
+                            schema = @Schema(implementation = CreateCategoryRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "name": "백엔드"
@@ -61,7 +61,7 @@ public interface AdminCategoryControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetCategoriesResponseDoc.class),
+                            schema = @Schema(implementation = GetCategoriesResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -88,7 +88,7 @@ public interface AdminCategoryControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateCategoryResponseDoc.class),
+                            schema = @Schema(implementation = UpdateCategoryResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -107,7 +107,7 @@ public interface AdminCategoryControllerDocument {
             @Parameter(description = "카테고리 ID", example = "1") @PathVariable Long categoryId,
             @RequestBody(description = "카테고리 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateCategoryRequestDoc.class),
+                            schema = @Schema(implementation = UpdateCategoryRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "name": "백엔드 심화"
@@ -121,7 +121,7 @@ public interface AdminCategoryControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteCategoryResponseDoc.class),
+                            schema = @Schema(implementation = DeleteCategoryResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

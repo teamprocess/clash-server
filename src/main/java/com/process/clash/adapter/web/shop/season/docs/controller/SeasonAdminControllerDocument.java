@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.shop.season.docs.controller;
 
-import com.process.clash.adapter.web.shop.season.docs.request.CreateSeasonRequestDoc;
-import com.process.clash.adapter.web.shop.season.docs.response.CreateSeasonResponseDoc;
+import com.process.clash.adapter.web.shop.season.docs.request.CreateSeasonRequestDocument;
+import com.process.clash.adapter.web.shop.season.docs.response.CreateSeasonResponseDocument;
 import com.process.clash.adapter.web.shop.season.dto.CreateSeasonDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ public interface SeasonAdminControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateSeasonResponseDoc.class),
+                            schema = @Schema(implementation = CreateSeasonResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -34,7 +34,7 @@ public interface SeasonAdminControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "시즌 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateSeasonRequestDoc.class),
+                            schema = @Schema(implementation = CreateSeasonRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "name": "2025 봄 시즌",

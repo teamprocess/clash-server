@@ -22,10 +22,6 @@ public class GroupRefetchNotifier {
         publish(ChangeType.DATA_CHANGED, userIds);
     }
 
-    public void notifyGroupDetailChanged(Collection<Long> userIds) {
-        publish(ChangeType.UPDATED, userIds);
-    }
-
     public void notifyGroupActivityChanged(Collection<Long> userIds) {
         publish(ChangeType.STATUS_CHANGED, userIds);
     }

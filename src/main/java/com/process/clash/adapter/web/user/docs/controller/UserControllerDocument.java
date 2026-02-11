@@ -1,12 +1,12 @@
 package com.process.clash.adapter.web.user.docs.controller;
 
-import com.process.clash.adapter.web.user.docs.response.GetMyProfileResponseDoc;
-import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityResponseDoc;
-import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityDetailResponseDoc;
-import com.process.clash.adapter.web.user.docs.response.GetMyGitHubLinkStatusResponseDoc;
-import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDoc;
-import com.process.clash.adapter.web.user.docs.response.GetMyActivityCalendarResponseDoc;
-import com.process.clash.adapter.web.user.docs.response.LinkGitHubOAuthResponseDoc;
+import com.process.clash.adapter.web.user.docs.response.GetMyProfileResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityDetailResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.GetMyGitHubLinkStatusResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.GetMyActivityCalendarResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.LinkGitHubOAuthResponseDocument;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubLinkStatusDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
@@ -36,7 +36,7 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyProfileResponseDoc.class)
+                            schema = @Schema(implementation = GetMyProfileResponseDocument.class)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyProfileDto.Response> getMyProfile(
@@ -47,7 +47,7 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyGitHubActivityResponseDoc.class)
+                            schema = @Schema(implementation = GetMyGitHubActivityResponseDocument.class)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyGitHubActivityDto.Response> getMyGitHubActivity(
@@ -59,7 +59,7 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyGitHubActivityDetailResponseDoc.class)
+                            schema = @Schema(implementation = GetMyGitHubActivityDetailResponseDocument.class)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyGitHubActivityDetailDto.Response> getMyGitHubActivityDetail(
@@ -71,7 +71,7 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "연동 성공",
                     content = @Content(
-                            schema = @Schema(implementation = LinkGitHubOAuthResponseDoc.class),
+                            schema = @Schema(implementation = LinkGitHubOAuthResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -102,7 +102,7 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyGitHubLinkStatusResponseDoc.class),
+                            schema = @Schema(implementation = GetMyGitHubLinkStatusResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -123,7 +123,7 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyItemsResponseDoc.class)
+                            schema = @Schema(implementation = GetMyItemsResponseDocument.class)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyItemsDto.Response> getMyItems(
@@ -135,7 +135,7 @@ public interface UserControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetMyActivityCalendarResponseDoc.class)
+                            schema = @Schema(implementation = GetMyActivityCalendarResponseDocument.class)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyActivityCalendarDto.Response> getMyActivityCalendar(

@@ -1,10 +1,10 @@
 package com.process.clash.adapter.web.roadmap.v2.chapter.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.v2.chapter.docs.request.CreateChapterV2RequestDoc;
-import com.process.clash.adapter.web.roadmap.v2.chapter.docs.request.UpdateChapterV2RequestDoc;
-import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.CreateChapterV2ResponseDoc;
-import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.DeleteChapterV2ResponseDoc;
-import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.UpdateChapterV2ResponseDoc;
+import com.process.clash.adapter.web.roadmap.v2.chapter.docs.request.CreateChapterV2RequestDocument;
+import com.process.clash.adapter.web.roadmap.v2.chapter.docs.request.UpdateChapterV2RequestDocument;
+import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.CreateChapterV2ResponseDocument;
+import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.DeleteChapterV2ResponseDocument;
+import com.process.clash.adapter.web.roadmap.v2.chapter.docs.response.UpdateChapterV2ResponseDocument;
 import com.process.clash.adapter.web.roadmap.v2.chapter.dto.CreateChapterV2Dto;
 import com.process.clash.adapter.web.roadmap.v2.chapter.dto.UpdateChapterV2Dto;
 import com.process.clash.application.common.actor.Actor;
@@ -26,7 +26,7 @@ public interface AdminChapterV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateChapterV2ResponseDoc.class),
+                            schema = @Schema(implementation = CreateChapterV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -46,7 +46,7 @@ public interface AdminChapterV2ControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "챕터 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateChapterV2RequestDoc.class),
+                            schema = @Schema(implementation = CreateChapterV2RequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "sectionId": 10,
@@ -63,7 +63,7 @@ public interface AdminChapterV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateChapterV2ResponseDoc.class),
+                            schema = @Schema(implementation = UpdateChapterV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -83,7 +83,7 @@ public interface AdminChapterV2ControllerDocument {
             @Parameter(description = "챕터 ID", example = "1") @PathVariable Long chapterId,
             @RequestBody(description = "챕터 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateChapterV2RequestDoc.class),
+                            schema = @Schema(implementation = UpdateChapterV2RequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "title": "자바 심화",
@@ -99,7 +99,7 @@ public interface AdminChapterV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteChapterV2ResponseDoc.class),
+                            schema = @Schema(implementation = DeleteChapterV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

@@ -1,10 +1,10 @@
 package com.process.clash.adapter.web.major.docs.controller;
 
-import com.process.clash.adapter.web.major.docs.request.PostMajorQuestionRequestDoc;
-import com.process.clash.adapter.web.major.docs.request.UpdateMajorQuestionRequestDoc;
-import com.process.clash.adapter.web.major.docs.response.DeleteMajorQuestionResponseDoc;
-import com.process.clash.adapter.web.major.docs.response.PostMajorQuestionResponseDoc;
-import com.process.clash.adapter.web.major.docs.response.UpdateMajorQuestionResponseDoc;
+import com.process.clash.adapter.web.major.docs.request.PostMajorQuestionRequestDocument;
+import com.process.clash.adapter.web.major.docs.request.UpdateMajorQuestionRequestDocument;
+import com.process.clash.adapter.web.major.docs.response.DeleteMajorQuestionResponseDocument;
+import com.process.clash.adapter.web.major.docs.response.PostMajorQuestionResponseDocument;
+import com.process.clash.adapter.web.major.docs.response.UpdateMajorQuestionResponseDocument;
 import com.process.clash.adapter.web.major.dto.PostMajorQuestionDto;
 import com.process.clash.adapter.web.major.dto.UpdateMajorQuestionDto;
 import com.process.clash.application.common.actor.Actor;
@@ -26,7 +26,7 @@ public interface MajorAdminControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = PostMajorQuestionResponseDoc.class),
+                            schema = @Schema(implementation = PostMajorQuestionResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -51,7 +51,7 @@ public interface MajorAdminControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "전공 질문 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = PostMajorQuestionRequestDoc.class),
+                            schema = @Schema(implementation = PostMajorQuestionRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "content": "관심있는 분야를 선택해주세요",
@@ -72,7 +72,7 @@ public interface MajorAdminControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateMajorQuestionResponseDoc.class),
+                            schema = @Schema(implementation = UpdateMajorQuestionResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -98,7 +98,7 @@ public interface MajorAdminControllerDocument {
             @Parameter(description = "질문 ID", example = "1") @PathVariable Long questionId,
             @RequestBody(description = "전공 질문 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateMajorQuestionRequestDoc.class),
+                            schema = @Schema(implementation = UpdateMajorQuestionRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "content": "더 흥미로운 분야를 선택해주세요",
@@ -119,7 +119,7 @@ public interface MajorAdminControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteMajorQuestionResponseDoc.class),
+                            schema = @Schema(implementation = DeleteMajorQuestionResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

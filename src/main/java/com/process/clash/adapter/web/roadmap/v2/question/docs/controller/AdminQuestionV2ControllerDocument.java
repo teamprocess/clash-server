@@ -1,10 +1,10 @@
 package com.process.clash.adapter.web.roadmap.v2.question.docs.controller;
 
-import com.process.clash.adapter.web.roadmap.v2.question.docs.request.CreateQuestionV2RequestDoc;
-import com.process.clash.adapter.web.roadmap.v2.question.docs.request.UpdateQuestionV2RequestDoc;
-import com.process.clash.adapter.web.roadmap.v2.question.docs.response.CreateQuestionV2ResponseDoc;
-import com.process.clash.adapter.web.roadmap.v2.question.docs.response.DeleteQuestionV2ResponseDoc;
-import com.process.clash.adapter.web.roadmap.v2.question.docs.response.UpdateQuestionV2ResponseDoc;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.request.CreateQuestionV2RequestDocument;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.request.UpdateQuestionV2RequestDocument;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.response.CreateQuestionV2ResponseDocument;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.response.DeleteQuestionV2ResponseDocument;
+import com.process.clash.adapter.web.roadmap.v2.question.docs.response.UpdateQuestionV2ResponseDocument;
 import com.process.clash.adapter.web.roadmap.v2.question.dto.CreateQuestionV2Dto;
 import com.process.clash.adapter.web.roadmap.v2.question.dto.UpdateQuestionV2Dto;
 import com.process.clash.application.common.actor.Actor;
@@ -26,7 +26,7 @@ public interface AdminQuestionV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공",
                     content = @Content(
-                            schema = @Schema(implementation = CreateQuestionV2ResponseDoc.class),
+                            schema = @Schema(implementation = CreateQuestionV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -47,7 +47,7 @@ public interface AdminQuestionV2ControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "문제 생성 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = CreateQuestionV2RequestDoc.class),
+                            schema = @Schema(implementation = CreateQuestionV2RequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "chapterId": 1,
@@ -65,7 +65,7 @@ public interface AdminQuestionV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공",
                     content = @Content(
-                            schema = @Schema(implementation = UpdateQuestionV2ResponseDoc.class),
+                            schema = @Schema(implementation = UpdateQuestionV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
@@ -86,7 +86,7 @@ public interface AdminQuestionV2ControllerDocument {
             @Parameter(description = "문제 ID", example = "1") @PathVariable Long questionId,
             @RequestBody(description = "문제 수정 요청", required = true,
                     content = @Content(
-                            schema = @Schema(implementation = UpdateQuestionV2RequestDoc.class),
+                            schema = @Schema(implementation = UpdateQuestionV2RequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "content": "자바의 주요 특징은?",
@@ -103,7 +103,7 @@ public interface AdminQuestionV2ControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(
-                            schema = @Schema(implementation = DeleteQuestionV2ResponseDoc.class),
+                            schema = @Schema(implementation = DeleteQuestionV2ResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,

@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.mainpage.docs.controller;
 
-import com.process.clash.adapter.web.mainpage.docs.response.GetUserProfileResponseDoc;
+import com.process.clash.adapter.web.mainpage.docs.response.GetUserProfileResponseDocument;
 import com.process.clash.adapter.web.mainpage.dto.GetUserProfileDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,7 @@ public interface MainPageControllerDocument {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
-                            schema = @Schema(implementation = GetUserProfileResponseDoc.class),
+                            schema = @Schema(implementation = GetUserProfileResponseDocument.class),
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
