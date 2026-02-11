@@ -29,6 +29,7 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 	@Query("""
         select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival(
             u.id,
+            u.username,
             u.name,
             ug.gitHubId,
             u.profileImage
