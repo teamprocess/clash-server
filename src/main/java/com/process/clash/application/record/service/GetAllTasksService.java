@@ -7,6 +7,7 @@ import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.infrastructure.config.RecordProperties;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -42,6 +43,7 @@ public class GetAllTasksService implements GetAllTasksUseCase {
             dayEnd
         );
         Map<Long, Long> studyTimeByTaskId = sessions.stream()
+            .filter(session -> session.recordType() == RecordType.TASK && session.task() != null)
             .collect(Collectors.groupingBy(
                 session -> session.task().id(),
                 Collectors.summingLong(session -> sessionSecondsInWindow(session, dayStart, endLimit))

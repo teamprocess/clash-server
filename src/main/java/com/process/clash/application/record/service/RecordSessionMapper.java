@@ -1,0 +1,62 @@
+package com.process.clash.application.record.service;
+
+import com.process.clash.application.record.data.RecordSessionData;
+import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.domain.record.enums.RecordType;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+public final class RecordSessionMapper {
+
+    private RecordSessionMapper() {
+    }
+
+    public static RecordSessionData.Session toSession(StudySession session, ZoneId recordZoneId) {
+        Instant startedAt = session.startedAt().atZone(recordZoneId).toInstant();
+        Instant endedAt = session.endedAt() == null ? null : session.endedAt().atZone(recordZoneId).toInstant();
+        return toSession(session, startedAt, endedAt);
+    }
+
+    public static RecordSessionData.Session toSession(
+        StudySession session,
+        ZoneId recordZoneId,
+        LocalDateTime startedAt,
+        LocalDateTime endedAt
+    ) {
+        Instant startedAtInstant = startedAt.atZone(recordZoneId).toInstant();
+        Instant endedAtInstant = endedAt == null ? null : endedAt.atZone(recordZoneId).toInstant();
+        return toSession(session, startedAtInstant, endedAtInstant);
+    }
+
+    private static RecordSessionData.Session toSession(
+        StudySession session,
+        Instant startedAt,
+        Instant endedAt
+    ) {
+        RecordType recordType = resolveRecordType(session);
+        if (recordType == RecordType.ACTIVITY || session.task() == null) {
+            return RecordSessionData.Session.activity(
+                session.id(),
+                startedAt,
+                endedAt,
+                session.appName()
+            );
+        }
+
+        return RecordSessionData.Session.task(
+            session.id(),
+            startedAt,
+            endedAt,
+            session.task().id(),
+            session.task().name()
+        );
+    }
+
+    private static RecordType resolveRecordType(StudySession session) {
+        if (session.recordType() != null) {
+            return session.recordType();
+        }
+        return session.task() == null ? RecordType.ACTIVITY : RecordType.TASK;
+    }
+}

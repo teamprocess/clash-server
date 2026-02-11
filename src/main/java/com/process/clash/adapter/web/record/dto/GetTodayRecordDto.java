@@ -15,7 +15,7 @@ public class GetTodayRecordDto {
         Boolean pomodoroEnabled,
         Long totalStudyTime,
         Instant studyStoppedAt,
-        List<Session> sessions
+        List<RecordSessionDto.Session> sessions
     ) {
         public static Response from(GetTodayRecordData.Result result){
             return new Response(
@@ -24,28 +24,9 @@ public class GetTodayRecordDto {
                 result.totalStudyTime(),
                 result.studyStoppedAt(),
                 result.sessions().stream()
-                    .map(Session::from)
+                    .map(RecordSessionDto.Session::from)
                     .toList()
             );
         }
     }
-
-    public record Session(
-        Instant startedAt,
-        Instant endedAt,
-        Task task
-    ) {
-        public static Session from(GetTodayRecordData.Session session) {
-            return new Session(
-                session.startedAt(),
-                session.endedAt(),
-                new Task(session.taskId(), session.taskName())
-            );
-        }
-    }
-
-    public record Task(
-        Long id,
-        String name
-    ) {}
 }
