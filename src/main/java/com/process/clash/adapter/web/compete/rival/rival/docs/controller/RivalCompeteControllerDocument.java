@@ -63,8 +63,9 @@ public interface RivalCompeteControllerDocument {
                                       "data": {
                                         "users": [
                                           {
-                                            "userId": 3,
-                                            "userName": "성춘향",
+                                            "id": 3,
+                                            "username": "chunhyang123",
+                                            "name": "성춘향",
                                             "gitHubId": "chunhyang",
                                             "profileImage": "https://cdn.example.com/profile/3.png"
                                           }
