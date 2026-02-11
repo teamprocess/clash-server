@@ -8,6 +8,7 @@ import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRe
 import com.process.clash.application.github.exception.exception.notfound.GithubDailyStatsNotFoundException;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
+import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
 import com.process.clash.infrastructure.config.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,17 +35,19 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
 
         ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
         int boundaryHour = recordProperties.dayBoundaryHour();
-        LocalDate today = nowZoned.toLocalDate();
+        LocalDate today;
         if (nowZoned.getHour() < boundaryHour) {
-            today = today.minusDays(1);
+            today = nowZoned.toLocalDate().minusDays(1);
+        } else {
+            today = nowZoned.toLocalDate();
         }
 
         LocalDate yesterday = today.minusDays(1);
 
         Long yesterdayActiveTime =
                 userStudyTimeRepositoryPort.findByUserIdAndDate(command.actor().id(), yesterday)
-                        .orElseThrow(UserStudyTimeNotFoundException::new)
-                        .totalStudyTimeSeconds();
+                        .map(UserStudyTime::totalStudyTimeSeconds)
+                        .orElse(0L);
 
         LocalDateTime startOfDay = today.atTime(boundaryHour, 0, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
@@ -57,10 +60,10 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
 
         GitHubDailyStats yesterdayStats = githubDailyStatsQueryPort
                 .findByUserIdAndStudyDate(command.actor().id(), yesterday)
-                .orElseThrow(GithubDailyStatsNotFoundException::new);
+                .orElseGet(() -> new GitHubDailyStats(command.actor().id(), yesterday));
         GitHubDailyStats todayStats = githubDailyStatsQueryPort
                 .findByUserIdAndStudyDate(command.actor().id(), today)
-                .orElseThrow(GithubDailyStatsNotFoundException::new);
+                .orElseGet(() -> new GitHubDailyStats(command.actor().id(), today));
 
         Integer yesterdayContributions = toContributionCount(yesterdayStats);
         Integer todayContributions = toContributionCount(todayStats);

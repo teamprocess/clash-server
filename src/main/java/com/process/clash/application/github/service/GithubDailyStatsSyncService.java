@@ -22,6 +22,9 @@ import java.util.concurrent.ExecutorService;
 @RequiredArgsConstructor
 @Slf4j
 public class GithubDailyStatsSyncService {
+    private static final int HOURLY_SYNC_DAYS = 30;
+    private static final int DAILY_MORNING_SYNC_DAYS = 365;
+
 
     private final GithubSyncTargetPort syncTargetPort;
     private final GithubStatsFetchPort statsFetchPort;
@@ -40,6 +43,18 @@ public class GithubDailyStatsSyncService {
     private int maxConcurrency;
 
     public void syncRecentDays() {
+        syncRecentDays(recomputeDays);
+    }
+
+    public void syncRecent30Days() {
+        syncRecentDays(HOURLY_SYNC_DAYS);
+    }
+
+    public void syncRecent365Days() {
+        syncRecentDays(DAILY_MORNING_SYNC_DAYS);
+    }
+
+    private void syncRecentDays(int daysToRecompute) {
         List<GithubSyncTarget> targets = syncTargetPort.findSyncTargets();
         if (targets.isEmpty()) {
             log.info("GitHub 동기화 대상이 없습니다.");
@@ -48,9 +63,9 @@ public class GithubDailyStatsSyncService {
 
         // 최근 N일의 "학습일" 기준으로 동기화 범위를 계산
         Instant now = clock.instant();
-        List<LocalDate> studyDates = studyDateCalculator.recentStudyDates(now, recomputeDays);
+        List<LocalDate> studyDates = studyDateCalculator.recentStudyDates(now, daysToRecompute);
         if (studyDates.isEmpty()) {
-            log.info("재계산할 학습일이 없습니다. recomputeDays={}", recomputeDays);
+            log.info("재계산할 학습일이 없습니다. recomputeDays={}", daysToRecompute);
             return;
         }
 
@@ -103,13 +118,13 @@ public class GithubDailyStatsSyncService {
             if (!stats.isEmpty()) {
                 statsStorePort.upsertAll(stats);
             }
-            log.info("GitHub 일일 통계 동기화 완료. userId={}, days={}",
+            log.info("GitHub 통계 동기화 완료. userId={}, days={}",
                     target.userId(), studyDates.size());
         } catch (GithubRateLimitException ex) {
             log.warn("GitHub 요청 제한에 도달했습니다. userId={}, resetAt={}",
                     target.userId(), ex.getResetAt());
         } catch (Exception ex) {
-            log.error("GitHub 일일 통계 동기화 실패. userId={}, login={}",
+            log.error("GitHub 통계 동기화 실패. userId={}, login={}",
                     target.userId(), target.githubLogin(), ex);
         }
     }
