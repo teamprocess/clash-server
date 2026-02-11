@@ -48,6 +48,8 @@ class GitHubDailyStatsSyncServiceTest {
 
     @Captor
     private ArgumentCaptor<GithubSyncTarget> targetCaptor;
+    @Captor
+    private ArgumentCaptor<List<LocalDate>> studyDatesCaptor;
 
     @BeforeEach
     void setUp() {
@@ -155,5 +157,31 @@ class GitHubDailyStatsSyncServiceTest {
 
         verify(statsFetchPort, times(2)).fetchDailyStats(any(), any());
         verifyNoInteractions(statsStorePort);
+    }
+
+    @Test
+    @DisplayName("30일 동기화는 최근 30일 범위를 사용한다")
+    void syncRecent30Days_usesThirtyDaysRange() {
+        GithubSyncTarget target = new GithubSyncTarget(1L, "login", "nodeId", List.of(), "token");
+        when(syncTargetPort.findSyncTargets()).thenReturn(List.of(target));
+        when(statsFetchPort.fetchDailyStats(any(), any())).thenReturn(List.of());
+
+        syncService.syncRecent30Days();
+
+        verify(statsFetchPort).fetchDailyStats(any(), studyDatesCaptor.capture());
+        assertThat(studyDatesCaptor.getValue()).hasSize(30);
+    }
+
+    @Test
+    @DisplayName("365일 동기화는 최근 365일 범위를 사용한다")
+    void syncRecent365Days_usesThreeHundredSixtyFiveDaysRange() {
+        GithubSyncTarget target = new GithubSyncTarget(1L, "login", "nodeId", List.of(), "token");
+        when(syncTargetPort.findSyncTargets()).thenReturn(List.of(target));
+        when(statsFetchPort.fetchDailyStats(any(), any())).thenReturn(List.of());
+
+        syncService.syncRecent365Days();
+
+        verify(statsFetchPort).fetchDailyStats(any(), studyDatesCaptor.capture());
+        assertThat(studyDatesCaptor.getValue()).hasSize(365);
     }
 }
