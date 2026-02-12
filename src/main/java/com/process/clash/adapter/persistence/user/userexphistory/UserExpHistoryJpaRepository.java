@@ -20,66 +20,87 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
      * DAY: 유저별 일별 경험치
      */
     @Query(value = """
-        SELECT 
+        SELECT
             fk_user_id AS userId,
-            cast(date_trunc('day', date) as date) AS recordedDate,
-            AVG(earn_exp) AS point
-        FROM user_exp_history
-        WHERE fk_user_id IN (:userIds)
-          AND date >= date_trunc('day', CAST(:startDate AS date))
-          AND date < :endDate
-        GROUP BY fk_user_id, date_trunc('day', date)
-        ORDER BY fk_user_id, date_trunc('day', date) ASC
+            day_date AS recordedDate,
+            point
+        FROM (
+            SELECT
+                fk_user_id,
+                cast(date_trunc('day', date) as date) AS day_date,
+                AVG(earn_exp) AS point,
+                ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY date_trunc('day', date) DESC) as rn
+            FROM user_exp_history
+            WHERE fk_user_id IN (:userIds)
+              AND date >= date_trunc('day', CAST(:startDate AS date))
+              AND date < :endDate
+            GROUP BY fk_user_id, date_trunc('day', date)
+        ) subquery
+        WHERE rn <= 10
+        ORDER BY fk_user_id, day_date ASC
     """, nativeQuery = true)
     List<Object[]> findDailyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            Pageable pageable
+            @Param("endDate") LocalDate endDate
     );
 
     /**
      * WEEK: 유저별 주별 평균 경험치
      */
     @Query(value = """
-        SELECT 
+        SELECT
             fk_user_id AS userId,
-            cast(date_trunc('week', date) as date) AS recordedDate,
-            AVG(earn_exp) AS point
-        FROM user_exp_history
-        WHERE fk_user_id IN (:userIds)
-          AND date >= date_trunc('week', CAST(:startDate AS date))
-          AND date < :endDate
-        GROUP BY fk_user_id, date_trunc('week', date)
-        ORDER BY fk_user_id, date_trunc('week', date) ASC
+            week_start AS recordedDate,
+            point
+        FROM (
+            SELECT
+                fk_user_id,
+                cast(date_trunc('week', date) as date) AS week_start,
+                AVG(earn_exp) AS point,
+                ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY date_trunc('week', date) DESC) as rn
+            FROM user_exp_history
+            WHERE fk_user_id IN (:userIds)
+              AND date >= date_trunc('week', CAST(:startDate AS date))
+              AND date < :endDate
+            GROUP BY fk_user_id, date_trunc('week', date)
+        ) subquery
+        WHERE rn <= 10
+        ORDER BY fk_user_id, week_start ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            Pageable pageable
+            @Param("endDate") LocalDate endDate
     );
 
     /**
      * MONTH: 유저별 월별 평균 경험치
      */
     @Query(value = """
-        SELECT 
+        SELECT
             fk_user_id AS userId,
-            cast(date_trunc('month', date) as date) AS recordedDate,
-            AVG(earn_exp) AS point
-        FROM user_exp_history
-        WHERE fk_user_id IN (:userIds)
-          AND date >= date_trunc('month', CAST(:startDate AS date))
-          AND date < :endDate
-        GROUP BY fk_user_id, date_trunc('month', date)
-        ORDER BY fk_user_id, date_trunc('month', date) ASC
+            month_start AS recordedDate,
+            point
+        FROM (
+            SELECT
+                fk_user_id,
+                cast(date_trunc('month', date) as date) AS month_start,
+                AVG(earn_exp) AS point,
+                ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY date_trunc('month', date) DESC) as rn
+            FROM user_exp_history
+            WHERE fk_user_id IN (:userIds)
+              AND date >= date_trunc('month', CAST(:startDate AS date))
+              AND date < :endDate
+            GROUP BY fk_user_id, date_trunc('month', date)
+        ) subquery
+        WHERE rn <= 10
+        ORDER BY fk_user_id, month_start ASC
     """, nativeQuery = true)
     List<Object[]> findMonthlyDataByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            Pageable pageable
+            @Param("endDate") LocalDate endDate
     );
 
     /**

@@ -14,9 +14,9 @@ import java.util.Map;
 
 public interface UserExpHistoryRepositoryPort {
     UserExpHistory save(UserExpHistory userExpHistory);
-    List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
-    List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
-    List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
+    List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
+    List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
+    List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
     double findAverageExpByUserIdAndCategoryAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
     Map<Long, Double> findAverageExpForBattles(Long userId, List<Battle> battles);
     List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate);
