@@ -87,12 +87,11 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
             totalStudyTime,
             studyStoppedAt,
             todaySessions.stream()
-                .map(s -> GetTodayRecordData.Session.from(
-                    (s.startedAt().isAfter(startOfDay) ? s.startedAt() : startOfDay).atZone(recordZoneId).toInstant(),
-                    s.endedAt() == null ? null : (s.endedAt().isAfter(endLimit) ? endLimit : s.endedAt()).atZone(recordZoneId).toInstant(),
-                    s.task().id(),
-                    s.task().name()
-                ))
+                .map(s -> {
+                    LocalDateTime sessionStart = s.startedAt().isAfter(startOfDay) ? s.startedAt() : startOfDay;
+                    LocalDateTime sessionEnd = s.endedAt() == null ? null : (s.endedAt().isAfter(endLimit) ? endLimit : s.endedAt());
+                    return RecordSessionMapper.toSession(s, recordZoneId, sessionStart, sessionEnd);
+                })
                 .toList()
         );
     }

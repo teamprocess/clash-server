@@ -1,18 +1,25 @@
 package com.process.clash.adapter.web.record.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.record.dto.GetCurrentRecordDto;
+import com.process.clash.adapter.web.record.dto.GetMonitoredAppsDto;
 import com.process.clash.adapter.web.record.docs.controller.RecordControllerDocument;
 import com.process.clash.adapter.web.record.dto.GetTodayRecordDto;
+import com.process.clash.adapter.web.record.dto.RecordSessionDto;
 import com.process.clash.adapter.web.record.dto.RecordSettingDto;
 import com.process.clash.adapter.web.record.dto.StartRecordDto;
 import com.process.clash.adapter.web.record.dto.StopRecordDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.record.data.GetCurrentRecordData;
+import com.process.clash.application.record.data.GetMonitoredAppsData;
 import com.process.clash.application.record.data.GetRecordSettingData;
 import com.process.clash.application.record.data.GetTodayRecordData;
 import com.process.clash.application.record.data.StartRecordData;
 import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.data.UpdateRecordSettingData;
+import com.process.clash.application.record.port.in.GetCurrentRecordUseCase;
+import com.process.clash.application.record.port.in.GetMonitoredAppsUseCase;
 import com.process.clash.application.record.port.in.GetRecordSettingUseCase;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.in.StartRecordUseCase;
@@ -37,6 +44,8 @@ public class RecordController implements RecordControllerDocument {
     private final StopRecordUseCase stopRecordUseCase;
     private final GetRecordSettingUseCase getRecordSettingUseCase;
     private final UpdateRecordSettingUseCase updateRecordSettingUseCase;
+    private final GetCurrentRecordUseCase getCurrentRecordUseCase;
+    private final GetMonitoredAppsUseCase getMonitoredAppsUseCase;
 
     @GetMapping("/today")
     public ApiResponse<GetTodayRecordDto.Response> getTodayRecord(
@@ -50,7 +59,7 @@ public class RecordController implements RecordControllerDocument {
 
         return ApiResponse.success(
             GetTodayRecordDto.Response.from(result),
-            "오늘의 일반 기록 현황을 조회했습니다."
+            "오늘의 기록 현황을 조회했습니다."
         );
     }
 
@@ -94,7 +103,9 @@ public class RecordController implements RecordControllerDocument {
             @AuthenticatedActor Actor actor
     ) {
         StartRecordData.Command command = new StartRecordData.Command(
+                request.recordType(),
                 request.taskId(),
+                request.appName(),
                 actor
         );
 
@@ -104,7 +115,7 @@ public class RecordController implements RecordControllerDocument {
                 StartRecordDto.Response.from(
                         result
                 ),
-                "일반 기록을 시작했습니다."
+                "기록을 시작했습니다."
         );
     }
 
@@ -120,7 +131,34 @@ public class RecordController implements RecordControllerDocument {
 
         return ApiResponse.success(
             StopRecordDto.Response.from(result),
-            "일반 기록을 중지했습니다."
+            "기록을 중지했습니다."
+        );
+    }
+
+    @GetMapping("/current")
+    public ApiResponse<RecordSessionDto.Session> getCurrentRecord(
+        @AuthenticatedActor Actor actor
+    ) {
+        GetCurrentRecordData.Command command = new GetCurrentRecordData.Command(actor);
+        GetCurrentRecordData.Result result = getCurrentRecordUseCase.execute(command);
+        RecordSessionDto.Session response = GetCurrentRecordDto.from(result);
+
+        if (response == null) {
+            return ApiResponse.success(null, "현재 기록 세션이 없습니다.");
+        }
+        return ApiResponse.success(response, "현재 기록 세션을 조회했습니다.");
+    }
+
+    @GetMapping("/activities/monitored-apps")
+    public ApiResponse<GetMonitoredAppsDto.Response> getMonitoredApps(
+        @AuthenticatedActor Actor actor
+    ) {
+        GetMonitoredAppsData.Command command = new GetMonitoredAppsData.Command(actor);
+        GetMonitoredAppsData.Result result = getMonitoredAppsUseCase.execute(command);
+
+        return ApiResponse.success(
+            GetMonitoredAppsDto.Response.from(result),
+            "활동 기록 가능 앱 목록을 조회했습니다."
         );
     }
 

@@ -9,13 +9,13 @@ public class StopRecordDto {
     @Schema(name = "StopRecordDtoResponse")
 
     public record Response(
-            Long taskId,
-            Instant stoppedAt
+            Instant stoppedAt,
+            RecordSessionDto.Session session
     ) {
         public static Response from(StopRecordData.Result result) {
             return new Response(
-                    result.taskId(),
-                    result.stoppedAt()
+                    result.stoppedAt(),
+                    RecordSessionDto.Session.from(result.session())
             );
         }
     }

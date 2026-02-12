@@ -33,7 +33,9 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     public StudySession save(StudySession studySession) {
         if (studySession.id() == null) {
             UserJpaEntity user = userJpaRepository.getReferenceById(studySession.user().id());
-            TaskJpaEntity task = taskJpaRepository.getReferenceById(studySession.task().id());
+            TaskJpaEntity task = studySession.task() == null
+                ? null
+                : taskJpaRepository.getReferenceById(studySession.task().id());
             StudySessionJpaEntity studySessionJpaEntity = studySessionJpaMapper.toJpaEntity(studySession, user, task);
             studySessionJpaRepository.save(studySessionJpaEntity);
             return studySessionJpaMapper.toDomain(studySessionJpaEntity);
@@ -67,7 +69,9 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
             List<StudySessionJpaEntity> entitiesToCreate = newSessions.stream()
                 .map(session -> {
                     UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
-                    TaskJpaEntity task = taskJpaRepository.getReferenceById(session.task().id());
+                    TaskJpaEntity task = session.task() == null
+                        ? null
+                        : taskJpaRepository.getReferenceById(session.task().id());
                     return studySessionJpaMapper.toJpaEntity(session, user, task);
                 })
                 .toList();
