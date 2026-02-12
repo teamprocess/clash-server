@@ -45,21 +45,21 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
     }
 
     @Override
-    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
 
-        return userStudyTimeJpaRepository.findDailyDataByUserIds(ids, startDate, endDate, pageRequest);
+        return userStudyTimeJpaRepository.findDailyDataByUserIds(ids, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
 
-        return userStudyTimeJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate, pageRequest);
+        return userStudyTimeJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
 
-        return userStudyTimeJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate, pageRequest);
+        return userStudyTimeJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate);
     }
 
     @Override

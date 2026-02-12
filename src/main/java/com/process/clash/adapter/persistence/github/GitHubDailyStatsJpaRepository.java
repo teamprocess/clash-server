@@ -43,57 +43,81 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             user_id AS userId,
             study_date AS recordedDate,
             (commit_count + pr_count + review_count + issue_count) AS point
-        FROM github_daily_stats
-        WHERE user_id IN (:userIds)
-          AND study_date >= :startDate
-          AND study_date < :endDate
+        FROM (
+            SELECT
+                user_id,
+                study_date,
+                commit_count,
+                pr_count,
+                review_count,
+                issue_count,
+                ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY study_date DESC) as rn
+            FROM github_daily_stats
+            WHERE user_id IN (:userIds)
+              AND study_date >= :startDate
+              AND study_date < :endDate
+        ) subquery
+        WHERE rn <= 10
         ORDER BY user_id, study_date ASC
     """, nativeQuery = true)
     List<Object[]> findDailyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            Pageable pageable
+            @Param("endDate") LocalDate endDate
     );
 
     // WEEK: 여러 유저의 주별 평균 깃허브 기여도
     @Query(value = """
         SELECT
             user_id AS userId,
-            cast(date_trunc('week', study_date) as date) AS recordedDate,
-            AVG(commit_count + pr_count + review_count + issue_count) AS point
-        FROM github_daily_stats
-        WHERE user_id IN (:userIds)
-          AND study_date >= date_trunc('week', CAST(:startDate AS date))
-          AND study_date < :endDate
-        GROUP BY user_id, date_trunc('week', study_date)
-        ORDER BY user_id, date_trunc('week', study_date) ASC
+            week_start AS recordedDate,
+            point
+        FROM (
+            SELECT
+                user_id,
+                cast(date_trunc('week', study_date) as date) AS week_start,
+                AVG(commit_count + pr_count + review_count + issue_count) AS point,
+                ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date_trunc('week', study_date) DESC) as rn
+            FROM github_daily_stats
+            WHERE user_id IN (:userIds)
+              AND study_date >= date_trunc('week', CAST(:startDate AS date))
+              AND study_date < :endDate
+            GROUP BY user_id, date_trunc('week', study_date)
+        ) subquery
+        WHERE rn <= 10
+        ORDER BY user_id, week_start ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            Pageable pageable
+            @Param("endDate") LocalDate endDate
     );
 
     // MONTH: 여러 유저의 월별 평균 깃허브 기여도
     @Query(value = """
         SELECT
             user_id AS userId,
-            cast(date_trunc('month', study_date) as date) AS recordedDate,
-            AVG(commit_count + pr_count + review_count + issue_count) AS point
-        FROM github_daily_stats
-        WHERE user_id IN (:userIds)
-          AND study_date >= date_trunc('month', CAST(:startDate AS date))
-          AND study_date < :endDate
-        GROUP BY user_id, date_trunc('month', study_date)
-        ORDER BY user_id, date_trunc('month', study_date) ASC
+            month_start AS recordedDate,
+            point
+        FROM (
+            SELECT
+                user_id,
+                cast(date_trunc('month', study_date) as date) AS month_start,
+                AVG(commit_count + pr_count + review_count + issue_count) AS point,
+                ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date_trunc('month', study_date) DESC) as rn
+            FROM github_daily_stats
+            WHERE user_id IN (:userIds)
+              AND study_date >= date_trunc('month', CAST(:startDate AS date))
+              AND study_date < :endDate
+            GROUP BY user_id, date_trunc('month', study_date)
+        ) subquery
+        WHERE rn <= 10
+        ORDER BY user_id, month_start ASC
     """, nativeQuery = true)
     List<Object[]> findMonthlyContributionsByUserIds(
             @Param("userIds") List<Long> userIds,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            Pageable pageable
+            @Param("endDate") LocalDate endDate
     );
 
     // 기간 내 평균 기여도
