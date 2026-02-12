@@ -30,7 +30,8 @@ public class RecordActivitySegmentPersistenceAdapter implements RecordActivitySe
         RecordActivitySegmentJpaEntity existing = recordActivitySegmentJpaRepository.findById(segment.id())
             .orElseThrow(RecordActivitySegmentNotFound::new);
         existing.changeEndedAt(segment.endedAt());
-        RecordActivitySegmentJpaEntity saved = recordActivitySegmentJpaRepository.save(existing);
+        // 같은 트랜잭션에서 close -> new open segment 순서를 보장하기 위해 즉시 flush
+        RecordActivitySegmentJpaEntity saved = recordActivitySegmentJpaRepository.saveAndFlush(existing);
         return recordActivitySegmentJpaMapper.toDomain(saved);
     }
 
