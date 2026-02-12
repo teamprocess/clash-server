@@ -61,11 +61,17 @@ public class GithubDailyStatsSyncService implements SyncGithubDailyStatsUseCase 
             return;
         }
 
+        List<LocalDate> studyDates = resolveStudyDates(DAILY_MORNING_SYNC_DAYS);
+        if (studyDates.isEmpty()) {
+            log.info("재계산할 학습일이 없습니다. recomputeDays={}", DAILY_MORNING_SYNC_DAYS);
+            return;
+        }
+
         syncTargetPort.findSyncTargetByUserId(userId)
-                .ifPresentOrElse(
-                        target -> syncSingleTarget(target, DAILY_MORNING_SYNC_DAYS),
-                        () -> log.info("GitHub 동기화 대상을 찾지 못했습니다. userId={}", userId)
-                );
+            .ifPresentOrElse(
+                target -> syncTarget(target, studyDates),
+                () -> log.info("GitHub 동기화 대상을 찾지 못했습니다. userId={}", userId)
+            );
     }
 
     private void syncRecentDays(int daysToRecompute) {
@@ -98,15 +104,6 @@ public class GithubDailyStatsSyncService implements SyncGithubDailyStatsUseCase 
                 .toList();
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-    }
-
-    private void syncSingleTarget(GithubSyncTarget target, int daysToRecompute) {
-        List<LocalDate> studyDates = resolveStudyDates(daysToRecompute);
-        if (studyDates.isEmpty()) {
-            log.info("재계산할 학습일이 없습니다. recomputeDays={}", daysToRecompute);
-            return;
-        }
-        syncTarget(target, studyDates);
     }
 
     private List<LocalDate> resolveStudyDates(int daysToRecompute) {
