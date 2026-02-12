@@ -33,6 +33,16 @@ public enum RecordStatusCode implements StatusCode {
             "ACTIVE_STUDY_SESSION_NOT_FOUND",
             "진행 중인 공부 세션이 존재하지 않습니다.",
             ErrorCategory.NOT_FOUND
+    ),
+    INVALID_RECORD_START_REQUEST(
+        "INVALID_RECORD_START_REQUEST",
+        "기록 시작 요청이 유효하지 않습니다.",
+        ErrorCategory.BAD_REQUEST
+    ),
+    INVALID_MONITORED_APP(
+        "INVALID_MONITORED_APP",
+        "활동 기록 가능한 앱이 아닙니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;

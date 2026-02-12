@@ -3,6 +3,7 @@ package com.process.clash.adapter.web.auth.controller;
 import com.process.clash.adapter.persistence.auth.AuthEventJpaEntity;
 import com.process.clash.adapter.persistence.auth.AuthEventJpaRepository;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
+import com.process.clash.application.google.port.out.RecaptchaPort;
 import com.process.clash.application.mail.port.out.SendVerificationEmailPort;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.port.out.SessionManager;
@@ -25,6 +26,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 
 // RANDOM_PORT를 사용하면 실제 서블릿 컨테이너(Tomcat)가 구동됩니다.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -64,6 +66,13 @@ class AuthEventTest {
         public SessionManager sessionManager() {
             return Mockito.mock(SessionManager.class);
         }
+
+        @Bean
+        public RecaptchaPort recaptchaPort() {
+            RecaptchaPort recaptchaPort = Mockito.mock(RecaptchaPort.class);
+            Mockito.when(recaptchaPort.verifyToken(anyString())).thenReturn(true);
+            return recaptchaPort;
+        }
     }
 
     @BeforeEach
@@ -72,7 +81,10 @@ class AuthEventTest {
 
         // 테스트 유저 저장
         String encodedPassword = passwordEncoder.encode("password123");
-        uniqueUsername = "testuser" + System.nanoTime();
+        uniqueUsername = "u" + Long.toString(System.nanoTime(), 36);
+        if (uniqueUsername.length() > 20) {
+            uniqueUsername = uniqueUsername.substring(0, 20);
+        }
         userRepository.save(User.createDefault(uniqueUsername, "test" + System.nanoTime() + "@example.com", "테스터", encodedPassword));
     }
 
@@ -88,6 +100,7 @@ class AuthEventTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("User-Agent", realUserAgent); // 실제 기기 정보 주입
+        headers.set("X-Recaptcha-Token", "test-token");
 
         HttpEntity<SignInDto.Request> request = new HttpEntity<>(body, headers);
 

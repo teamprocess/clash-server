@@ -18,7 +18,7 @@ public class GetTodayRecordData {
         Boolean pomodoroEnabled,
         Long totalStudyTime,
         Instant studyStoppedAt,
-        List<Session> sessions
+        List<RecordSessionData.Session> sessions
     ) {
 
         public static Result create(
@@ -26,7 +26,7 @@ public class GetTodayRecordData {
             Boolean pomodoroEnabled,
             Long totalStudyTime,
             Instant studyStoppedAt,
-            List<Session> sessions
+            List<RecordSessionData.Session> sessions
         ) {
             return new Result(
                 date,
@@ -35,17 +35,6 @@ public class GetTodayRecordData {
                 studyStoppedAt,
                 sessions
             );
-        }
-    }
-
-    public record Session(
-        Instant startedAt,
-        Instant endedAt,
-        Long taskId,
-        String taskName
-    ) {
-        public static Session from(Instant startedAt, Instant endedAt, Long taskId, String taskName) {
-            return new Session(startedAt, endedAt, taskId, taskName);
         }
     }
 }

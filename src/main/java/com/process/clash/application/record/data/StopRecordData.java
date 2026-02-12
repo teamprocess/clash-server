@@ -10,12 +10,12 @@ public class StopRecordData {
     ) {}
 
     public record Result(
-            Long taskId,
-            Instant stoppedAt
+            Instant stoppedAt,
+            RecordSessionData.Session session
     ) {
 
-        public static Result create(Long taskId, Instant stoppedAt) {
-            return new Result(taskId, stoppedAt);
+        public static Result create(Instant stoppedAt, RecordSessionData.Session session) {
+            return new Result(stoppedAt, session);
         }
     }
 }

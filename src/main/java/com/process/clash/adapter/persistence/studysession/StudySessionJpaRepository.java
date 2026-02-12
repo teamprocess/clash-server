@@ -31,7 +31,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         select s
         from StudySessionJpaEntity s
         join fetch s.user
-        join fetch s.task
+        left join fetch s.task
         where s.user.id = :userId
             and s.startedAt < :endTime
             and (s.endedAt is null or s.endedAt > :startTime)
