@@ -120,6 +120,12 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     }
 
     @Override
+    public Optional<StudySession> findActiveSessionByUserIdForUpdate(Long userId) {
+        return studySessionJpaRepository.findActiveByUserIdForUpdate(userId)
+            .map(studySessionJpaMapper::toDomain);
+    }
+
+    @Override
     public List<StudySession> findAllByUserIdAndTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         return studySessionJpaRepository.findAllOverlappingByUserId(userId, startTime, endTime).stream()
             .map(studySessionJpaMapper::toDomain)

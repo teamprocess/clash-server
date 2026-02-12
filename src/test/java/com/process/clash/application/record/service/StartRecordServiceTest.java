@@ -6,6 +6,7 @@ import com.process.clash.application.record.exception.exception.badrequest.Inval
 import com.process.clash.application.record.exception.exception.conflict.StudySessionAlreadyStartedException;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.policy.TaskPolicy;
+import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
@@ -47,6 +48,9 @@ class StartRecordServiceTest {
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
+    @Mock
+    private RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+
     private StartRecordService startRecordService;
 
     @BeforeEach
@@ -57,6 +61,7 @@ class StartRecordServiceTest {
             taskRepositoryPort,
             new TaskPolicy(),
             new MonitoredAppPolicy(),
+            recordActivitySegmentRepositoryPort,
             recordActivityNotifierPort,
             ZoneId.of("UTC")
         );
@@ -73,6 +78,7 @@ class StartRecordServiceTest {
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(taskRepositoryPort.findById(command.taskId())).thenReturn(Optional.of(task));
         when(studySessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(studySessionRepositoryPort.save(any(StudySession.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         startRecordService.execute(command);
 
@@ -105,6 +111,8 @@ class StartRecordServiceTest {
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(studySessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(studySessionRepositoryPort.save(any(StudySession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(recordActivitySegmentRepositoryPort.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         startRecordService.execute(command);
 

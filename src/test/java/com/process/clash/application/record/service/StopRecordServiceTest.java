@@ -3,6 +3,7 @@ package com.process.clash.application.record.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
+import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -35,12 +36,16 @@ class StopRecordServiceTest {
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
+    @Mock
+    private RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+
     private StopRecordService stopRecordService;
 
     @BeforeEach
     void setUp() {
         stopRecordService = new StopRecordService(
             studySessionRepositoryPort,
+            recordActivitySegmentRepositoryPort,
             recordActivityNotifierPort,
             ZoneId.of("UTC")
         );
@@ -61,8 +66,9 @@ class StopRecordServiceTest {
             null
         );
 
-        when(studySessionRepositoryPort.findActiveSessionByUserId(actor.id()))
+        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(activeSession));
+        when(studySessionRepositoryPort.save(any(StudySession.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         stopRecordService.execute(command);
 
@@ -76,7 +82,7 @@ class StopRecordServiceTest {
         Actor actor = new Actor(1L);
         StopRecordData.Command command = new StopRecordData.Command(actor);
 
-        when(studySessionRepositoryPort.findActiveSessionByUserId(actor.id()))
+        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> stopRecordService.execute(command))

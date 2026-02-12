@@ -9,6 +9,7 @@ import com.process.clash.adapter.web.record.dto.RecordSessionDto;
 import com.process.clash.adapter.web.record.dto.RecordSettingDto;
 import com.process.clash.adapter.web.record.dto.StartRecordDto;
 import com.process.clash.adapter.web.record.dto.StopRecordDto;
+import com.process.clash.adapter.web.record.dto.SwitchActivityAppDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.GetCurrentRecordData;
@@ -17,6 +18,7 @@ import com.process.clash.application.record.data.GetRecordSettingData;
 import com.process.clash.application.record.data.GetTodayRecordData;
 import com.process.clash.application.record.data.StartRecordData;
 import com.process.clash.application.record.data.StopRecordData;
+import com.process.clash.application.record.data.SwitchActivityAppData;
 import com.process.clash.application.record.data.UpdateRecordSettingData;
 import com.process.clash.application.record.port.in.GetCurrentRecordUseCase;
 import com.process.clash.application.record.port.in.GetMonitoredAppsUseCase;
@@ -24,6 +26,7 @@ import com.process.clash.application.record.port.in.GetRecordSettingUseCase;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.in.StartRecordUseCase;
 import com.process.clash.application.record.port.in.StopRecordUseCase;
+import com.process.clash.application.record.port.in.SwitchActivityAppUseCase;
 import com.process.clash.application.record.port.in.UpdateRecordSettingUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +49,7 @@ public class RecordController implements RecordControllerDocument {
     private final UpdateRecordSettingUseCase updateRecordSettingUseCase;
     private final GetCurrentRecordUseCase getCurrentRecordUseCase;
     private final GetMonitoredAppsUseCase getMonitoredAppsUseCase;
+    private final SwitchActivityAppUseCase switchActivityAppUseCase;
 
     @GetMapping("/today")
     public ApiResponse<GetTodayRecordDto.Response> getTodayRecord(
@@ -159,6 +163,23 @@ public class RecordController implements RecordControllerDocument {
         return ApiResponse.success(
             GetMonitoredAppsDto.Response.from(result),
             "활동 기록 가능 앱 목록을 조회했습니다."
+        );
+    }
+
+    @PatchMapping("/activities/switch-app")
+    public ApiResponse<SwitchActivityAppDto.Response> switchActivityApp(
+        @Valid @RequestBody SwitchActivityAppDto.Request request,
+        @AuthenticatedActor Actor actor
+    ) {
+        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(
+            actor,
+            request.appName()
+        );
+        SwitchActivityAppData.Result result = switchActivityAppUseCase.execute(command);
+
+        return ApiResponse.success(
+            SwitchActivityAppDto.Response.from(result),
+            "활동 앱을 전환했습니다."
         );
     }
 
