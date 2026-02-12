@@ -94,4 +94,8 @@ public class StudySessionJpaEntity {
     public void changeEndedAt(LocalDateTime endedAt) {
         this.endedAt = endedAt;
     }
+
+    public void changeAppName(String appName) {
+        this.appName = appName;
+    }
 }

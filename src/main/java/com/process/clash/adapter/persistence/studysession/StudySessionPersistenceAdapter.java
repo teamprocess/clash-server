@@ -44,6 +44,7 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
         StudySessionJpaEntity existing = studySessionJpaRepository.findById(studySession.id())
                 .orElseThrow(StudySessionNotFound::new);
         existing.changeEndedAt(studySession.endedAt());
+        existing.changeAppName(studySession.appName());
         studySessionJpaRepository.save(existing);
         return studySessionJpaMapper.toDomain(existing);
     }
@@ -89,6 +90,7 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
                 StudySessionJpaEntity entity = existingEntities.get(session.id());
                 if (entity != null) {
                     entity.changeEndedAt(session.endedAt());
+                    entity.changeAppName(session.appName());
                 }
             }
 
