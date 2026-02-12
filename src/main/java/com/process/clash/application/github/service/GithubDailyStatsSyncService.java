@@ -2,6 +2,7 @@ package com.process.clash.application.github.service;
 
 import com.process.clash.application.github.exception.GithubRateLimitException;
 import com.process.clash.application.github.model.GithubSyncTarget;
+import com.process.clash.application.github.port.in.SyncGithubDailyStatsUseCase;
 import com.process.clash.application.github.port.out.GithubDailyStatsStorePort;
 import com.process.clash.application.github.port.out.GithubStatsFetchPort;
 import com.process.clash.application.github.port.out.GithubSyncTargetPort;
@@ -21,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GithubDailyStatsSyncService {
+public class GithubDailyStatsSyncService implements SyncGithubDailyStatsUseCase {
     private static final int HOURLY_SYNC_DAYS = 30;
     private static final int DAILY_MORNING_SYNC_DAYS = 365;
 
@@ -54,6 +55,25 @@ public class GithubDailyStatsSyncService {
         syncRecentDays(DAILY_MORNING_SYNC_DAYS);
     }
 
+    @Override
+    public void syncRecent365DaysForUser(Long userId) {
+        if (userId == null) {
+            return;
+        }
+
+        List<LocalDate> studyDates = resolveStudyDates(DAILY_MORNING_SYNC_DAYS);
+        if (studyDates.isEmpty()) {
+            log.info("재계산할 학습일이 없습니다. recomputeDays={}", DAILY_MORNING_SYNC_DAYS);
+            return;
+        }
+
+        syncTargetPort.findSyncTargetByUserId(userId)
+            .ifPresentOrElse(
+                target -> syncTarget(target, studyDates),
+                () -> log.info("GitHub 동기화 대상을 찾지 못했습니다. userId={}", userId)
+            );
+    }
+
     private void syncRecentDays(int daysToRecompute) {
         List<GithubSyncTarget> targets = syncTargetPort.findSyncTargets();
         if (targets.isEmpty()) {
@@ -61,9 +81,7 @@ public class GithubDailyStatsSyncService {
             return;
         }
 
-        // 최근 N일의 "학습일" 기준으로 동기화 범위를 계산
-        Instant now = clock.instant();
-        List<LocalDate> studyDates = studyDateCalculator.recentStudyDates(now, daysToRecompute);
+        List<LocalDate> studyDates = resolveStudyDates(daysToRecompute);
         if (studyDates.isEmpty()) {
             log.info("재계산할 학습일이 없습니다. recomputeDays={}", daysToRecompute);
             return;
@@ -86,6 +104,11 @@ public class GithubDailyStatsSyncService {
                 .toList();
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+    }
+
+    private List<LocalDate> resolveStudyDates(int daysToRecompute) {
+        Instant now = clock.instant();
+        return studyDateCalculator.recentStudyDates(now, daysToRecompute);
     }
 
     private String resolveAccessToken(GithubSyncTarget target) {

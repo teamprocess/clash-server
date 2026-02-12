@@ -25,6 +25,7 @@ public class LinkGitHubOAuthService implements LinkGitHubOAuthUsecase {
     private final UserRepositoryPort userRepositoryPort;
     private final GithubOAuthPort githubOAuthPort;
     private final UserGitHubRepositoryPort userGitHubRepositoryPort;
+    private final UserGitHubLinkedEventPublisher userGitHubLinkedEventPublisher;
 
     @Override
     @Transactional
@@ -45,6 +46,7 @@ public class LinkGitHubOAuthService implements LinkGitHubOAuthUsecase {
         }
 
         Optional<UserGitHub> existingByUserId = userGitHubRepositoryPort.findByUserId(user.id());
+        boolean isFirstLink = existingByUserId.isEmpty() && existingByGithubId.isEmpty();
         UserGitHub existingLink = existingByUserId.orElse(existingByGithubId.orElse(null));
         UserGitHub userGitHub = new UserGitHub(
                 existingLink != null ? existingLink.id() : null,
@@ -56,6 +58,9 @@ public class LinkGitHubOAuthService implements LinkGitHubOAuthUsecase {
         );
 
         UserGitHub saved = userGitHubRepositoryPort.save(userGitHub);
+        if (isFirstLink) {
+            userGitHubLinkedEventPublisher.publish(saved.userId());
+        }
         return new LinkGitHubOAuthData.Result(saved.gitHubId(), true);
     }
 
