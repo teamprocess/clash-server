@@ -75,4 +75,16 @@ public record StudySession (
                 newEndedAt
         );
     }
+
+    public StudySession changeActivityAppName(String newAppName) {
+        return new StudySession(
+            this.id,
+            this.user,
+            this.task,
+            this.recordType,
+            newAppName,
+            this.startedAt,
+            this.endedAt
+        );
+    }
 }

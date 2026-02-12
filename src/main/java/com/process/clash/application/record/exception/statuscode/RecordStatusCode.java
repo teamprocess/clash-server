@@ -43,6 +43,11 @@ public enum RecordStatusCode implements StatusCode {
         "INVALID_MONITORED_APP",
         "활동 기록 가능한 앱이 아닙니다.",
         ErrorCategory.BAD_REQUEST
+    ),
+    INVALID_ACTIVITY_SWITCH_REQUEST(
+        "INVALID_ACTIVITY_SWITCH_REQUEST",
+        "활동 앱 전환 요청이 유효하지 않습니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;
