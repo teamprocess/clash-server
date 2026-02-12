@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -183,5 +184,30 @@ class GitHubDailyStatsSyncServiceTest {
 
         verify(statsFetchPort).fetchDailyStats(any(), studyDatesCaptor.capture());
         assertThat(studyDatesCaptor.getValue()).hasSize(365);
+    }
+
+    @Test
+    @DisplayName("특정 유저 365일 동기화는 대상 조회 후 최근 365일 범위를 사용한다")
+    void syncRecent365DaysForUser_usesThreeHundredSixtyFiveDaysRange() {
+        GithubSyncTarget target = new GithubSyncTarget(1L, "login", "nodeId", List.of(), "token");
+        when(syncTargetPort.findSyncTargetByUserId(1L)).thenReturn(Optional.of(target));
+        when(statsFetchPort.fetchDailyStats(any(), any())).thenReturn(List.of());
+
+        syncService.syncRecent365DaysForUser(1L);
+
+        verify(syncTargetPort).findSyncTargetByUserId(1L);
+        verify(statsFetchPort).fetchDailyStats(any(), studyDatesCaptor.capture());
+        assertThat(studyDatesCaptor.getValue()).hasSize(365);
+    }
+
+    @Test
+    @DisplayName("특정 유저 동기화 대상이 없으면 외부 호출을 하지 않는다")
+    void syncRecent365DaysForUser_skipsWhenTargetNotFound() {
+        when(syncTargetPort.findSyncTargetByUserId(1L)).thenReturn(Optional.empty());
+
+        syncService.syncRecent365DaysForUser(1L);
+
+        verify(syncTargetPort).findSyncTargetByUserId(1L);
+        verifyNoInteractions(statsFetchPort, statsStorePort);
     }
 }
