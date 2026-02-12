@@ -51,12 +51,11 @@ public class StartRecordService implements StartRecordUseCase {
         LocalDateTime startedAt = LocalDateTime.now(recordZoneId);
         StudySession newStudySession = createStudySession(command, user, recordType, startedAt);
         StudySession savedSession = studySessionRepositoryPort.save(newStudySession);
-        StudySession responseSession = savedSession == null ? newStudySession : savedSession;
         recordActivityNotifierPort.notifyActivityStarted(command.actor());
 
         return StartRecordData.Result.from(
                 startedAt.atZone(recordZoneId).toInstant(),
-                RecordSessionMapper.toSession(responseSession, recordZoneId)
+                RecordSessionMapper.toSession(savedSession, recordZoneId)
         );
     }
 

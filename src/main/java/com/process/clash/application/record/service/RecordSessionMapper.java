@@ -34,8 +34,7 @@ public final class RecordSessionMapper {
         Instant startedAt,
         Instant endedAt
     ) {
-        RecordType recordType = resolveRecordType(session);
-        if (recordType == RecordType.ACTIVITY || session.task() == null) {
+        if (session.recordType() == RecordType.ACTIVITY || session.task() == null) {
             return RecordSessionData.Session.activity(
                 session.id(),
                 startedAt,
@@ -51,12 +50,5 @@ public final class RecordSessionMapper {
             session.task().id(),
             session.task().name()
         );
-    }
-
-    private static RecordType resolveRecordType(StudySession session) {
-        if (session.recordType() != null) {
-            return session.recordType();
-        }
-        return session.task() == null ? RecordType.ACTIVITY : RecordType.TASK;
     }
 }

@@ -29,12 +29,11 @@ public class StopRecordService implements StopRecordUseCase {
         LocalDateTime endedAt = LocalDateTime.now(recordZoneId);
         StudySession updatedSession = studySession.changeEndedAt(endedAt);
         StudySession savedSession = studySessionRepositoryPort.save(updatedSession);
-        StudySession responseSession = savedSession == null ? updatedSession : savedSession;
         recordActivityNotifierPort.notifyActivityStopped(command.actor());
 
         return StopRecordData.Result.create(
                 endedAt.atZone(recordZoneId).toInstant(),
-                RecordSessionMapper.toSession(responseSession, recordZoneId)
+                RecordSessionMapper.toSession(savedSession, recordZoneId)
         );
     }
 }

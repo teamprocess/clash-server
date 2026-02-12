@@ -28,9 +28,6 @@ public class StudySessionJpaMapper {
 
     public StudySession toDomain(StudySessionJpaEntity studySessionJpaEntity) {
         RecordType recordType = studySessionJpaEntity.getRecordType();
-        if (recordType == null) {
-            recordType = studySessionJpaEntity.getTask() == null ? RecordType.ACTIVITY : RecordType.TASK;
-        }
 
         return StudySession.create(
             studySessionJpaEntity.getId(),
