@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -30,6 +31,18 @@ public class GitHubSyncTargetJpaAdapter implements GithubSyncTargetPort {
                         entity.getGithubAccessToken()
                 ))
                 .toList();
+    }
+
+    @Override
+    public Optional<GithubSyncTarget> findSyncTargetByUserId(Long userId) {
+        return userGitHubJpaRepository.findByUserIdWithUser(userId)
+                .map(entity -> new GithubSyncTarget(
+                        entity.getUser().getId(),
+                        entity.getGitHubId(),
+                        entity.getGithubUserNodeId(),
+                        parseEmails(entity.getGithubEmails()),
+                        entity.getGithubAccessToken()
+                ));
     }
 
     private List<String> parseEmails(String raw) {
