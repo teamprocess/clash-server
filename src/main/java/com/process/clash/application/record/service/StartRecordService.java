@@ -7,6 +7,7 @@ import com.process.clash.application.record.exception.exception.notfound.TaskNot
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.StartRecordUseCase;
+import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
@@ -14,12 +15,14 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.entity.RecordActivitySegment;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,13 +35,14 @@ public class StartRecordService implements StartRecordUseCase {
     private final TaskRepositoryPort taskRepositoryPort;
     private final TaskPolicy taskPolicy;
     private final MonitoredAppPolicy monitoredAppPolicy;
+    private final RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
     private final ZoneId recordZoneId;
 
     @Override
     public StartRecordData.Result execute(StartRecordData.Command command) {
 
-        User user = userRepositoryPort.findById(command.actor().id())
+        User user = userRepositoryPort.findByIdForUpdate(command.actor().id())
                 .orElseThrow(UserNotFoundException::new);
 
         Boolean existsActiveSession = studySessionRepositoryPort.existsActiveSessionByUserId(
@@ -49,9 +53,23 @@ public class StartRecordService implements StartRecordUseCase {
 
         RecordType recordType = resolveRecordType(command);
         LocalDateTime startedAt = LocalDateTime.now(recordZoneId);
-        StudySession newStudySession = createStudySession(command, user, recordType, startedAt);
-        StudySession savedSession = studySessionRepositoryPort.save(newStudySession);
-        recordActivityNotifierPort.notifyActivityStarted(command.actor());
+        StudySession savedSession;
+        try {
+            StudySession newStudySession = createStudySession(command, user, recordType, startedAt);
+                savedSession = studySessionRepositoryPort.save(newStudySession);
+                if (savedSession.recordType() == RecordType.ACTIVITY && savedSession.appName() != null) {
+                    recordActivitySegmentRepositoryPort.save(
+                        RecordActivitySegment.start(
+                        savedSession.id(),
+                        savedSession.appName(),
+                        startedAt
+                    )
+                );
+            }
+            recordActivityNotifierPort.notifyActivityStarted(command.actor());
+        } catch (DataIntegrityViolationException exception) {
+            throw new StudySessionAlreadyStartedException(exception);
+        }
 
         return StartRecordData.Result.from(
                 startedAt.atZone(recordZoneId).toInstant(),
