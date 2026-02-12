@@ -14,6 +14,7 @@ public interface StudySessionRepositoryPort {
     List<StudySession> findAllByUserId(Long userId);
     Boolean existsActiveSessionByUserId(Long userId);
     Optional<StudySession> findActiveSessionByUserId(Long userId);
+    Optional<StudySession> findActiveSessionByUserIdForUpdate(Long userId);
     List<StudySession> findAllByUserIdAndTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime);
     List<StudySession> findAllActiveSessions();
     Boolean existsActiveSessionByTaskId(Long taskId);

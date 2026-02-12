@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.process.clash.application.ranking.data.UserRanking;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,6 +25,17 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
 
     @EntityGraph(attributePaths = {"user", "task"})
     Optional<StudySessionJpaEntity> findByUserIdAndEndedAtIsNull(Long userId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+        select s
+        from StudySessionJpaEntity s
+        left join fetch s.task
+        join fetch s.user
+        where s.user.id = :userId
+            and s.endedAt is null
+    """)
+    Optional<StudySessionJpaEntity> findActiveByUserIdForUpdate(@Param("userId") Long userId);
 
     @EntityGraph(attributePaths = {"user", "task"})
     List<StudySessionJpaEntity> findAllByEndedAtIsNull();
