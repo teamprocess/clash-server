@@ -34,6 +34,11 @@ public enum RecordStatusCode implements StatusCode {
             "진행 중인 공부 세션이 존재하지 않습니다.",
             ErrorCategory.NOT_FOUND
     ),
+    RECORD_ACTIVITY_SEGMENT_NOT_FOUND(
+        "RECORD_ACTIVITY_SEGMENT_NOT_FOUND",
+        "활동 세그먼트를 찾을 수 없습니다.",
+        ErrorCategory.NOT_FOUND
+    ),
     INVALID_RECORD_START_REQUEST(
         "INVALID_RECORD_START_REQUEST",
         "기록 시작 요청이 유효하지 않습니다.",
