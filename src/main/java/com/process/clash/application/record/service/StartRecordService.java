@@ -42,8 +42,8 @@ public class StartRecordService implements StartRecordUseCase {
     @Override
     public StartRecordData.Result execute(StartRecordData.Command command) {
 
-        User user = userRepositoryPort.findByIdForUpdate(command.actor().id())
-                .orElseThrow(UserNotFoundException::new);
+        User user = userRepositoryPort.findById(command.actor().id())
+            .orElseThrow(UserNotFoundException::new);
 
         Boolean existsActiveSession = studySessionRepositoryPort.existsActiveSessionByUserId(
                 command.actor().id()
@@ -56,10 +56,10 @@ public class StartRecordService implements StartRecordUseCase {
         StudySession savedSession;
         try {
             StudySession newStudySession = createStudySession(command, user, recordType, startedAt);
-                savedSession = studySessionRepositoryPort.save(newStudySession);
-                if (savedSession.recordType() == RecordType.ACTIVITY && savedSession.appName() != null) {
-                    recordActivitySegmentRepositoryPort.save(
-                        RecordActivitySegment.start(
+            savedSession = studySessionRepositoryPort.save(newStudySession);
+            if (savedSession.recordType() == RecordType.ACTIVITY && savedSession.appName() != null) {
+                recordActivitySegmentRepositoryPort.save(
+                    RecordActivitySegment.start(
                         savedSession.id(),
                         savedSession.appName(),
                         startedAt

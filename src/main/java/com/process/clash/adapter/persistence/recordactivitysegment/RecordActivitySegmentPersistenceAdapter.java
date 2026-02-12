@@ -27,7 +27,9 @@ public class RecordActivitySegmentPersistenceAdapter implements RecordActivitySe
         }
 
         RecordActivitySegmentJpaEntity existing = recordActivitySegmentJpaRepository.findById(segment.id())
-            .orElseThrow();
+            .orElseThrow(() -> new IllegalStateException(
+                "RecordActivitySegment not found with id: " + segment.id()
+            ));
         existing.changeEndedAt(segment.endedAt());
         RecordActivitySegmentJpaEntity saved = recordActivitySegmentJpaRepository.save(existing);
         return recordActivitySegmentJpaMapper.toDomain(saved);

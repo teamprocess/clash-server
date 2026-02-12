@@ -32,52 +32,24 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         String nextAppName = normalizeAppName(command.appName());
         monitoredAppPolicy.validate(nextAppName);
 
-        StudySession activeSession = studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(command.actor().id())
-            .orElseThrow(ActiveSessionNotFound::new);
-
-        if (activeSession.recordType() != RecordType.ACTIVITY) {
-            throw new InvalidActivitySwitchRequestException();
-        }
-
+        StudySession activeSession = loadActiveActivitySession(command.actor().id());
         LocalDateTime switchedAt = LocalDateTime.now(recordZoneId);
 
-        Optional<RecordActivitySegment> openSegment = recordActivitySegmentRepositoryPort
-            .findOpenSegmentBySessionIdForUpdate(activeSession.id());
-
         if (nextAppName.equals(activeSession.appName())) {
-            return SwitchActivityAppData.Result.from(
-                switchedAt.atZone(recordZoneId).toInstant(),
-                RecordSessionMapper.toSession(activeSession, recordZoneId)
-            );
+            return toResult(activeSession, switchedAt);
         }
 
-        if (openSegment.isPresent()) {
-            RecordActivitySegment segment = openSegment.get();
-            if (!nextAppName.equals(segment.appName())) {
-                recordActivitySegmentRepositoryPort.save(segment.changeEndedAt(switchedAt));
-            } else {
-                StudySession syncedSession = studySessionRepositoryPort.save(
-                    activeSession.changeActivityAppName(nextAppName)
-                );
-                return SwitchActivityAppData.Result.from(
-                    switchedAt.atZone(recordZoneId).toInstant(),
-                    RecordSessionMapper.toSession(syncedSession, recordZoneId)
-                );
-            }
+        Optional<RecordActivitySegment> openSegment = findOpenSegment(activeSession.id());
+        if (isSameAppAsOpenSegment(openSegment, nextAppName)) {
+            StudySession syncedSession = syncSessionAppName(activeSession, nextAppName);
+            return toResult(syncedSession, switchedAt);
         }
 
-        recordActivitySegmentRepositoryPort.save(
-            RecordActivitySegment.start(activeSession.id(), nextAppName, switchedAt)
-        );
+        closeOpenSegment(openSegment, switchedAt);
+        createOpenSegment(activeSession.id(), nextAppName, switchedAt);
+        StudySession switchedSession = syncSessionAppName(activeSession, nextAppName);
 
-        StudySession switchedSession = studySessionRepositoryPort.save(
-            activeSession.changeActivityAppName(nextAppName)
-        );
-
-        return SwitchActivityAppData.Result.from(
-            switchedAt.atZone(recordZoneId).toInstant(),
-            RecordSessionMapper.toSession(switchedSession, recordZoneId)
-        );
+        return toResult(switchedSession, switchedAt);
     }
 
     private String normalizeAppName(String appName) {
@@ -85,5 +57,45 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
             throw new InvalidActivitySwitchRequestException();
         }
         return appName.trim();
+    }
+
+    private StudySession loadActiveActivitySession(Long userId) {
+        StudySession activeSession = studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(userId)
+            .orElseThrow(ActiveSessionNotFound::new);
+        if (activeSession.recordType() != RecordType.ACTIVITY) {
+            throw new InvalidActivitySwitchRequestException();
+        }
+        return activeSession;
+    }
+
+    private Optional<RecordActivitySegment> findOpenSegment(Long sessionId) {
+        return recordActivitySegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(sessionId);
+    }
+
+    private boolean isSameAppAsOpenSegment(Optional<RecordActivitySegment> openSegment, String appName) {
+        return openSegment.isPresent() && appName.equals(openSegment.get().appName());
+    }
+
+    private void closeOpenSegment(Optional<RecordActivitySegment> openSegment, LocalDateTime closedAt) {
+        openSegment.ifPresent(segment ->
+            recordActivitySegmentRepositoryPort.save(segment.changeEndedAt(closedAt))
+        );
+    }
+
+    private void createOpenSegment(Long sessionId, String appName, LocalDateTime startedAt) {
+        recordActivitySegmentRepositoryPort.save(
+            RecordActivitySegment.start(sessionId, appName, startedAt)
+        );
+    }
+
+    private StudySession syncSessionAppName(StudySession activeSession, String appName) {
+        return studySessionRepositoryPort.save(activeSession.changeActivityAppName(appName));
+    }
+
+    private SwitchActivityAppData.Result toResult(StudySession session, LocalDateTime switchedAt) {
+        return SwitchActivityAppData.Result.from(
+            switchedAt.atZone(recordZoneId).toInstant(),
+            RecordSessionMapper.toSession(session, recordZoneId)
+        );
     }
 }
