@@ -34,21 +34,21 @@ public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPor
     }
 
     @Override
-    public List<Object[]> findDailyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findDailyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate) {
 
-        return repository.findDailyContributionsByUserIds(userIds, startDate, endDate, pageRequest);
+        return repository.findDailyContributionsByUserIds(userIds, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findWeeklyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findWeeklyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate) {
 
-        return repository.findWeeklyContributionsByUserIds(userIds, startDate, endDate, pageRequest);
+        return repository.findWeeklyContributionsByUserIds(userIds, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findMonthlyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findMonthlyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate) {
 
-        return repository.findMonthlyContributionsByUserIds(userIds, startDate, endDate, pageRequest);
+        return repository.findMonthlyContributionsByUserIds(userIds, startDate, endDate);
     }
 
     @Override

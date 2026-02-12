@@ -17,9 +17,9 @@ public interface UserStudyTimeRepositoryPort {
     Optional<UserStudyTime> findByUserIdAndDate(Long userId, LocalDate date);
 
     List<UserStudyTimeDailyDto> findDailyDataByUserId(Long userId, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
-    List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
-    List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
-    List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
+    List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
+    List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
+    List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
 
     double findAverageStudyTimeByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
     List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate);

@@ -36,21 +36,21 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     }
 
     @Override
-    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
 
-        return userExpHistoryJpaRepository.findDailyDataByUserIds(ids, startDate, endDate, pageRequest);
+        return userExpHistoryJpaRepository.findDailyDataByUserIds(ids, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
 
-        return userExpHistoryJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate, pageRequest);
+        return userExpHistoryJpaRepository.findWeeklyDataByUserIds(ids, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
+    public List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate) {
 
-        return userExpHistoryJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate, pageRequest);
+        return userExpHistoryJpaRepository.findMonthlyDataByUserIds(ids, startDate, endDate);
     }
 
     @Override

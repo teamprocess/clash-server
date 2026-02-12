@@ -100,38 +100,33 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         Long getTotalSeconds();
     }
 
-    @Query("""
-        select new com.process.clash.application.ranking.data.UserRanking(
-                u.id,
-                u.name,
-                u.profileImage,
-                case when count(r) > 0 then true else false end,
-                u.username,
-                cast(
-                    coalesce(
-                        sum(
-                            function('date_part', 'epoch',
-                                coalesce(ss.endedAt, current_timestamp) - ss.startedAt
-                            )
-                        ), 0
-                    ) as long
-                )
-            )
-        from StudySessionJpaEntity ss
-        inner join ss.user u
-        left join RivalJpaEntity r on
-            (u.id in (r.firstUser.id, r.secondUser.id)
-                and :userId in (r.firstUser.id, r.secondUser.id)
-                and r.rivalLinkingStatus = 'ACCEPTED')
-        where ss.startedAt >= :startDate
-            and ss.startedAt < :endDate
-        group by u.id, u.name, u.profileImage, u.username
+    @Query(value = """
+        select
+            u.id as id,
+            u.name as name,
+            u.profile_image as profileImage,
+            case when count(r.id) > 0 then true else false end as isRival,
+            u.username as username,
+            cast(
+                coalesce(
+                    sum(
+                        extract(epoch from (coalesce(ss.ended_at, current_timestamp) - ss.started_at))
+                    ), 0
+                ) as bigint
+            ) as totalStudyTimeSeconds
+        from study_sessions ss
+        inner join users u on u.id = ss.fk_user_id
+        left join rivals r on
+            (u.id in (r.fk_first_user_id, r.fk_second_user_id)
+                and :userId in (r.fk_first_user_id, r.fk_second_user_id)
+                and r.rival_linking_status = 'ACCEPTED')
+        where ss.started_at >= :startDate
+            and ss.started_at < :endDate
+        group by u.id, u.name, u.profile_image, u.username
         order by sum(
-            function('date_part', 'epoch',
-                coalesce(ss.endedAt, current_timestamp) - ss.startedAt
-            )
+            extract(epoch from (coalesce(ss.ended_at, current_timestamp) - ss.started_at))
         ) desc
-    """)
+    """, nativeQuery = true)
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
             @Param("userId") Long userId,
             @Param("startDate") LocalDateTime startDate,
