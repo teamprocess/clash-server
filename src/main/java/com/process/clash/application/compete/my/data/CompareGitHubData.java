@@ -121,7 +121,7 @@ public class CompareGitHubData {
         public static Review from(GitHubDailyStats gitHubDailyStats) {
 
             return new Review(
-                    0 //TODO: 나중에 수정
+                    gitHubDailyStats.reviewedPrCount()
             );
         }
     }
