@@ -143,8 +143,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
-                            - greatest(s.started_at, cast(:startDate as timestamp))
+                            coalesce(s.ended_at, current_timestamp) - s.started_at
                         ))
                     ), 0
                 ) as bigint
@@ -171,8 +170,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
-                            - greatest(s.started_at, cast(:startDate as timestamp))
+                            coalesce(s.ended_at, current_timestamp) - s.started_at
                         ))
                     ), 0
                 ) as bigint
@@ -199,8 +197,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
-                            - greatest(s.started_at, cast(:startDate as timestamp))
+                            coalesce(s.ended_at, current_timestamp) - s.started_at
                         ))
                     ), 0
                 ) as bigint
