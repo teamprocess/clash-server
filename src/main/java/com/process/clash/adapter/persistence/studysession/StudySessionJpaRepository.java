@@ -162,14 +162,14 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             @Param("endDate") LocalDateTime endDate
     );
 
-    // 주별 평균 학습시간 집계 (여러 유저)
+    // 주별 총 학습시간 집계 (여러 유저)
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
             cast(date_trunc('week', s.started_at) as date) as recordedDate,
             cast(
                 coalesce(
-                    avg(
+                    sum(
                         extract(epoch from (
                             least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
                             - greatest(s.started_at, cast(:startDate as timestamp))
@@ -190,14 +190,14 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             @Param("endDate") LocalDateTime endDate
     );
 
-    // 월별 평균 학습시간 집계 (여러 유저)
+    // 월별 총 학습시간 집계 (여러 유저)
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
             cast(date_trunc('month', s.started_at) as date) as recordedDate,
             cast(
                 coalesce(
-                    avg(
+                    sum(
                         extract(epoch from (
                             least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
                             - greatest(s.started_at, cast(:startDate as timestamp))
