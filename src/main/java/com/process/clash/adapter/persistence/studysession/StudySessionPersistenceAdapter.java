@@ -177,4 +177,22 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
 
         return studySessionJpaRepository.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
     }
+
+    @Override
+    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, LocalDateTime startDate, LocalDateTime endDate) {
+
+        return studySessionJpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, LocalDateTime startDate, LocalDateTime endDate) {
+
+        return studySessionJpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, LocalDateTime startDate, LocalDateTime endDate) {
+
+        return studySessionJpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
 }
