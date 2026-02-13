@@ -110,7 +110,10 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             cast(
                 coalesce(
                     sum(
-                        extract(epoch from (coalesce(ss.ended_at, current_timestamp) - ss.started_at))
+                        extract(epoch from (
+                            least(coalesce(ss.ended_at, current_timestamp), :endDate)
+                            - greatest(ss.started_at, :startDate)
+                        ))
                     ), 0
                 ) as bigint
             ) as totalStudyTimeSeconds
@@ -120,11 +123,14 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             (u.id in (r.fk_first_user_id, r.fk_second_user_id)
                 and :userId in (r.fk_first_user_id, r.fk_second_user_id)
                 and r.rival_linking_status = 'ACCEPTED')
-        where ss.started_at >= :startDate
-            and ss.started_at < :endDate
+        where ss.started_at < :endDate
+            and coalesce(ss.ended_at, current_timestamp) >= :startDate
         group by u.id, u.name, u.profile_image, u.username
         order by sum(
-            extract(epoch from (coalesce(ss.ended_at, current_timestamp) - ss.started_at))
+            extract(epoch from (
+                least(coalesce(ss.ended_at, current_timestamp), :endDate)
+                - greatest(ss.started_at, :startDate)
+            ))
         ) desc
     """, nativeQuery = true)
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
