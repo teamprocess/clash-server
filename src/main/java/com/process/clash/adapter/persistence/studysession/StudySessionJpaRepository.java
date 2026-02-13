@@ -102,11 +102,11 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
 
     @Query(value = """
         select
-            u.id as id,
+            u.id as userId,
             u.name as name,
             u.profile_image as profileImage,
             case when count(r.id) > 0 then true else false end as isRival,
-            u.username as username,
+            u.username as linkedId,
             cast(
                 coalesce(
                     sum(
@@ -116,7 +116,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                         ))
                     ), 0
                 ) as bigint
-            ) as totalStudyTimeSeconds
+            ) as point
         from study_sessions ss
         inner join users u on u.id = ss.fk_user_id
         left join rivals r on
@@ -126,12 +126,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         where ss.started_at < :endDate
             and coalesce(ss.ended_at, current_timestamp) >= :startDate
         group by u.id, u.name, u.profile_image, u.username
-        order by sum(
-            extract(epoch from (
-                least(coalesce(ss.ended_at, current_timestamp), :endDate)
-                - greatest(ss.started_at, :startDate)
-            ))
-        ) desc
+        order by point desc
     """, nativeQuery = true)
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
             @Param("userId") Long userId,
