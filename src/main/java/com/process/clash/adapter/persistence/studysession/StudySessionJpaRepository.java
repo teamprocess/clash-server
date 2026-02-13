@@ -143,7 +143,8 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            coalesce(s.ended_at, current_timestamp) - s.started_at
+                            least(coalesce(s.ended_at, cast(current_timestamp as timestamp)), cast(:endDate as timestamp))
+                            - greatest(s.started_at, cast(:startDate as timestamp))
                         ))
                     ), 0
                 ) as bigint
@@ -151,7 +152,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         FROM study_sessions s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < cast(:endDate as timestamp)
-            AND coalesce(s.ended_at, current_timestamp) >= cast(:startDate as timestamp)
+            AND coalesce(s.ended_at, cast(current_timestamp as timestamp)) >= cast(:startDate as timestamp)
         GROUP BY s.fk_user_id, date_trunc('day', s.started_at)
         ORDER BY s.fk_user_id, date_trunc('day', s.started_at) ASC
     """, nativeQuery = true)
@@ -170,7 +171,8 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            coalesce(s.ended_at, current_timestamp) - s.started_at
+                            least(coalesce(s.ended_at, cast(current_timestamp as timestamp)), cast(:endDate as timestamp))
+                            - greatest(s.started_at, cast(:startDate as timestamp))
                         ))
                     ), 0
                 ) as bigint
@@ -178,7 +180,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         FROM study_sessions s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < cast(:endDate as timestamp)
-            AND coalesce(s.ended_at, current_timestamp) >= cast(:startDate as timestamp)
+            AND coalesce(s.ended_at, cast(current_timestamp as timestamp)) >= cast(:startDate as timestamp)
         GROUP BY s.fk_user_id, date_trunc('week', s.started_at)
         ORDER BY s.fk_user_id, date_trunc('week', s.started_at) ASC
     """, nativeQuery = true)
@@ -197,7 +199,8 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            coalesce(s.ended_at, current_timestamp) - s.started_at
+                            least(coalesce(s.ended_at, cast(current_timestamp as timestamp)), cast(:endDate as timestamp))
+                            - greatest(s.started_at, cast(:startDate as timestamp))
                         ))
                     ), 0
                 ) as bigint
@@ -205,7 +208,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
         FROM study_sessions s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < cast(:endDate as timestamp)
-            AND coalesce(s.ended_at, current_timestamp) >= cast(:startDate as timestamp)
+            AND coalesce(s.ended_at, cast(current_timestamp as timestamp)) >= cast(:startDate as timestamp)
         GROUP BY s.fk_user_id, date_trunc('month', s.started_at)
         ORDER BY s.fk_user_id, date_trunc('month', s.started_at) ASC
     """, nativeQuery = true)
