@@ -133,4 +133,88 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
+
+    // 일별 학습시간 집계 (여러 유저)
+    @Query(value = """
+        SELECT
+            s.fk_user_id as userId,
+            cast(date_trunc('day', s.started_at) as date) as recordedDate,
+            cast(
+                coalesce(
+                    sum(
+                        extract(epoch from (
+                            least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
+                            - greatest(s.started_at, cast(:startDate as timestamp))
+                        ))
+                    ), 0
+                ) as bigint
+            ) as point
+        FROM study_sessions s
+        WHERE s.fk_user_id IN :userIds
+            AND s.started_at < cast(:endDate as timestamp)
+            AND coalesce(s.ended_at, current_timestamp) >= cast(:startDate as timestamp)
+        GROUP BY s.fk_user_id, date_trunc('day', s.started_at)
+        ORDER BY s.fk_user_id, date_trunc('day', s.started_at) ASC
+    """, nativeQuery = true)
+    List<Object[]> findDailyStudyTimeByUserIds(
+            @Param("userIds") List<Long> userIds,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
+    // 주별 평균 학습시간 집계 (여러 유저)
+    @Query(value = """
+        SELECT
+            s.fk_user_id as userId,
+            cast(date_trunc('week', s.started_at) as date) as recordedDate,
+            cast(
+                coalesce(
+                    avg(
+                        extract(epoch from (
+                            least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
+                            - greatest(s.started_at, cast(:startDate as timestamp))
+                        ))
+                    ), 0
+                ) as bigint
+            ) as point
+        FROM study_sessions s
+        WHERE s.fk_user_id IN :userIds
+            AND s.started_at < cast(:endDate as timestamp)
+            AND coalesce(s.ended_at, current_timestamp) >= cast(:startDate as timestamp)
+        GROUP BY s.fk_user_id, date_trunc('week', s.started_at)
+        ORDER BY s.fk_user_id, date_trunc('week', s.started_at) ASC
+    """, nativeQuery = true)
+    List<Object[]> findWeeklyStudyTimeByUserIds(
+            @Param("userIds") List<Long> userIds,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
+
+    // 월별 평균 학습시간 집계 (여러 유저)
+    @Query(value = """
+        SELECT
+            s.fk_user_id as userId,
+            cast(date_trunc('month', s.started_at) as date) as recordedDate,
+            cast(
+                coalesce(
+                    avg(
+                        extract(epoch from (
+                            least(coalesce(s.ended_at, current_timestamp), cast(:endDate as timestamp))
+                            - greatest(s.started_at, cast(:startDate as timestamp))
+                        ))
+                    ), 0
+                ) as bigint
+            ) as point
+        FROM study_sessions s
+        WHERE s.fk_user_id IN :userIds
+            AND s.started_at < cast(:endDate as timestamp)
+            AND coalesce(s.ended_at, current_timestamp) >= cast(:startDate as timestamp)
+        GROUP BY s.fk_user_id, date_trunc('month', s.started_at)
+        ORDER BY s.fk_user_id, date_trunc('month', s.started_at) ASC
+    """, nativeQuery = true)
+    List<Object[]> findMonthlyStudyTimeByUserIds(
+            @Param("userIds") List<Long> userIds,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 }

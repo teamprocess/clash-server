@@ -5,9 +5,9 @@ import com.process.clash.application.compete.rival.rival.data.TotalData;
 import com.process.clash.application.compete.rival.rival.port.in.CompareWithRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
-import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
-    private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
+    private final StudySessionRepositoryPort studySessionRepositoryPort;
 
     @Override
     public CompareWithRivalsData.Result execute(CompareWithRivalsData.Command command) {
@@ -116,10 +117,14 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
 
     private List<Object[]> activeTime(PeriodCategory period, List<Long> rivalIds, LocalDate startDate, LocalDate endDate) {
 
+        // study_sessions에서 직접 실시간 계산
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = LocalDateTime.now();
+
         return switch (period) {
-            case DAY -> userStudyTimeRepositoryPort.findDailyDataByUserIds(rivalIds, startDate, endDate);
-            case WEEK -> userStudyTimeRepositoryPort.findWeeklyDataByUserIds(rivalIds, startDate, endDate);
-            case MONTH -> userStudyTimeRepositoryPort.findMonthlyDataByUserIds(rivalIds, startDate, endDate);
+            case DAY -> studySessionRepositoryPort.findDailyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
+            case WEEK -> studySessionRepositoryPort.findWeeklyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
+            case MONTH -> studySessionRepositoryPort.findMonthlyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
             case SEASON -> null; //TODO: 나중에 처리
             case YEAR -> null; //TODO: 나중에 처리
         };
