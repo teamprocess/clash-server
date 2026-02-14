@@ -50,9 +50,9 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             and (s.endedAt is null or s.endedAt > :startTime)
     """)
     List<StudySessionJpaEntity> findAllOverlappingByUserId(
-        @Param("userId") Long userId,
-        @Param("startTime") Instant startTime,
-        @Param("endTime") Instant endTime
+            @Param("userId") Long userId,
+            @Param("startTime") Instant startTime,
+            @Param("endTime") Instant endTime
     );
 
     @Query(value = """
