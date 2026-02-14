@@ -2,12 +2,12 @@ package com.process.clash.domain.shop.season.entity;
 
 import com.process.clash.application.shop.season.exception.exception.badrequest.InvalidDateRangeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record Season(
         Long id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         String name,
         LocalDate startDate,
         LocalDate endDate

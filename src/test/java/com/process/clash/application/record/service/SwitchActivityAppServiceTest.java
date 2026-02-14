@@ -22,7 +22,8 @@ import com.process.clash.domain.record.entity.Task;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,7 +75,7 @@ class SwitchActivityAppServiceTest {
             100L,
             user,
             task,
-            LocalDateTime.now().minusMinutes(10),
+            Instant.now().minusSeconds(600),
             null
         );
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
@@ -95,14 +96,14 @@ class SwitchActivityAppServiceTest {
             100L,
             user,
             "Code",
-            LocalDateTime.now().minusMinutes(30),
+            Instant.now().minusSeconds(1_800),
             null
         );
         RecordActivitySegment openSegment = new RecordActivitySegment(
             200L,
             100L,
             "Code",
-            LocalDateTime.now().minusMinutes(30),
+            Instant.now().minusSeconds(1_800),
             null
         );
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "IntelliJ IDEA");
@@ -133,7 +134,7 @@ class SwitchActivityAppServiceTest {
             100L,
             user,
             "Code",
-            LocalDateTime.now().minusMinutes(30),
+            Instant.now().minusSeconds(1_800),
             null
         );
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
@@ -152,8 +153,8 @@ class SwitchActivityAppServiceTest {
     private User createUser(Long id) {
         return new User(
             id,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            Instant.now(),
+            Instant.now(),
             "username",
             "user@example.com",
             "name",
@@ -173,8 +174,8 @@ class SwitchActivityAppServiceTest {
             id,
             "task",
             0L,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            Instant.now(),
+            Instant.now(),
             user
         );
     }

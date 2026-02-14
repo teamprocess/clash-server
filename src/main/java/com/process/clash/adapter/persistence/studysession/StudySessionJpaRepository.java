@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.studysession;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,15 +51,15 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """)
     List<StudySessionJpaEntity> findAllOverlappingByUserId(
         @Param("userId") Long userId,
-        @Param("startTime") LocalDateTime startTime,
-        @Param("endTime") LocalDateTime endTime
+        @Param("startTime") Instant startTime,
+        @Param("endTime") Instant endTime
     );
 
     @Query(value = """
         select coalesce(sum(
             extract(epoch from (
-                least(coalesce(s.ended_at, cast(:now as timestamp)), cast(:endOfDay as timestamp)) -
-                greatest(s.started_at, cast(:startOfDay as timestamp))
+                least(coalesce(s.ended_at, :now), :endOfDay) -
+                greatest(s.started_at, :startOfDay)
             ))
         ), 0)
         from study_sessions s
@@ -69,17 +69,17 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """, nativeQuery = true)
     Long getTotalStudyTimeInSeconds(
             @Param("userId") Long userId,
-            @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay,
-            @Param("now") LocalDateTime now
+            @Param("startOfDay") Instant startOfDay,
+            @Param("endOfDay") Instant endOfDay,
+            @Param("now") Instant now
     );
 
     @Query(value = """
         select s.fk_user_id as userId,
                coalesce(sum(
                    extract(epoch from (
-                       least(coalesce(s.ended_at, cast(:now as timestamp)), cast(:endOfDay as timestamp)) -
-                       greatest(s.started_at, cast(:startOfDay as timestamp))
+                       least(coalesce(s.ended_at, :now), :endOfDay) -
+                       greatest(s.started_at, :startOfDay)
                    ))
                ), 0) as totalSeconds
         from study_sessions s
@@ -90,9 +90,9 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """, nativeQuery = true)
     List<UserStudyTimeProjection> getTotalStudyTimeInSecondsByUserIds(
             @Param("userIds") List<Long> userIds,
-            @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay,
-            @Param("now") LocalDateTime now
+            @Param("startOfDay") Instant startOfDay,
+            @Param("endOfDay") Instant endOfDay,
+            @Param("now") Instant now
     );
 
     interface UserStudyTimeProjection {
@@ -130,7 +130,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """, nativeQuery = true)
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
             @Param("userId") Long userId,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
     );
 }

@@ -12,7 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,8 +38,8 @@ class UpdateRecordSettingServiceTest {
         UpdateRecordSettingData.Command command = new UpdateRecordSettingData.Command(actor, true, 50, 10);
         UserPomodoroSetting existing = new UserPomodoroSetting(
             100L,
-            LocalDateTime.now().minusDays(1),
-            LocalDateTime.now().minusHours(1),
+            Instant.now().minusSeconds(86_400),
+            Instant.now().minusSeconds(3_600),
             false,
             25,
             5,

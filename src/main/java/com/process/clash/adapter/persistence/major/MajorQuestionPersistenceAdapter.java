@@ -22,7 +22,7 @@ public class MajorQuestionPersistenceAdapter implements MajorQuestionRepositoryP
         MajorQuestionJpaEntity saved = majorQuestionJpaRepository.save(majorQuestionJpaEntity);
         majorQuestionJpaRepository.flush();
 
-        // @UpdateTimestamp가 적용된 최신 데이터를 가져오기 위해 다시 조회함
+        // @LastModifiedDate가 적용된 최신 데이터를 가져오기 위해 다시 조회함
         MajorQuestionJpaEntity refreshed = majorQuestionJpaRepository.findById(saved.getId())
                 .orElseThrow(EntityRefreshFailedException::new);
 

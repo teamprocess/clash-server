@@ -14,7 +14,7 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.infrastructure.config.RecordProperties;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
@@ -67,16 +67,16 @@ class GetMyRivalActingServiceTest {
 
         Rival rivalA = new Rival(
             100L,
-            LocalDateTime.now().minusDays(1),
-            LocalDateTime.now(),
+            Instant.now().minusSeconds(86_400),
+            Instant.now(),
             RivalLinkingStatus.ACCEPTED,
             1L,
             2L
         );
         Rival rivalB = new Rival(
             101L,
-            LocalDateTime.now().minusDays(1),
-            LocalDateTime.now(),
+            Instant.now().minusSeconds(86_400),
+            Instant.now(),
             RivalLinkingStatus.ACCEPTED,
             3L,
             1L
@@ -108,8 +108,8 @@ class GetMyRivalActingServiceTest {
     private User createUser(Long id, String username, String name) {
         return new User(
             id,
-            LocalDateTime.now().minusDays(1),
-            LocalDateTime.now(),
+            Instant.now().minusSeconds(86_400),
+            Instant.now(),
             username,
             username + "@example.com",
             name,

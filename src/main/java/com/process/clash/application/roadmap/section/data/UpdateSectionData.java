@@ -3,6 +3,7 @@ package com.process.clash.application.roadmap.section.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.roadmap.entity.Section;
 
+import java.time.Instant;
 import java.util.List;
 
 public class UpdateSectionData {
@@ -24,20 +25,16 @@ public class UpdateSectionData {
             String category,
             String description,
             List<String> keyPoints,
-            String updatedAt
+            Instant updatedAt
     ) {
         public static Result from(Section section, List<String> keyPoints) {
-            String updatedAtString = section.getUpdatedAt() != null
-                    ? section.getUpdatedAt().toString()
-                    : null;
-
             return new Result(
                     section.getId(),
                     section.getTitle(),
                     section.getCategory().getName(),
                     section.getDescription(),
                     keyPoints,
-                    updatedAtString
+                    section.getUpdatedAt()
             );
         }
     }

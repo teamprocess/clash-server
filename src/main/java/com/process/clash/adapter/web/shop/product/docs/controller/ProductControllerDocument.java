@@ -52,7 +52,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00Z"
                                           }
                                         ],
                                         "pagination": {
@@ -94,7 +94,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00Z"
                                           }
                                       }
                                     }
@@ -128,7 +128,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00Z"
                                           }
                                         ],
                                       }
@@ -161,7 +161,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00Z"
                                           }
                                         ],
                                       }

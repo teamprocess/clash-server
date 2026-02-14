@@ -5,6 +5,7 @@ import com.process.clash.application.roadmap.section.data.UpdateSectionData;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
+import java.time.Instant;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -42,7 +43,7 @@ public class UpdateSectionDto {
             String category,
             String description,
             List<String> keyPoints,
-            String updatedAt
+            Instant updatedAt
     ) {
         public static Response from(UpdateSectionData.Result result) {
             return new Response(

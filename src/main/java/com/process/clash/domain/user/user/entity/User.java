@@ -5,12 +5,12 @@ import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record User(
         Long id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         String username,
         String email,
         String name,
@@ -46,7 +46,7 @@ public record User(
         return new User(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 this.username,
                 this.email,
                 this.name,
@@ -65,7 +65,7 @@ public record User(
         return new User(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 this.username,
                 this.email,
                 this.name,
@@ -88,7 +88,7 @@ public record User(
         return new User(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 username,
                 email,
                 name,
@@ -115,7 +115,7 @@ public record User(
         return new User(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 this.username,
                 this.email,
                 this.name,

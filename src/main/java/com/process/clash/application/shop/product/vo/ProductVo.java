@@ -4,7 +4,7 @@ import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record ProductVo(
         Long id,
@@ -18,7 +18,7 @@ public record ProductVo(
         Long popularity,
         String seasonName,
         Boolean isSeasonal,
-        LocalDateTime createdAt
+        Instant createdAt
 ) {
     public static ProductVo from(Product domain) {
         String seasonName = domain.season() != null ? domain.season().name() : null;

@@ -9,7 +9,7 @@ import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.record.entity.StudySession;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class StopRecordService implements StopRecordUseCase {
                 .findActiveSessionByUserIdForUpdate(command.actor().id())
                 .orElseThrow(ActiveSessionNotFound::new);
 
-        LocalDateTime endedAt = LocalDateTime.now(recordZoneId);
+        Instant endedAt = Instant.now();
         if (studySession.recordType() == RecordType.ACTIVITY) {
             recordActivitySegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(studySession.id())
                 .ifPresent(segment -> recordActivitySegmentRepositoryPort.save(segment.changeEndedAt(endedAt)));
@@ -39,7 +39,7 @@ public class StopRecordService implements StopRecordUseCase {
         recordActivityNotifierPort.notifyActivityStopped(command.actor());
 
         return StopRecordData.Result.create(
-                endedAt.atZone(recordZoneId).toInstant(),
+                endedAt,
                 RecordSessionMapper.toSession(savedSession, recordZoneId)
         );
     }

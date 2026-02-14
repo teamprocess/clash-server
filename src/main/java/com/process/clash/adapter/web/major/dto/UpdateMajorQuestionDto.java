@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UpdateMajorQuestionDto {
@@ -44,7 +44,7 @@ public class UpdateMajorQuestionDto {
             Long questionId,
             String content,
             MajorWeightVo weight,
-            LocalDateTime updatedAt
+            Instant updatedAt
     ) {
         public static Response from(UpdateMajorQuestionData.Result result) {
             return new Response(

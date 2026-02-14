@@ -7,7 +7,7 @@ import com.process.clash.application.record.port.in.UpdateTaskUseCase;
 import com.process.clash.application.record.port.out.TaskRepositoryPort;
 import com.process.clash.domain.record.entity.Task;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +31,7 @@ public class UpdateTaskService implements UpdateTaskUseCase {
             command.name(),
             task.studyTime(),
             task.createdAt(),
-            LocalDateTime.now(),
+            Instant.now(),
             task.user()
         );
         taskRepositoryPort.save(updatedTask);

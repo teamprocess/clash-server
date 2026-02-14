@@ -7,7 +7,6 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import java.time.Instant;
-import java.time.ZoneId;
 
 public class GetMyProfileData {
 
@@ -39,8 +38,8 @@ public class GetMyProfileData {
         ) {
             return new Result(
                 user.id(),
-                user.createdAt().atZone(ZoneId.of("Asia/Seoul")).toInstant(),
-                user.updatedAt().atZone(ZoneId.of("Asia/Seoul")).toInstant(),
+                user.createdAt(),
+                user.updatedAt(),
                 user.username(),
                 user.name(),
                 user.email(),

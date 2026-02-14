@@ -19,7 +19,7 @@ import com.process.clash.domain.record.entity.RecordActivitySegment;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -52,7 +52,7 @@ public class StartRecordService implements StartRecordUseCase {
         if(existsActiveSession) throw new StudySessionAlreadyStartedException();
 
         RecordType recordType = resolveRecordType(command);
-        LocalDateTime startedAt = LocalDateTime.now(recordZoneId);
+        Instant startedAt = Instant.now();
         StudySession savedSession;
         try {
             StudySession newStudySession = createStudySession(command, user, recordType, startedAt);
@@ -72,7 +72,7 @@ public class StartRecordService implements StartRecordUseCase {
         }
 
         return StartRecordData.Result.from(
-                startedAt.atZone(recordZoneId).toInstant(),
+                startedAt,
                 RecordSessionMapper.toSession(savedSession, recordZoneId)
         );
     }
@@ -81,7 +81,7 @@ public class StartRecordService implements StartRecordUseCase {
         StartRecordData.Command command,
         User user,
         RecordType recordType,
-        LocalDateTime startedAt
+        Instant startedAt
     ) {
         if (recordType == RecordType.TASK) {
             validateTaskStartRequest(command);

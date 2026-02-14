@@ -34,7 +34,7 @@ public class UpdateMajorQuestionService implements UpdateMajorQuestionUseCase {
                 updatedContent,
                 updatedWeight,
                 existingQuestion.getCreatedAt(),
-                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
+                null  // updatedAt은 @LastModifiedDate가 자동으로 설정
         );
 
         MajorQuestion savedQuestion = majorQuestionRepositoryPort.save(updatedQuestion);

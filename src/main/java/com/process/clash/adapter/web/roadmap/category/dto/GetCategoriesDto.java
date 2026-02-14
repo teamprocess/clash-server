@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.roadmap.category.dto;
 
 import com.process.clash.application.roadmap.category.data.GetCategoriesData;
 
+import java.time.Instant;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,7 +18,7 @@ public class GetCategoriesDto {
         }
     }
 
-    public record CategoryVo(Long id, String name, String createdAt, String updatedAt) {
+    public record CategoryVo(Long id, String name, Instant createdAt, Instant updatedAt) {
         public static CategoryVo from(GetCategoriesData.Result.CategoryVo vo) {
             return new CategoryVo(vo.id(), vo.name(), vo.createdAt(), vo.updatedAt());
         }

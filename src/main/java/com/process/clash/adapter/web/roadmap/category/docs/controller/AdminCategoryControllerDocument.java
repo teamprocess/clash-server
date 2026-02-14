@@ -37,7 +37,7 @@ public interface AdminCategoryControllerDocument {
                                       "data": {
                                         "categoryId": 10,
                                         "name": "백엔드",
-                                        "createdAt": "2025-01-01T12:00:00"
+                                        "createdAt": "2025-01-01T12:00:00Z"
                                       }
                                     }
                                     """)
@@ -71,8 +71,8 @@ public interface AdminCategoryControllerDocument {
                                           {
                                             "id": 10,
                                             "name": "백엔드",
-                                            "createdAt": "2025-01-01T12:00:00",
-                                            "updatedAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00Z",
+                                            "updatedAt": "2025-01-01T12:00:00Z"
                                           }
                                         ]
                                       }
@@ -96,7 +96,7 @@ public interface AdminCategoryControllerDocument {
                                       "data": {
                                         "categoryId": 10,
                                         "name": "백엔드 심화",
-                                        "updatedAt": "2025-01-02T09:00:00"
+                                        "updatedAt": "2025-01-02T09:00:00Z"
                                       }
                                     }
                                     """)

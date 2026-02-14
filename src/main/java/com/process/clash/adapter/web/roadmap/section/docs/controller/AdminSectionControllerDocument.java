@@ -41,7 +41,7 @@ public interface AdminSectionControllerDocument {
                                           "DI",
                                           "AOP"
                                         ],
-                                        "createdAt": "2025-01-01T12:00:00"
+                                        "createdAt": "2025-01-01T12:00:00Z"
                                       }
                                     }
                                     """)
@@ -87,7 +87,7 @@ public interface AdminSectionControllerDocument {
                                           "AOP",
                                           "Security"
                                         ],
-                                        "updatedAt": "2025-01-02T10:00:00"
+                                        "updatedAt": "2025-01-02T10:00:00Z"
                                       }
                                     }
                                     """)
@@ -101,7 +101,7 @@ public interface AdminSectionControllerDocument {
                                       "error": {
                                         "code": "SECTION_CIRCULAR_DEPENDENCY",
                                         "message": "로드맵은 본인을 선행 로드맵으로 지정할 수 없습니다.",
-                                        "timestamp": "2025-01-02T10:00:00"
+                                        "timestamp": "2025-01-02T10:00:00Z"
                                       }
                                     }
                                     """)

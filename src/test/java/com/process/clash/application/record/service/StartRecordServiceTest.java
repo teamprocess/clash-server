@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
 
@@ -141,8 +141,8 @@ class StartRecordServiceTest {
     private User createUser(Long id) {
         return new User(
             id,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            Instant.now(),
+            Instant.now(),
             "username",
             "user@example.com",
             "name",
@@ -162,8 +162,8 @@ class StartRecordServiceTest {
             id,
             "task",
             0L,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            Instant.now(),
+            Instant.now(),
             user
         );
     }

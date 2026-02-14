@@ -12,10 +12,8 @@ public final class RecordSessionMapper {
     private RecordSessionMapper() {
     }
 
-    public static RecordSessionData.Session toSession(StudySession session, ZoneId recordZoneId) {
-        Instant startedAt = session.startedAt().atZone(recordZoneId).toInstant();
-        Instant endedAt = session.endedAt() == null ? null : session.endedAt().atZone(recordZoneId).toInstant();
-        return toSession(session, startedAt, endedAt);
+    public static RecordSessionData.Session toSession(StudySession session, ZoneId unusedRecordZoneId) {
+        return toSession(session, session.startedAt(), session.endedAt());
     }
 
     public static RecordSessionData.Session toSession(
@@ -29,7 +27,7 @@ public final class RecordSessionMapper {
         return toSession(session, startedAtInstant, endedAtInstant);
     }
 
-    private static RecordSessionData.Session toSession(
+    public static RecordSessionData.Session toSession(
         StudySession session,
         Instant startedAt,
         Instant endedAt
