@@ -31,8 +31,8 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
     @Query("""
             SELECT p
             FROM ProductJpaEntity p
-            WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
-               OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+            WHERE p.title ILIKE CONCAT('%', :keyword, '%')
+               OR p.description ILIKE CONCAT('%', :keyword, '%')
             """)
     Page<ProductJpaEntity> searchByKeyword(
             @Param("keyword") String keyword,
@@ -45,8 +45,8 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
             FROM ProductJpaEntity p
             WHERE p.category = :category
               AND (
-                    LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                 OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                    p.title ILIKE CONCAT('%', :keyword, '%')
+                 OR p.description ILIKE CONCAT('%', :keyword, '%')
               )
             """)
     Page<ProductJpaEntity> searchByCategoryAndKeyword(
