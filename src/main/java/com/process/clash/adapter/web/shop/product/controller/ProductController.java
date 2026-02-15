@@ -7,13 +7,16 @@ import com.process.clash.adapter.web.shop.product.dto.GetAllProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetPopularProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetProductDetailDto;
 import com.process.clash.adapter.web.shop.product.dto.GetRecommendedProductsDto;
+import com.process.clash.adapter.web.shop.product.dto.SearchProductsDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.shop.product.data.GetAllProductsData;
 import com.process.clash.application.shop.product.data.GetPopularProductsData;
 import com.process.clash.application.shop.product.data.GetProductDetailData;
+import com.process.clash.application.shop.product.data.SearchProductsData;
 import com.process.clash.application.shop.product.port.in.GetAllProductsUseCase;
 import com.process.clash.application.shop.product.port.in.GetPopularProductsUseCase;
 import com.process.clash.application.shop.product.port.in.GetProductDetailUseCase;
+import com.process.clash.application.shop.product.port.in.SearchProductsUseCase;
 import com.process.clash.application.shop.recommendedproduct.data.GetRecommendedProductsData;
 import com.process.clash.application.shop.recommendedproduct.port.in.GetRecommendedProductsUseCase;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,7 @@ public class ProductController implements ProductControllerDocument {
     private final GetPopularProductsUseCase getPopularProductsUseCase;
     private final GetRecommendedProductsUseCase getRecommendedProductsUseCase;
     private final GetAllProductsUseCase getAllProductsUseCase;
+    private final SearchProductsUseCase searchProductsUseCase;
 
     // 전체 상품 목록 조회
     @GetMapping
@@ -39,6 +43,18 @@ public class ProductController implements ProductControllerDocument {
         GetAllProductsData.Result result = getAllProductsUseCase.execute(command);
         GetAllProductsDto.Response response = GetAllProductsDto.Response.from(result);
         return ApiResponse.success(response, "전체 상품 목록 조회를 성공했습니다.");
+    }
+
+    // 상품 검색
+    @GetMapping("/search")
+    public ApiResponse<SearchProductsDto.Response> searchProducts(
+            @AuthenticatedActor Actor actor,
+            @ModelAttribute SearchProductsDto.Request request
+    ) {
+        SearchProductsData.Command command = request.toCommand(actor);
+        SearchProductsData.Result result = searchProductsUseCase.execute(command);
+        SearchProductsDto.Response response = SearchProductsDto.Response.from(result);
+        return ApiResponse.success(response, "상품 검색을 성공했습니다.");
     }
 
     // 상품 상세 조회

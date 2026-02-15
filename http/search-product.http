@@ -1,0 +1,2 @@
+GET http://localhost:8080/api/shop/products/search?keyword=휴가권&page=1&size=20&sort=LATEST&category=ALL
+Content-Type: application/json
