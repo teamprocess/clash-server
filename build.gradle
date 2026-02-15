@@ -38,9 +38,11 @@ repositories {
 ext {
     set('springCloudVersion', "2025.0.1")
     set('tanzuScgExtensionsVersion', "1.0.1")
+    set('awsSdkVersion', "2.33.13")
 }
 
 dependencies {
+    implementation platform("software.amazon.awssdk:bom:${awsSdkVersion}")
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -63,6 +65,7 @@ dependencies {
     implementation 'com.corundumstudio.socketio:netty-socketio:2.0.9'
     implementation 'com.bucket4j:bucket4j-core:8.10.1'
     implementation 'com.bucket4j:bucket4j-redis:8.10.1'
+    implementation 'software.amazon.awssdk:s3'
 }
 
 dependencyManagement {

@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,4 +26,32 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
 
     @EntityGraph(attributePaths = "season")
     List<ProductJpaEntity> findByIdIn(List<Long> ids);
+
+    @EntityGraph(attributePaths = "season")
+    @Query("""
+            SELECT p
+            FROM ProductJpaEntity p
+            WHERE p.title ILIKE CONCAT('%', :keyword, '%')
+               OR p.description ILIKE CONCAT('%', :keyword, '%')
+            """)
+    Page<ProductJpaEntity> searchByKeyword(
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = "season")
+    @Query("""
+            SELECT p
+            FROM ProductJpaEntity p
+            WHERE p.category = :category
+              AND (
+                    p.title ILIKE CONCAT('%', :keyword, '%')
+                 OR p.description ILIKE CONCAT('%', :keyword, '%')
+              )
+            """)
+    Page<ProductJpaEntity> searchByCategoryAndKeyword(
+            @Param("category") ProductCategory category,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 }
