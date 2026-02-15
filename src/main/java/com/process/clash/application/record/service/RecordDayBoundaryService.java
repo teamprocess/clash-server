@@ -49,7 +49,7 @@ public class RecordDayBoundaryService {
                     session.recordType(),
                     session.appName(),
                     segmentStart,
-                    nextBoundary.minusSeconds(1)
+                    nextBoundary
                 ));
                 segmentStart = nextBoundary;
                 nextBoundary = nextBoundaryByLocalDay(nextBoundary);
