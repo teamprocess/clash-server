@@ -8,7 +8,6 @@ import com.process.clash.application.user.user.port.out.ProfileImageUploadPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +22,6 @@ public class IssueProfileImageUploadUrlService implements IssueProfileImageUploa
             "image/webp", "webp",
             "image/gif", "gif"
     );
-
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp", "gif");
 
     private final UserRepositoryPort userRepositoryPort;
     private final ProfileImageUploadPort profileImageUploadPort;
@@ -44,7 +41,7 @@ public class IssueProfileImageUploadUrlService implements IssueProfileImageUploa
                 .orElseThrow(UserNotFoundException::new);
 
         String normalizedContentType = normalizeContentType(command.contentType());
-        String extension = resolveExtension(fileName, normalizedContentType);
+        String extension = resolveExtension(normalizedContentType);
 
         ProfileImageUploadPort.PresignedUpload presigned = profileImageUploadPort.issueUploadUrl(
                 command.actor().id(),
@@ -80,36 +77,13 @@ public class IssueProfileImageUploadUrlService implements IssueProfileImageUploa
         return normalized;
     }
 
-    private String resolveExtension(String fileName, String contentType) {
-        String fromFileName = extractExtension(fileName);
-        if (fromFileName != null) {
-            if ("jpeg".equals(fromFileName)) {
-                return "jpg";
-            }
-            if (ALLOWED_EXTENSIONS.contains(fromFileName)) {
-                return fromFileName;
-            }
-        }
-
+    private String resolveExtension(String contentType) {
         String fromContentType = CONTENT_TYPE_EXTENSION.get(contentType);
         if (fromContentType == null) {
             throw new InvalidProfileImageUploadRequestException();
         }
 
         return fromContentType;
-    }
-
-    private String extractExtension(String fileName) {
-        String normalized = fileName.replace("\\", "/");
-        int lastSlashIndex = normalized.lastIndexOf('/');
-        String baseName = lastSlashIndex >= 0 ? normalized.substring(lastSlashIndex + 1) : normalized;
-
-        int lastDotIndex = baseName.lastIndexOf('.');
-        if (lastDotIndex < 0 || lastDotIndex == baseName.length() - 1) {
-            return null;
-        }
-
-        return baseName.substring(lastDotIndex + 1).toLowerCase(Locale.ROOT);
     }
 
     private String normalizeText(String value) {

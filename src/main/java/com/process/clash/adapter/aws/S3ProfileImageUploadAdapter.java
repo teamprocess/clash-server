@@ -20,8 +20,6 @@ public class S3ProfileImageUploadAdapter implements ProfileImageUploadPort {
 
     @Override
     public PresignedUpload issueUploadUrl(Long userId, String extension, String contentType) {
-        validateConfiguration();
-
         String objectKey = buildObjectKey(userId, extension);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -44,12 +42,6 @@ public class S3ProfileImageUploadAdapter implements ProfileImageUploadPort {
                 properties.getPresignExpirationSeconds(),
                 presigned.httpRequest().method().name()
         );
-    }
-
-    private void validateConfiguration() {
-        if (properties.getBucket() == null || properties.getBucket().isBlank()) {
-            throw new IllegalStateException("aws.s3.bucket 설정이 필요합니다.");
-        }
     }
 
     private String buildObjectKey(Long userId, String extension) {
