@@ -133,4 +133,88 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
             @Param("startDate") Instant startDate,
             @Param("endDate") Instant endDate
     );
+
+    // 일별 학습시간 집계 (여러 유저)
+    @Query(value = """
+        SELECT
+            s.fk_user_id as userId,
+            cast(date_trunc('day', s.started_at) as date) as recordedDate,
+            cast(
+                coalesce(
+                    sum(
+                        extract(epoch from (
+                            least(coalesce(s.ended_at, current_timestamp), :endDate))
+                            - greatest(s.started_at, :startDate)
+                        ))
+                    ), 0
+                ) as bigint
+            ) as point
+        FROM study_sessions s
+        WHERE s.fk_user_id IN :userIds
+            AND s.started_at < :endDate
+            AND coalesce(s.ended_at, current_timestamp) >= :startDate
+        GROUP BY s.fk_user_id, date_trunc('day', s.started_at)
+        ORDER BY s.fk_user_id, date_trunc('day', s.started_at) ASC
+    """, nativeQuery = true)
+    List<Object[]> findDailyStudyTimeByUserIds(
+            @Param("userIds") List<Long> userIds,
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
+    );
+
+    // 주별 총 학습시간 집계 (여러 유저)
+    @Query(value = """
+        SELECT
+            s.fk_user_id as userId,
+            cast(date_trunc('week', s.started_at) as date) as recordedDate,
+            cast(
+                coalesce(
+                    sum(
+                        extract(epoch from (
+                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            - greatest(s.started_at, :startDate)
+                        ))
+                    ), 0
+                ) as bigint
+            ) as point
+        FROM study_sessions s
+        WHERE s.fk_user_id IN :userIds
+            AND s.started_at < :endDate
+            AND coalesce(s.ended_at, current_timestamp) >= :startDate
+        GROUP BY s.fk_user_id, date_trunc('week', s.started_at)
+        ORDER BY s.fk_user_id, date_trunc('week', s.started_at) ASC
+    """, nativeQuery = true)
+    List<Object[]> findWeeklyStudyTimeByUserIds(
+            @Param("userIds") List<Long> userIds,
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
+    );
+
+    // 월별 총 학습시간 집계 (여러 유저)
+    @Query(value = """
+        SELECT
+            s.fk_user_id as userId,
+            cast(date_trunc('month', s.started_at) as date) as recordedDate,
+            cast(
+                coalesce(
+                    sum(
+                        extract(epoch from (
+                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            - greatest(s.started_at, :startDate)
+                        ))
+                    ), 0
+                ) as bigint
+            ) as point
+        FROM study_sessions s
+        WHERE s.fk_user_id IN :userIds
+            AND s.started_at < :endDate
+            AND coalesce(s.ended_at, current_timestamp) >= :startDate
+        GROUP BY s.fk_user_id, date_trunc('month', s.started_at)
+        ORDER BY s.fk_user_id, date_trunc('month', s.started_at) ASC
+    """, nativeQuery = true)
+    List<Object[]> findMonthlyStudyTimeByUserIds(
+            @Param("userIds") List<Long> userIds,
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
+    );
 }

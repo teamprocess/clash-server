@@ -15,6 +15,7 @@ import java.util.List;
 public class GetAllProductsService implements GetAllProductsUseCase {
 
     private final ProductRepositoryPort productRepositoryPort;
+    private final ProductVoConverter productVoConverter;
 
     @Override
     public GetAllProductsData.Result execute(GetAllProductsData.Command command) {
@@ -27,10 +28,7 @@ public class GetAllProductsService implements GetAllProductsUseCase {
 
         List<Product> products = pageResult.products();
         Long totalCount = pageResult.totalCount();
-
-        List<ProductVo> productVos = products.stream()
-                .map(ProductVo::from)
-                .toList();
+        List<ProductVo> productVos = productVoConverter.toProductVos(products, command.actor());
 
         Pagination pagination =
                 Pagination.from(

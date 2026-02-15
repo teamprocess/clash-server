@@ -18,9 +18,14 @@ public record ProductVo(
         Long popularity,
         String seasonName,
         Boolean isSeasonal,
+        Boolean isBought,
         Instant createdAt
 ) {
     public static ProductVo from(Product domain) {
+        return from(domain, false);
+    }
+
+    public static ProductVo from(Product domain, boolean isBought) {
         String seasonName = domain.season() != null ? domain.season().name() : null;
 
         return new ProductVo(
@@ -35,6 +40,7 @@ public record ProductVo(
                 domain.popularity(),
                 seasonName,
                 domain.isSeasonal(),
+                isBought,
                 domain.createdAt()
         );
     }

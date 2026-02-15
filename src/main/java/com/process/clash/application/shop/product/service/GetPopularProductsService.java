@@ -17,14 +17,12 @@ import java.util.List;
 public class GetPopularProductsService implements GetPopularProductsUseCase {
 
     private final ProductRepositoryPort productRepositoryPort;
+    private final ProductVoConverter productVoConverter;
 
     @Override
-    public GetPopularProductsData.Result execute() {
+    public GetPopularProductsData.Result execute(GetPopularProductsData.Command command) {
         List<Product> products = productRepositoryPort.findTop10ByOrderByPopularityDesc();
-
-        List<ProductVo> productVos = products.stream()
-                .map(ProductVo::from)
-                .toList();
+        List<ProductVo> productVos = productVoConverter.toProductVos(products, command.actor());
 
         return new GetPopularProductsData.Result(productVos);
     }

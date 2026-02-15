@@ -103,6 +103,14 @@ google:
       secret: ${RECAPTCHA_SECRET_KEY}
       url: https://www.google.com/recaptcha/api/siteverify
 
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET:}
+    region: ${AWS_S3_REGION:ap-northeast-2}
+    profile-image-prefix: "users/profile-images"
+    public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
+    presign-expiration-seconds: ${AWS_S3_PRESIGN_EXPIRATION_SECONDS:300}
+
 electron:
   auth:
     allowed-redirect-uris:
