@@ -195,4 +195,22 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     private Instant toInstant(LocalDateTime localDateTime) {
         return localDateTime.atZone(recordZoneId).toInstant();
     }
+
+    @Override
+    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+
+        return studySessionJpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+
+        return studySessionJpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+
+        return studySessionJpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
 }

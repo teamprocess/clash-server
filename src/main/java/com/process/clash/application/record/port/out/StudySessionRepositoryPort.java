@@ -2,6 +2,7 @@ package com.process.clash.application.record.port.out;
 
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.domain.record.entity.StudySession;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -21,4 +22,9 @@ public interface StudySessionRepositoryPort {
     Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
     Map<Long, Long> getTotalStudyTimeInSecondsByUserIds(List<Long> userIds, LocalDateTime startTime, LocalDateTime endTime);
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate);
+
+    // 실시간 학습시간 집계 (라이벌 비교용)
+    List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate);
+    List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate);
+    List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate);
 }
