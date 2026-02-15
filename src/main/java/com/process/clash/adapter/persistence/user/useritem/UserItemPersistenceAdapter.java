@@ -8,6 +8,7 @@ import com.process.clash.application.user.useritem.port.out.UserItemRepositoryPo
 import com.process.clash.domain.user.useritem.entity.UserItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -31,5 +32,13 @@ public class UserItemPersistenceAdapter implements UserItemRepositoryPort {
     @Override
     public boolean existsByUserIdAndProductId(Long userId, Long productId) {
         return userItemJpaRepository.existsByUser_IdAndProduct_Id(userId, productId);
+    }
+
+    @Override
+    public Set<Long> findOwnedProductIdsByUserIdAndProductIds(Long userId, Set<Long> productIds) {
+        if (productIds == null || productIds.isEmpty()) {
+            return Set.of();
+        }
+        return userItemJpaRepository.findOwnedProductIdsByUserIdAndProductIds(userId, productIds);
     }
 }
