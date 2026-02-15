@@ -8,6 +8,7 @@ import com.process.clash.adapter.web.shop.product.dto.GetAllProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetPopularProductsDto;
 import com.process.clash.adapter.web.shop.product.dto.GetProductDetailDto;
 import com.process.clash.adapter.web.shop.product.dto.GetRecommendedProductsDto;
+import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -52,6 +53,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
+                                            "isBought": true,
                                             "createdAt": "2025-01-01T12:00:00"
                                           }
                                         ],
@@ -69,6 +71,7 @@ public interface ProductControllerDocument {
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetAllProductsDto.Response> getAllProducts(
+            @Parameter(hidden = true) Actor actor,
             @ParameterObject GetAllProductsDto.Request request
     );
 
@@ -94,6 +97,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
+                                            "isBought": true,
                                             "createdAt": "2025-01-01T12:00:00"
                                           }
                                       }
@@ -102,6 +106,7 @@ public interface ProductControllerDocument {
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetProductDetailDto.Response> getProductDetail(
+            @Parameter(hidden = true) Actor actor,
             @Parameter(description = "상품 ID", example = "1") @PathVariable Long productId
     );
 
@@ -128,6 +133,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
+                                            "isBought": true,
                                             "createdAt": "2025-01-01T12:00:00"
                                           }
                                         ],
@@ -136,7 +142,9 @@ public interface ProductControllerDocument {
                                     """)
                     ))
     })
-    com.process.clash.adapter.web.common.ApiResponse<GetPopularProductsDto.Response> getPopularProducts();
+    com.process.clash.adapter.web.common.ApiResponse<GetPopularProductsDto.Response> getPopularProducts(
+            @Parameter(hidden = true) Actor actor
+    );
 
     @Operation(summary = "추천 상품 목록", description = "추천 상품 10개를 조회합니다.")
     @ApiResponses({
@@ -161,6 +169,7 @@ public interface ProductControllerDocument {
                                             "popularity": 2,
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
+                                            "isBought": true,
                                             "createdAt": "2025-01-01T12:00:00"
                                           }
                                         ],
@@ -169,5 +178,7 @@ public interface ProductControllerDocument {
                                     """)
                     ))
     })
-    com.process.clash.adapter.web.common.ApiResponse<GetRecommendedProductsDto.Response> getRecommendedProducts();
+    com.process.clash.adapter.web.common.ApiResponse<GetRecommendedProductsDto.Response> getRecommendedProducts(
+            @Parameter(hidden = true) Actor actor
+    );
 }

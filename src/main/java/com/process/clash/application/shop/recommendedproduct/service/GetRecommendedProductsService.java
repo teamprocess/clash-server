@@ -1,6 +1,8 @@
 package com.process.clash.application.shop.recommendedproduct.service;
 
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
+import com.process.clash.application.shop.product.service.ProductVoConverter;
+import com.process.clash.application.shop.product.vo.ProductVo;
 import com.process.clash.application.shop.recommendedproduct.data.GetRecommendedProductsData;
 import com.process.clash.application.shop.recommendedproduct.port.in.GetRecommendedProductsUseCase;
 import com.process.clash.application.shop.recommendedproduct.port.out.RecommendedProductRepositoryPort;
@@ -18,9 +20,10 @@ public class GetRecommendedProductsService implements GetRecommendedProductsUseC
 
     private final RecommendedProductRepositoryPort recommendedProductRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
+    private final ProductVoConverter productVoConverter;
 
     @Override
-    public GetRecommendedProductsData.Result execute() {
+    public GetRecommendedProductsData.Result execute(GetRecommendedProductsData.Command command) {
         List<RecommendedProduct> recommendations = recommendedProductRepositoryPort.findTop10ByIsActiveTrueOrderByDisplayOrder();
 
         List<Long> productIds = recommendations.stream()
@@ -28,7 +31,8 @@ public class GetRecommendedProductsService implements GetRecommendedProductsUseC
                 .toList();
 
         List<Product> products = productRepositoryPort.findAllByIdIn(productIds);
+        List<ProductVo> productVos = productVoConverter.toProductVos(products, command.actor());
 
-        return GetRecommendedProductsData.Result.from(products);
+        return new GetRecommendedProductsData.Result(productVos);
     }
 }
