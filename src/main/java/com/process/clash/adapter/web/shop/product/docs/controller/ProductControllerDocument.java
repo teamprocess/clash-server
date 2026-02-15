@@ -108,7 +108,7 @@ public interface ProductControllerDocument {
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "isBought": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00+09:00"
                                           }
                                         ],
                                         "pagination": {
@@ -152,7 +152,7 @@ public interface ProductControllerDocument {
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "isBought": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00+09:00"
                                           }
                                       }
                                     }
@@ -160,8 +160,8 @@ public interface ProductControllerDocument {
             ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetProductDetailDto.Response> getProductDetail(
-        @Parameter(hidden = true) Actor actor,
-        @Parameter(description = "상품 ID", example = "1") @PathVariable Long productId
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "상품 ID", example = "1") @PathVariable Long productId
     );
 
     @Operation(summary = "인기 상품 목록", description = "인기 상품 10개를 조회합니다.")

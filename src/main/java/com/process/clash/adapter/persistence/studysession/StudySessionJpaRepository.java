@@ -143,7 +143,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, current_timestamp), :endDate))
+                            least(coalesce(s.ended_at, current_timestamp), :endDate)
                             - greatest(s.started_at, :startDate)
                         ))
                     ), 0
