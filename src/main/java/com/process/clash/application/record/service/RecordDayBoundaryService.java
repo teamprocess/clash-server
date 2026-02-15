@@ -37,7 +37,7 @@ public class RecordDayBoundaryService {
                 return;
             }
 
-            sessionsToClose.add(session.changeEndedAt(firstBoundary.minusSeconds(1)));
+            sessionsToClose.add(session.changeEndedAt(firstBoundary));
 
             Instant segmentStart = firstBoundary;
             Instant nextBoundary = nextBoundaryByLocalDay(firstBoundary);
