@@ -129,4 +129,23 @@ public record User(
                 this.userStatus
         );
     }
+
+    public User updateProfileImage(String profileImage) {
+        return new User(
+                this.id,
+                this.createdAt,
+                LocalDateTime.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                profileImage,
+                this.totalExp,
+                this.totalCookie,
+                this.totalToken,
+                this.major,
+                this.userStatus
+        );
+    }
 }

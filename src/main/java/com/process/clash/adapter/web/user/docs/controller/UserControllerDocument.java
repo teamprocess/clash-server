@@ -8,6 +8,7 @@ import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDocume
 import com.process.clash.adapter.web.user.docs.response.GetMyActivityCalendarResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.IssueProfileImageUploadUrlResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.LinkGitHubOAuthResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.UpdateMyProfileImageResponseDocument;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubLinkStatusDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
@@ -16,6 +17,7 @@ import com.process.clash.adapter.web.user.dto.GetMyActivityCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.adapter.web.user.dto.IssueProfileImageUploadUrlDto;
 import com.process.clash.adapter.web.user.dto.LinkGitHubOAuthDto;
+import com.process.clash.adapter.web.user.dto.UpdateMyProfileImageDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.UserItemCategory;
@@ -179,5 +181,35 @@ public interface UserControllerDocument {
                                     """)
                     ))
             IssueProfileImageUploadUrlDto.Request request
+    );
+
+    @Operation(summary = "내 프로필 이미지 반영", description = "S3 업로드가 끝난 파일 URL을 내 프로필 이미지로 저장합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "수정 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = UpdateMyProfileImageResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "프로필 이미지 수정을 성공했습니다.",
+                                      "data": {
+                                        "profileImageUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/users/profile-images/user-1/9d2f5cf66b814f06ab7ebef4d98be8fc.png"
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<UpdateMyProfileImageDto.Response> updateMyProfileImage(
+            @Parameter(hidden = true) Actor actor,
+            @RequestBody(description = "프로필 이미지 URL", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = UpdateMyProfileImageDto.Request.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "profileImageUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/users/profile-images/user-1/9d2f5cf66b814f06ab7ebef4d98be8fc.png"
+                                    }
+                                    """)
+                    ))
+            UpdateMyProfileImageDto.Request request
     );
 }

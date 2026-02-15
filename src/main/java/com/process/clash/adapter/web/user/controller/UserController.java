@@ -10,6 +10,7 @@ import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.adapter.web.user.dto.IssueProfileImageUploadUrlDto;
 import com.process.clash.adapter.web.user.dto.LinkGitHubOAuthDto;
+import com.process.clash.adapter.web.user.dto.UpdateMyProfileImageDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.profile.data.GetMyGitHubActivityDetailData;
@@ -23,7 +24,9 @@ import com.process.clash.application.profile.port.in.GetMyActivityCalendarUsecas
 import com.process.clash.application.profile.port.in.GetMyItemsUsecase;
 import com.process.clash.application.profile.port.in.GetMyProfileUsecase;
 import com.process.clash.application.user.user.data.IssueProfileImageUploadUrlData;
+import com.process.clash.application.user.user.data.UpdateMyProfileImageData;
 import com.process.clash.application.user.user.port.in.IssueProfileImageUploadUrlUseCase;
+import com.process.clash.application.user.user.port.in.UpdateMyProfileImageUseCase;
 import com.process.clash.application.user.usergithub.data.GetMyGitHubLinkStatusData;
 import com.process.clash.application.user.usergithub.data.LinkGitHubOAuthData;
 import com.process.clash.application.user.usergithub.port.in.GetMyGitHubLinkStatusUsecase;
@@ -38,6 +41,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -56,6 +60,7 @@ public class UserController implements UserControllerDocument {
     private final LinkGitHubOAuthUsecase linkGitHubOAuthUsecase;
     private final GetMyGitHubLinkStatusUsecase getMyGitHubLinkStatusUsecase;
     private final IssueProfileImageUploadUrlUseCase issueProfileImageUploadUrlUseCase;
+    private final UpdateMyProfileImageUseCase updateMyProfileImageUseCase;
 
     @GetMapping("/me")
     public ApiResponse<GetMyProfileDto.Response> getMyProfile(
@@ -141,5 +146,16 @@ public class UserController implements UserControllerDocument {
         IssueProfileImageUploadUrlData.Result result = issueProfileImageUploadUrlUseCase.execute(command);
         IssueProfileImageUploadUrlDto.Response response = IssueProfileImageUploadUrlDto.Response.from(result);
         return ApiResponse.success(response, "프로필 이미지 업로드 URL 발급을 성공했습니다.");
+    }
+
+    @PatchMapping("/me/profile-image")
+    public ApiResponse<UpdateMyProfileImageDto.Response> updateMyProfileImage(
+            @AuthenticatedActor Actor actor,
+            @Valid @RequestBody UpdateMyProfileImageDto.Request request
+    ) {
+        UpdateMyProfileImageData.Command command = request.toCommand(actor);
+        UpdateMyProfileImageData.Result result = updateMyProfileImageUseCase.execute(command);
+        UpdateMyProfileImageDto.Response response = UpdateMyProfileImageDto.Response.from(result);
+        return ApiResponse.success(response, "프로필 이미지 수정을 성공했습니다.");
     }
 }
