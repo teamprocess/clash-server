@@ -4,6 +4,7 @@ import com.process.clash.application.user.user.port.out.ProfileImageUploadPort;
 import com.process.clash.infrastructure.config.S3Properties;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -14,6 +15,9 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 @Component
 @RequiredArgsConstructor
 public class S3ProfileImageUploadAdapter implements ProfileImageUploadPort {
+
+    private static final Pattern PROFILE_IMAGE_FILE_NAME_PATTERN =
+            Pattern.compile("^[a-f0-9]{32}\\.(jpg|png|webp|gif)$");
 
     private final S3Presigner s3Presigner;
     private final S3Properties properties;
@@ -44,16 +48,42 @@ public class S3ProfileImageUploadAdapter implements ProfileImageUploadPort {
         );
     }
 
-    private String buildObjectKey(Long userId, String extension) {
-        String prefix = normalizePrefix(properties.getProfileImagePrefix());
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        String keyBody = "user-" + userId + "/" + uuid + "." + extension;
-
-        if (prefix.isBlank()) {
-            return keyBody;
+    @Override
+    public boolean isValidProfileImageUrl(Long userId, String profileImageUrl) {
+        if (userId == null || profileImageUrl == null) {
+            return false;
         }
 
-        return prefix + "/" + keyBody;
+        String normalizedProfileImageUrl = profileImageUrl.trim();
+        if (normalizedProfileImageUrl.isBlank()) {
+            return false;
+        }
+
+        String expectedUrlPrefix = resolveFileUrl(buildObjectKeyPrefix(userId)) + "/";
+        if (!normalizedProfileImageUrl.startsWith(expectedUrlPrefix)) {
+            return false;
+        }
+
+        String fileName = normalizedProfileImageUrl.substring(expectedUrlPrefix.length());
+        if (fileName.contains("/")) {
+            return false;
+        }
+
+        return PROFILE_IMAGE_FILE_NAME_PATTERN.matcher(fileName).matches();
+    }
+
+    private String buildObjectKey(Long userId, String extension) {
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+        return buildObjectKeyPrefix(userId) + "/" + uuid + "." + extension;
+    }
+
+    private String buildObjectKeyPrefix(Long userId) {
+        String prefix = normalizePrefix(properties.getProfileImagePrefix());
+        String userDirectory = "user-" + userId;
+        if (prefix.isBlank()) {
+            return userDirectory;
+        }
+        return prefix + "/" + userDirectory;
     }
 
     private String resolveFileUrl(String objectKey) {

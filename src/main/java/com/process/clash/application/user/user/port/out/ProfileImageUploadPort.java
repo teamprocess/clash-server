@@ -4,6 +4,8 @@ public interface ProfileImageUploadPort {
 
     PresignedUpload issueUploadUrl(Long userId, String extension, String contentType);
 
+    boolean isValidProfileImageUrl(Long userId, String profileImageUrl);
+
     record PresignedUpload(
             String uploadUrl,
             String objectKey,

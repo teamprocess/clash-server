@@ -4,6 +4,7 @@ import com.process.clash.application.user.user.data.UpdateMyProfileImageData;
 import com.process.clash.application.user.user.exception.exception.badrequest.InvalidProfileImageUploadRequestException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.in.UpdateMyProfileImageUseCase;
+import com.process.clash.application.user.user.port.out.ProfileImageUploadPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UpdateMyProfileImageService implements UpdateMyProfileImageUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
+    private final ProfileImageUploadPort profileImageUploadPort;
 
     @Override
     @Transactional
@@ -26,10 +28,15 @@ public class UpdateMyProfileImageService implements UpdateMyProfileImageUseCase 
             throw new InvalidProfileImageUploadRequestException();
         }
 
+        String profileImageUrl = command.profileImageUrl().trim();
+        if (!profileImageUploadPort.isValidProfileImageUrl(command.actor().id(), profileImageUrl)) {
+            throw new InvalidProfileImageUploadRequestException();
+        }
+
         User user = userRepositoryPort.findById(command.actor().id())
                 .orElseThrow(UserNotFoundException::new);
 
-        User updatedUser = user.updateProfileImage(command.profileImageUrl().trim());
+        User updatedUser = user.updateProfileImage(profileImageUrl);
         User savedUser = userRepositoryPort.save(updatedUser);
 
         return new UpdateMyProfileImageData.Result(savedUser.profileImage());
