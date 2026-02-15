@@ -31,7 +31,7 @@ public class UserItemPersistenceAdapter implements UserItemRepositoryPort {
 
     @Override
     public boolean existsByUserIdAndProductId(Long userId, Long productId) {
-        return userItemJpaRepository.existsByUser_IdAndProduct_Id(userId, productId);
+        return userItemJpaRepository.existsByUserIdAndProductId(userId, productId);
     }
 
     @Override

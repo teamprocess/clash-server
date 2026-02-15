@@ -9,7 +9,7 @@ import java.util.Set;
 @Repository
 public interface UserItemJpaRepository extends JpaRepository<UserItemJpaEntity, Long> {
 
-    boolean existsByUser_IdAndProduct_Id(Long userId, Long productId);
+    boolean existsByUserIdAndProductId(Long userId, Long productId);
 
     @Query("""
             SELECT ui.product.id
