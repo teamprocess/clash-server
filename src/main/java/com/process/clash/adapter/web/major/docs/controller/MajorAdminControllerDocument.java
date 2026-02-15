@@ -41,7 +41,7 @@ public interface MajorAdminControllerDocument {
                                           "ai": 1,
                                           "game": 0
                                         },
-                                        "createdAt": "2025-01-01T12:00:00Z"
+                                        "createdAt": "2025-01-01T21:00:00+09:00"
                                       }
                                     }
                                     """)
