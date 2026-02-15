@@ -35,8 +35,8 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
         if (studySession.id() == null) {
             UserJpaEntity user = userJpaRepository.getReferenceById(studySession.user().id());
             TaskJpaEntity task = studySession.task() == null
-                ? null
-                : taskJpaRepository.getReferenceById(studySession.task().id());
+                    ? null
+                    : taskJpaRepository.getReferenceById(studySession.task().id());
             StudySessionJpaEntity studySessionJpaEntity = studySessionJpaMapper.toJpaEntity(studySession, user, task);
             studySessionJpaRepository.save(studySessionJpaEntity);
             return studySessionJpaMapper.toDomain(studySessionJpaEntity);
@@ -69,23 +69,23 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
 
         if (!newSessions.isEmpty()) {
             List<StudySessionJpaEntity> entitiesToCreate = newSessions.stream()
-                .map(session -> {
-                    UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
-                    TaskJpaEntity task = session.task() == null
-                        ? null
-                        : taskJpaRepository.getReferenceById(session.task().id());
-                    return studySessionJpaMapper.toJpaEntity(session, user, task);
-                })
-                .toList();
+                    .map(session -> {
+                        UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
+                        TaskJpaEntity task = session.task() == null
+                                ? null
+                                : taskJpaRepository.getReferenceById(session.task().id());
+                        return studySessionJpaMapper.toJpaEntity(session, user, task);
+                    })
+                    .toList();
             studySessionJpaRepository.saveAll(entitiesToCreate);
         }
 
         if (!existingSessions.isEmpty()) {
             List<Long> ids = existingSessions.stream()
-                .map(StudySession::id)
-                .toList();
+                    .map(StudySession::id)
+                    .toList();
             Map<Long, StudySessionJpaEntity> existingEntities = studySessionJpaRepository.findAllById(ids).stream()
-                .collect(Collectors.toMap(StudySessionJpaEntity::getId, entity -> entity));
+                    .collect(Collectors.toMap(StudySessionJpaEntity::getId, entity -> entity));
 
             for (StudySession session : existingSessions) {
                 StudySessionJpaEntity entity = existingEntities.get(session.id());
@@ -125,25 +125,25 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     @Override
     public Optional<StudySession> findActiveSessionByUserIdForUpdate(Long userId) {
         return studySessionJpaRepository.findActiveByUserIdForUpdate(userId)
-            .map(studySessionJpaMapper::toDomain);
+                .map(studySessionJpaMapper::toDomain);
     }
 
     @Override
     public List<StudySession> findAllByUserIdAndTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         return studySessionJpaRepository.findAllOverlappingByUserId(
-                userId,
-                toInstant(startTime),
-                toInstant(endTime)
-            ).stream()
-            .map(studySessionJpaMapper::toDomain)
-            .toList();
+                        userId,
+                        toInstant(startTime),
+                        toInstant(endTime)
+                ).stream()
+                .map(studySessionJpaMapper::toDomain)
+                .toList();
     }
 
     @Override
     public List<StudySession> findAllActiveSessions() {
         return studySessionJpaRepository.findAllByEndedAtIsNull().stream()
-            .map(studySessionJpaMapper::toDomain)
-            .toList();
+                .map(studySessionJpaMapper::toDomain)
+                .toList();
     }
 
     @Override
@@ -155,10 +155,10 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     public Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
         Instant now = Instant.now();
         return studySessionJpaRepository.getTotalStudyTimeInSeconds(
-            userId,
-            toInstant(startOfDay),
-            toInstant(endOfDay),
-            now
+                userId,
+                toInstant(startOfDay),
+                toInstant(endOfDay),
+                now
         );
     }
 
@@ -186,9 +186,9 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     public List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
 
         return studySessionJpaRepository.findStudyTimeRankingByUserIdAndPeriod(
-            userId,
-            toInstant(startDate),
-            toInstant(endDate)
+                userId,
+                toInstant(startDate),
+                toInstant(endDate)
         );
     }
 
