@@ -69,6 +69,41 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
         return new PageResult(products, pageResult.getTotalElements());
     }
 
+    @Override
+    public PageResult searchByKeywordByPage(
+            Integer page,
+            Integer size,
+            ProductSortType sort,
+            ProductCategory category,
+            String keyword
+    ) {
+        Sort sortCondition = createSort(sort);
+        Pageable pageable = PageRequest.of(page - 1, size, sortCondition);
+        String normalizedKeyword = keyword == null ? "" : keyword.trim();
+
+        Page<ProductJpaEntity> pageResult;
+        if (normalizedKeyword.isEmpty()) {
+            if (category == null) {
+                pageResult = productJpaRepository.findAll(pageable);
+            } else {
+                pageResult = productJpaRepository.findByCategory(category, pageable);
+            }
+        } else {
+            if (category == null) {
+                pageResult = productJpaRepository.searchByKeyword(normalizedKeyword, pageable);
+            } else {
+                pageResult = productJpaRepository.searchByCategoryAndKeyword(category, normalizedKeyword, pageable);
+            }
+        }
+
+        List<Product> products = pageResult.getContent()
+                .stream()
+                .map(productJpaMapper::toDomain)
+                .toList();
+
+        return new PageResult(products, pageResult.getTotalElements());
+    }
+
     private Sort createSort(ProductSortType sortType) {
         return switch (sortType) {
             case LATEST -> Sort.by(Sort.Direction.DESC, "createdAt");

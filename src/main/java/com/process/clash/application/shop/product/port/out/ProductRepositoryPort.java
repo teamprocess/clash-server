@@ -22,4 +22,12 @@ public interface ProductRepositoryPort {
             ProductSortType sort,
             ProductCategory category
     );
+
+    PageResult searchByKeywordByPage(
+            Integer page,
+            Integer size,
+            ProductSortType sort,
+            ProductCategory category,
+            String keyword
+    );
 }
