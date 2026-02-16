@@ -3,7 +3,7 @@ package com.process.clash.application.major.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.major.entity.MajorQuestion;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class UpdateMajorQuestionData {
 
@@ -20,7 +20,7 @@ public class UpdateMajorQuestionData {
             Long questionId,
             String content,
             WeightVo weight,
-            LocalDateTime updatedAt
+            Instant updatedAt
     ) {
 
         public static Result from(MajorQuestion domain) {

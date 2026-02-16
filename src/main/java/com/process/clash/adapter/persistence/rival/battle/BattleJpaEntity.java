@@ -4,17 +4,20 @@ import com.process.clash.adapter.persistence.rival.rival.RivalJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "battles")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,13 +28,13 @@ public class BattleJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(nullable = false)
     private LocalDate startDate;

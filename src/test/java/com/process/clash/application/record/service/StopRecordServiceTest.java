@@ -19,7 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ class StopRecordServiceTest {
             100L,
             user,
             task,
-            LocalDateTime.now().minusMinutes(10),
+            Instant.now().minusSeconds(600),
             null
         );
 
@@ -94,8 +95,8 @@ class StopRecordServiceTest {
     private User createUser(Long id) {
         return new User(
             id,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            Instant.now(),
+            Instant.now(),
             "username",
             "user@example.com",
             "name",
@@ -115,8 +116,8 @@ class StopRecordServiceTest {
             id,
             "task",
             0L,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            Instant.now(),
+            Instant.now(),
             user
         );
     }

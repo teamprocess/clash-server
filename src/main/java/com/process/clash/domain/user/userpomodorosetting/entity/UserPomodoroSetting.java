@@ -1,11 +1,11 @@
 package com.process.clash.domain.user.userpomodorosetting.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record UserPomodoroSetting(
         Long id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         boolean pomodoroEnabled,
         int pomodoroStudyMinute,
         int pomodoroBreakMinute,

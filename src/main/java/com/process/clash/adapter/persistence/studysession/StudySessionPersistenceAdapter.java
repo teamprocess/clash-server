@@ -8,6 +8,7 @@ import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.record.exception.exception.notfound.StudySessionNotFound;
 import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.entity.StudySession;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -129,7 +130,11 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
 
     @Override
     public List<StudySession> findAllByUserIdAndTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
-        return studySessionJpaRepository.findAllOverlappingByUserId(userId, startTime, endTime).stream()
+        return studySessionJpaRepository.findAllOverlappingByUserId(
+                userId,
+                toInstant(startTime),
+                toInstant(endTime)
+            ).stream()
             .map(studySessionJpaMapper::toDomain)
             .toList();
     }
@@ -148,8 +153,13 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
 
     @Override
     public Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
-        LocalDateTime now = LocalDateTime.now(recordZoneId);
-        return studySessionJpaRepository.getTotalStudyTimeInSeconds(userId, startOfDay, endOfDay, now);
+        Instant now = Instant.now();
+        return studySessionJpaRepository.getTotalStudyTimeInSeconds(
+            userId,
+            toInstant(startOfDay),
+            toInstant(endOfDay),
+            now
+        );
     }
 
     @Override
@@ -162,9 +172,9 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
             return Map.of();
         }
 
-        LocalDateTime now = LocalDateTime.now(recordZoneId);
+        Instant now = Instant.now();
         return studySessionJpaRepository
-                .getTotalStudyTimeInSecondsByUserIds(userIds, startTime, endTime, now)
+                .getTotalStudyTimeInSecondsByUserIds(userIds, toInstant(startTime), toInstant(endTime), now)
                 .stream()
                 .collect(Collectors.toMap(
                         StudySessionJpaRepository.UserStudyTimeProjection::getUserId,
@@ -175,23 +185,31 @@ public class StudySessionPersistenceAdapter implements StudySessionRepositoryPor
     @Override
     public List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
 
-        return studySessionJpaRepository.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
+        return studySessionJpaRepository.findStudyTimeRankingByUserIdAndPeriod(
+            userId,
+            toInstant(startDate),
+            toInstant(endDate)
+        );
+    }
+
+    private Instant toInstant(LocalDateTime localDateTime) {
+        return localDateTime.atZone(recordZoneId).toInstant();
     }
 
     @Override
-    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
 
         return studySessionJpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
 
         return studySessionJpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate);
     }
 
     @Override
-    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
 
         return studySessionJpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate);
     }

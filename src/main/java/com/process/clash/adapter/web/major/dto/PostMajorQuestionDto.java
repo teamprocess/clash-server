@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class PostMajorQuestionDto {
@@ -43,7 +43,7 @@ public class PostMajorQuestionDto {
             Long questionId,
             String content,
             MajorWeightVo weight,
-            LocalDateTime createdAt
+            Instant createdAt
     ) {
         public static Response from(PostMajorQuestionData.Result result) {
             return new Response(

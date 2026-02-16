@@ -3,7 +3,7 @@ package com.process.clash.application.major.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.major.entity.MajorQuestion;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class PostMajorQuestionData {
 
@@ -24,7 +24,7 @@ public class PostMajorQuestionData {
             Long questionId,
             String content,
             WeightVo weight,
-            LocalDateTime createdAt
+            Instant createdAt
     ) {
 
         public static Result from(MajorQuestion domain) {

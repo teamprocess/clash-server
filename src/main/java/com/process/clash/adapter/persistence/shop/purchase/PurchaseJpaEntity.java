@@ -4,15 +4,18 @@ import com.process.clash.adapter.persistence.shop.product.ProductJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.common.enums.GoodsType;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import jakarta.persistence.EntityListeners;
+import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "purchases",
         uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "fk_product_id"})
@@ -26,13 +29,13 @@ public class PurchaseJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

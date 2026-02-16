@@ -4,10 +4,10 @@ import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.infrastructure.config.RecordProperties;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,7 @@ public class RecordDayBoundaryService {
 
     public void rolloverActiveSessionsAtBoundary() {
         int boundaryHour = recordProperties.dayBoundaryHour();
-        ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
-        LocalDateTime now = nowZoned.toLocalDateTime();
+        Instant now = Instant.now();
 
         List<StudySession> activeSessions = studySessionRepositoryPort.findAllActiveSessions();
 
@@ -33,15 +32,15 @@ public class RecordDayBoundaryService {
         List<StudySession> sessionsToCreate = new ArrayList<>();
 
         activeSessions.forEach(session -> {
-            LocalDateTime firstBoundary = nextBoundaryAfter(session.startedAt(), boundaryHour);
+            Instant firstBoundary = nextBoundaryAfter(session.startedAt(), boundaryHour);
             if (!firstBoundary.isBefore(now)) {
                 return;
             }
 
-            sessionsToClose.add(session.changeEndedAt(firstBoundary.minusSeconds(1)));
+            sessionsToClose.add(session.changeEndedAt(firstBoundary));
 
-            LocalDateTime segmentStart = firstBoundary;
-            LocalDateTime nextBoundary = firstBoundary.plusDays(1);
+            Instant segmentStart = firstBoundary;
+            Instant nextBoundary = nextBoundaryByLocalDay(firstBoundary);
             while (nextBoundary.isBefore(now)) {
                 sessionsToCreate.add(StudySession.create(
                     null,
@@ -50,10 +49,10 @@ public class RecordDayBoundaryService {
                     session.recordType(),
                     session.appName(),
                     segmentStart,
-                    nextBoundary.minusSeconds(1)
+                    nextBoundary
                 ));
                 segmentStart = nextBoundary;
-                nextBoundary = nextBoundary.plusDays(1);
+                nextBoundary = nextBoundaryByLocalDay(nextBoundary);
             }
 
             sessionsToCreate.add(StudySession.create(
@@ -71,12 +70,20 @@ public class RecordDayBoundaryService {
         studySessionRepositoryPort.saveAll(sessionsToCreate);
     }
 
-    private LocalDateTime nextBoundaryAfter(LocalDateTime startedAt, int boundaryHour) {
-        LocalDate boundaryDate = startedAt.toLocalDate();
+    private Instant nextBoundaryAfter(Instant startedAt, int boundaryHour) {
+        LocalDateTime startedAtLocal = LocalDateTime.ofInstant(startedAt, recordZoneId);
+        LocalDate boundaryDate = startedAtLocal.toLocalDate();
         LocalDateTime boundary = boundaryDate.atTime(boundaryHour, 0);
-        if (!startedAt.isBefore(boundary)) {
+        if (!startedAtLocal.isBefore(boundary)) {
             boundary = boundary.plusDays(1);
         }
-        return boundary;
+        return boundary.atZone(recordZoneId).toInstant();
+    }
+
+    private Instant nextBoundaryByLocalDay(Instant boundaryInstant) {
+        return LocalDateTime.ofInstant(boundaryInstant, recordZoneId)
+            .plusDays(1)
+            .atZone(recordZoneId)
+            .toInstant();
     }
 }

@@ -3,16 +3,19 @@ package com.process.clash.adapter.persistence.user.usernotice;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "user_notices")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,13 +26,13 @@ public class UserNoticeJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

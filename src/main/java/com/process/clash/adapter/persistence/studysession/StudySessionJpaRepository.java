@@ -1,6 +1,6 @@
 package com.process.clash.adapter.persistence.studysession;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,15 +51,15 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """)
     List<StudySessionJpaEntity> findAllOverlappingByUserId(
         @Param("userId") Long userId,
-        @Param("startTime") LocalDateTime startTime,
-        @Param("endTime") LocalDateTime endTime
+        @Param("startTime") Instant startTime,
+        @Param("endTime") Instant endTime
     );
 
     @Query(value = """
         select coalesce(sum(
             extract(epoch from (
-                least(coalesce(s.ended_at, cast(:now as timestamp)), cast(:endOfDay as timestamp)) -
-                greatest(s.started_at, cast(:startOfDay as timestamp))
+                least(coalesce(s.ended_at, :now), :endOfDay) -
+                greatest(s.started_at, :startOfDay)
             ))
         ), 0)
         from study_sessions s
@@ -69,17 +69,17 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """, nativeQuery = true)
     Long getTotalStudyTimeInSeconds(
             @Param("userId") Long userId,
-            @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay,
-            @Param("now") LocalDateTime now
+            @Param("startOfDay") Instant startOfDay,
+            @Param("endOfDay") Instant endOfDay,
+            @Param("now") Instant now
     );
 
     @Query(value = """
         select s.fk_user_id as userId,
                coalesce(sum(
                    extract(epoch from (
-                       least(coalesce(s.ended_at, cast(:now as timestamp)), cast(:endOfDay as timestamp)) -
-                       greatest(s.started_at, cast(:startOfDay as timestamp))
+                       least(coalesce(s.ended_at, :now), :endOfDay) -
+                       greatest(s.started_at, :startOfDay)
                    ))
                ), 0) as totalSeconds
         from study_sessions s
@@ -90,9 +90,9 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """, nativeQuery = true)
     List<UserStudyTimeProjection> getTotalStudyTimeInSecondsByUserIds(
             @Param("userIds") List<Long> userIds,
-            @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("endOfDay") LocalDateTime endOfDay,
-            @Param("now") LocalDateTime now
+            @Param("startOfDay") Instant startOfDay,
+            @Param("endOfDay") Instant endOfDay,
+            @Param("now") Instant now
     );
 
     interface UserStudyTimeProjection {
@@ -130,8 +130,8 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
     """, nativeQuery = true)
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
             @Param("userId") Long userId,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
     );
 
     // 일별 학습시간 집계 (여러 유저)
@@ -143,23 +143,23 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, cast(current_timestamp as timestamp)), cast(:endDate as timestamp))
-                            - greatest(s.started_at, cast(:startDate as timestamp))
+                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            - greatest(s.started_at, :startDate)
                         ))
                     ), 0
                 ) as bigint
             ) as point
         FROM study_sessions s
         WHERE s.fk_user_id IN :userIds
-            AND s.started_at < cast(:endDate as timestamp)
-            AND coalesce(s.ended_at, cast(current_timestamp as timestamp)) >= cast(:startDate as timestamp)
+            AND s.started_at < :endDate
+            AND coalesce(s.ended_at, current_timestamp) >= :startDate
         GROUP BY s.fk_user_id, date_trunc('day', s.started_at)
         ORDER BY s.fk_user_id, date_trunc('day', s.started_at) ASC
     """, nativeQuery = true)
     List<Object[]> findDailyStudyTimeByUserIds(
             @Param("userIds") List<Long> userIds,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
     );
 
     // 주별 총 학습시간 집계 (여러 유저)
@@ -171,23 +171,23 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, cast(current_timestamp as timestamp)), cast(:endDate as timestamp))
-                            - greatest(s.started_at, cast(:startDate as timestamp))
+                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            - greatest(s.started_at, :startDate)
                         ))
                     ), 0
                 ) as bigint
             ) as point
         FROM study_sessions s
         WHERE s.fk_user_id IN :userIds
-            AND s.started_at < cast(:endDate as timestamp)
-            AND coalesce(s.ended_at, cast(current_timestamp as timestamp)) >= cast(:startDate as timestamp)
+            AND s.started_at < :endDate
+            AND coalesce(s.ended_at, current_timestamp) >= :startDate
         GROUP BY s.fk_user_id, date_trunc('week', s.started_at)
         ORDER BY s.fk_user_id, date_trunc('week', s.started_at) ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyStudyTimeByUserIds(
             @Param("userIds") List<Long> userIds,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
     );
 
     // 월별 총 학습시간 집계 (여러 유저)
@@ -199,22 +199,22 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, cast(current_timestamp as timestamp)), cast(:endDate as timestamp))
-                            - greatest(s.started_at, cast(:startDate as timestamp))
+                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            - greatest(s.started_at, :startDate)
                         ))
                     ), 0
                 ) as bigint
             ) as point
         FROM study_sessions s
         WHERE s.fk_user_id IN :userIds
-            AND s.started_at < cast(:endDate as timestamp)
-            AND coalesce(s.ended_at, cast(current_timestamp as timestamp)) >= cast(:startDate as timestamp)
+            AND s.started_at < :endDate
+            AND coalesce(s.ended_at, current_timestamp) >= :startDate
         GROUP BY s.fk_user_id, date_trunc('month', s.started_at)
         ORDER BY s.fk_user_id, date_trunc('month', s.started_at) ASC
     """, nativeQuery = true)
     List<Object[]> findMonthlyStudyTimeByUserIds(
             @Param("userIds") List<Long> userIds,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
     );
 }

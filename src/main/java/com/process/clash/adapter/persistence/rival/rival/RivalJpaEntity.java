@@ -3,16 +3,19 @@ package com.process.clash.adapter.persistence.rival.rival;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "rivals")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,11 +38,11 @@ public class RivalJpaEntity {
     @Column(nullable = false)
     private RivalLinkingStatus rivalLinkingStatus;
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 }

@@ -12,7 +12,7 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.usergithub.entity.UserGitHub;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -133,8 +133,8 @@ class LinkGitHubOAuthServiceTest {
     private User createUser(Long id) {
         return new User(
                 id,
-                LocalDateTime.now().minusDays(1),
-                LocalDateTime.now(),
+                Instant.now().minusSeconds(86_400),
+                Instant.now(),
                 "username",
                 "user@example.com",
                 "name",

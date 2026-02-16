@@ -2,13 +2,16 @@ package com.process.clash.adapter.persistence.major;
 
 import com.process.clash.domain.common.enums.Major;
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -25,13 +28,13 @@ public class MajorQuestionJpaEntity {
     @Embedded
     private WeightVo weightVo;
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Embeddable
     @Getter

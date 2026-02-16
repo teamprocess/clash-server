@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -55,15 +56,20 @@ class StudySessionPersistenceAdapterTest {
         when(studySessionJpaRepository.getTotalStudyTimeInSeconds(anyLong(), any(), any(), any()))
             .thenReturn(120L);
 
-        LocalDateTime before = LocalDateTime.now(RECORD_ZONE_ID);
+        Instant before = Instant.now();
         adapter.getTotalStudyTimeInSeconds(1L, startOfDay, endOfDay);
-        LocalDateTime after = LocalDateTime.now(RECORD_ZONE_ID);
+        Instant after = Instant.now();
 
-        ArgumentCaptor<LocalDateTime> nowCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        ArgumentCaptor<Instant> nowCaptor = ArgumentCaptor.forClass(Instant.class);
         verify(studySessionJpaRepository)
-            .getTotalStudyTimeInSeconds(eq(1L), eq(startOfDay), eq(endOfDay), nowCaptor.capture());
+            .getTotalStudyTimeInSeconds(
+                eq(1L),
+                eq(startOfDay.atZone(RECORD_ZONE_ID).toInstant()),
+                eq(endOfDay.atZone(RECORD_ZONE_ID).toInstant()),
+                nowCaptor.capture()
+            );
 
-        LocalDateTime nowArg = nowCaptor.getValue();
+        Instant nowArg = nowCaptor.getValue();
         assertThat(nowArg).isAfterOrEqualTo(before);
         assertThat(nowArg).isBeforeOrEqualTo(after);
     }
@@ -77,15 +83,20 @@ class StudySessionPersistenceAdapterTest {
         when(studySessionJpaRepository.getTotalStudyTimeInSecondsByUserIds(any(), any(), any(), any()))
             .thenReturn(List.of());
 
-        LocalDateTime before = LocalDateTime.now(RECORD_ZONE_ID);
+        Instant before = Instant.now();
         adapter.getTotalStudyTimeInSecondsByUserIds(userIds, startOfDay, endOfDay);
-        LocalDateTime after = LocalDateTime.now(RECORD_ZONE_ID);
+        Instant after = Instant.now();
 
-        ArgumentCaptor<LocalDateTime> nowCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        ArgumentCaptor<Instant> nowCaptor = ArgumentCaptor.forClass(Instant.class);
         verify(studySessionJpaRepository)
-            .getTotalStudyTimeInSecondsByUserIds(eq(userIds), eq(startOfDay), eq(endOfDay), nowCaptor.capture());
+            .getTotalStudyTimeInSecondsByUserIds(
+                eq(userIds),
+                eq(startOfDay.atZone(RECORD_ZONE_ID).toInstant()),
+                eq(endOfDay.atZone(RECORD_ZONE_ID).toInstant()),
+                nowCaptor.capture()
+            );
 
-        LocalDateTime nowArg = nowCaptor.getValue();
+        Instant nowArg = nowCaptor.getValue();
         assertThat(nowArg).isAfterOrEqualTo(before);
         assertThat(nowArg).isBeforeOrEqualTo(after);
     }

@@ -3,12 +3,12 @@ package com.process.clash.domain.rival.battle.entity;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record Battle(
         Long id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         LocalDate startDate,
         LocalDate endDate,
         BattleStatus battleStatus,

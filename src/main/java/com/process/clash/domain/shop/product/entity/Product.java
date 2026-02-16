@@ -6,12 +6,12 @@ import com.process.clash.application.shop.product.exception.exception.badrequest
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import com.process.clash.domain.shop.season.entity.Season;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record Product(
         Long id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         String title,
         ProductCategory category,
         String image,

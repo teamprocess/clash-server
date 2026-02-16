@@ -11,7 +11,7 @@ import com.process.clash.domain.record.entity.RecordActivitySegment;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.record.enums.RecordType;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         monitoredAppPolicy.validate(nextAppName);
 
         StudySession activeSession = loadActiveActivitySession(command.actor().id());
-        LocalDateTime switchedAt = LocalDateTime.now(recordZoneId);
+        Instant switchedAt = Instant.now();
 
         if (nextAppName.equals(activeSession.appName())) {
             return toResult(activeSession, switchedAt);
@@ -76,13 +76,13 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         return openSegment.isPresent() && appName.equals(openSegment.get().appName());
     }
 
-    private void closeOpenSegment(Optional<RecordActivitySegment> openSegment, LocalDateTime closedAt) {
+    private void closeOpenSegment(Optional<RecordActivitySegment> openSegment, Instant closedAt) {
         openSegment.ifPresent(segment ->
             recordActivitySegmentRepositoryPort.save(segment.changeEndedAt(closedAt))
         );
     }
 
-    private void createOpenSegment(Long sessionId, String appName, LocalDateTime startedAt) {
+    private void createOpenSegment(Long sessionId, String appName, Instant startedAt) {
         recordActivitySegmentRepositoryPort.save(
             RecordActivitySegment.start(sessionId, appName, startedAt)
         );
@@ -92,9 +92,9 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         return studySessionRepositoryPort.save(activeSession.changeActivityAppName(appName));
     }
 
-    private SwitchActivityAppData.Result toResult(StudySession session, LocalDateTime switchedAt) {
+    private SwitchActivityAppData.Result toResult(StudySession session, Instant switchedAt) {
         return SwitchActivityAppData.Result.from(
-            switchedAt.atZone(recordZoneId).toInstant(),
+            switchedAt,
             RecordSessionMapper.toSession(session, recordZoneId)
         );
     }

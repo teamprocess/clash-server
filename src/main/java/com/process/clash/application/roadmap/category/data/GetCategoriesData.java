@@ -3,6 +3,7 @@ package com.process.clash.application.roadmap.category.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.roadmap.entity.Category;
 
+import java.time.Instant;
 import java.util.List;
 
 public class GetCategoriesData {
@@ -17,15 +18,14 @@ public class GetCategoriesData {
             return new Result(categoryVos);
         }
 
-        public record CategoryVo(Long id, String name, String createdAt, String updatedAt) {
+        public record CategoryVo(Long id, String name, Instant createdAt, Instant updatedAt) {
             public static CategoryVo from(Category category) {
-                String createdAtString = category.getCreatedAt() != null
-                        ? category.getCreatedAt().toString()
-                        : null;
-                String updatedAtString = category.getUpdatedAt() != null
-                        ? category.getUpdatedAt().toString()
-                        : null;
-                return new CategoryVo(category.getId(), category.getName(), createdAtString, updatedAtString);
+                return new CategoryVo(
+                    category.getId(),
+                    category.getName(),
+                    category.getCreatedAt(),
+                    category.getUpdatedAt()
+                );
             }
         }
     }

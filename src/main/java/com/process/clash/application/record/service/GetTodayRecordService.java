@@ -56,8 +56,10 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
 
         long totalStudyTime = todaySessions.stream()
             .mapToLong(s -> {
-                LocalDateTime effectiveStart = s.startedAt().isAfter(startOfDay) ? s.startedAt() : startOfDay;
-                LocalDateTime effectiveEnd = s.endedAt() == null ? endLimit : s.endedAt();
+                LocalDateTime sessionStart = toLocalDateTime(s.startedAt());
+                LocalDateTime effectiveStart = sessionStart.isAfter(startOfDay) ? sessionStart : startOfDay;
+                LocalDateTime sessionEnd = s.endedAt() == null ? null : toLocalDateTime(s.endedAt());
+                LocalDateTime effectiveEnd = sessionEnd == null ? endLimit : sessionEnd;
                 if (effectiveEnd.isAfter(endLimit)) {
                     effectiveEnd = endLimit;
                 }
@@ -70,12 +72,13 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
         Instant studyStoppedAt = todaySessions.stream()
             .filter(s -> s.endedAt() != null)
             .map(s -> {
-                LocalDateTime cappedEnd = s.endedAt().isAfter(endLimit) ? endLimit : s.endedAt();
+                LocalDateTime sessionEnd = toLocalDateTime(s.endedAt());
+                LocalDateTime cappedEnd = sessionEnd.isAfter(endLimit) ? endLimit : sessionEnd;
                 return cappedEnd.isAfter(startOfDay) ? cappedEnd : null;
             })
             .filter(e -> e != null)
             .max(Comparator.naturalOrder())
-            .map(e -> e.atZone(recordZoneId).toInstant())
+            .map(localDateTime -> localDateTime.atZone(recordZoneId).toInstant())
             .orElse(null);
 
         UserPomodoroSetting userPomodoroSetting = userPomodoroSettingRepositoryPort.findByUserId(user.id())
@@ -88,11 +91,21 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
             studyStoppedAt,
             todaySessions.stream()
                 .map(s -> {
-                    LocalDateTime sessionStart = s.startedAt().isAfter(startOfDay) ? s.startedAt() : startOfDay;
-                    LocalDateTime sessionEnd = s.endedAt() == null ? null : (s.endedAt().isAfter(endLimit) ? endLimit : s.endedAt());
-                    return RecordSessionMapper.toSession(s, recordZoneId, sessionStart, sessionEnd);
+                    LocalDateTime sessionStartLocal = toLocalDateTime(s.startedAt());
+                    LocalDateTime sessionStart = sessionStartLocal.isAfter(startOfDay) ? sessionStartLocal : startOfDay;
+                    LocalDateTime sessionEndLocal = s.endedAt() == null ? null : toLocalDateTime(s.endedAt());
+                    LocalDateTime sessionEnd = sessionEndLocal == null
+                        ? null
+                        : (sessionEndLocal.isAfter(endLimit) ? endLimit : sessionEndLocal);
+                    Instant sessionStartInstant = sessionStart.atZone(recordZoneId).toInstant();
+                    Instant sessionEndInstant = sessionEnd == null ? null : sessionEnd.atZone(recordZoneId).toInstant();
+                    return RecordSessionMapper.toSession(s, sessionStartInstant, sessionEndInstant);
                 })
                 .toList()
         );
+    }
+
+    private LocalDateTime toLocalDateTime(Instant instant) {
+        return LocalDateTime.ofInstant(instant, recordZoneId);
     }
 }

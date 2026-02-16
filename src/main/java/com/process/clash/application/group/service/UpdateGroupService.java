@@ -7,7 +7,7 @@ import com.process.clash.application.group.port.in.UpdateGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class UpdateGroupService implements UpdateGroupUseCase {
         Group updatedGroup = new Group(
             group.id(),
             group.createdAt(),
-            LocalDateTime.now(),
+            Instant.now(),
             command.name(),
             command.description(),
             command.maxMembers(),

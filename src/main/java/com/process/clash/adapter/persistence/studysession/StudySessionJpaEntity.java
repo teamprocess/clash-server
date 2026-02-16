@@ -5,6 +5,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.record.enums.RecordType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -14,15 +15,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "study_sessions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,13 +35,13 @@ public class StudySessionJpaEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreationTimestamp
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_user_id", nullable = false)
@@ -56,17 +59,17 @@ public class StudySessionJpaEntity {
     private String appName;
 
     @Column(nullable = false)
-    private LocalDateTime startedAt;
+    private Instant startedAt;
 
     @Column(nullable = true)
-    private LocalDateTime endedAt;
+    private Instant endedAt;
 
     public static StudySessionJpaEntity create(
         UserJpaEntity user,
         TaskJpaEntity task,
         RecordType recordType,
         String appName,
-        LocalDateTime startedAt
+        Instant startedAt
     ) {
         return new StudySessionJpaEntity(
             null,
@@ -81,7 +84,7 @@ public class StudySessionJpaEntity {
         );
     }
 
-    public static StudySessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, LocalDateTime startedAt) {
+    public static StudySessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, Instant startedAt) {
         return create(
             user,
             task,
@@ -91,7 +94,7 @@ public class StudySessionJpaEntity {
         );
     }
 
-    public void changeEndedAt(LocalDateTime endedAt) {
+    public void changeEndedAt(Instant endedAt) {
         this.endedAt = endedAt;
     }
 

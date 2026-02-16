@@ -3,7 +3,7 @@ package com.process.clash.domain.record.entity;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record StudySession (
     Long id,
@@ -11,8 +11,8 @@ public record StudySession (
     Task task,
     RecordType recordType,
     String appName,
-    LocalDateTime startedAt,
-    LocalDateTime endedAt
+    Instant startedAt,
+    Instant endedAt
 ) {
     public static StudySession create(
         Long id,
@@ -20,8 +20,8 @@ public record StudySession (
         Task task,
         RecordType recordType,
         String appName,
-        LocalDateTime startedAt,
-        LocalDateTime endedAt
+        Instant startedAt,
+        Instant endedAt
     ) {
         return new StudySession(
             id,
@@ -34,7 +34,7 @@ public record StudySession (
         );
     }
 
-    public static StudySession create(Long id, User user, Task task, LocalDateTime startedAt, LocalDateTime endedAt) {
+    public static StudySession create(Long id, User user, Task task, Instant startedAt, Instant endedAt) {
         return create(
             id,
             user,
@@ -50,8 +50,8 @@ public record StudySession (
         Long id,
         User user,
         String appName,
-        LocalDateTime startedAt,
-        LocalDateTime endedAt
+        Instant startedAt,
+        Instant endedAt
     ) {
         return create(
             id,
@@ -64,7 +64,7 @@ public record StudySession (
         );
     }
 
-    public StudySession changeEndedAt(LocalDateTime newEndedAt) {
+    public StudySession changeEndedAt(Instant newEndedAt) {
         return new StudySession(
                 this.id,
                 this.user,

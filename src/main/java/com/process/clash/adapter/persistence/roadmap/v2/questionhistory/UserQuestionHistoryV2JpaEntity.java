@@ -3,16 +3,19 @@ package com.process.clash.adapter.persistence.roadmap.v2.questionhistory;
 import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "user_question_history_v2",
         uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "fk_chapter_id"}))
 @Getter
@@ -44,12 +47,12 @@ public class UserQuestionHistoryV2JpaEntity {
     @Column(name = "current_question_index")
     private Integer currentQuestionIndex;
 
-    @CreationTimestamp
+    @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
 }
