@@ -1,6 +1,4 @@
-# CLASH 서버 개발 가이드
-
-> CLASH 프로젝트를 이어받을 개발자를 위한 종합 개발 가이드
+# Clash 서버 개발 가이드
 
 ## 목차
 1. [프로젝트 개요](#프로젝트-개요)
@@ -15,7 +13,7 @@
 
 ## 프로젝트 개요
 
-**CLASH**는 학습 관리 및 경쟁 시스템을 제공하는 백엔드 서버입니다.
+**Clash**는 학습 기록을 통한 경쟁 애플리케이션입니다.
 
 - **License**: AGPL-3.0-with-Commons-Clause
 - **Java Version**: 21
@@ -41,15 +39,15 @@
 - **SpringDoc OpenAPI 3** (Swagger)
 
 ### Build Tool
-- **Gradle 8.x부터 동작**
-- **Gradle 8.14.3 최적**
 - **Gradle 8.5+ 권장**
 
 ---
 
 ## 아키텍처
 
-본 프로젝트는 **Hexagonal Architecture (Port & Adapter Pattern)**를 채택하고 있습니다.
+본 프로젝트는
+**Hexagonal Architecture (Port & Adapter Pattern)**
+를 채택하고 있습니다.
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -519,7 +517,7 @@ feat/{feature-name}/#{issue-number} (기능 개발)
 1. Java 21
 2. PostgreSQL
 3. Redis
-4. Gradle 8.x
+4. Gradle 8.5+
 
 ### 프로젝트 실행
 ```bash
@@ -580,9 +578,6 @@ http://localhost:8080/swagger-ui.html
 - **Shop**: 상품, 시즌, 추천 상품
 - **Auth**: 회원가입, 로그인, 이메일 인증
 
-### 문의 사항
-프로젝트 관련 문의는 이슈를 등록해주세요.
-
 ---
 
-**마지막 업데이트**: 2026-02-14
+**마지막 업데이트**: 2026-02-18
