@@ -15,7 +15,6 @@ public class GetTodayRecordData {
     @Builder
     public record Result(
         String date,
-        Boolean pomodoroEnabled,
         Long totalStudyTime,
         Instant studyStoppedAt,
         List<RecordSessionData.Session> sessions
@@ -23,14 +22,12 @@ public class GetTodayRecordData {
 
         public static Result create(
             String date,
-            Boolean pomodoroEnabled,
             Long totalStudyTime,
             Instant studyStoppedAt,
             List<RecordSessionData.Session> sessions
         ) {
             return new Result(
                 date,
-                pomodoroEnabled,
                 totalStudyTime,
                 studyStoppedAt,
                 sessions

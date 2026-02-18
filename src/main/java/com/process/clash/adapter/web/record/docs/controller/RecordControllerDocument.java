@@ -1,19 +1,16 @@
 package com.process.clash.adapter.web.record.docs.controller;
 
-import com.process.clash.adapter.web.record.docs.request.RecordSettingRequestDocument;
 import com.process.clash.adapter.web.record.docs.request.StartRecordRequestDocument;
 import com.process.clash.adapter.web.record.docs.request.SwitchActivityAppRequestDocument;
 import com.process.clash.adapter.web.record.docs.response.GetCurrentRecordResponseDocument;
 import com.process.clash.adapter.web.record.docs.response.GetMonitoredAppsResponseDocument;
 import com.process.clash.adapter.web.record.docs.response.GetTodayRecordResponseDocument;
-import com.process.clash.adapter.web.record.docs.response.RecordSettingResponseDocument;
 import com.process.clash.adapter.web.record.docs.response.StartRecordResponseDocument;
 import com.process.clash.adapter.web.record.docs.response.StopRecordResponseDocument;
 import com.process.clash.adapter.web.record.docs.response.SwitchActivityAppResponseDocument;
 import com.process.clash.adapter.web.record.dto.GetMonitoredAppsDto;
 import com.process.clash.adapter.web.record.dto.GetTodayRecordDto;
 import com.process.clash.adapter.web.record.dto.RecordSessionDto;
-import com.process.clash.adapter.web.record.dto.RecordSettingDto;
 import com.process.clash.adapter.web.record.dto.StartRecordDto;
 import com.process.clash.adapter.web.record.dto.StopRecordDto;
 import com.process.clash.adapter.web.record.dto.SwitchActivityAppDto;
@@ -42,7 +39,6 @@ public interface RecordControllerDocument {
                                       "message": "오늘의 기록 현황을 조회했습니다.",
                                       "data": {
                                         "date": "2025-01-02",
-                                        "pomodoroEnabled": true,
                                         "totalStudyTime": 7200,
                                         "studyStoppedAt": "2025-01-02T14:30:00Z",
                                         "sessions": [
@@ -126,62 +122,6 @@ public interface RecordControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMonitoredAppsDto.Response> getMonitoredApps(
         @Parameter(hidden = true) Actor actor
-    );
-
-    @Operation(summary = "기록 설정 조회", description = "일반 기록 설정을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(
-                            schema = @Schema(implementation = RecordSettingResponseDocument.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "일반 기록 설정을 조회했습니다.",
-                                      "data": {
-                                        "pomodoroEnabled": true,
-                                        "studyMinute": 50,
-                                        "breakMinute": 10
-                                      }
-                                    }
-                                    """)
-                    ))
-    })
-    com.process.clash.adapter.web.common.ApiResponse<RecordSettingDto.Response> getRecordSetting(
-            @Parameter(hidden = true) Actor actor
-    );
-
-    @Operation(summary = "기록 설정 변경", description = "일반 기록 설정을 변경합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "변경 성공",
-                    content = @Content(
-                            schema = @Schema(implementation = RecordSettingResponseDocument.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "success": true,
-                                      "message": "일반 기록 설정을 변경했습니다.",
-                                      "data": {
-                                        "pomodoroEnabled": true,
-                                        "studyMinute": 45,
-                                        "breakMinute": 10
-                                      }
-                                    }
-                                    """)
-                    ))
-    })
-    com.process.clash.adapter.web.common.ApiResponse<RecordSettingDto.Response> updateRecordSetting(
-            @RequestBody(description = "기록 설정 변경 요청", required = true,
-                    content = @Content(
-                            schema = @Schema(implementation = RecordSettingRequestDocument.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "pomodoroEnabled": true,
-                                      "studyMinute": 45,
-                                      "breakMinute": 10
-                                    }
-                                    """)
-                    ))
-            RecordSettingDto.Request request,
-            @Parameter(hidden = true) Actor actor
     );
 
     @Operation(summary = "기록 시작", description = "일반 기록을 시작합니다.")
