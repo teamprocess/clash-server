@@ -7,8 +7,6 @@ import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.infrastructure.config.RecordProperties;
-import com.process.clash.application.user.userpomodorosetting.exception.exception.notfound.UserPomodoroSettingNotFoundException;
-import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;
 import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.user.user.entity.User;
 import java.time.Instant;
@@ -20,8 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-
-import com.process.clash.domain.user.userpomodorosetting.entity.UserPomodoroSetting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +27,6 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final StudySessionRepositoryPort studySessionRepositoryPort;
-    private final UserPomodoroSettingRepositoryPort userPomodoroSettingRepositoryPort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
 
@@ -81,12 +76,8 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
             .map(localDateTime -> localDateTime.atZone(recordZoneId).toInstant())
             .orElse(null);
 
-        UserPomodoroSetting userPomodoroSetting = userPomodoroSettingRepositoryPort.findByUserId(user.id())
-                .orElseThrow(UserPomodoroSettingNotFoundException::new);
-
         return GetTodayRecordData.Result.create(
             date,
-            userPomodoroSetting.pomodoroEnabled(),
             totalStudyTime,
             studyStoppedAt,
             todaySessions.stream()

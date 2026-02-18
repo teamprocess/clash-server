@@ -6,7 +6,6 @@ import com.process.clash.adapter.web.record.dto.GetMonitoredAppsDto;
 import com.process.clash.adapter.web.record.docs.controller.RecordControllerDocument;
 import com.process.clash.adapter.web.record.dto.GetTodayRecordDto;
 import com.process.clash.adapter.web.record.dto.RecordSessionDto;
-import com.process.clash.adapter.web.record.dto.RecordSettingDto;
 import com.process.clash.adapter.web.record.dto.StartRecordDto;
 import com.process.clash.adapter.web.record.dto.StopRecordDto;
 import com.process.clash.adapter.web.record.dto.SwitchActivityAppDto;
@@ -14,20 +13,16 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.GetCurrentRecordData;
 import com.process.clash.application.record.data.GetMonitoredAppsData;
-import com.process.clash.application.record.data.GetRecordSettingData;
 import com.process.clash.application.record.data.GetTodayRecordData;
 import com.process.clash.application.record.data.StartRecordData;
 import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.data.SwitchActivityAppData;
-import com.process.clash.application.record.data.UpdateRecordSettingData;
 import com.process.clash.application.record.port.in.GetCurrentRecordUseCase;
 import com.process.clash.application.record.port.in.GetMonitoredAppsUseCase;
-import com.process.clash.application.record.port.in.GetRecordSettingUseCase;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
 import com.process.clash.application.record.port.in.StartRecordUseCase;
 import com.process.clash.application.record.port.in.StopRecordUseCase;
 import com.process.clash.application.record.port.in.SwitchActivityAppUseCase;
-import com.process.clash.application.record.port.in.UpdateRecordSettingUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,8 +40,6 @@ public class RecordController implements RecordControllerDocument {
     private final GetTodayRecordUseCase getTodayRecordUseCase;
     private final StartRecordUseCase startRecordUseCase;
     private final StopRecordUseCase stopRecordUseCase;
-    private final GetRecordSettingUseCase getRecordSettingUseCase;
-    private final UpdateRecordSettingUseCase updateRecordSettingUseCase;
     private final GetCurrentRecordUseCase getCurrentRecordUseCase;
     private final GetMonitoredAppsUseCase getMonitoredAppsUseCase;
     private final SwitchActivityAppUseCase switchActivityAppUseCase;
@@ -64,40 +57,6 @@ public class RecordController implements RecordControllerDocument {
         return ApiResponse.success(
             GetTodayRecordDto.Response.from(result),
             "오늘의 기록 현황을 조회했습니다."
-        );
-    }
-
-    @GetMapping("/setting")
-    public ApiResponse<RecordSettingDto.Response> getRecordSetting(
-        @AuthenticatedActor Actor actor
-    ) {
-        GetRecordSettingData.Command command = GetRecordSettingData.Command.builder()
-            .actor(actor)
-            .build();
-        GetRecordSettingData.Result result = getRecordSettingUseCase.execute(command);
-
-        return ApiResponse.success(
-            RecordSettingDto.Response.from(result),
-            "일반 기록 설정을 조회했습니다."
-        );
-    }
-
-    @PatchMapping("/setting")
-    public ApiResponse<RecordSettingDto.Response> updateRecordSetting(
-        @Valid @RequestBody RecordSettingDto.Request request,
-        @AuthenticatedActor Actor actor
-    ) {
-        UpdateRecordSettingData.Command command = new UpdateRecordSettingData.Command(
-            actor,
-            request.pomodoroEnabled(),
-            request.studyMinute(),
-            request.breakMinute()
-        );
-        UpdateRecordSettingData.Result result = updateRecordSettingUseCase.execute(command);
-
-        return ApiResponse.success(
-            RecordSettingDto.Response.from(result),
-            "일반 기록 설정을 변경했습니다."
         );
     }
 
