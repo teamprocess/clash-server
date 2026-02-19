@@ -546,23 +546,20 @@ http://localhost:8080/swagger-ui.html
 - `created_at`, `updated_at`은 Spring Data JPA Auditing(`@CreatedDate`, `@LastModifiedDate`)으로 자동 관리
 - Hibernate JDBC 타임존은 UTC 고정:
   - `spring.jpa.properties.hibernate.jdbc.time_zone=UTC`
-- Flyway 컷오버 시점은 placeholder로 주입:
-  - `spring.flyway.placeholders.global_cutover_timestamp`
-  - 환경변수 예시: `GLOBAL_CUTOVER_TIMESTAMP=2026-02-14 00:00:00`
+- Flyway 컷오버 placeholder(`spring.flyway.placeholders.global_cutover_timestamp`) 설정은 유지하며,
+  현재 초기화 스크립트 구조에서는 직접 참조하지 않음
 
 ### API 경계 원칙
 - API 응답 시간은 `Instant` 직렬화 시 KST(Asia/Seoul) 기준 ISO-8601(`+09:00`)으로 반환
 - 레코드 일자 경계(예: 하루 시작 06:00)는 `record.timezone`(기본 `Asia/Seoul`)에서 계산 후 `Instant`로 변환해 조회
 
 ### Flyway 적용 순서
-1. 배포 전 `GLOBAL_CUTOVER_TIMESTAMP` 값을 운영 컷오버 시점으로 확정
-2. 애플리케이션 기동 시 Flyway `V5`(record) -> `V6`(remaining domains) 순서로 자동 적용
-3. 검증 SQL 실행
+1. 애플리케이션 기동 시 Flyway `V1`(init) -> `V2`(default insert) 순서로 자동 적용
+2. 검증 SQL 실행
   - 대상 테이블에서 `timestamp without time zone` 잔존 컬럼 0건 확인
   - 테이블별 row count 보존 확인
   - 샘플 조회로 UTC/KST 해석 확인
-  - row count 비교용 SQL 템플릿은 `V6__migrate_remaining_timestamps_to_timestamptz.sql` 하단 주석 참고
-4. 애플리케이션 기능 점검
+3. 애플리케이션 기능 점검
   - 주요 생성/수정 API timestamp 응답이 KST 오프셋(`+09:00`) 형식인지 확인
   - 레코드 시작/종료 및 랭킹/그룹/로드맵 조회 기능 확인
 
@@ -580,4 +577,4 @@ http://localhost:8080/swagger-ui.html
 
 ---
 
-**마지막 업데이트**: 2026-02-18
+**마지막 업데이트**: 2026-02-19
