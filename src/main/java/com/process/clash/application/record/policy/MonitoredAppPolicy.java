@@ -15,7 +15,7 @@ public class MonitoredAppPolicy {
     }
 
     public void validate(MonitoredApp appId) {
-        if (appId == null || !MONITORED_APPS.contains(appId)) {
+        if (appId == null) {
             throw new InvalidMonitoredAppException();
         }
     }
