@@ -37,7 +37,7 @@ public final class RecordSessionMapper {
                 session.id(),
                 startedAt,
                 endedAt,
-                session.appName()
+                session.appId()
             );
         }
 

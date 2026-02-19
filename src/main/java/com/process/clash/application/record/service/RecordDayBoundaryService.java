@@ -47,7 +47,7 @@ public class RecordDayBoundaryService {
                     session.user(),
                     session.task(),
                     session.recordType(),
-                    session.appName(),
+                    session.appId(),
                     segmentStart,
                     nextBoundary
                 ));
@@ -60,7 +60,7 @@ public class RecordDayBoundaryService {
                 session.user(),
                 session.task(),
                 session.recordType(),
-                session.appName(),
+                session.appId(),
                 segmentStart,
                 null
             ));

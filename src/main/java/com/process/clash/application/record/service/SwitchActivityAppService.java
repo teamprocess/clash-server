@@ -9,6 +9,7 @@ import com.process.clash.application.record.port.out.RecordSessionSegmentReposit
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.record.entity.RecordSessionSegment;
 import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -29,34 +30,34 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
 
     @Override
     public SwitchActivityAppData.Result execute(SwitchActivityAppData.Command command) {
-        String nextAppName = normalizeAppName(command.appName());
-        monitoredAppPolicy.validate(nextAppName);
+        MonitoredApp nextAppId = normalizeAppId(command.appId());
+        monitoredAppPolicy.validate(nextAppId);
 
         RecordSession activeSession = loadActiveActivitySession(command.actor().id());
         Instant switchedAt = Instant.now();
 
-        if (nextAppName.equals(activeSession.appName())) {
+        if (nextAppId.equals(activeSession.appId())) {
             return toResult(activeSession, switchedAt);
         }
 
         Optional<RecordSessionSegment> openSegment = findOpenSegment(activeSession.id());
-        if (isSameAppAsOpenSegment(openSegment, nextAppName)) {
-            RecordSession syncedSession = syncSessionAppName(activeSession, nextAppName);
+        if (isSameAppAsOpenSegment(openSegment, nextAppId)) {
+            RecordSession syncedSession = syncSessionAppId(activeSession, nextAppId);
             return toResult(syncedSession, switchedAt);
         }
 
         closeOpenSegment(openSegment, switchedAt);
-        createOpenSegment(activeSession.id(), nextAppName, switchedAt);
-        RecordSession switchedSession = syncSessionAppName(activeSession, nextAppName);
+        createOpenSegment(activeSession.id(), nextAppId, switchedAt);
+        RecordSession switchedSession = syncSessionAppId(activeSession, nextAppId);
 
         return toResult(switchedSession, switchedAt);
     }
 
-    private String normalizeAppName(String appName) {
-        if (appName == null || appName.isBlank()) {
+    private MonitoredApp normalizeAppId(MonitoredApp appId) {
+        if (appId == null) {
             throw new InvalidActivitySwitchRequestException();
         }
-        return appName.trim();
+        return appId;
     }
 
     private RecordSession loadActiveActivitySession(Long userId) {
@@ -72,8 +73,8 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         return recordSessionSegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(sessionId);
     }
 
-    private boolean isSameAppAsOpenSegment(Optional<RecordSessionSegment> openSegment, String appName) {
-        return openSegment.isPresent() && appName.equals(openSegment.get().appName());
+    private boolean isSameAppAsOpenSegment(Optional<RecordSessionSegment> openSegment, MonitoredApp appId) {
+        return openSegment.isPresent() && appId.equals(openSegment.get().appId());
     }
 
     private void closeOpenSegment(Optional<RecordSessionSegment> openSegment, Instant closedAt) {
@@ -82,14 +83,14 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         );
     }
 
-    private void createOpenSegment(Long sessionId, String appName, Instant startedAt) {
+    private void createOpenSegment(Long sessionId, MonitoredApp appId, Instant startedAt) {
         recordSessionSegmentRepositoryPort.save(
-            RecordSessionSegment.start(sessionId, appName, startedAt)
+            RecordSessionSegment.start(sessionId, appId, startedAt)
         );
     }
 
-    private RecordSession syncSessionAppName(RecordSession activeSession, String appName) {
-        return recordSessionRepositoryPort.save(activeSession.changeActivityAppName(appName));
+    private RecordSession syncSessionAppId(RecordSession activeSession, MonitoredApp appId) {
+        return recordSessionRepositoryPort.save(activeSession.changeActivityAppId(appId));
     }
 
     private SwitchActivityAppData.Result toResult(RecordSession session, Instant switchedAt) {

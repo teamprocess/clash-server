@@ -272,17 +272,22 @@ CREATE TABLE record_sessions
     fk_user_id  BIGINT                                  NOT NULL,
     fk_record_task_id  BIGINT,
     record_type VARCHAR(20)                             NOT NULL,
-    app_name    VARCHAR(255),
+    app_id      VARCHAR(50),
     started_at  TIMESTAMPTZ             NOT NULL,
     ended_at    TIMESTAMPTZ,
     CONSTRAINT pk_record_sessions PRIMARY KEY (id),
     CONSTRAINT ck_record_sessions_record_type
         CHECK (record_type IN ('TASK', 'ACTIVITY')),
+    CONSTRAINT ck_record_sessions_app_id
+        CHECK (
+            app_id IS NULL
+                OR app_id IN ('VSCODE', 'WEBSTORM', 'INTELLIJ_IDEA', 'PYCHARM', 'GOLAND', 'PHPSTORM', 'RUBYMINE', 'CLION', 'RIDER', 'ANDROID_STUDIO', 'XCODE')
+        ),
     CONSTRAINT ck_record_sessions_record_payload
         CHECK (
-            (record_type = 'TASK' AND fk_record_task_id IS NOT NULL AND app_name IS NULL)
+            (record_type = 'TASK' AND fk_record_task_id IS NOT NULL AND app_id IS NULL)
                 OR
-            (record_type = 'ACTIVITY' AND fk_record_task_id IS NULL AND app_name IS NOT NULL)
+            (record_type = 'ACTIVITY' AND fk_record_task_id IS NULL AND app_id IS NOT NULL)
         )
 );
 
@@ -292,10 +297,12 @@ CREATE TABLE record_session_segments
     created_at          TIMESTAMPTZ             NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMPTZ             NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fk_record_session_id BIGINT                                  NOT NULL,
-    app_name            VARCHAR(255)                            NOT NULL,
+    app_id              VARCHAR(50)                             NOT NULL,
     started_at          TIMESTAMPTZ             NOT NULL,
     ended_at            TIMESTAMPTZ,
     CONSTRAINT pk_record_session_segments PRIMARY KEY (id),
+    CONSTRAINT ck_record_session_segments_app_id
+        CHECK (app_id IN ('VSCODE', 'WEBSTORM', 'INTELLIJ_IDEA', 'PYCHARM', 'GOLAND', 'PHPSTORM', 'RUBYMINE', 'CLION', 'RIDER', 'ANDROID_STUDIO', 'XCODE')),
     CONSTRAINT ck_record_session_segments_time_range
         CHECK (ended_at IS NULL OR ended_at > started_at)
 );

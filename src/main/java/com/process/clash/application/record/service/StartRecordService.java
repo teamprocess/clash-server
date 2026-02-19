@@ -16,6 +16,7 @@ import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.entity.RecordSessionSegment;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
@@ -57,11 +58,11 @@ public class StartRecordService implements StartRecordUseCase {
         try {
             RecordSession newRecordSession = createRecordSession(command, user, recordType, startedAt);
             savedSession = recordSessionRepositoryPort.save(newRecordSession);
-            if (savedSession.recordType() == RecordType.ACTIVITY && savedSession.appName() != null) {
+            if (savedSession.recordType() == RecordType.ACTIVITY && savedSession.appId() != null) {
                 recordSessionSegmentRepositoryPort.save(
                     RecordSessionSegment.start(
                         savedSession.id(),
-                        savedSession.appName(),
+                        savedSession.appId(),
                         startedAt
                     )
                 );
@@ -100,12 +101,12 @@ public class StartRecordService implements StartRecordUseCase {
         }
 
         validateActivityStartRequest(command);
-        String appName = command.appName().trim();
-        monitoredAppPolicy.validate(appName);
+        MonitoredApp appId = command.appId();
+        monitoredAppPolicy.validate(appId);
         return RecordSession.createActivity(
             null,
             user,
-            appName,
+            appId,
             startedAt,
             null
         );
@@ -116,11 +117,11 @@ public class StartRecordService implements StartRecordUseCase {
             return command.recordType();
         }
 
-        if (command.taskId() != null && isBlank(command.appName())) {
+        if (command.taskId() != null && command.appId() == null) {
             return RecordType.TASK;
         }
 
-        if (command.taskId() == null && !isBlank(command.appName())) {
+        if (command.taskId() == null && command.appId() != null) {
             return RecordType.ACTIVITY;
         }
 
@@ -128,18 +129,14 @@ public class StartRecordService implements StartRecordUseCase {
     }
 
     private void validateTaskStartRequest(StartRecordData.Command command) {
-        if (command.taskId() == null || !isBlank(command.appName())) {
+        if (command.taskId() == null || command.appId() != null) {
             throw new InvalidRecordStartRequestException();
         }
     }
 
     private void validateActivityStartRequest(StartRecordData.Command command) {
-        if (command.taskId() != null || isBlank(command.appName())) {
+        if (command.taskId() != null || command.appId() == null) {
             throw new InvalidRecordStartRequestException();
         }
-    }
-
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
     }
 }

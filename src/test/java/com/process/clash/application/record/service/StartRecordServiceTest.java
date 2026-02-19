@@ -2,7 +2,7 @@ package com.process.clash.application.record.service;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.StartRecordData;
-import com.process.clash.application.record.exception.exception.badrequest.InvalidMonitoredAppException;
+import com.process.clash.application.record.exception.exception.badrequest.InvalidRecordStartRequestException;
 import com.process.clash.application.record.exception.exception.conflict.RecordSessionAlreadyStartedException;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.policy.TaskPolicy;
@@ -14,6 +14,7 @@ import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
@@ -106,7 +107,7 @@ class StartRecordServiceTest {
     @DisplayName("활동 기록 시작 시 task 조회 없이 저장한다")
     void execute_activityStartWithoutTaskLookup() {
         Actor actor = new Actor(1L);
-        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, "Code", actor);
+        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, MonitoredApp.VSCODE, actor);
         User user = createUser(1L);
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
@@ -122,17 +123,17 @@ class StartRecordServiceTest {
     }
 
     @Test
-    @DisplayName("활동 기록 앱이 모니터링 목록이 아니면 예외가 발생한다")
-    void execute_throwsWhenActivityAppIsNotMonitored() {
+    @DisplayName("활동 기록 시작 시 appId가 없으면 예외가 발생한다")
+    void execute_throwsWhenActivityAppIdIsMissing() {
         Actor actor = new Actor(1L);
-        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, "Slack", actor);
+        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, null, actor);
         User user = createUser(1L);
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(recordSessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
 
         assertThatThrownBy(() -> startRecordService.execute(command))
-            .isInstanceOf(InvalidMonitoredAppException.class);
+            .isInstanceOf(InvalidRecordStartRequestException.class);
 
         verify(taskRepositoryPort, never()).findById(any());
         verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());

@@ -60,7 +60,7 @@ public interface RecordControllerDocument {
                                             "endedAt": "2025-01-02T11:00:00Z",
                                             "task": null,
                                             "activity": {
-                                              "appName": "Code"
+                                              "appId": "VSCODE"
                                             }
                                           }
                                         ]
@@ -89,7 +89,7 @@ public interface RecordControllerDocument {
                                         "endedAt": null,
                                         "task": null,
                                         "activity": {
-                                          "appName": "Code"
+                                          "appId": "VSCODE"
                                         }
                                       }
                                     }
@@ -111,9 +111,9 @@ public interface RecordControllerDocument {
                                       "message": "활동 기록 가능 앱 목록을 조회했습니다.",
                                       "data": {
                                         "apps": [
-                                          "Code",
-                                          "Visual Studio Code",
-                                          "WebStorm"
+                                          "VSCODE",
+                                          "WEBSTORM",
+                                          "INTELLIJ_IDEA"
                                         ]
                                       }
                                     }
@@ -159,7 +159,7 @@ public interface RecordControllerDocument {
                                     {
                                       "recordType": "TASK",
                                       "taskId": 1,
-                                      "appName": null
+                                      "appId": null
                                     }
                                     """)
                     ))
@@ -216,7 +216,7 @@ public interface RecordControllerDocument {
                                           "endedAt": null,
                                           "task": null,
                                           "activity": {
-                                            "appName": "IntelliJ IDEA"
+                                            "appId": "INTELLIJ_IDEA"
                                           }
                                         }
                                       }
@@ -230,7 +230,7 @@ public interface RecordControllerDocument {
                             schema = @Schema(implementation = SwitchActivityAppRequestDocument.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "appName": "IntelliJ IDEA"
+                                      "appId": "INTELLIJ_IDEA"
                                     }
                                     """)
                     ))

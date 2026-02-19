@@ -45,7 +45,7 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
         RecordSessionJpaEntity existing = recordSessionJpaRepository.findById(recordSession.id())
                 .orElseThrow(RecordSessionNotFound::new);
         existing.changeEndedAt(recordSession.endedAt());
-        existing.changeAppName(recordSession.appName());
+        existing.changeAppId(recordSession.appId());
         recordSessionJpaRepository.save(existing);
         return recordSessionJpaMapper.toDomain(existing);
     }
@@ -91,7 +91,7 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
                 RecordSessionJpaEntity entity = existingEntities.get(session.id());
                 if (entity != null) {
                     entity.changeEndedAt(session.endedAt());
-                    entity.changeAppName(session.appName());
+                    entity.changeAppId(session.appId());
                 }
             }
 

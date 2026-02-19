@@ -1,5 +1,6 @@
 package com.process.clash.domain.record.entity;
 
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 
@@ -10,7 +11,7 @@ public record RecordSession (
     User user,
     RecordTask task,
     RecordType recordType,
-    String appName,
+    MonitoredApp appId,
     Instant startedAt,
     Instant endedAt
 ) {
@@ -19,7 +20,7 @@ public record RecordSession (
         User user,
         RecordTask task,
         RecordType recordType,
-        String appName,
+        MonitoredApp appId,
         Instant startedAt,
         Instant endedAt
     ) {
@@ -28,7 +29,7 @@ public record RecordSession (
             user,
             task,
             recordType,
-            appName,
+            appId,
             startedAt,
             endedAt
         );
@@ -49,7 +50,7 @@ public record RecordSession (
     public static RecordSession createActivity(
         Long id,
         User user,
-        String appName,
+        MonitoredApp appId,
         Instant startedAt,
         Instant endedAt
     ) {
@@ -58,7 +59,7 @@ public record RecordSession (
             user,
             null,
             RecordType.ACTIVITY,
-            appName,
+            appId,
             startedAt,
             endedAt
         );
@@ -70,19 +71,19 @@ public record RecordSession (
                 this.user,
                 this.task,
                 this.recordType,
-                this.appName,
+                this.appId,
                 this.startedAt,
                 newEndedAt
         );
     }
 
-    public RecordSession changeActivityAppName(String newAppName) {
+    public RecordSession changeActivityAppId(MonitoredApp newAppId) {
         return new RecordSession(
             this.id,
             this.user,
             this.task,
             this.recordType,
-            newAppName,
+            newAppId,
             this.startedAt,
             this.endedAt
         );

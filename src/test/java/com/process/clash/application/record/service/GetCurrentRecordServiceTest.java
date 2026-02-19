@@ -8,10 +8,10 @@ import com.process.clash.application.record.data.GetCurrentRecordData;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import java.time.Instant;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
@@ -46,7 +46,7 @@ class GetCurrentRecordServiceTest {
         RecordSession activeSession = RecordSession.createActivity(
             100L,
             user,
-            "Code",
+            MonitoredApp.VSCODE,
             Instant.parse("2026-02-11T10:00:00Z"),
             null
         );
@@ -58,7 +58,7 @@ class GetCurrentRecordServiceTest {
 
         assertThat(result.session()).isNotNull();
         assertThat(result.session().recordType().name()).isEqualTo("ACTIVITY");
-        assertThat(result.session().activity().appName()).isEqualTo("Code");
+        assertThat(result.session().activity().appId()).isEqualTo(MonitoredApp.VSCODE);
         assertThat(result.session().task()).isNull();
     }
 

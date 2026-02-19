@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.record.dto;
 
 import com.process.clash.application.record.data.StartRecordData;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import java.time.Instant;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +13,7 @@ public class StartRecordDto {
     public record Request(
             RecordType recordType,
             Long taskId,
-            String appName
+            MonitoredApp appId
     ) {}
 
     @Schema(name = "StartRecordDtoResponse")

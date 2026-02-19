@@ -21,7 +21,7 @@ public class RecordSessionJpaMapper {
             user,
             task,
             recordSession.recordType(),
-            recordSession.appName(),
+            recordSession.appId(),
             recordSession.startedAt()
         );
     }
@@ -36,7 +36,7 @@ public class RecordSessionJpaMapper {
                 ? null
                 : recordTaskJpaMapper.toDomain(recordSessionJpaEntity.getTask()),
             recordType,
-            recordSessionJpaEntity.getAppName(),
+            recordSessionJpaEntity.getAppId(),
             recordSessionJpaEntity.getStartedAt(),
             recordSessionJpaEntity.getEndedAt()
         );

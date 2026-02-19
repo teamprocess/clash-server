@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.recordsession;
 
 import com.process.clash.adapter.persistence.recordtask.RecordTaskJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,8 +56,9 @@ public class RecordSessionJpaEntity {
     @Column(nullable = false)
     private RecordType recordType;
 
-    @Column(nullable = true)
-    private String appName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "app_id", nullable = true)
+    private MonitoredApp appId;
 
     @Column(nullable = false)
     private Instant startedAt;
@@ -68,7 +70,7 @@ public class RecordSessionJpaEntity {
         UserJpaEntity user,
         RecordTaskJpaEntity task,
         RecordType recordType,
-        String appName,
+        MonitoredApp appId,
         Instant startedAt
     ) {
         return new RecordSessionJpaEntity(
@@ -78,7 +80,7 @@ public class RecordSessionJpaEntity {
             user,
             task,
             recordType,
-            appName,
+            appId,
             startedAt,
             null
         );
@@ -98,7 +100,7 @@ public class RecordSessionJpaEntity {
         this.endedAt = endedAt;
     }
 
-    public void changeAppName(String appName) {
-        this.appName = appName;
+    public void changeAppId(MonitoredApp appId) {
+        this.appId = appId;
     }
 }

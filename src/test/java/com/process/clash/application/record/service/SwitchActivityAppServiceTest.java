@@ -19,10 +19,10 @@ import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.RecordSessionSegment;
 import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.record.entity.RecordTask;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import java.time.Instant;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
@@ -58,7 +58,7 @@ class SwitchActivityAppServiceTest {
     @DisplayName("활성 세션이 없으면 예외가 발생한다")
     void execute_throwsWhenNoActiveSession() {
         Actor actor = new Actor(1L);
-        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
+        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, MonitoredApp.VSCODE);
         when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> switchActivityAppService.execute(command))
@@ -78,7 +78,7 @@ class SwitchActivityAppServiceTest {
             Instant.now().minusSeconds(600),
             null
         );
-        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
+        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, MonitoredApp.VSCODE);
 
         when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(taskSession));
@@ -95,18 +95,18 @@ class SwitchActivityAppServiceTest {
         RecordSession activitySession = RecordSession.createActivity(
             100L,
             user,
-            "Code",
+            MonitoredApp.VSCODE,
             Instant.now().minusSeconds(1_800),
             null
         );
         RecordSessionSegment openSegment = new RecordSessionSegment(
             200L,
             100L,
-            "Code",
+            MonitoredApp.VSCODE,
             Instant.now().minusSeconds(1_800),
             null
         );
-        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "IntelliJ IDEA");
+        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, MonitoredApp.INTELLIJ_IDEA);
 
         when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(activitySession));
@@ -120,7 +120,7 @@ class SwitchActivityAppServiceTest {
         SwitchActivityAppData.Result result = switchActivityAppService.execute(command);
 
         assertThat(result.session().activity()).isNotNull();
-        assertThat(result.session().activity().appName()).isEqualTo("IntelliJ IDEA");
+        assertThat(result.session().activity().appId()).isEqualTo(MonitoredApp.INTELLIJ_IDEA);
         verify(recordSessionSegmentRepositoryPort, times(2)).save(any(RecordSessionSegment.class));
         verify(recordSessionRepositoryPort).save(any(RecordSession.class));
     }
@@ -133,11 +133,11 @@ class SwitchActivityAppServiceTest {
         RecordSession activitySession = RecordSession.createActivity(
             100L,
             user,
-            "Code",
+            MonitoredApp.VSCODE,
             Instant.now().minusSeconds(1_800),
             null
         );
-        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
+        SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, MonitoredApp.VSCODE);
 
         when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(activitySession));
@@ -145,7 +145,7 @@ class SwitchActivityAppServiceTest {
         SwitchActivityAppData.Result result = switchActivityAppService.execute(command);
 
         assertThat(result.session().activity()).isNotNull();
-        assertThat(result.session().activity().appName()).isEqualTo("Code");
+        assertThat(result.session().activity().appId()).isEqualTo(MonitoredApp.VSCODE);
         verify(recordSessionSegmentRepositoryPort, never()).save(any(RecordSessionSegment.class));
         verify(recordSessionRepositoryPort, never()).save(any(RecordSession.class));
     }

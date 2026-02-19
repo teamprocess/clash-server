@@ -11,6 +11,6 @@ public class StartRecordRequestDocument {
     @Schema(description = "과목 ID (recordType=TASK 일 때 필수)")
     public Long taskId;
 
-    @Schema(description = "앱 이름 (recordType=ACTIVITY 일 때 필수)", example = "Code")
-    public String appName;
+    @Schema(description = "앱 ID (recordType=ACTIVITY 일 때 필수)", example = "VSCODE")
+    public String appId;
 }

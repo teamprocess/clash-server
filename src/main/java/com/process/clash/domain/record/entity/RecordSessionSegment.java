@@ -1,20 +1,21 @@
 package com.process.clash.domain.record.entity;
 
+import com.process.clash.domain.record.enums.MonitoredApp;
 import java.time.Instant;
 
 public record RecordSessionSegment(
     Long id,
     Long sessionId,
-    String appName,
+    MonitoredApp appId,
     Instant startedAt,
     Instant endedAt
 ) {
 
-    public static RecordSessionSegment start(Long sessionId, String appName, Instant startedAt) {
+    public static RecordSessionSegment start(Long sessionId, MonitoredApp appId, Instant startedAt) {
         return new RecordSessionSegment(
             null,
             sessionId,
-            appName,
+            appId,
             startedAt,
             null
         );
@@ -24,7 +25,7 @@ public record RecordSessionSegment(
         return new RecordSessionSegment(
             this.id,
             this.sessionId,
-            this.appName,
+            this.appId,
             this.startedAt,
             endedAt
         );

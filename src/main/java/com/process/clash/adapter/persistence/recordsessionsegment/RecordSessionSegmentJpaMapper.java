@@ -13,7 +13,7 @@ public class RecordSessionSegmentJpaMapper {
     ) {
         return RecordSessionSegmentJpaEntity.create(
             session,
-            segment.appName(),
+            segment.appId(),
             segment.startedAt()
         );
     }
@@ -22,7 +22,7 @@ public class RecordSessionSegmentJpaMapper {
         return new RecordSessionSegment(
             entity.getId(),
             entity.getSession().getId(),
-            entity.getAppName(),
+            entity.getAppId(),
             entity.getStartedAt(),
             entity.getEndedAt()
         );

@@ -1,9 +1,12 @@
 package com.process.clash.adapter.persistence.recordsessionsegment;
 
 import com.process.clash.adapter.persistence.recordsession.RecordSessionJpaEntity;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,8 +47,9 @@ public class RecordSessionSegmentJpaEntity {
     @JoinColumn(name = "fk_record_session_id", nullable = false)
     private RecordSessionJpaEntity session;
 
-    @Column(nullable = false)
-    private String appName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "app_id", nullable = false)
+    private MonitoredApp appId;
 
     @Column(nullable = false)
     private Instant startedAt;
@@ -55,7 +59,7 @@ public class RecordSessionSegmentJpaEntity {
 
     public static RecordSessionSegmentJpaEntity create(
         RecordSessionJpaEntity session,
-        String appName,
+        MonitoredApp appId,
         Instant startedAt
     ) {
         return new RecordSessionSegmentJpaEntity(
@@ -63,7 +67,7 @@ public class RecordSessionSegmentJpaEntity {
             null,
             null,
             session,
-            appName,
+            appId,
             startedAt,
             null
         );
