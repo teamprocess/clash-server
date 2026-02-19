@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,9 +34,9 @@ public class Section {
 
     private Set<Section> prerequisites = new HashSet<>();
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     // 편의 메서드: 선수 과목 추가
     public void addPrerequisite(Section prerequisiteSection) {

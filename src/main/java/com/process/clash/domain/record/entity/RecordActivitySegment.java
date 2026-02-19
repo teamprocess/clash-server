@@ -1,16 +1,16 @@
 package com.process.clash.domain.record.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record RecordActivitySegment(
     Long id,
     Long sessionId,
     String appName,
-    LocalDateTime startedAt,
-    LocalDateTime endedAt
+    Instant startedAt,
+    Instant endedAt
 ) {
 
-    public static RecordActivitySegment start(Long sessionId, String appName, LocalDateTime startedAt) {
+    public static RecordActivitySegment start(Long sessionId, String appName, Instant startedAt) {
         return new RecordActivitySegment(
             null,
             sessionId,
@@ -20,7 +20,7 @@ public record RecordActivitySegment(
         );
     }
 
-    public RecordActivitySegment changeEndedAt(LocalDateTime endedAt) {
+    public RecordActivitySegment changeEndedAt(Instant endedAt) {
         return new RecordActivitySegment(
             this.id,
             this.sessionId,

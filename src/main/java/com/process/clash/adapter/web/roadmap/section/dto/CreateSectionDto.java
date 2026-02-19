@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.Instant;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -44,7 +45,7 @@ public class CreateSectionDto {
             String category,
             String description,
             List<String> keyPoints,
-            String createdAt
+            Instant createdAt
     ) {
         public static Response from(CreateSectionData.Result result) {
             return new Response(

@@ -2,7 +2,7 @@ package com.process.clash.domain.major.entity;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,9 +15,9 @@ public class MajorQuestion {
 
     private MajorQuestion.WeightVo weightVo;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

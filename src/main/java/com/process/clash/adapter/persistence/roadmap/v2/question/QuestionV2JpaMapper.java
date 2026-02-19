@@ -25,8 +25,8 @@ public class QuestionV2JpaMapper {
                 question.getOrderIndex(),
                 question.getDifficulty(),
                 new ArrayList<>(),
-                null, // createdAt은 @CreationTimestamp가 자동으로 설정
-                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
+                null, // createdAt은 @CreatedDate가 자동으로 설정
+                null  // updatedAt은 @LastModifiedDate가 자동으로 설정
         );
 
         // null-safe: question.getChoices()가 null이면 빈 리스트로 처리

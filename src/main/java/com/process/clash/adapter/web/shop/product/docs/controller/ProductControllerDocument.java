@@ -56,7 +56,7 @@ public interface ProductControllerDocument {
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "isBought": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00+09:00"
                                           }
                                         ],
                                         "pagination": {
@@ -108,7 +108,7 @@ public interface ProductControllerDocument {
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "isBought": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00+09:00"
                                           }
                                         ],
                                         "pagination": {
@@ -131,10 +131,10 @@ public interface ProductControllerDocument {
 
     @Operation(summary = "상품 상세 조회", description = "상품 상세 정보를 조회합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공",
-                    content = @Content(
-                            schema = @Schema(implementation = GetProductDetailResponseDocument.class),
-                            examples = @ExampleObject(value = """
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(
+                schema = @Schema(implementation = GetProductDetailResponseDocument.class),
+                examples = @ExampleObject(value = """
                                     {
                                       "success": true,
                                       "message": "상품 상세 정보 조회를 성공했습니다.",
@@ -152,12 +152,12 @@ public interface ProductControllerDocument {
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "isBought": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00+09:00"
                                           }
                                       }
                                     }
                                     """)
-                    ))
+            ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetProductDetailDto.Response> getProductDetail(
             @Parameter(hidden = true) Actor actor,
@@ -188,7 +188,7 @@ public interface ProductControllerDocument {
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "isBought": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00+09:00"
                                           }
                                         ],
                                       }
@@ -224,7 +224,7 @@ public interface ProductControllerDocument {
                                             "seasonName": "2025 봄 시즌",
                                             "isSeasonal": true,
                                             "isBought": true,
-                                            "createdAt": "2025-01-01T12:00:00"
+                                            "createdAt": "2025-01-01T12:00:00+09:00"
                                           }
                                         ],
                                       }

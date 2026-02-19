@@ -12,7 +12,6 @@ public class GetTodayRecordDto {
 
     public record Response(
         String date,
-        Boolean pomodoroEnabled,
         Long totalStudyTime,
         Instant studyStoppedAt,
         List<RecordSessionDto.Session> sessions
@@ -20,7 +19,6 @@ public class GetTodayRecordDto {
         public static Response from(GetTodayRecordData.Result result){
             return new Response(
                 result.date(),
-                result.pomodoroEnabled(),
                 result.totalStudyTime(),
                 result.studyStoppedAt(),
                 result.sessions().stream()

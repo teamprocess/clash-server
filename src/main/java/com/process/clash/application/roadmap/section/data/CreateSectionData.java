@@ -6,6 +6,7 @@ import com.process.clash.domain.roadmap.entity.Category;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -42,13 +43,9 @@ public class CreateSectionData {
             String category,
             String description,
             List<String> keyPoints,
-            String createdAt
+            Instant createdAt
     ) {
         public static Result from(Section section, List<String> keyPoints) {
-            String createdAtString = section.getCreatedAt() != null
-                    ? section.getCreatedAt().toString()
-                    : null;
-
             return new Result(
                     section.getId(),
                     section.getMajor().name(),
@@ -56,7 +53,7 @@ public class CreateSectionData {
                     section.getCategory().getName(),
                     section.getDescription(),
                     keyPoints,
-                    createdAtString
+                    section.getCreatedAt()
             );
         }
     }

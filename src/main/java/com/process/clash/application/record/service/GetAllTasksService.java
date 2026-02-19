@@ -68,10 +68,13 @@ public class GetAllTasksService implements GetAllTasksUseCase {
         LocalDateTime dayStart,
         LocalDateTime endLimit
     ) {
-        LocalDateTime effectiveStart = session.startedAt().isAfter(dayStart)
-            ? session.startedAt()
+        LocalDateTime sessionStart = LocalDateTime.ofInstant(session.startedAt(), recordZoneId);
+        LocalDateTime effectiveStart = sessionStart.isAfter(dayStart)
+            ? sessionStart
             : dayStart;
-        LocalDateTime effectiveEnd = session.endedAt();
+        LocalDateTime effectiveEnd = session.endedAt() == null
+            ? null
+            : LocalDateTime.ofInstant(session.endedAt(), recordZoneId);
         if (effectiveEnd == null || effectiveEnd.isAfter(endLimit)) {
             effectiveEnd = endLimit;
         }

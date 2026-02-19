@@ -17,9 +17,19 @@ spring:
         format_sql: true
         show_sql: ${SHOW_SQL:false}
         jdbc:
+          time_zone: UTC
           batch_size: 50
           order_updates: true
           order_inserts: true
+
+  jackson:
+    time-zone: Asia/Seoul
+    serialization:
+      write-dates-as-timestamps: false
+
+  flyway:
+    placeholders:
+      global_cutover_timestamp: ${GLOBAL_CUTOVER_TIMESTAMP:2026-02-15 00:00:00}
 
   mail:
     host: email-smtp.ap-northeast-2.amazonaws.com # 서울 리전 기준

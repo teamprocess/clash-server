@@ -11,7 +11,8 @@ import com.process.clash.domain.record.entity.StudySession;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class GetCurrentRecordServiceTest {
             100L,
             user,
             "Code",
-            LocalDateTime.of(2026, 2, 11, 10, 0),
+            Instant.parse("2026-02-11T10:00:00Z"),
             null
         );
 
@@ -76,8 +77,8 @@ class GetCurrentRecordServiceTest {
     private User createUser(Long id) {
         return new User(
             id,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+            Instant.now(),
+            Instant.now(),
             "username",
             "user@example.com",
             "name",

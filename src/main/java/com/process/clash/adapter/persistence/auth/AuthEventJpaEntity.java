@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Entity
@@ -30,9 +30,9 @@ public class AuthEventJpaEntity {
     private String device;
 
     @Column(nullable = false)
-    private LocalDateTime occurredAt;
+    private Instant occurredAt;
 
-    public AuthEventJpaEntity(String username, String eventType, String ipAddress, String device, LocalDateTime occurredAt) {
+    public AuthEventJpaEntity(String username, String eventType, String ipAddress, String device, Instant occurredAt) {
         this.username = username;
         this.eventType = eventType;
         this.ipAddress = ipAddress;

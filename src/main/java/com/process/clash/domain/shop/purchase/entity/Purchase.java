@@ -1,11 +1,11 @@
 package com.process.clash.domain.shop.purchase.entity;
 
 import com.process.clash.domain.common.enums.GoodsType;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record Purchase(
         Long id,
-        LocalDateTime createdAt,
+        Instant createdAt,
         GoodsType goodsType,
         Long price,
         Long productId,

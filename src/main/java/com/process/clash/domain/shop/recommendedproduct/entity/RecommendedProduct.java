@@ -4,12 +4,12 @@ import com.process.clash.application.shop.recommendedproduct.exception.exception
 import com.process.clash.application.shop.recommendedproduct.exception.exception.badrequest.InvalidDisplayOrderException;
 import com.process.clash.application.shop.recommendedproduct.exception.exception.badrequest.InvalidProductIdException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record RecommendedProduct(
         Long id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         Long productId,
         Integer displayOrder,
         LocalDate startDate,
@@ -55,7 +55,7 @@ public record RecommendedProduct(
         return new RecommendedProduct(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 this.productId,
                 displayOrder,
                 startDate,
@@ -68,7 +68,7 @@ public record RecommendedProduct(
         return new RecommendedProduct(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 this.productId,
                 displayOrder,
                 this.startDate,

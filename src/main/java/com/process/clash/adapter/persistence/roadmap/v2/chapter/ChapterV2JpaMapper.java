@@ -28,8 +28,8 @@ public class ChapterV2JpaMapper {
                 chapter.getOrderIndex(),
                 chapter.getStudyMaterialUrl(),
                 new ArrayList<>(),
-                null, // createdAt은 @CreationTimestamp가 자동으로 설정
-                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
+                null, // createdAt은 @CreatedDate가 자동으로 설정
+                null  // updatedAt은 @LastModifiedDate가 자동으로 설정
         );
 
         List<QuestionV2JpaEntity> questions = Optional.ofNullable(chapter.getQuestions()).orElse(Collections.emptyList())

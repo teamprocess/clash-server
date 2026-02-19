@@ -2,12 +2,12 @@ package com.process.clash.domain.rival.rival.entity;
 
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record Rival(
         Long id,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt,
+        Instant createdAt,
+        Instant updatedAt,
         RivalLinkingStatus rivalLinkingStatus,
         Long firstUserId,
         Long secondUserId
@@ -30,7 +30,7 @@ public record Rival(
         return new Rival(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 RivalLinkingStatus.ACCEPTED,
                 this.firstUserId,
                 this.secondUserId
@@ -42,7 +42,7 @@ public record Rival(
         return new Rival(
                 this.id,
                 this.createdAt,
-                LocalDateTime.now(),
+                Instant.now(),
                 RivalLinkingStatus.REJECTED,
                 this.firstUserId,
                 this.secondUserId

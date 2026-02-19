@@ -1,6 +1,4 @@
-# CLASH 서버 개발 가이드
-
-> CLASH 프로젝트를 이어받을 개발자를 위한 종합 개발 가이드
+# Clash 서버 개발 가이드
 
 ## 목차
 1. [프로젝트 개요](#프로젝트-개요)
@@ -15,7 +13,7 @@
 
 ## 프로젝트 개요
 
-**CLASH**는 학습 관리 및 경쟁 시스템을 제공하는 백엔드 서버입니다.
+**Clash**는 학습 기록을 통한 경쟁 애플리케이션입니다.
 
 - **License**: AGPL-3.0-with-Commons-Clause
 - **Java Version**: 21
@@ -41,15 +39,15 @@
 - **SpringDoc OpenAPI 3** (Swagger)
 
 ### Build Tool
-- **Gradle 8.x부터 동작**
-- **Gradle 8.14.3 최적**
 - **Gradle 8.5+ 권장**
 
 ---
 
 ## 아키텍처
 
-본 프로젝트는 **Hexagonal Architecture (Port & Adapter Pattern)**를 채택하고 있습니다.
+본 프로젝트는
+**Hexagonal Architecture (Port & Adapter Pattern)**
+를 채택하고 있습니다.
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -519,7 +517,7 @@ feat/{feature-name}/#{issue-number} (기능 개발)
 1. Java 21
 2. PostgreSQL
 3. Redis
-4. Gradle 8.x
+4. Gradle 8.5+
 
 ### 프로젝트 실행
 ```bash
@@ -540,6 +538,36 @@ http://localhost:8080/swagger-ui.html
 
 ---
 
+## UTC 타임존 운영 규칙
+
+### 저장/도메인 원칙
+- DB 타임스탬프 저장은 UTC 기준 `timestamptz` 사용
+- 모든 JPA 영속 시간 필드(`created_at`, `updated_at`, `occurred_at`, `synced_at`, `started_at`, `ended_at`)는 `Instant`로 매핑
+- `created_at`, `updated_at`은 Spring Data JPA Auditing(`@CreatedDate`, `@LastModifiedDate`)으로 자동 관리
+- Hibernate JDBC 타임존은 UTC 고정:
+  - `spring.jpa.properties.hibernate.jdbc.time_zone=UTC`
+- Flyway 컷오버 시점은 placeholder로 주입:
+  - `spring.flyway.placeholders.global_cutover_timestamp`
+  - 환경변수 예시: `GLOBAL_CUTOVER_TIMESTAMP=2026-02-14 00:00:00`
+
+### API 경계 원칙
+- API 응답 시간은 `Instant` 직렬화 시 KST(Asia/Seoul) 기준 ISO-8601(`+09:00`)으로 반환
+- 레코드 일자 경계(예: 하루 시작 06:00)는 `record.timezone`(기본 `Asia/Seoul`)에서 계산 후 `Instant`로 변환해 조회
+
+### Flyway 적용 순서
+1. 배포 전 `GLOBAL_CUTOVER_TIMESTAMP` 값을 운영 컷오버 시점으로 확정
+2. 애플리케이션 기동 시 Flyway `V5`(record) -> `V6`(remaining domains) 순서로 자동 적용
+3. 검증 SQL 실행
+  - 대상 테이블에서 `timestamp without time zone` 잔존 컬럼 0건 확인
+  - 테이블별 row count 보존 확인
+  - 샘플 조회로 UTC/KST 해석 확인
+  - row count 비교용 SQL 템플릿은 `V6__migrate_remaining_timestamps_to_timestamptz.sql` 하단 주석 참고
+4. 애플리케이션 기능 점검
+  - 주요 생성/수정 API timestamp 응답이 KST 오프셋(`+09:00`) 형식인지 확인
+  - 레코드 시작/종료 및 랭킹/그룹/로드맵 조회 기능 확인
+
+---
+
 ## 추가 참고 자료
 
 ### 도메인별 핵심 기능
@@ -550,9 +578,6 @@ http://localhost:8080/swagger-ui.html
 - **Shop**: 상품, 시즌, 추천 상품
 - **Auth**: 회원가입, 로그인, 이메일 인증
 
-### 문의 사항
-프로젝트 관련 문의는 이슈를 등록해주세요.
-
 ---
 
-**마지막 업데이트**: 2026-02-08
+**마지막 업데이트**: 2026-02-18

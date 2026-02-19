@@ -4,6 +4,7 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.roadmap.category.data.CreateCategoryData;
 import jakarta.validation.constraints.NotBlank;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.Instant;
 
 public class CreateCategoryDto {
 
@@ -20,7 +21,7 @@ public class CreateCategoryDto {
 
     @Schema(name = "CreateCategoryDtoResponse")
 
-    public record Response(Long categoryId, String name, String createdAt) {
+    public record Response(Long categoryId, String name, Instant createdAt) {
         public static Response from(CreateCategoryData.Result result) {
             return new Response(result.categoryId(), result.name(), result.createdAt());
         }

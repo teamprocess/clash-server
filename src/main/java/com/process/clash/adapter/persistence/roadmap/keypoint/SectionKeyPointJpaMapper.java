@@ -15,8 +15,8 @@ public class SectionKeyPointJpaMapper {
                 sectionEntity,
                 keyPoint.getContent(),
                 keyPoint.getOrderIndex(),
-                null, // createdAt은 @CreationTimestamp가 자동으로 설정
-                null  // updatedAt은 @UpdateTimestamp가 자동으로 설정
+                null, // createdAt은 @CreatedDate가 자동으로 설정
+                null  // updatedAt은 @LastModifiedDate가 자동으로 설정
         );
     }
 

@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.shop.product.dto;
 
 import com.process.clash.application.shop.product.vo.ProductVo;
+import java.time.Instant;
 
 public record CommonProductDto(
         Long id,
@@ -15,7 +16,7 @@ public record CommonProductDto(
         String seasonName,
         Boolean isSeasonal,
         Boolean isBought,
-        String createdAt
+        Instant createdAt
 ) {
     public static CommonProductDto from(ProductVo product) {
         return new CommonProductDto(
@@ -31,7 +32,7 @@ public record CommonProductDto(
                 product.seasonName(),
                 product.isSeasonal(),
                 product.isBought(),
-                product.createdAt().toString()
+                product.createdAt()
         );
     }
 }

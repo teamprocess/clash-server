@@ -1,10 +1,10 @@
 package com.process.clash.domain.user.useritem.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record UserItem(
         Long id,
-        LocalDateTime createdAt,
+        Instant createdAt,
         Long userId,
         Long productId
 ) {
