@@ -2,18 +2,19 @@ package com.process.clash.application.record.service;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.StartRecordData;
-import com.process.clash.application.record.exception.exception.badrequest.InvalidMonitoredAppException;
-import com.process.clash.application.record.exception.exception.conflict.StudySessionAlreadyStartedException;
+import com.process.clash.application.record.exception.exception.badrequest.InvalidRecordStartRequestException;
+import com.process.clash.application.record.exception.exception.conflict.RecordSessionAlreadyStartedException;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.policy.TaskPolicy;
-import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.application.record.port.out.TaskRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordTaskRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.record.entity.Task;
-import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.domain.record.entity.RecordTask;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
@@ -37,31 +38,31 @@ import static org.mockito.Mockito.*;
 class StartRecordServiceTest {
 
     @Mock
-    private StudySessionRepositoryPort studySessionRepositoryPort;
+    private RecordSessionRepositoryPort recordSessionRepositoryPort;
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
 
     @Mock
-    private TaskRepositoryPort taskRepositoryPort;
+    private RecordTaskRepositoryPort taskRepositoryPort;
 
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
     @Mock
-    private RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+    private RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
 
     private StartRecordService startRecordService;
 
     @BeforeEach
     void setUp() {
         startRecordService = new StartRecordService(
-            studySessionRepositoryPort,
+            recordSessionRepositoryPort,
             userRepositoryPort,
             taskRepositoryPort,
             new TaskPolicy(),
             new MonitoredAppPolicy(),
-            recordActivitySegmentRepositoryPort,
+            recordSessionSegmentRepositoryPort,
             recordActivityNotifierPort,
             ZoneId.of("UTC")
         );
@@ -73,16 +74,16 @@ class StartRecordServiceTest {
         Actor actor = new Actor(1L);
         StartRecordData.Command command = new StartRecordData.Command(RecordType.TASK, 11L, null, actor);
         User user = createUser(1L);
-        Task task = createTask(11L, user);
+        RecordTask task = createTask(11L, user);
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(taskRepositoryPort.findById(command.taskId())).thenReturn(Optional.of(task));
-        when(studySessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
-        when(studySessionRepositoryPort.save(any(StudySession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(recordSessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordSessionRepositoryPort.save(any(RecordSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         startRecordService.execute(command);
 
-        verify(studySessionRepositoryPort).save(any(StudySession.class));
+        verify(recordSessionRepositoryPort).save(any(RecordSession.class));
         verify(recordActivityNotifierPort).notifyActivityStarted(actor);
     }
 
@@ -94,10 +95,10 @@ class StartRecordServiceTest {
         User user = createUser(1L);
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
-        when(studySessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(true);
+        when(recordSessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(true);
 
         assertThatThrownBy(() -> startRecordService.execute(command))
-            .isInstanceOf(StudySessionAlreadyStartedException.class);
+            .isInstanceOf(RecordSessionAlreadyStartedException.class);
 
         verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
     }
@@ -106,33 +107,33 @@ class StartRecordServiceTest {
     @DisplayName("활동 기록 시작 시 task 조회 없이 저장한다")
     void execute_activityStartWithoutTaskLookup() {
         Actor actor = new Actor(1L);
-        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, "Code", actor);
+        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, MonitoredApp.VSCODE, actor);
         User user = createUser(1L);
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
-        when(studySessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
-        when(studySessionRepositoryPort.save(any(StudySession.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(recordActivitySegmentRepositoryPort.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(recordSessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordSessionRepositoryPort.save(any(RecordSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(recordSessionSegmentRepositoryPort.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         startRecordService.execute(command);
 
         verify(taskRepositoryPort, never()).findById(any());
-        verify(studySessionRepositoryPort).save(any(StudySession.class));
+        verify(recordSessionRepositoryPort).save(any(RecordSession.class));
         verify(recordActivityNotifierPort).notifyActivityStarted(actor);
     }
 
     @Test
-    @DisplayName("활동 기록 앱이 모니터링 목록이 아니면 예외가 발생한다")
-    void execute_throwsWhenActivityAppIsNotMonitored() {
+    @DisplayName("활동 기록 시작 시 appId가 없으면 예외가 발생한다")
+    void execute_throwsWhenActivityAppIdIsMissing() {
         Actor actor = new Actor(1L);
-        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, "Slack", actor);
+        StartRecordData.Command command = new StartRecordData.Command(RecordType.ACTIVITY, null, null, actor);
         User user = createUser(1L);
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
-        when(studySessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordSessionRepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
 
         assertThatThrownBy(() -> startRecordService.execute(command))
-            .isInstanceOf(InvalidMonitoredAppException.class);
+            .isInstanceOf(InvalidRecordStartRequestException.class);
 
         verify(taskRepositoryPort, never()).findById(any());
         verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
@@ -157,8 +158,8 @@ class StartRecordServiceTest {
         );
     }
 
-    private Task createTask(Long id, User user) {
-        return new Task(
+    private RecordTask createTask(Long id, User user) {
+        return new RecordTask(
             id,
             "task",
             0L,

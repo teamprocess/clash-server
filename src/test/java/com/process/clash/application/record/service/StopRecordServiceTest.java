@@ -3,12 +3,12 @@ package com.process.clash.application.record.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
-import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.record.entity.StudySession;
-import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
@@ -32,21 +32,21 @@ import static org.mockito.Mockito.*;
 class StopRecordServiceTest {
 
     @Mock
-    private StudySessionRepositoryPort studySessionRepositoryPort;
+    private RecordSessionRepositoryPort recordSessionRepositoryPort;
 
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
     @Mock
-    private RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+    private RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
 
     private StopRecordService stopRecordService;
 
     @BeforeEach
     void setUp() {
         stopRecordService = new StopRecordService(
-            studySessionRepositoryPort,
-            recordActivitySegmentRepositoryPort,
+            recordSessionRepositoryPort,
+            recordSessionSegmentRepositoryPort,
             recordActivityNotifierPort,
             ZoneId.of("UTC")
         );
@@ -58,8 +58,8 @@ class StopRecordServiceTest {
         Actor actor = new Actor(1L);
         StopRecordData.Command command = new StopRecordData.Command(actor);
         User user = createUser(1L);
-        Task task = createTask(11L, user);
-        StudySession activeSession = StudySession.create(
+        RecordTask task = createTask(11L, user);
+        RecordSession activeSession = RecordSession.create(
             100L,
             user,
             task,
@@ -67,13 +67,13 @@ class StopRecordServiceTest {
             null
         );
 
-        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+        when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(activeSession));
-        when(studySessionRepositoryPort.save(any(StudySession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(recordSessionRepositoryPort.save(any(RecordSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         stopRecordService.execute(command);
 
-        verify(studySessionRepositoryPort).save(any(StudySession.class));
+        verify(recordSessionRepositoryPort).save(any(RecordSession.class));
         verify(recordActivityNotifierPort).notifyActivityStopped(actor);
     }
 
@@ -83,7 +83,7 @@ class StopRecordServiceTest {
         Actor actor = new Actor(1L);
         StopRecordData.Command command = new StopRecordData.Command(actor);
 
-        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+        when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> stopRecordService.execute(command))
@@ -111,8 +111,8 @@ class StopRecordServiceTest {
         );
     }
 
-    private Task createTask(Long id, User user) {
-        return new Task(
+    private RecordTask createTask(Long id, User user) {
+        return new RecordTask(
             id,
             "task",
             0L,

@@ -1,5 +1,6 @@
 package com.process.clash.application.record.data;
 
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import java.time.Instant;
 
@@ -34,7 +35,7 @@ public class RecordSessionData {
             Long id,
             Instant startedAt,
             Instant endedAt,
-            String appName
+            MonitoredApp appId
         ) {
             return new Session(
                 id,
@@ -42,7 +43,7 @@ public class RecordSessionData {
                 startedAt,
                 endedAt,
                 null,
-                new Activity(appName)
+                new Activity(appId)
             );
         }
     }
@@ -53,6 +54,6 @@ public class RecordSessionData {
     ) {}
 
     public record Activity(
-        String appName
+        MonitoredApp appId
     ) {}
 }
