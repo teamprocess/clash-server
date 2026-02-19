@@ -2,11 +2,11 @@ package com.process.clash.application.record.service;
 
 import com.process.clash.application.record.data.GetAllTasksData;
 import com.process.clash.application.record.port.in.GetAllTasksUseCase;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.application.record.port.out.TaskRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordTaskRepositoryPort;
 import com.process.clash.application.record.util.RecordDateCalculator;
-import com.process.clash.domain.record.entity.StudySession;
-import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.infrastructure.config.RecordProperties;
 import java.time.LocalDateTime;
@@ -23,21 +23,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GetAllTasksService implements GetAllTasksUseCase {
 
-    private final TaskRepositoryPort taskRepositoryPort;
-    private final StudySessionRepositoryPort studySessionRepositoryPort;
+    private final RecordTaskRepositoryPort taskRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
 
     public GetAllTasksData.Result execute(GetAllTasksData.Command command) {
 
-        List<Task> taskList = taskRepositoryPort.findAllByUserId(command.actor().id());
+        List<RecordTask> taskList = taskRepositoryPort.findAllByUserId(command.actor().id());
         ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
         int boundaryHour = recordProperties.dayBoundaryHour();
         LocalDateTime dayStart = RecordDateCalculator.startOfRecordDay(nowZoned, boundaryHour);
         LocalDateTime dayEnd = dayStart.plusDays(1);
         LocalDateTime now = nowZoned.toLocalDateTime();
         LocalDateTime endLimit = now.isBefore(dayEnd) ? now : dayEnd;
-        List<StudySession> sessions = studySessionRepositoryPort.findAllByUserIdAndTimeRange(
+        List<RecordSession> sessions = recordSessionRepositoryPort.findAllByUserIdAndTimeRange(
             command.actor().id(),
             dayStart,
             dayEnd
@@ -49,8 +49,8 @@ public class GetAllTasksService implements GetAllTasksUseCase {
                 Collectors.summingLong(session -> sessionSecondsInWindow(session, dayStart, endLimit))
             ));
 
-        List<Task> tasksWithStudyTime = taskList.stream()
-            .map(task -> new Task(
+        List<RecordTask> tasksWithStudyTime = taskList.stream()
+            .map(task -> new RecordTask(
                 task.id(),
                 task.name(),
                 studyTimeByTaskId.getOrDefault(task.id(), 0L),
@@ -64,7 +64,7 @@ public class GetAllTasksService implements GetAllTasksUseCase {
     }
 
     private long sessionSecondsInWindow(
-        StudySession session,
+        RecordSession session,
         LocalDateTime dayStart,
         LocalDateTime endLimit
     ) {

@@ -2,7 +2,7 @@ package com.process.clash.domain.record.entity;
 
 import java.time.Instant;
 
-public record RecordActivitySegment(
+public record RecordSessionSegment(
     Long id,
     Long sessionId,
     String appName,
@@ -10,8 +10,8 @@ public record RecordActivitySegment(
     Instant endedAt
 ) {
 
-    public static RecordActivitySegment start(Long sessionId, String appName, Instant startedAt) {
-        return new RecordActivitySegment(
+    public static RecordSessionSegment start(Long sessionId, String appName, Instant startedAt) {
+        return new RecordSessionSegment(
             null,
             sessionId,
             appName,
@@ -20,8 +20,8 @@ public record RecordActivitySegment(
         );
     }
 
-    public RecordActivitySegment changeEndedAt(Instant endedAt) {
-        return new RecordActivitySegment(
+    public RecordSessionSegment changeEndedAt(Instant endedAt) {
+        return new RecordSessionSegment(
             this.id,
             this.sessionId,
             this.appName,

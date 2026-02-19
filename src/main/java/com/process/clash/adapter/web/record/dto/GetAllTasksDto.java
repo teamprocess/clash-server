@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.record.dto;
 
 import com.process.clash.application.record.data.GetAllTasksData;
-import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.entity.RecordTask;
 import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -29,7 +29,7 @@ public class GetAllTasksDto {
         String icon,
         Long studyTime
     ) {
-        public static TaskSummary from(Task task) {
+        public static TaskSummary from(RecordTask task) {
             return new TaskSummary(
                     task.id(),
                     task.name(),

@@ -2,20 +2,20 @@ package com.process.clash.application.record.service;
 
 import com.process.clash.application.record.data.StartRecordData;
 import com.process.clash.application.record.exception.exception.badrequest.InvalidRecordStartRequestException;
-import com.process.clash.application.record.exception.exception.conflict.StudySessionAlreadyStartedException;
+import com.process.clash.application.record.exception.exception.conflict.RecordSessionAlreadyStartedException;
 import com.process.clash.application.record.exception.exception.notfound.TaskNotFoundException;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.policy.TaskPolicy;
 import com.process.clash.application.record.port.in.StartRecordUseCase;
-import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.application.record.port.out.TaskRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordTaskRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.record.entity.StudySession;
-import com.process.clash.domain.record.entity.Task;
-import com.process.clash.domain.record.entity.RecordActivitySegment;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.entity.RecordTask;
+import com.process.clash.domain.record.entity.RecordSessionSegment;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
@@ -30,12 +30,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StartRecordService implements StartRecordUseCase {
 
-    private final StudySessionRepositoryPort studySessionRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
-    private final TaskRepositoryPort taskRepositoryPort;
+    private final RecordTaskRepositoryPort taskRepositoryPort;
     private final TaskPolicy taskPolicy;
     private final MonitoredAppPolicy monitoredAppPolicy;
-    private final RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+    private final RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
     private final ZoneId recordZoneId;
 
@@ -45,21 +45,21 @@ public class StartRecordService implements StartRecordUseCase {
         User user = userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
-        Boolean existsActiveSession = studySessionRepositoryPort.existsActiveSessionByUserId(
+        Boolean existsActiveSession = recordSessionRepositoryPort.existsActiveSessionByUserId(
                 command.actor().id()
         );
 
-        if(existsActiveSession) throw new StudySessionAlreadyStartedException();
+        if(existsActiveSession) throw new RecordSessionAlreadyStartedException();
 
         RecordType recordType = resolveRecordType(command);
         Instant startedAt = Instant.now();
-        StudySession savedSession;
+        RecordSession savedSession;
         try {
-            StudySession newStudySession = createStudySession(command, user, recordType, startedAt);
-            savedSession = studySessionRepositoryPort.save(newStudySession);
+            RecordSession newRecordSession = createRecordSession(command, user, recordType, startedAt);
+            savedSession = recordSessionRepositoryPort.save(newRecordSession);
             if (savedSession.recordType() == RecordType.ACTIVITY && savedSession.appName() != null) {
-                recordActivitySegmentRepositoryPort.save(
-                    RecordActivitySegment.start(
+                recordSessionSegmentRepositoryPort.save(
+                    RecordSessionSegment.start(
                         savedSession.id(),
                         savedSession.appName(),
                         startedAt
@@ -68,7 +68,7 @@ public class StartRecordService implements StartRecordUseCase {
             }
             recordActivityNotifierPort.notifyActivityStarted(command.actor());
         } catch (DataIntegrityViolationException exception) {
-            throw new StudySessionAlreadyStartedException(exception);
+            throw new RecordSessionAlreadyStartedException(exception);
         }
 
         return StartRecordData.Result.from(
@@ -77,7 +77,7 @@ public class StartRecordService implements StartRecordUseCase {
         );
     }
 
-    private StudySession createStudySession(
+    private RecordSession createRecordSession(
         StartRecordData.Command command,
         User user,
         RecordType recordType,
@@ -85,10 +85,10 @@ public class StartRecordService implements StartRecordUseCase {
     ) {
         if (recordType == RecordType.TASK) {
             validateTaskStartRequest(command);
-            Task task = taskRepositoryPort.findById(command.taskId())
+            RecordTask task = taskRepositoryPort.findById(command.taskId())
                 .orElseThrow(TaskNotFoundException::new);
             taskPolicy.validateOwnership(command.actor(), task);
-            return StudySession.create(
+            return RecordSession.create(
                 null,
                 user,
                 task,
@@ -102,7 +102,7 @@ public class StartRecordService implements StartRecordUseCase {
         validateActivityStartRequest(command);
         String appName = command.appName().trim();
         monitoredAppPolicy.validate(appName);
-        return StudySession.createActivity(
+        return RecordSession.createActivity(
             null,
             user,
             appName,

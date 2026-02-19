@@ -1,7 +1,7 @@
 package com.process.clash.adapter.web.record.dto;
 
 import com.process.clash.application.record.data.UpdateTaskData;
-import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.entity.RecordTask;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
@@ -22,7 +22,7 @@ public class UpdateTaskDto {
         Long studyTime
     ) {
         public static Response from(UpdateTaskData.Result result) {
-            Task task = result.task();
+            RecordTask task = result.task();
             return new Response(
                 task.id(),
                 task.name(),

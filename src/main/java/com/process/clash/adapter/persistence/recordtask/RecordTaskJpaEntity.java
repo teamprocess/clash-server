@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.task;
+package com.process.clash.adapter.persistence.recordtask;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.Column;
@@ -21,10 +21,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "tasks")
+@Table(name = "record_tasks")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TaskJpaEntity {
+public class RecordTaskJpaEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,24 +45,24 @@ public class TaskJpaEntity {
     private UserJpaEntity user;
 
 
-    public static TaskJpaEntity create(String name, UserJpaEntity userJpaEntity) {
-        TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
+    public static RecordTaskJpaEntity create(String name, UserJpaEntity userJpaEntity) {
+        RecordTaskJpaEntity recordTaskJpaEntity = new RecordTaskJpaEntity();
 
-        taskJpaEntity.name = name;
-        taskJpaEntity.user = userJpaEntity;
+        recordTaskJpaEntity.name = name;
+        recordTaskJpaEntity.user = userJpaEntity;
 
-        return taskJpaEntity;
+        return recordTaskJpaEntity;
     }
 
-    public static TaskJpaEntity from(Long taskId, String name, UserJpaEntity userJpaEntity, Instant createdAt, Instant updatedAt) {
-        TaskJpaEntity taskJpaEntity = new TaskJpaEntity();
+    public static RecordTaskJpaEntity from(Long taskId, String name, UserJpaEntity userJpaEntity, Instant createdAt, Instant updatedAt) {
+        RecordTaskJpaEntity recordTaskJpaEntity = new RecordTaskJpaEntity();
 
-        taskJpaEntity.id = taskId;
-        taskJpaEntity.name = name;
-        taskJpaEntity.user = userJpaEntity;
-        taskJpaEntity.createdAt = createdAt;
-        taskJpaEntity.updatedAt = updatedAt;
+        recordTaskJpaEntity.id = taskId;
+        recordTaskJpaEntity.name = name;
+        recordTaskJpaEntity.user = userJpaEntity;
+        recordTaskJpaEntity.createdAt = createdAt;
+        recordTaskJpaEntity.updatedAt = updatedAt;
 
-        return taskJpaEntity;
+        return recordTaskJpaEntity;
     }
 }

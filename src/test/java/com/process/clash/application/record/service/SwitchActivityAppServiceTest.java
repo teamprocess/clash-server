@@ -13,12 +13,12 @@ import com.process.clash.application.record.data.SwitchActivityAppData;
 import com.process.clash.application.record.exception.exception.badrequest.InvalidActivitySwitchRequestException;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
-import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.record.entity.RecordActivitySegment;
-import com.process.clash.domain.record.entity.StudySession;
-import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.entity.RecordSessionSegment;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
@@ -37,18 +37,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SwitchActivityAppServiceTest {
 
     @Mock
-    private StudySessionRepositoryPort studySessionRepositoryPort;
+    private RecordSessionRepositoryPort recordSessionRepositoryPort;
 
     @Mock
-    private RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+    private RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
 
     private SwitchActivityAppService switchActivityAppService;
 
     @BeforeEach
     void setUp() {
         switchActivityAppService = new SwitchActivityAppService(
-            studySessionRepositoryPort,
-            recordActivitySegmentRepositoryPort,
+            recordSessionRepositoryPort,
+            recordSessionSegmentRepositoryPort,
             new MonitoredAppPolicy(),
             ZoneId.of("UTC")
         );
@@ -59,7 +59,7 @@ class SwitchActivityAppServiceTest {
     void execute_throwsWhenNoActiveSession() {
         Actor actor = new Actor(1L);
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
-        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id())).thenReturn(Optional.empty());
+        when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> switchActivityAppService.execute(command))
             .isInstanceOf(ActiveSessionNotFound.class);
@@ -70,8 +70,8 @@ class SwitchActivityAppServiceTest {
     void execute_throwsWhenActiveSessionIsTask() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
-        Task task = createTask(11L, user);
-        StudySession taskSession = StudySession.create(
+        RecordTask task = createTask(11L, user);
+        RecordSession taskSession = RecordSession.create(
             100L,
             user,
             task,
@@ -80,7 +80,7 @@ class SwitchActivityAppServiceTest {
         );
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
 
-        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+        when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(taskSession));
 
         assertThatThrownBy(() -> switchActivityAppService.execute(command))
@@ -92,14 +92,14 @@ class SwitchActivityAppServiceTest {
     void execute_switchesActivitySegment() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
-        StudySession activitySession = StudySession.createActivity(
+        RecordSession activitySession = RecordSession.createActivity(
             100L,
             user,
             "Code",
             Instant.now().minusSeconds(1_800),
             null
         );
-        RecordActivitySegment openSegment = new RecordActivitySegment(
+        RecordSessionSegment openSegment = new RecordSessionSegment(
             200L,
             100L,
             "Code",
@@ -108,21 +108,21 @@ class SwitchActivityAppServiceTest {
         );
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "IntelliJ IDEA");
 
-        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+        when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(activitySession));
-        when(recordActivitySegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(activitySession.id()))
+        when(recordSessionSegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(activitySession.id()))
             .thenReturn(Optional.of(openSegment));
-        when(recordActivitySegmentRepositoryPort.save(any(RecordActivitySegment.class)))
+        when(recordSessionSegmentRepositoryPort.save(any(RecordSessionSegment.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
-        when(studySessionRepositoryPort.save(any(StudySession.class)))
+        when(recordSessionRepositoryPort.save(any(RecordSession.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
 
         SwitchActivityAppData.Result result = switchActivityAppService.execute(command);
 
         assertThat(result.session().activity()).isNotNull();
         assertThat(result.session().activity().appName()).isEqualTo("IntelliJ IDEA");
-        verify(recordActivitySegmentRepositoryPort, times(2)).save(any(RecordActivitySegment.class));
-        verify(studySessionRepositoryPort).save(any(StudySession.class));
+        verify(recordSessionSegmentRepositoryPort, times(2)).save(any(RecordSessionSegment.class));
+        verify(recordSessionRepositoryPort).save(any(RecordSession.class));
     }
 
     @Test
@@ -130,7 +130,7 @@ class SwitchActivityAppServiceTest {
     void execute_noopWhenSameApp() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
-        StudySession activitySession = StudySession.createActivity(
+        RecordSession activitySession = RecordSession.createActivity(
             100L,
             user,
             "Code",
@@ -139,15 +139,15 @@ class SwitchActivityAppServiceTest {
         );
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(actor, "Code");
 
-        when(studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+        when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
             .thenReturn(Optional.of(activitySession));
 
         SwitchActivityAppData.Result result = switchActivityAppService.execute(command);
 
         assertThat(result.session().activity()).isNotNull();
         assertThat(result.session().activity().appName()).isEqualTo("Code");
-        verify(recordActivitySegmentRepositoryPort, never()).save(any(RecordActivitySegment.class));
-        verify(studySessionRepositoryPort, never()).save(any(StudySession.class));
+        verify(recordSessionSegmentRepositoryPort, never()).save(any(RecordSessionSegment.class));
+        verify(recordSessionRepositoryPort, never()).save(any(RecordSession.class));
     }
 
     private User createUser(Long id) {
@@ -169,8 +169,8 @@ class SwitchActivityAppServiceTest {
         );
     }
 
-    private Task createTask(Long id, User user) {
-        return new Task(
+    private RecordTask createTask(Long id, User user) {
+        return new RecordTask(
             id,
             "task",
             0L,

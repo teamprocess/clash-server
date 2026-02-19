@@ -1,6 +1,6 @@
-package com.process.clash.adapter.persistence.studysession;
+package com.process.clash.adapter.persistence.recordsession;
 
-import com.process.clash.adapter.persistence.task.TaskJpaEntity;
+import com.process.clash.adapter.persistence.recordtask.RecordTaskJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.record.enums.RecordType;
 import jakarta.persistence.Column;
@@ -26,11 +26,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "study_sessions")
+@Table(name = "record_sessions")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class StudySessionJpaEntity {
+public class RecordSessionJpaEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,8 +48,8 @@ public class StudySessionJpaEntity {
     private UserJpaEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "fk_task_id", nullable = true)
-    private TaskJpaEntity task;
+    @JoinColumn(name = "fk_record_task_id", nullable = true)
+    private RecordTaskJpaEntity task;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -64,14 +64,14 @@ public class StudySessionJpaEntity {
     @Column(nullable = true)
     private Instant endedAt;
 
-    public static StudySessionJpaEntity create(
+    public static RecordSessionJpaEntity create(
         UserJpaEntity user,
-        TaskJpaEntity task,
+        RecordTaskJpaEntity task,
         RecordType recordType,
         String appName,
         Instant startedAt
     ) {
-        return new StudySessionJpaEntity(
+        return new RecordSessionJpaEntity(
             null,
             null,
             null,
@@ -84,7 +84,7 @@ public class StudySessionJpaEntity {
         );
     }
 
-    public static StudySessionJpaEntity create(UserJpaEntity user, TaskJpaEntity task, Instant startedAt) {
+    public static RecordSessionJpaEntity create(UserJpaEntity user, RecordTaskJpaEntity task, Instant startedAt) {
         return create(
             user,
             task,

@@ -5,25 +5,25 @@ import com.process.clash.domain.user.user.entity.User;
 
 import java.time.Instant;
 
-public record StudySession (
+public record RecordSession (
     Long id,
     User user,
-    Task task,
+    RecordTask task,
     RecordType recordType,
     String appName,
     Instant startedAt,
     Instant endedAt
 ) {
-    public static StudySession create(
+    public static RecordSession create(
         Long id,
         User user,
-        Task task,
+        RecordTask task,
         RecordType recordType,
         String appName,
         Instant startedAt,
         Instant endedAt
     ) {
-        return new StudySession(
+        return new RecordSession(
             id,
             user,
             task,
@@ -34,7 +34,7 @@ public record StudySession (
         );
     }
 
-    public static StudySession create(Long id, User user, Task task, Instant startedAt, Instant endedAt) {
+    public static RecordSession create(Long id, User user, RecordTask task, Instant startedAt, Instant endedAt) {
         return create(
             id,
             user,
@@ -46,7 +46,7 @@ public record StudySession (
         );
     }
 
-    public static StudySession createActivity(
+    public static RecordSession createActivity(
         Long id,
         User user,
         String appName,
@@ -64,8 +64,8 @@ public record StudySession (
         );
     }
 
-    public StudySession changeEndedAt(Instant newEndedAt) {
-        return new StudySession(
+    public RecordSession changeEndedAt(Instant newEndedAt) {
+        return new RecordSession(
                 this.id,
                 this.user,
                 this.task,
@@ -76,8 +76,8 @@ public record StudySession (
         );
     }
 
-    public StudySession changeActivityAppName(String newAppName) {
-        return new StudySession(
+    public RecordSession changeActivityAppName(String newAppName) {
+        return new RecordSession(
             this.id,
             this.user,
             this.task,

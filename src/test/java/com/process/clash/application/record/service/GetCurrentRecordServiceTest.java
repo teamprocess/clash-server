@@ -5,9 +5,9 @@ import static org.mockito.Mockito.when;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.GetCurrentRecordData;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
@@ -26,14 +26,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class GetCurrentRecordServiceTest {
 
     @Mock
-    private StudySessionRepositoryPort studySessionRepositoryPort;
+    private RecordSessionRepositoryPort recordSessionRepositoryPort;
 
     private GetCurrentRecordService getCurrentRecordService;
 
     @BeforeEach
     void setUp() {
         getCurrentRecordService = new GetCurrentRecordService(
-            studySessionRepositoryPort,
+            recordSessionRepositoryPort,
             ZoneId.of("UTC")
         );
     }
@@ -43,7 +43,7 @@ class GetCurrentRecordServiceTest {
     void execute_returnsActiveActivitySession() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
-        StudySession activeSession = StudySession.createActivity(
+        RecordSession activeSession = RecordSession.createActivity(
             100L,
             user,
             "Code",
@@ -51,7 +51,7 @@ class GetCurrentRecordServiceTest {
             null
         );
 
-        when(studySessionRepositoryPort.findActiveSessionByUserId(actor.id()))
+        when(recordSessionRepositoryPort.findActiveSessionByUserId(actor.id()))
             .thenReturn(Optional.of(activeSession));
 
         GetCurrentRecordData.Result result = getCurrentRecordService.execute(new GetCurrentRecordData.Command(actor));
@@ -66,7 +66,7 @@ class GetCurrentRecordServiceTest {
     @DisplayName("활성 세션이 없으면 null 세션을 반환한다")
     void execute_returnsNullWhenNoActiveSession() {
         Actor actor = new Actor(1L);
-        when(studySessionRepositoryPort.findActiveSessionByUserId(actor.id()))
+        when(recordSessionRepositoryPort.findActiveSessionByUserId(actor.id()))
             .thenReturn(Optional.empty());
 
         GetCurrentRecordData.Result result = getCurrentRecordService.execute(new GetCurrentRecordData.Command(actor));

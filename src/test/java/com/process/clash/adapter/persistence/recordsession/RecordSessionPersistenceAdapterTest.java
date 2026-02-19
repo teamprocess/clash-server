@@ -1,6 +1,6 @@
-package com.process.clash.adapter.persistence.studysession;
+package com.process.clash.adapter.persistence.recordsession;
 
-import com.process.clash.adapter.persistence.task.TaskJpaRepository;
+import com.process.clash.adapter.persistence.recordtask.RecordTaskJpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,31 +19,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class StudySessionPersistenceAdapterTest {
+class RecordSessionPersistenceAdapterTest {
 
     private static final ZoneId RECORD_ZONE_ID = ZoneId.of("UTC");
 
     @Mock
-    private StudySessionJpaRepository studySessionJpaRepository;
+    private RecordSessionJpaRepository recordSessionJpaRepository;
 
     @Mock
-    private StudySessionJpaMapper studySessionJpaMapper;
+    private RecordSessionJpaMapper recordSessionJpaMapper;
 
     @Mock
     private UserJpaRepository userJpaRepository;
 
     @Mock
-    private TaskJpaRepository taskJpaRepository;
+    private RecordTaskJpaRepository recordTaskJpaRepository;
 
-    private StudySessionPersistenceAdapter adapter;
+    private RecordSessionPersistenceAdapter adapter;
 
     @BeforeEach
     void setUp() {
-        adapter = new StudySessionPersistenceAdapter(
-            studySessionJpaRepository,
-            studySessionJpaMapper,
+        adapter = new RecordSessionPersistenceAdapter(
+            recordSessionJpaRepository,
+            recordSessionJpaMapper,
             userJpaRepository,
-            taskJpaRepository,
+            recordTaskJpaRepository,
             RECORD_ZONE_ID
         );
     }
@@ -53,7 +53,7 @@ class StudySessionPersistenceAdapterTest {
     void getTotalStudyTimeInSeconds_passesRecordZoneNow() {
         LocalDateTime startOfDay = LocalDateTime.of(2026, 1, 1, 6, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
-        when(studySessionJpaRepository.getTotalStudyTimeInSeconds(anyLong(), any(), any(), any()))
+        when(recordSessionJpaRepository.getTotalStudyTimeInSeconds(anyLong(), any(), any(), any()))
             .thenReturn(120L);
 
         Instant before = Instant.now();
@@ -61,7 +61,7 @@ class StudySessionPersistenceAdapterTest {
         Instant after = Instant.now();
 
         ArgumentCaptor<Instant> nowCaptor = ArgumentCaptor.forClass(Instant.class);
-        verify(studySessionJpaRepository)
+        verify(recordSessionJpaRepository)
             .getTotalStudyTimeInSeconds(
                 eq(1L),
                 eq(startOfDay.atZone(RECORD_ZONE_ID).toInstant()),
@@ -80,7 +80,7 @@ class StudySessionPersistenceAdapterTest {
         LocalDateTime startOfDay = LocalDateTime.of(2026, 1, 1, 6, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
         List<Long> userIds = List.of(1L, 2L);
-        when(studySessionJpaRepository.getTotalStudyTimeInSecondsByUserIds(any(), any(), any(), any()))
+        when(recordSessionJpaRepository.getTotalStudyTimeInSecondsByUserIds(any(), any(), any(), any()))
             .thenReturn(List.of());
 
         Instant before = Instant.now();
@@ -88,7 +88,7 @@ class StudySessionPersistenceAdapterTest {
         Instant after = Instant.now();
 
         ArgumentCaptor<Instant> nowCaptor = ArgumentCaptor.forClass(Instant.class);
-        verify(studySessionJpaRepository)
+        verify(recordSessionJpaRepository)
             .getTotalStudyTimeInSecondsByUserIds(
                 eq(userIds),
                 eq(startOfDay.atZone(RECORD_ZONE_ID).toInstant()),
@@ -109,7 +109,7 @@ class StudySessionPersistenceAdapterTest {
 
         adapter.getTotalStudyTimeInSecondsByUserIds(List.of(), startOfDay, endOfDay);
 
-        verify(studySessionJpaRepository, never())
+        verify(recordSessionJpaRepository, never())
             .getTotalStudyTimeInSecondsByUserIds(any(), any(), any(), any());
     }
 }

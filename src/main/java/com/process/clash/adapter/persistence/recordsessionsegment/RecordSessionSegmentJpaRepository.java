@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.recordactivitysegment;
+package com.process.clash.adapter.persistence.recordsessionsegment;
 
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
@@ -9,16 +9,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RecordActivitySegmentJpaRepository extends JpaRepository<RecordActivitySegmentJpaEntity, Long> {
+public interface RecordSessionSegmentJpaRepository extends JpaRepository<RecordSessionSegmentJpaEntity, Long> {
 
-    Optional<RecordActivitySegmentJpaEntity> findBySession_IdAndEndedAtIsNull(Long sessionId);
+    Optional<RecordSessionSegmentJpaEntity> findBySession_IdAndEndedAtIsNull(Long sessionId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
         select s
-        from RecordActivitySegmentJpaEntity s
+        from RecordSessionSegmentJpaEntity s
         where s.session.id = :sessionId
           and s.endedAt is null
     """)
-    Optional<RecordActivitySegmentJpaEntity> findOpenBySessionIdForUpdate(@Param("sessionId") Long sessionId);
+    Optional<RecordSessionSegmentJpaEntity> findOpenBySessionIdForUpdate(@Param("sessionId") Long sessionId);
 }

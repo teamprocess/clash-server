@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.studysession;
+package com.process.clash.adapter.persistence.recordsession;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,42 +14,42 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpaEntity, Long> {
+public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJpaEntity, Long> {
 
     @EntityGraph(attributePaths = {"user", "task"})
-    List<StudySessionJpaEntity> findAllByUserId(Long userId);
+    List<RecordSessionJpaEntity> findAllByUserId(Long userId);
 
     Boolean existsByUserIdAndEndedAtIsNull(Long userId);
 
     Boolean existsByTaskIdAndEndedAtIsNull(Long taskId);
 
     @EntityGraph(attributePaths = {"user", "task"})
-    Optional<StudySessionJpaEntity> findByUserIdAndEndedAtIsNull(Long userId);
+    Optional<RecordSessionJpaEntity> findByUserIdAndEndedAtIsNull(Long userId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
         select s
-        from StudySessionJpaEntity s
+        from RecordSessionJpaEntity s
         left join fetch s.task
         join fetch s.user
         where s.user.id = :userId
             and s.endedAt is null
     """)
-    Optional<StudySessionJpaEntity> findActiveByUserIdForUpdate(@Param("userId") Long userId);
+    Optional<RecordSessionJpaEntity> findActiveByUserIdForUpdate(@Param("userId") Long userId);
 
     @EntityGraph(attributePaths = {"user", "task"})
-    List<StudySessionJpaEntity> findAllByEndedAtIsNull();
+    List<RecordSessionJpaEntity> findAllByEndedAtIsNull();
 
     @Query("""
         select s
-        from StudySessionJpaEntity s
+        from RecordSessionJpaEntity s
         join fetch s.user
         left join fetch s.task
         where s.user.id = :userId
             and s.startedAt < :endTime
             and (s.endedAt is null or s.endedAt > :startTime)
     """)
-    List<StudySessionJpaEntity> findAllOverlappingByUserId(
+    List<RecordSessionJpaEntity> findAllOverlappingByUserId(
             @Param("userId") Long userId,
             @Param("startTime") Instant startTime,
             @Param("endTime") Instant endTime
@@ -62,7 +62,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                 greatest(s.started_at, :startOfDay)
             ))
         ), 0)
-        from study_sessions s
+        from record_sessions s
         where s.fk_user_id = :userId
             and s.started_at < :endOfDay
             and (s.ended_at is null or s.ended_at > :startOfDay)
@@ -82,7 +82,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                        greatest(s.started_at, :startOfDay)
                    ))
                ), 0) as totalSeconds
-        from study_sessions s
+        from record_sessions s
         where s.fk_user_id IN :userIds
             and s.started_at < :endOfDay
             and (s.ended_at is null or s.ended_at > :startOfDay)
@@ -117,7 +117,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                     ), 0
                 ) as bigint
             ) as point
-        from study_sessions ss
+        from record_sessions ss
         inner join users u on u.id = ss.fk_user_id
         left join rivals r on
             (u.id in (r.fk_first_user_id, r.fk_second_user_id)
@@ -149,7 +149,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                     ), 0
                 ) as bigint
             ) as point
-        FROM study_sessions s
+        FROM record_sessions s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
             AND coalesce(s.ended_at, current_timestamp) >= :startDate
@@ -177,7 +177,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                     ), 0
                 ) as bigint
             ) as point
-        FROM study_sessions s
+        FROM record_sessions s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
             AND coalesce(s.ended_at, current_timestamp) >= :startDate
@@ -205,7 +205,7 @@ public interface StudySessionJpaRepository extends JpaRepository<StudySessionJpa
                     ), 0
                 ) as bigint
             ) as point
-        FROM study_sessions s
+        FROM record_sessions s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
             AND coalesce(s.ended_at, current_timestamp) >= :startDate

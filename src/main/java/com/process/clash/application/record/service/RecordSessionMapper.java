@@ -1,7 +1,7 @@
 package com.process.clash.application.record.service;
 
 import com.process.clash.application.record.data.RecordSessionData;
-import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.record.enums.RecordType;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -12,12 +12,12 @@ public final class RecordSessionMapper {
     private RecordSessionMapper() {
     }
 
-    public static RecordSessionData.Session toSession(StudySession session, ZoneId unusedRecordZoneId) {
+    public static RecordSessionData.Session toSession(RecordSession session, ZoneId unusedRecordZoneId) {
         return toSession(session, session.startedAt(), session.endedAt());
     }
 
     public static RecordSessionData.Session toSession(
-        StudySession session,
+        RecordSession session,
         ZoneId recordZoneId,
         LocalDateTime startedAt,
         LocalDateTime endedAt
@@ -28,7 +28,7 @@ public final class RecordSessionMapper {
     }
 
     public static RecordSessionData.Session toSession(
-        StudySession session,
+        RecordSession session,
         Instant startedAt,
         Instant endedAt
     ) {

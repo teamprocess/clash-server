@@ -2,7 +2,7 @@ package com.process.clash.application.compete.my.service;
 
 import com.process.clash.application.compete.my.data.GetCompareWithYesterdayData;
 import com.process.clash.application.compete.my.port.in.GetCompareWithYesterdayUseCase;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.userstudytime.exception.exception.notfound.UserStudyTimeNotFoundException;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.application.github.exception.exception.notfound.GithubDailyStatsNotFoundException;
@@ -24,7 +24,7 @@ import java.time.ZonedDateTime;
 @Transactional(readOnly = true)
 public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUseCase {
 
-    private final StudySessionRepositoryPort studySessionRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
     private final RecordProperties recordProperties;
@@ -52,7 +52,7 @@ public class GetCompareWithYesterdayService implements GetCompareWithYesterdayUs
         LocalDateTime startOfDay = today.atTime(boundaryHour, 0, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
 
-        Long todayActiveTime = studySessionRepositoryPort.getTotalStudyTimeInSeconds(
+        Long todayActiveTime = recordSessionRepositoryPort.getTotalStudyTimeInSeconds(
                 command.actor().id(),
                 startOfDay,
                 endOfDay

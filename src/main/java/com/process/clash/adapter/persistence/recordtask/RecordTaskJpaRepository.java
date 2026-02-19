@@ -1,4 +1,4 @@
-package com.process.clash.adapter.persistence.task;
+package com.process.clash.adapter.persistence.recordtask;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TaskJpaRepository extends JpaRepository<TaskJpaEntity, Long> {
+public interface RecordTaskJpaRepository extends JpaRepository<RecordTaskJpaEntity, Long> {
 
     @EntityGraph(attributePaths = "user")
-    List<TaskJpaEntity> findAllByUserId(Long userId);
+    List<RecordTaskJpaEntity> findAllByUserId(Long userId);
 }

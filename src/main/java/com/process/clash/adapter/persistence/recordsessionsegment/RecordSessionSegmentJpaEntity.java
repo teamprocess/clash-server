@@ -1,6 +1,6 @@
-package com.process.clash.adapter.persistence.recordactivitysegment;
+package com.process.clash.adapter.persistence.recordsessionsegment;
 
-import com.process.clash.adapter.persistence.studysession.StudySessionJpaEntity;
+import com.process.clash.adapter.persistence.recordsession.RecordSessionJpaEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -22,11 +22,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "record_activity_segments")
+@Table(name = "record_session_segments")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class RecordActivitySegmentJpaEntity {
+public class RecordSessionSegmentJpaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +41,8 @@ public class RecordActivitySegmentJpaEntity {
     private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fk_study_session_id", nullable = false)
-    private StudySessionJpaEntity session;
+    @JoinColumn(name = "fk_record_session_id", nullable = false)
+    private RecordSessionJpaEntity session;
 
     @Column(nullable = false)
     private String appName;
@@ -53,12 +53,12 @@ public class RecordActivitySegmentJpaEntity {
     @Column(nullable = true)
     private Instant endedAt;
 
-    public static RecordActivitySegmentJpaEntity create(
-        StudySessionJpaEntity session,
+    public static RecordSessionSegmentJpaEntity create(
+        RecordSessionJpaEntity session,
         String appName,
         Instant startedAt
     ) {
-        return new RecordActivitySegmentJpaEntity(
+        return new RecordSessionSegmentJpaEntity(
             null,
             null,
             null,

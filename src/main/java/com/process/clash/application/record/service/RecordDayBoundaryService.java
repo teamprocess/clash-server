@@ -1,7 +1,7 @@
 package com.process.clash.application.record.service;
 
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.infrastructure.config.RecordProperties;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RecordDayBoundaryService {
 
-    private final StudySessionRepositoryPort studySessionRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
 
@@ -26,10 +26,10 @@ public class RecordDayBoundaryService {
         int boundaryHour = recordProperties.dayBoundaryHour();
         Instant now = Instant.now();
 
-        List<StudySession> activeSessions = studySessionRepositoryPort.findAllActiveSessions();
+        List<RecordSession> activeSessions = recordSessionRepositoryPort.findAllActiveSessions();
 
-        List<StudySession> sessionsToClose = new ArrayList<>();
-        List<StudySession> sessionsToCreate = new ArrayList<>();
+        List<RecordSession> sessionsToClose = new ArrayList<>();
+        List<RecordSession> sessionsToCreate = new ArrayList<>();
 
         activeSessions.forEach(session -> {
             Instant firstBoundary = nextBoundaryAfter(session.startedAt(), boundaryHour);
@@ -42,7 +42,7 @@ public class RecordDayBoundaryService {
             Instant segmentStart = firstBoundary;
             Instant nextBoundary = nextBoundaryByLocalDay(firstBoundary);
             while (nextBoundary.isBefore(now)) {
-                sessionsToCreate.add(StudySession.create(
+                sessionsToCreate.add(RecordSession.create(
                     null,
                     session.user(),
                     session.task(),
@@ -55,7 +55,7 @@ public class RecordDayBoundaryService {
                 nextBoundary = nextBoundaryByLocalDay(nextBoundary);
             }
 
-            sessionsToCreate.add(StudySession.create(
+            sessionsToCreate.add(RecordSession.create(
                 null,
                 session.user(),
                 session.task(),
@@ -66,8 +66,8 @@ public class RecordDayBoundaryService {
             ));
         });
 
-        studySessionRepositoryPort.saveAll(sessionsToClose);
-        studySessionRepositoryPort.saveAll(sessionsToCreate);
+        recordSessionRepositoryPort.saveAll(sessionsToClose);
+        recordSessionRepositoryPort.saveAll(sessionsToCreate);
     }
 
     private Instant nextBoundaryAfter(Instant startedAt, int boundaryHour) {

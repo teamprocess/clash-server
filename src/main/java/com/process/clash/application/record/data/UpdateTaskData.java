@@ -1,7 +1,7 @@
 package com.process.clash.application.record.data;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.domain.record.entity.Task;
+import com.process.clash.domain.record.entity.RecordTask;
 
 public class UpdateTaskData {
 
@@ -12,9 +12,9 @@ public class UpdateTaskData {
     ) {}
 
     public record Result(
-        Task task
+        RecordTask task
     ) {
-        public static Result from(Task task) {
+        public static Result from(RecordTask task) {
             return new Result(task);
         }
     }
