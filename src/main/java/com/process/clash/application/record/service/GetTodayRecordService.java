@@ -2,12 +2,12 @@ package com.process.clash.application.record.service;
 
 import com.process.clash.application.record.data.GetTodayRecordData;
 import com.process.clash.application.record.port.in.GetTodayRecordUseCase;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.infrastructure.config.RecordProperties;
-import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.user.user.entity.User;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 public class GetTodayRecordService implements GetTodayRecordUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
-    private final StudySessionRepositoryPort studySessionRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
 
@@ -43,7 +43,7 @@ public class GetTodayRecordService implements GetTodayRecordUseCase {
         LocalDateTime now = nowZoned.toLocalDateTime();
         LocalDateTime endLimit = now.isBefore(endOfDay) ? now : endOfDay;
 
-        List<StudySession> todaySessions = studySessionRepositoryPort.findAllByUserIdAndTimeRange(
+        List<RecordSession> todaySessions = recordSessionRepositoryPort.findAllByUserIdAndTimeRange(
             user.id(),
             startOfDay,
             endOfDay

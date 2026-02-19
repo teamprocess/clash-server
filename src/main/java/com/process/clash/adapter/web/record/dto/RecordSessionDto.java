@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.record.dto;
 
 import com.process.clash.application.record.data.RecordSessionData;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
@@ -41,10 +42,10 @@ public class RecordSessionDto {
     }
 
     public record Activity(
-        String appName
+        MonitoredApp appId
     ) {
         public static Activity from(RecordSessionData.Activity activity) {
-            return new Activity(activity.appName());
+            return new Activity(activity.appId());
         }
     }
 }

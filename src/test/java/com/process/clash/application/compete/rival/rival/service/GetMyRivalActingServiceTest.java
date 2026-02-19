@@ -5,7 +5,7 @@ import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingDa
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.rival.rival.entity.Rival;
@@ -37,7 +37,7 @@ class GetMyRivalActingServiceTest {
     private RivalRepositoryPort rivalRepositoryPort;
 
     @Mock
-    private StudySessionRepositoryPort studySessionRepositoryPort;
+    private RecordSessionRepositoryPort recordSessionRepositoryPort;
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
@@ -51,7 +51,7 @@ class GetMyRivalActingServiceTest {
     void setUp() {
         getMyRivalActingService = new GetMyRivalActingService(
             rivalRepositoryPort,
-            studySessionRepositoryPort,
+            recordSessionRepositoryPort,
             userRepositoryPort,
             userPresencePort,
             new RecordProperties("UTC", 0),
@@ -88,7 +88,7 @@ class GetMyRivalActingServiceTest {
         when(rivalRepositoryPort.findAllByUserId(actor.id())).thenReturn(List.of(rivalA, rivalB));
         when(userRepositoryPort.findAllByIds(anyList()))
             .thenReturn(List.of(rivalUserA, rivalUserB, createUser(1L, "me", "Me")));
-        when(studySessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(
+        when(recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(
             anyList(),
             any(),
             any()

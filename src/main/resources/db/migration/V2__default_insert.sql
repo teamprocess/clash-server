@@ -1,3 +1,5 @@
+SET TIME ZONE 'Asia/Seoul';
+
 -- Major Question
 INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (1, '웹사이트의 레이아웃을 잡고 시각적으로 예쁘게 꾸미는 것이 즐거운가요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 1, 0, 0, 0, 5);
 INSERT INTO public.major_questions (id, content, created_at, updated_at, ai, app, game, server, web) VALUES (2, '서버 성능을 최적화하고 대규모 트래픽을 견디는 설계를 하는 데 흥미가 있나요?', '2026-01-21 04:47:07.828724', '2026-01-21 04:47:07.828724', 0, 0, 0, 5, 1);
@@ -2866,3 +2868,5 @@ INSERT INTO public.choices (id, question_id, content, is_correct, order_index, c
 VALUES (959, 240, '선택지 C', false, 2, '2026-01-21 10:00:00', '2026-01-21 10:00:00');
 INSERT INTO public.choices (id, question_id, content, is_correct, order_index, created_at, updated_at)
 VALUES (960, 240, '선택지 D', false, 3, '2026-01-21 10:00:00', '2026-01-21 10:00:00');
+
+SET TIME ZONE 'UTC';

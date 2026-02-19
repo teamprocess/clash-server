@@ -5,10 +5,11 @@ import com.process.clash.application.record.exception.exception.badrequest.Inval
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.port.in.SwitchActivityAppUseCase;
-import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
-import com.process.clash.domain.record.entity.RecordActivitySegment;
-import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.domain.record.entity.RecordSessionSegment;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
@@ -22,45 +23,45 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SwitchActivityAppService implements SwitchActivityAppUseCase {
 
-    private final StudySessionRepositoryPort studySessionRepositoryPort;
-    private final RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
     private final MonitoredAppPolicy monitoredAppPolicy;
     private final ZoneId recordZoneId;
 
     @Override
     public SwitchActivityAppData.Result execute(SwitchActivityAppData.Command command) {
-        String nextAppName = normalizeAppName(command.appName());
-        monitoredAppPolicy.validate(nextAppName);
+        MonitoredApp nextAppId = normalizeAppId(command.appId());
+        monitoredAppPolicy.validate(nextAppId);
 
-        StudySession activeSession = loadActiveActivitySession(command.actor().id());
+        RecordSession activeSession = loadActiveActivitySession(command.actor().id());
         Instant switchedAt = Instant.now();
 
-        if (nextAppName.equals(activeSession.appName())) {
+        if (nextAppId.equals(activeSession.appId())) {
             return toResult(activeSession, switchedAt);
         }
 
-        Optional<RecordActivitySegment> openSegment = findOpenSegment(activeSession.id());
-        if (isSameAppAsOpenSegment(openSegment, nextAppName)) {
-            StudySession syncedSession = syncSessionAppName(activeSession, nextAppName);
+        Optional<RecordSessionSegment> openSegment = findOpenSegment(activeSession.id());
+        if (isSameAppAsOpenSegment(openSegment, nextAppId)) {
+            RecordSession syncedSession = syncSessionAppId(activeSession, nextAppId);
             return toResult(syncedSession, switchedAt);
         }
 
         closeOpenSegment(openSegment, switchedAt);
-        createOpenSegment(activeSession.id(), nextAppName, switchedAt);
-        StudySession switchedSession = syncSessionAppName(activeSession, nextAppName);
+        createOpenSegment(activeSession.id(), nextAppId, switchedAt);
+        RecordSession switchedSession = syncSessionAppId(activeSession, nextAppId);
 
         return toResult(switchedSession, switchedAt);
     }
 
-    private String normalizeAppName(String appName) {
-        if (appName == null || appName.isBlank()) {
+    private MonitoredApp normalizeAppId(MonitoredApp appId) {
+        if (appId == null) {
             throw new InvalidActivitySwitchRequestException();
         }
-        return appName.trim();
+        return appId;
     }
 
-    private StudySession loadActiveActivitySession(Long userId) {
-        StudySession activeSession = studySessionRepositoryPort.findActiveSessionByUserIdForUpdate(userId)
+    private RecordSession loadActiveActivitySession(Long userId) {
+        RecordSession activeSession = recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(userId)
             .orElseThrow(ActiveSessionNotFound::new);
         if (activeSession.recordType() != RecordType.ACTIVITY) {
             throw new InvalidActivitySwitchRequestException();
@@ -68,31 +69,31 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         return activeSession;
     }
 
-    private Optional<RecordActivitySegment> findOpenSegment(Long sessionId) {
-        return recordActivitySegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(sessionId);
+    private Optional<RecordSessionSegment> findOpenSegment(Long sessionId) {
+        return recordSessionSegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(sessionId);
     }
 
-    private boolean isSameAppAsOpenSegment(Optional<RecordActivitySegment> openSegment, String appName) {
-        return openSegment.isPresent() && appName.equals(openSegment.get().appName());
+    private boolean isSameAppAsOpenSegment(Optional<RecordSessionSegment> openSegment, MonitoredApp appId) {
+        return openSegment.isPresent() && appId.equals(openSegment.get().appId());
     }
 
-    private void closeOpenSegment(Optional<RecordActivitySegment> openSegment, Instant closedAt) {
+    private void closeOpenSegment(Optional<RecordSessionSegment> openSegment, Instant closedAt) {
         openSegment.ifPresent(segment ->
-            recordActivitySegmentRepositoryPort.save(segment.changeEndedAt(closedAt))
+            recordSessionSegmentRepositoryPort.save(segment.changeEndedAt(closedAt))
         );
     }
 
-    private void createOpenSegment(Long sessionId, String appName, Instant startedAt) {
-        recordActivitySegmentRepositoryPort.save(
-            RecordActivitySegment.start(sessionId, appName, startedAt)
+    private void createOpenSegment(Long sessionId, MonitoredApp appId, Instant startedAt) {
+        recordSessionSegmentRepositoryPort.save(
+            RecordSessionSegment.start(sessionId, appId, startedAt)
         );
     }
 
-    private StudySession syncSessionAppName(StudySession activeSession, String appName) {
-        return studySessionRepositoryPort.save(activeSession.changeActivityAppName(appName));
+    private RecordSession syncSessionAppId(RecordSession activeSession, MonitoredApp appId) {
+        return recordSessionRepositoryPort.save(activeSession.changeActivityAppId(appId));
     }
 
-    private SwitchActivityAppData.Result toResult(StudySession session, Instant switchedAt) {
+    private SwitchActivityAppData.Result toResult(RecordSession session, Instant switchedAt) {
         return SwitchActivityAppData.Result.from(
             switchedAt,
             RecordSessionMapper.toSession(session, recordZoneId)

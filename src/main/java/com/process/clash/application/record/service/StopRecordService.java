@@ -3,11 +3,11 @@ package com.process.clash.application.record.service;
 import com.process.clash.application.record.data.StopRecordData;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
 import com.process.clash.application.record.port.in.StopRecordUseCase;
-import com.process.clash.application.record.port.out.RecordActivitySegmentRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
-import com.process.clash.application.record.port.out.StudySessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.record.enums.RecordType;
-import com.process.clash.domain.record.entity.StudySession;
+import com.process.clash.domain.record.entity.RecordSession;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -19,23 +19,23 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StopRecordService implements StopRecordUseCase {
 
-    private final StudySessionRepositoryPort studySessionRepositoryPort;
-    private final RecordActivitySegmentRepositoryPort recordActivitySegmentRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
     private final ZoneId recordZoneId;
 
     public StopRecordData.Result execute(StopRecordData.Command command) {
-        StudySession studySession = studySessionRepositoryPort
+        RecordSession recordSession = recordSessionRepositoryPort
                 .findActiveSessionByUserIdForUpdate(command.actor().id())
                 .orElseThrow(ActiveSessionNotFound::new);
 
         Instant endedAt = Instant.now();
-        if (studySession.recordType() == RecordType.ACTIVITY) {
-            recordActivitySegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(studySession.id())
-                .ifPresent(segment -> recordActivitySegmentRepositoryPort.save(segment.changeEndedAt(endedAt)));
+        if (recordSession.recordType() == RecordType.ACTIVITY) {
+            recordSessionSegmentRepositoryPort.findOpenSegmentBySessionIdForUpdate(recordSession.id())
+                .ifPresent(segment -> recordSessionSegmentRepositoryPort.save(segment.changeEndedAt(endedAt)));
         }
-        StudySession updatedSession = studySession.changeEndedAt(endedAt);
-        StudySession savedSession = studySessionRepositoryPort.save(updatedSession);
+        RecordSession updatedSession = recordSession.changeEndedAt(endedAt);
+        RecordSession savedSession = recordSessionRepositoryPort.save(updatedSession);
         recordActivityNotifierPort.notifyActivityStopped(command.actor());
 
         return StopRecordData.Result.create(

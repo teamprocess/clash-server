@@ -68,7 +68,7 @@ public class RecordController implements RecordControllerDocument {
         StartRecordData.Command command = new StartRecordData.Command(
                 request.recordType(),
                 request.taskId(),
-                request.appName(),
+                request.appId(),
                 actor
         );
 
@@ -132,7 +132,7 @@ public class RecordController implements RecordControllerDocument {
     ) {
         SwitchActivityAppData.Command command = new SwitchActivityAppData.Command(
             actor,
-            request.appName()
+            request.appId()
         );
         SwitchActivityAppData.Result result = switchActivityAppUseCase.execute(command);
 

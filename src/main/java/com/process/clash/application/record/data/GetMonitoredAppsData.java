@@ -1,6 +1,7 @@
 package com.process.clash.application.record.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import java.util.List;
 
 public class GetMonitoredAppsData {
@@ -10,9 +11,9 @@ public class GetMonitoredAppsData {
     ) {}
 
     public record Result(
-        List<String> apps
+        List<MonitoredApp> apps
     ) {
-        public static Result from(List<String> apps) {
+        public static Result from(List<MonitoredApp> apps) {
             return new Result(apps);
         }
     }

@@ -10,9 +10,7 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.in.VerifyEmailUseCase;
 import com.process.clash.application.user.user.port.out.PendingUserCachePort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
-import com.process.clash.application.user.userpomodorosetting.port.out.UserPomodoroSettingRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
-import com.process.clash.domain.user.userpomodorosetting.entity.UserPomodoroSetting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +22,6 @@ public class VerifyEmailService implements VerifyEmailUseCase {
     private final VerificationCodePort verificationCodePort;
     private final UserRepositoryPort userRepositoryPort;
     private final PendingUserCachePort pendingUserCachePort;
-    private final UserPomodoroSettingRepositoryPort userPomodoroSettingRepositoryPort;
 
     @Override
     @Transactional
@@ -49,15 +46,7 @@ public class VerifyEmailService implements VerifyEmailUseCase {
         }
 
         // 인증 완료 처리 후 DB 저장
-        // 인증 완료 처리 후 DB에 저장하고, 생성된 ID를 포함한 User 객체를 받습니다.
-        User savedUser = userRepositoryPort.save(pendingUser.active());
-
-        // `save`의 반환값을 사용하면 영속성 컨텍스트에 의해 ID가 관리되므로,
-        // 명시적인 flush() 호출은 필요하지 않습니다.
-
-        // 뽀모도로 타이머 세팅 추가
-        UserPomodoroSetting userPomodoroSetting = UserPomodoroSetting.createDefault(savedUser.id());
-        userPomodoroSettingRepositoryPort.save(userPomodoroSetting);
+        userRepositoryPort.save(pendingUser.active());
 
         // Redis 정리
         pendingUserCachePort.delete(command.token());

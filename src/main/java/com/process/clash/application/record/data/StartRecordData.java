@@ -1,6 +1,7 @@
 package com.process.clash.application.record.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import java.time.Instant;
 
@@ -9,7 +10,7 @@ public class StartRecordData {
     public record Command(
         RecordType recordType,
         Long taskId,
-        String appName,
+        MonitoredApp appId,
         Actor actor
     ) {}
 

@@ -1,37 +1,21 @@
 package com.process.clash.application.record.policy;
 
 import com.process.clash.application.record.exception.exception.badrequest.InvalidMonitoredAppException;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MonitoredAppPolicy {
 
-    private static final List<String> MONITORED_APPS = List.of(
-        "Code",
-        "Visual Studio Code",
-        "WebStorm",
-        "IntelliJ IDEA",
-        "IntelliJ IDEA Ultimate",
-        "IntelliJ IDEA Community",
-        "PyCharm",
-        "PyCharm Professional",
-        "GoLand",
-        "PhpStorm",
-        "RubyMine",
-        "CLion",
-        "DataGrip",
-        "Rider",
-        "Android Studio",
-        "Xcode"
-    );
+    private static final List<MonitoredApp> MONITORED_APPS = List.of(MonitoredApp.values());
 
-    public List<String> getMonitoredApps() {
+    public List<MonitoredApp> getMonitoredApps() {
         return MONITORED_APPS;
     }
 
-    public void validate(String appName) {
-        if (!MONITORED_APPS.contains(appName)) {
+    public void validate(MonitoredApp appId) {
+        if (appId == null) {
             throw new InvalidMonitoredAppException();
         }
     }
