@@ -28,8 +28,8 @@ public class GetSectionsService implements GetSectionsUseCase {
         List<Section> sections = sectionRepository.findAllByMajor(command.major());
 
         // Section의 category를 중복 제거하여 추출
-        List<String> categories = sections.stream()
-                .map(s -> s.getCategory().getName())
+        List<Long> categories = sections.stream()
+                .map(s -> s.getCategory().getId())
                 .distinct()
                 .toList();
 

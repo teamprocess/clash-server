@@ -41,7 +41,7 @@ public class CreateSectionDto {
             Long sectionId,
             String major,
             String title,
-            String category,
+            Long categoryId,
             String description,
             List<String> keyPoints,
             String createdAt
@@ -51,7 +51,7 @@ public class CreateSectionDto {
                     result.sectionId(),
                     result.major(),
                     result.title(),
-                    result.category(),
+                    result.categoryId(),
                     result.description(),
                     result.keyPoints(),
                     result.createdAt()

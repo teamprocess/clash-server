@@ -11,7 +11,7 @@ public class GetSectionsDto {
 
     public record Response(
             List<SectionVo> sections,
-            List<String> categories,
+            List<Long> categories,
             Integer completedSections,
             Integer totalSections
     ) {
@@ -26,12 +26,12 @@ public class GetSectionsDto {
     public record SectionVo(
             Long id,
             String title,
-            String category,
+            Long categoryId,
             Boolean completed,
             Boolean locked
     ) {
         public static SectionVo from(GetSectionsData.Result.SectionVo vo) {
-            return new SectionVo(vo.id(), vo.title(), vo.category(), vo.completed(), vo.locked());
+            return new SectionVo(vo.id(), vo.title(), vo.categoryId(), vo.completed(), vo.locked());
         }
     }
 }

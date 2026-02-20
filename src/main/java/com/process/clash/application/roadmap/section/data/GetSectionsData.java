@@ -12,14 +12,14 @@ public class GetSectionsData {
 
     public record Result(
             List<SectionVo> sections,
-            List<String> categories,
+            List<Long> categories,
             Integer completedSections,
             Integer totalSections
     ) {
         public record SectionVo(
                 Long id,
                 String title,
-                String category,
+                Long categoryId,
                 Boolean completed,
                 Boolean locked
         ) {
@@ -27,7 +27,7 @@ public class GetSectionsData {
                 return new SectionVo(
                         section.getId(),
                         section.getTitle(),
-                        section.getCategory().getName(),
+                        section.getCategory().getId(),
                         completed,
                         locked
                 );
