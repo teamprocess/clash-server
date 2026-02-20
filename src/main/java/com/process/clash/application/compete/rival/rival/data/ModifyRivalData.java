@@ -7,5 +7,10 @@ public class ModifyRivalData {
     public record Command(
             Actor actor,
             Long id
-    ) {}
+    ) {
+
+        public static Command of(Actor actor, Long id) {
+            return new Command(actor, id);
+        }
+    }
 }

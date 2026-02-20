@@ -108,6 +108,12 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
+    public void deleteById(Long id) {
+
+        rivalJpaRepository.deleteById(id);
+    }
+
+    @Override
     public Long findOpponentIdByIdAndUserId(Long id, Long userId) {
 
         return rivalJpaRepository.findOpponentIdByIdAndUserId(id, userId);
