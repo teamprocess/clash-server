@@ -4,7 +4,6 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.TargetCategory;
 
 import java.util.List;
-import java.util.Map;
 
 public class AnalyzeMyActivityData {
 
@@ -28,14 +27,12 @@ public class AnalyzeMyActivityData {
             List<Variation> variations
     ) {
 
-        public static Result of(TargetCategory category, Map<List<Streak>, List<Variation>> result) {
-
-            Map.Entry<List<Streak>, List<Variation>> entry = result.entrySet().iterator().next();
+        public static Result of(TargetCategory category, List<Streak> streaks, List<Variation> variations) {
 
             return new Result(
                     category.toString(),
-                    entry.getKey(),
-                    entry.getValue()
+                    streaks,
+                    variations
             );
         }
     }

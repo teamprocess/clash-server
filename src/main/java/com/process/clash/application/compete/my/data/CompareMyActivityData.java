@@ -23,7 +23,8 @@ public class CompareMyActivityData {
     public record Result(
             Double earnedExp,
             Double studyTime,
-            Double gitHubAttribution
+            Double gitHubAttribution,
+            Double commitCount
     ) {
 
         public static Result from(List<Double> result) {
@@ -31,7 +32,8 @@ public class CompareMyActivityData {
             return new Result(
                     result.get(0), // earnedExp
                     result.get(1), // studyTime
-                    result.get(2) // gitHubAttribution
+                    result.get(2), // gitHubAttribution
+                    result.get(3)  // commitCount
             );
         }
     }

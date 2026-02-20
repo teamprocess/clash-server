@@ -10,7 +10,8 @@ public class CompareMyActivityDto {
     public record Response(
             Double earnedExp,
             Double studyTime,
-            Double gitHubAttribution
+            Double gitHubAttribution,
+            Double commitCount
     ) {
 
         public static Response from(CompareMyActivityData.Result result) {
@@ -18,7 +19,8 @@ public class CompareMyActivityDto {
             return new Response(
                     result.earnedExp(),
                     result.studyTime(),
-                    result.gitHubAttribution()
+                    result.gitHubAttribution(),
+                    result.commitCount()
             );
         }
     }
