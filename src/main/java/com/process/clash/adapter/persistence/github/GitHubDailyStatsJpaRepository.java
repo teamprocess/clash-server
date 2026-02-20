@@ -168,7 +168,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
     @Query("""
         select new com.process.clash.application.compete.my.data.Variation(
                 month(g.studyDate),
-                cast(sum(g.commitCount + g.prCount + g.reviewCount + g.issueCount) as double)
+                cast(coalesce(sum(g.commitCount + g.prCount + g.reviewCount + g.issueCount), 0) as double)
             )
         from GitHubDailyStatsJpaEntity g
         where g.userId = :userId

@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -27,43 +25,45 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final RecordSessionRepositoryPort recordSessionRepositoryPort;
 
+    private record ActivityData(List<Streak> streaks, List<Variation> variations) {}
+
     @Override
     public AnalyzeMyActivityData.Result execute(AnalyzeMyActivityData.Command command) {
 
         LocalDate endDate = LocalDate.now().plusDays(1); // 오늘 포함
         LocalDate startDate = endDate.minusMonths(12);   // 정확히 12개월 기간
 
-        Map<List<Streak>, List<Variation>> result = switch (command.category()) {
+        ActivityData data = switch (command.category()) {
             case GITHUB -> gitHub(command.actor().id(), startDate, endDate);
             case EXP -> exp(command.actor().id(), startDate, endDate);
-            case SOLVED_AC -> new HashMap<>(); //TODO: 나중에 구현
+            case SOLVED_AC -> new ActivityData(List.of(), List.of()); //TODO: 나중에 구현
             case ACTIVE_TIME -> studyTime(command.actor().id(), startDate, endDate);
         };
 
-        return AnalyzeMyActivityData.Result.of(command.category(), result);
+        return AnalyzeMyActivityData.Result.of(command.category(), data.streaks(), data.variations());
     }
 
-    private Map<List<Streak>, List<Variation>> gitHub(Long userId, LocalDate startDate, LocalDate endDate) {
+    private ActivityData gitHub(Long userId, LocalDate startDate, LocalDate endDate) {
 
         List<Streak> streaks = computeColorRatios(gitHubDailyStatsQueryPort.findStreakByUserId(userId, startDate, endDate));
         List<Variation> variations = gitHubDailyStatsQueryPort.findVaricationByUserId(userId, startDate, endDate);
 
-        return Map.of(streaks, variations);
+        return new ActivityData(streaks, variations);
     }
 
-    private Map<List<Streak>, List<Variation>> exp(Long userId, LocalDate startDate, LocalDate endDate) {
+    private ActivityData exp(Long userId, LocalDate startDate, LocalDate endDate) {
 
         List<Streak> streaks = computeColorRatios(userExpHistoryRepositoryPort.findStreakByUserId(userId, startDate, endDate));
         List<Variation> variations = userExpHistoryRepositoryPort.findVariationByUserId(userId, startDate, endDate);
 
-        return Map.of(streaks, variations);
+        return new ActivityData(streaks, variations);
     }
 
-    private Map<List<Streak>, List<Variation>> studyTime(Long userId, LocalDate startDate, LocalDate endDate) {
+    private ActivityData studyTime(Long userId, LocalDate startDate, LocalDate endDate) {
 
         LocalDate now = LocalDate.now();
 
-        List<Streak> streaks = userStudyTimeRepositoryPort.findStreakByUserId(userId, startDate, endDate);
+        List<Streak> streaks = new ArrayList<>(userStudyTimeRepositoryPort.findStreakByUserId(userId, startDate, endDate));
 
         LocalDateTime startOfDay = now.atTime(6, 0, 0);
         LocalDateTime endOfDay = now.plusDays(1).atTime(6, 0, 0);
@@ -102,7 +102,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
             updatedVariations.add(new Variation(currentMonth, (double) activeTimeValue));
         }
 
-        return Map.of(enrichedStreaks, updatedVariations);
+        return new ActivityData(enrichedStreaks, updatedVariations);
     }
 
     private List<Streak> computeColorRatios(List<Streak> streaks) {
