@@ -40,7 +40,7 @@ public class AnalyzeMyActivityResponseDocument extends SuccessResponseDocument {
         @Schema(description = "월", example = "1")
         public Integer month;
 
-        @Schema(description = "월별 평균 변동성", example = "12.5")
-        public Double avgVariationPerMonth;
+        @Schema(description = "월별 총합 변동성", example = "3600.0")
+        public Double totalVariationPerMonth;
     }
 }

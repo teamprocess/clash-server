@@ -81,7 +81,6 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
         List<Variation> variations = userStudyTimeRepositoryPort.findVariationByUserId(userId, startDate, endDate);
 
         int currentMonth = now.getMonthValue();
-        int daysInMonth = now.lengthOfMonth(); // 해당 월의 실제 일수 (28, 29, 30, 31)
 
         boolean monthExists = false;
         List<Variation> updatedVariations = new ArrayList<>();
@@ -89,9 +88,9 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
         // 최대 12개 데이터여서 반복문 돌렸습니다.
         for (Variation v : variations) {
             if (v.month().equals(currentMonth)) {
-                // 기존 평균에 오늘 데이터 추가해서 재계산
-                double newAvg = (v.avgVariationPerMonth() * (daysInMonth - 1) + activeTimeValue) / daysInMonth;
-                updatedVariations.add(new Variation(currentMonth, newAvg));
+                // 기존 총합에 오늘 데이터 추가
+                double newTotal = v.totalVariationPerMonth() + activeTimeValue;
+                updatedVariations.add(new Variation(currentMonth, newTotal));
                 monthExists = true;
             } else {
                 updatedVariations.add(v);
@@ -99,7 +98,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
         }
 
         if (!monthExists) {
-            updatedVariations.add(new Variation(currentMonth, (double) activeTimeValue / daysInMonth));
+            updatedVariations.add(new Variation(currentMonth, (double) activeTimeValue));
         }
 
         return Map.of(streaks, updatedVariations);

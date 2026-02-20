@@ -158,7 +158,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     @Query("""
         select new com.process.clash.application.compete.my.data.Variation(
                 month(ux.date),
-                cast(avg(ux.earnExp) as double)
+                cast(sum(ux.earnExp) as double)
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :userId
