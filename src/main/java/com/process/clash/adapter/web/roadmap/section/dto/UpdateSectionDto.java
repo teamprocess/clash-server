@@ -40,7 +40,7 @@ public class UpdateSectionDto {
     public record Response(
             Long sectionId,
             String title,
-            String category,
+            Long categoryId,
             String description,
             List<String> keyPoints,
             Instant updatedAt
@@ -49,7 +49,7 @@ public class UpdateSectionDto {
             return new Response(
                     result.sectionId(),
                     result.title(),
-                    result.category(),
+                    result.categoryId(),
                     result.description(),
                     result.keyPoints(),
                     result.updatedAt()
