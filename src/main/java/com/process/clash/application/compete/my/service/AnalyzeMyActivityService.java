@@ -45,7 +45,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
 
     private Map<List<Streak>, List<Variation>> gitHub(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        List<Streak> streaks = gitHubDailyStatsQueryPort.findStreakByUserId(userId, startDate, endDate);
+        List<Streak> streaks = computeColorRatios(gitHubDailyStatsQueryPort.findStreakByUserId(userId, startDate, endDate));
         List<Variation> variations = gitHubDailyStatsQueryPort.findVaricationByUserId(userId, startDate, endDate);
 
         return Map.of(streaks, variations);
@@ -53,7 +53,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
 
     private Map<List<Streak>, List<Variation>> exp(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        List<Streak> streaks = userExpHistoryRepositoryPort.findStreakByUserId(userId, startDate, endDate);
+        List<Streak> streaks = computeColorRatios(userExpHistoryRepositoryPort.findStreakByUserId(userId, startDate, endDate));
         List<Variation> variations = userExpHistoryRepositoryPort.findVariationByUserId(userId, startDate, endDate);
 
         return Map.of(streaks, variations);
@@ -77,6 +77,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
         int activeTimeValue = (todayActiveTime != null) ? todayActiveTime.intValue() : 0;
         Streak todayStreak = new Streak(now, activeTimeValue);
         streaks.add(todayStreak);
+        List<Streak> enrichedStreaks = computeColorRatios(streaks);
 
         List<Variation> variations = userStudyTimeRepositoryPort.findVariationByUserId(userId, startDate, endDate);
 
@@ -101,6 +102,39 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
             updatedVariations.add(new Variation(currentMonth, (double) activeTimeValue));
         }
 
-        return Map.of(streaks, updatedVariations);
+        return Map.of(enrichedStreaks, updatedVariations);
+    }
+
+    private List<Streak> computeColorRatios(List<Streak> streaks) {
+
+        if (streaks.isEmpty()) return streaks;
+
+        List<Integer> sorted = streaks.stream()
+                .map(Streak::detailedInfo)
+                .filter(v -> v != null)
+                .sorted()
+                .toList();
+
+        int total = sorted.size();
+        int trimCount = (int) Math.floor(total * 0.15);
+        List<Integer> trimmed = sorted.subList(trimCount, Math.max(trimCount, total - trimCount));
+
+        if (trimmed.isEmpty()) {
+            return streaks.stream().map(s -> new Streak(s.date(), s.detailedInfo(), 0)).toList();
+        }
+
+        double baseline = trimmed.stream().mapToInt(Integer::intValue).average().orElse(0);
+
+        if (baseline == 0) {
+            return streaks.stream().map(s -> new Streak(s.date(), s.detailedInfo(), 0)).toList();
+        }
+
+        return streaks.stream()
+                .map(s -> {
+                    int value = s.detailedInfo() != null ? s.detailedInfo() : 0;
+                    int ratio = (int) Math.round((double) value / baseline * 50);
+                    return new Streak(s.date(), s.detailedInfo(), Math.max(0, Math.min(100, ratio)));
+                })
+                .toList();
     }
 }

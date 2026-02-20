@@ -34,6 +34,9 @@ public class AnalyzeMyActivityResponseDocument extends SuccessResponseDocument {
 
         @Schema(description = "상세 정보 (활동 시간 등)", example = "120")
         public Integer detailedInfo;
+
+        @Schema(description = "잔디 색상 비율 (0~100, 상위/하위 15% 제외한 70% 트리밍 평균 기준 50% 매핑)", example = "50")
+        public Integer colorRatio;
     }
 
     public static class VariationDoc {
