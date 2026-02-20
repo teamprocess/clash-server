@@ -1,6 +1,0 @@
-POST http://localhost:8080/api/shop/purchases
-Content-Type: application/json
-
-{
-  "productId": 1
-}
