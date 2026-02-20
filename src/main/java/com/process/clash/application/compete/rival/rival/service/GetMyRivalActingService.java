@@ -6,6 +6,7 @@ import com.process.clash.application.compete.rival.rival.port.out.RivalRepositor
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
@@ -42,7 +43,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         List<Rival> rivals = rivalRepositoryPort.findAllByUserId(command.actor().id());
 
         if (rivals.isEmpty()) {
-            return GetMyRivalActingData.Result.from(List.of());
+            throw new RivalNotFoundException();
         }
 
         int boundaryHour = recordProperties.dayBoundaryHour();

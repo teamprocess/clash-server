@@ -24,6 +24,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     private final ApplyRivalUseCase applyRivalUseCase;
     private final AcceptRivalUseCase acceptRivalUseCase;
     private final RejectRivalUseCase rejectRivalUseCase;
+    private final RemoveRivalUseCase removeRivalUseCase;
     private final CompareWithRivalsUseCase compareWithRivalsUseCase;
 
     // 내 라이벌 정보 조회
@@ -97,6 +98,18 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
         ModifyRivalData.Command command = request.toCommand(actor);
         rejectRivalUseCase.execute(command);
         return ApiResponse.success("라이벌을 성공적으로 거절했습니다.");
+    }
+
+    // 라이벌 - 라이벌 삭제
+    @DeleteMapping("/remove/{id}")
+    public ApiResponse<Void> removeRival(
+            @AuthenticatedActor Actor actor,
+            @PathVariable Long id
+    ) {
+
+        ModifyRivalData.Command command = ModifyRivalData.Command.of(actor, id);
+        removeRivalUseCase.execute(command);
+        return ApiResponse.success("라이벌을 성공적으로 삭제했습니다.");
     }
 
     // 라이벌과의 경쟁 - 라이벌과의 비교

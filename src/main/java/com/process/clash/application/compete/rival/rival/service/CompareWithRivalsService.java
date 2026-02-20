@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.compete.rival.rival.data.CompareWithRivalsData;
 import com.process.clash.application.compete.rival.rival.data.TotalData;
+import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.in.CompareWithRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
@@ -42,6 +43,11 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     public CompareWithRivalsData.Result execute(CompareWithRivalsData.Command command) {
 
         List<Long> rivalIds = rivalRepositoryPort.findOpponentIdByUserId(command.actor().id());
+
+        if (rivalIds.isEmpty()) {
+            throw new RivalNotFoundException();
+        }
+
         rivalIds.add(command.actor().id());
 
         LocalDate endDate = LocalDate.now(recordZoneId);

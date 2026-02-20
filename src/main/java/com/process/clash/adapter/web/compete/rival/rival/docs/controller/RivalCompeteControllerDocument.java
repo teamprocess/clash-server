@@ -193,6 +193,25 @@ public interface RivalCompeteControllerDocument {
             ModifyRivalDto.Request request
     );
 
+    @Operation(summary = "라이벌 삭제", description = "등록된 라이벌을 삭제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = ModifyRivalResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "라이벌을 성공적으로 삭제했습니다."
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> removeRival(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "삭제할 라이벌 ID", example = "3", required = true)
+            @PathVariable Long id
+    );
+
     @Operation(summary = "라이벌과 비교", description = "특정 카테고리와 기간에 대해 라이벌과 나의 활동을 비교합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
