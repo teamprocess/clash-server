@@ -28,7 +28,7 @@ public class CreateCategoryService implements CreateCategoryUseCase {
                     throw new CategoryAlreadyExistsException();
                 });
 
-        Category category = new Category(null, command.name(), null, null);
+        Category category = new Category(null, command.name(), null, null, null);
         Category savedCategory = categoryRepository.save(category);
         return CreateCategoryData.Result.from(savedCategory);
     }

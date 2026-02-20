@@ -16,6 +16,7 @@ public class S3Properties {
     private String bucket;
     private String region = "ap-northeast-2";
     private String profileImagePrefix = "users/profile-images";
+    private String categoryImagePrefix = "categories/images";
     private String publicBaseUrl;
     private long presignExpirationSeconds = 300;
 }
