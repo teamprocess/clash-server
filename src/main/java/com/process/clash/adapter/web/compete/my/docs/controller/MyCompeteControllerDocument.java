@@ -207,7 +207,8 @@ public interface MyCompeteControllerDocument {
                                       "data": {
                                         "earnedExp": 1250.5,
                                         "studyTime": 480.0,
-                                        "gitHubAttribution": 85.3
+                                        "gitHubAttribution": 85.3,
+                                        "commitCount": 12.0
                                       }
                                     }
                                     """)

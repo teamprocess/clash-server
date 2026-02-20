@@ -57,7 +57,9 @@ public class CompareMyActivityService implements CompareMyActivityUseCase {
                 gitHubDailyStatsQueryPort.findAverageContributionByUserIdAndPeriod(id, now, now.plusDays(1))
         );
 
-        return List.of(earnedExp, studyTime, gitHubAttribution);
+        Double commitCount = gitHubDailyStatsQueryPort.findTotalCommitCountByUserIdAndPeriod(id, now, now.plusDays(1));
+
+        return List.of(earnedExp, studyTime, gitHubAttribution, commitCount);
     }
 
     private List<Double> yesterday(Long id) {
@@ -88,7 +90,9 @@ public class CompareMyActivityService implements CompareMyActivityUseCase {
                 gitHubDailyStatsQueryPort.findAverageContributionByUserIdAndPeriod(id, startDate, endDate)
         );
 
-        return List.of(earnedExp, studyTime, gitHubAttribution);
+        Double commitCount = gitHubDailyStatsQueryPort.findTotalCommitCountByUserIdAndPeriod(id, startDate, endDate);
+
+        return List.of(earnedExp, studyTime, gitHubAttribution, commitCount);
     }
 
     private Double getValueOrDefault(Double value) {
