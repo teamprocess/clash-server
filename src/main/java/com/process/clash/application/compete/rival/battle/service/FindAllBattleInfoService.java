@@ -3,6 +3,7 @@ package com.process.clash.application.compete.rival.battle.service;
 import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData.*;
 import com.process.clash.application.compete.rival.battle.port.in.FindAllBattleInfoUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
+import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
@@ -15,7 +16,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +47,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
         List<Battle> battles = battleRepositoryPort.findByUserIdWithOutRejected(userId);
 
         if (battles.isEmpty()) {
-            return Result.from(Collections.emptyList());
+            throw new BattleNotFoundException();
         }
 
         Set<Long> rivalIds = battles.stream()
