@@ -138,7 +138,7 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
-            cast(date_trunc('day', s.started_at) as date) as recordedDate,
+            cast(date_trunc('day', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) as recordedDate,
             cast(
                 coalesce(
                     sum(
@@ -153,8 +153,8 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
             AND coalesce(s.ended_at, current_timestamp) >= :startDate
-        GROUP BY s.fk_user_id, date_trunc('day', s.started_at)
-        ORDER BY s.fk_user_id, date_trunc('day', s.started_at) ASC
+        GROUP BY s.fk_user_id, date_trunc('day', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours')
+        ORDER BY s.fk_user_id, date_trunc('day', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') ASC
     """, nativeQuery = true)
     List<Object[]> findDailyStudyTimeByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -166,7 +166,7 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
-            cast(date_trunc('week', s.started_at) as date) as recordedDate,
+            cast(date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) as recordedDate,
             cast(
                 coalesce(
                     sum(
@@ -181,8 +181,8 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
             AND coalesce(s.ended_at, current_timestamp) >= :startDate
-        GROUP BY s.fk_user_id, date_trunc('week', s.started_at)
-        ORDER BY s.fk_user_id, date_trunc('week', s.started_at) ASC
+        GROUP BY s.fk_user_id, date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours')
+        ORDER BY s.fk_user_id, date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyStudyTimeByUserIds(
             @Param("userIds") List<Long> userIds,
@@ -194,7 +194,7 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
-            cast(date_trunc('month', s.started_at) as date) as recordedDate,
+            cast(date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) as recordedDate,
             cast(
                 coalesce(
                     sum(
@@ -209,8 +209,8 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
             AND coalesce(s.ended_at, current_timestamp) >= :startDate
-        GROUP BY s.fk_user_id, date_trunc('month', s.started_at)
-        ORDER BY s.fk_user_id, date_trunc('month', s.started_at) ASC
+        GROUP BY s.fk_user_id, date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours')
+        ORDER BY s.fk_user_id, date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') ASC
     """, nativeQuery = true)
     List<Object[]> findMonthlyStudyTimeByUserIds(
             @Param("userIds") List<Long> userIds,

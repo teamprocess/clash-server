@@ -1,2 +1,0 @@
-GET http://localhost:8080/api/shop/products/1
-Content-Type: application/json

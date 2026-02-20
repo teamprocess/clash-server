@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -23,6 +25,7 @@ public class GetRankingService implements GetRankingUseCase {
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final ZoneId recordZoneId;
 
     @Override
     public GetRankingData.Result execute(GetRankingData.Command command) {
@@ -69,7 +72,7 @@ public class GetRankingService implements GetRankingUseCase {
 
     private List<UserRanking> activeTime(Long userId, PeriodCategory periodCategory) {
 
-        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime endDate = ZonedDateTime.now(recordZoneId).toLocalDateTime();
         LocalDateTime startDate = switch (periodCategory) {
             case DAY -> endDate.minusDays(1);
             case WEEK -> endDate.minusWeeks(1);
