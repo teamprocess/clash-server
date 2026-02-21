@@ -1,6 +1,7 @@
 package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
+import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.policy.RemoveRivalPolicy;
 import com.process.clash.application.compete.rival.rival.port.in.RemoveRivalUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
@@ -21,6 +22,10 @@ public class RemoveRivalService implements RemoveRivalUseCase {
     public void execute(ModifyRivalData.Command command) {
 
         Rival rival = removeRivalPolicy.check(command.id());
+
+        if (!rival.firstUserId().equals(command.actor().id()) && !rival.secondUserId().equals(command.actor().id())) {
+            throw new RivalNotFoundException();
+        }
 
         rivalRepositoryPort.deleteById(rival.id());
     }
