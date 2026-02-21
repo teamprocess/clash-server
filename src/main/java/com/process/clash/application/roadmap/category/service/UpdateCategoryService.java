@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateCategoryService implements UpdateCategoryUseCase {
 
     private final CategoryRepositoryPort categoryRepository;
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
-    @Transactional
     public UpdateCategoryData.Result execute(UpdateCategoryData.Command command) {
         checkAdminPolicy.check(command.actor());
 

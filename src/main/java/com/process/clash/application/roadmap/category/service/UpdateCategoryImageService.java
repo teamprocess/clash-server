@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateCategoryImageService implements UpdateCategoryImageUseCase {
 
     private final CategoryRepositoryPort categoryRepository;
@@ -21,7 +22,6 @@ public class UpdateCategoryImageService implements UpdateCategoryImageUseCase {
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
-    @Transactional
     public UpdateCategoryImageData.Result execute(UpdateCategoryImageData.Command command) {
         checkAdminPolicy.check(command.actor());
 

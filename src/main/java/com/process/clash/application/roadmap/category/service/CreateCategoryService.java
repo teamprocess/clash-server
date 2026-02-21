@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CreateCategoryService implements CreateCategoryUseCase {
 
     private final CategoryRepositoryPort categoryRepository;
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
-    @Transactional
     public CreateCategoryData.Result execute(CreateCategoryData.Command command) {
         checkAdminPolicy.check(command.actor());
 

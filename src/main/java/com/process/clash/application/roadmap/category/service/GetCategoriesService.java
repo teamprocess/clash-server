@@ -7,11 +7,13 @@ import com.process.clash.application.roadmap.category.port.out.CategoryRepositor
 import com.process.clash.domain.roadmap.entity.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GetCategoriesService implements GetCategoriesUseCase {
 
     private final CategoryRepositoryPort categoryRepository;
