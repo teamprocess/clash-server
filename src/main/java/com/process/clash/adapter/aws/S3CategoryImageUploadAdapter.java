@@ -106,22 +106,24 @@ public class S3CategoryImageUploadAdapter implements CategoryImageUploadPort {
         }
 
         String normalized = prefix.trim();
+        int start = 0;
+        int end = normalized.length();
 
-        while (normalized.startsWith("/")) {
-            normalized = normalized.substring(1);
+        while (start < end && normalized.charAt(start) == '/') {
+            start++;
         }
-        while (normalized.endsWith("/")) {
-            normalized = normalized.substring(0, normalized.length() - 1);
+        while (end > start && normalized.charAt(end - 1) == '/') {
+            end--;
         }
 
-        return normalized;
+        return normalized.substring(start, end);
     }
 
     private String removeTrailingSlash(String baseUrl) {
-        String normalized = baseUrl;
-        while (normalized.endsWith("/")) {
-            normalized = normalized.substring(0, normalized.length() - 1);
+        int end = baseUrl.length();
+        while (end > 0 && baseUrl.charAt(end - 1) == '/') {
+            end--;
         }
-        return normalized;
+        return baseUrl.substring(0, end);
     }
 }
