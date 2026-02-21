@@ -26,4 +26,8 @@ public record UserNotice(
                 receiverId
         );
     }
+
+    public UserNotice markAsRead() {
+        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, receiverId);
+    }
 }

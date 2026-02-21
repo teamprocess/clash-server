@@ -1,5 +1,6 @@
 package com.process.clash.application.compete.rival.rival.service;
 
+import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.rival.data.ApplyRivalData;
 import com.process.clash.application.compete.rival.rival.policy.ApplyRivalPolicy;
 import com.process.clash.application.compete.rival.rival.port.in.ApplyRivalUseCase;
@@ -22,6 +23,7 @@ public class ApplyRivalService implements ApplyRivalUseCase {
     private final ApplyRivalPolicy applyRivalPolicy;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
+    private final CompeteRefetchNotifier competeRefetchNotifier;
 
     @Override
     public void execute(ApplyRivalData.Command command) {
@@ -43,5 +45,10 @@ public class ApplyRivalService implements ApplyRivalUseCase {
                 .toList();
 
         userNoticeRepositoryPort.saveAll(userNotices);
+
+        List<Long> opponentIds = rivals.stream()
+                .map(Rival::secondUserId)
+                .toList();
+        competeRefetchNotifier.notifyUserNoticeChanged(opponentIds);
     }
 }
