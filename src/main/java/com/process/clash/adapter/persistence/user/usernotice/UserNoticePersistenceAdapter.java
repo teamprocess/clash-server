@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,5 +55,19 @@ public class UserNoticePersistenceAdapter implements UserNoticeRepositoryPort {
                 .toList();
 
         userNoticeJpaRepository.saveAll(entities);
+    }
+
+    @Override
+    public List<UserNotice> findAllByReceiverId(Long receiverId) {
+        return userNoticeJpaRepository.findAllByReceiver_IdOrderByCreatedAtDesc(receiverId)
+                .stream()
+                .map(userNoticeJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public Optional<UserNotice> findByIdAndReceiverId(Long id, Long receiverId) {
+        return userNoticeJpaRepository.findByIdAndReceiver_Id(id, receiverId)
+                .map(userNoticeJpaMapper::toDomain);
     }
 }
