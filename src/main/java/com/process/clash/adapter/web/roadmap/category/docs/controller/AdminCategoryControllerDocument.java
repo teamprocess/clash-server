@@ -154,9 +154,9 @@ public interface AdminCategoryControllerDocument {
                                       "success": true,
                                       "message": "카테고리 이미지 업로드 URL이 발급되었습니다.",
                                       "data": {
-                                        "uploadUrl": "https://bucket.s3.amazonaws.com/categories/images/category-1/abc123.png?X-Amz-Signature=...",
-                                        "objectKey": "categories/images/category-1/abc123.png",
-                                        "fileUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/categories/images/category-1/abc123.png",
+                                        "uploadUrl": "https://bucket.s3.amazonaws.com/categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png?X-Amz-Signature=...",
+                                        "objectKey": "categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png",
+                                        "fileUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png",
                                         "httpMethod": "PUT",
                                         "contentType": "image/png",
                                         "expiresInSeconds": 300
@@ -192,7 +192,7 @@ public interface AdminCategoryControllerDocument {
                                       "message": "카테고리 이미지가 성공적으로 업데이트되었습니다.",
                                       "data": {
                                         "categoryId": 1,
-                                        "imageUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/categories/images/category-1/abc123.png"
+                                        "imageUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png"
                                       }
                                     }
                                     """)
