@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DeleteCategoryService implements DeleteCategoryUseCase {
 
     private final CategoryRepositoryPort categoryRepository;
@@ -20,7 +21,6 @@ public class DeleteCategoryService implements DeleteCategoryUseCase {
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
-    @Transactional
     public DeleteCategoryData.Result execute(DeleteCategoryData.Command command) {
         checkAdminPolicy.check(command.actor());
 

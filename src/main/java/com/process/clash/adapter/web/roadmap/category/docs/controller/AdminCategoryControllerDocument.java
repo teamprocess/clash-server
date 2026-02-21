@@ -1,15 +1,21 @@
 package com.process.clash.adapter.web.roadmap.category.docs.controller;
 
 import com.process.clash.adapter.web.roadmap.category.docs.request.CreateCategoryRequestDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.request.IssueCategoryImageUploadUrlRequestDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.request.UpdateCategoryImageRequestDocument;
 import com.process.clash.adapter.web.roadmap.category.docs.request.UpdateCategoryRequestDocument;
 import com.process.clash.adapter.web.roadmap.category.docs.response.CreateCategoryResponseDocument;
 import com.process.clash.adapter.web.roadmap.category.docs.response.DeleteCategoryResponseDocument;
 import com.process.clash.adapter.web.roadmap.category.docs.response.GetCategoriesResponseDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.response.IssueCategoryImageUploadUrlResponseDocument;
+import com.process.clash.adapter.web.roadmap.category.docs.response.UpdateCategoryImageResponseDocument;
 import com.process.clash.adapter.web.roadmap.category.docs.response.UpdateCategoryResponseDocument;
 import com.process.clash.adapter.web.roadmap.category.dto.CreateCategoryDto;
 import com.process.clash.adapter.web.roadmap.category.dto.DeleteCategoryDto;
 import com.process.clash.adapter.web.roadmap.category.dto.GetCategoriesDto;
+import com.process.clash.adapter.web.roadmap.category.dto.IssueCategoryImageUploadUrlDto;
 import com.process.clash.adapter.web.roadmap.category.dto.UpdateCategoryDto;
+import com.process.clash.adapter.web.roadmap.category.dto.UpdateCategoryImageDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -136,5 +142,74 @@ public interface AdminCategoryControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<DeleteCategoryDto.Response> deleteCategory(
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "카테고리 ID", example = "1") @PathVariable Long categoryId
+    );
+
+    @Operation(summary = "카테고리 이미지 업로드 URL 발급", description = "S3 presigned URL을 발급합니다. 프론트는 반환된 uploadUrl로 직접 이미지를 업로드한 뒤 fileUrl을 이미지 저장 API에 전달해야 합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "발급 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = IssueCategoryImageUploadUrlResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "카테고리 이미지 업로드 URL이 발급되었습니다.",
+                                      "data": {
+                                        "uploadUrl": "https://bucket.s3.amazonaws.com/categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png?X-Amz-Signature=...",
+                                        "objectKey": "categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png",
+                                        "fileUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png",
+                                        "httpMethod": "PUT",
+                                        "contentType": "image/png",
+                                        "expiresInSeconds": 300
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<IssueCategoryImageUploadUrlDto.Response> issueCategoryImageUploadUrl(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "카테고리 ID", example = "1") @PathVariable Long categoryId,
+            @RequestBody(description = "업로드 URL 발급 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = IssueCategoryImageUploadUrlRequestDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "fileName": "image.png",
+                                      "contentType": "image/png"
+                                    }
+                                    """)
+                    ))
+            IssueCategoryImageUploadUrlDto.Request request
+    );
+
+    @Operation(summary = "카테고리 이미지 저장", description = "S3 업로드 완료 후 이미지 URL을 카테고리에 저장합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "저장 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = UpdateCategoryImageResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "카테고리 이미지가 성공적으로 업데이트되었습니다.",
+                                      "data": {
+                                        "categoryId": 1,
+                                        "imageUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/categories/images/category-1/a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6.png"
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<UpdateCategoryImageDto.Response> updateCategoryImage(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "카테고리 ID", example = "1") @PathVariable Long categoryId,
+            @RequestBody(description = "이미지 URL 저장 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = UpdateCategoryImageRequestDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "imageUrl": "https://bucket.s3.ap-northeast-2.amazonaws.com/categories/images/category-1/abc123.png"
+                                    }
+                                    """)
+                    ))
+            UpdateCategoryImageDto.Request request
     );
 }

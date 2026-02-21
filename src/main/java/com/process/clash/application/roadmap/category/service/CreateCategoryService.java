@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CreateCategoryService implements CreateCategoryUseCase {
 
     private final CategoryRepositoryPort categoryRepository;
     private final CheckAdminPolicy checkAdminPolicy;
 
     @Override
-    @Transactional
     public CreateCategoryData.Result execute(CreateCategoryData.Command command) {
         checkAdminPolicy.check(command.actor());
 
@@ -28,7 +28,7 @@ public class CreateCategoryService implements CreateCategoryUseCase {
                     throw new CategoryAlreadyExistsException();
                 });
 
-        Category category = new Category(null, command.name(), null, null);
+        Category category = new Category(null, command.name(), null, null, null);
         Category savedCategory = categoryRepository.save(category);
         return CreateCategoryData.Result.from(savedCategory);
     }

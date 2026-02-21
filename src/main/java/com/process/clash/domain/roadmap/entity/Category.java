@@ -16,11 +16,17 @@ public class Category {
 
     private String name;
 
+    private String imageUrl;
+
     private Instant createdAt;
 
     private Instant updatedAt;
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

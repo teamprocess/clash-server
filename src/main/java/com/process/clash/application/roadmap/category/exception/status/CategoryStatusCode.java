@@ -25,6 +25,12 @@ public enum CategoryStatusCode implements StatusCode {
         "CATEGORY_IN_USE",
         "해당 카테고리를 사용하는 로드맵이 있어 삭제할 수 없습니다.",
         ErrorCategory.BAD_REQUEST
+    ),
+
+    INVALID_CATEGORY_IMAGE_UPLOAD_REQUEST(
+        "INVALID_CATEGORY_IMAGE_UPLOAD_REQUEST",
+        "유효하지 않은 카테고리 이미지 업로드 요청입니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;
