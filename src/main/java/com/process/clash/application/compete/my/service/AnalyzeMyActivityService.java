@@ -117,7 +117,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
 
         int total = sorted.size();
         int trimCount = (int) Math.floor(total * 0.15);
-        List<Integer> trimmed = sorted.subList(trimCount, Math.max(trimCount, total - trimCount));
+        List<Integer> trimmed = sorted.subList(trimCount, total - trimCount);
 
         if (trimmed.isEmpty()) {
             return streaks.stream().map(s -> new Streak(s.date(), s.detailedInfo(), 0)).toList();
