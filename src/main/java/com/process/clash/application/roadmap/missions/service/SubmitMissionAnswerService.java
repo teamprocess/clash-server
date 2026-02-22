@@ -301,7 +301,7 @@ public class SubmitMissionAnswerService implements SubmitMissionAnswerUseCase {
         if (nextChapterOpt.isPresent()) {
             progress.moveToNextChapter(nextChapterOpt.get().getId());
         } else {
-            progress.completeSection();
+            progress.completeFinalChapter();
         }
         userSectionProgressRepositoryPort.save(progress);
     }
