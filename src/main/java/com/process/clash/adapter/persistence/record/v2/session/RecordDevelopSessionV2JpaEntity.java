@@ -40,7 +40,7 @@ public class RecordDevelopSessionV2JpaEntity {
         MonitoredApp appId
     ) {
         return new RecordDevelopSessionV2JpaEntity(
-            activeSession.getId(),
+            null,
             activeSession,
             appId
         );

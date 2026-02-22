@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class RecordSessionV2PersistenceAdapter implements RecordSessionV2RepositoryPort {
 
     private final RecordActiveSessionV2JpaRepository recordActiveSessionV2JpaRepository;
-    private final RecordDevelopSessionV2JpaRepository recordDevelopSessionV2JpaRepository;
     private final RecordTaskSessionV2JpaRepository recordTaskSessionV2JpaRepository;
     private final RecordSubjectV2JpaRepository recordSubjectV2JpaRepository;
     private final RecordTaskV2JpaRepository recordTaskV2JpaRepository;
@@ -86,24 +85,24 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     }
 
     private RecordSessionV2 createSession(RecordSessionV2 session) {
-        // 부모(active) 저장 후 타입별 자식(task/develop) 테이블에 분기 저장
+        // Aggregate 루트(active) 기준으로 자식을 연결하고, 부모 저장 시 cascade로 함께 저장한다.
         UserJpaEntity user = userJpaRepository.getReferenceById(session.userId());
         RecordActiveSessionV2JpaEntity activeEntity = recordSessionV2JpaMapper.toActiveEntity(session, user);
-        RecordActiveSessionV2JpaEntity savedActive = recordActiveSessionV2JpaRepository.save(activeEntity);
 
         if (session.sessionType() == RecordSessionTypeV2.DEVELOP) {
-            recordDevelopSessionV2JpaRepository.save(
-                RecordDevelopSessionV2JpaEntity.create(savedActive, session.appId())
+            activeEntity.attachDevelopSession(
+                RecordDevelopSessionV2JpaEntity.create(activeEntity, session.appId())
             );
         } else {
             RecordSubjectV2JpaEntity subject = recordSubjectV2JpaRepository.getReferenceById(session.subjectId());
             RecordTaskV2JpaEntity task = session.taskId() == null
                 ? null
                 : recordTaskV2JpaRepository.getReferenceById(session.taskId());
-            recordTaskSessionV2JpaRepository.save(
-                RecordTaskSessionV2JpaEntity.create(savedActive, subject, task)
+            activeEntity.attachTaskSession(
+                RecordTaskSessionV2JpaEntity.create(activeEntity, subject, task)
             );
         }
+        RecordActiveSessionV2JpaEntity savedActive = recordActiveSessionV2JpaRepository.save(activeEntity);
 
         return recordActiveSessionV2JpaRepository.findByIdWithDetails(savedActive.getId())
             .map(recordSessionV2JpaMapper::toDomain)

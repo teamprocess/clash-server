@@ -3,6 +3,7 @@ package com.process.clash.application.record.v2.service;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
+import com.process.clash.application.record.v2.exception.exception.badrequest.DevelopStartRequiresOnlineException;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2StartRequestException;
 import com.process.clash.application.record.v2.exception.exception.conflict.RecordSessionV2AlreadyStartedException;
 import com.process.clash.application.record.v2.exception.exception.notfound.SubjectV2NotFoundException;
@@ -13,6 +14,8 @@ import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegm
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
+import com.process.clash.application.realtime.data.UserActivityStatus;
+import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.enums.MonitoredApp;
@@ -40,6 +43,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     private final SubjectV2Policy subjectV2Policy;
     private final MonitoredAppPolicy monitoredAppPolicy;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
+    private final UserPresencePort userPresencePort;
 
     @Override
     public StartRecordV2Data.Result execute(StartRecordV2Data.Command command) {
@@ -52,6 +56,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
         }
 
         RecordSessionTypeV2 sessionType = resolveSessionType(command);
+        validateDevelopStartStatus(command.actor().id(), sessionType);
         Instant startedAt = Instant.now();
         RecordSessionV2 savedSession;
         try {
@@ -131,6 +136,16 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     private void validateDevelopStartRequest(StartRecordV2Data.Command command) {
         if (command.subjectId() != null || command.taskId() != null || command.appId() == null) {
             throw new InvalidRecordV2StartRequestException();
+        }
+    }
+
+    private void validateDevelopStartStatus(Long userId, RecordSessionTypeV2 sessionType) {
+        if (sessionType != RecordSessionTypeV2.DEVELOP) {
+            return;
+        }
+
+        if (userPresencePort.getStatus(userId) != UserActivityStatus.ONLINE) {
+            throw new DevelopStartRequiresOnlineException();
         }
     }
 }

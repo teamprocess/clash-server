@@ -44,7 +44,7 @@ public class RecordTaskSessionV2JpaEntity {
         RecordTaskV2JpaEntity task
     ) {
         return new RecordTaskSessionV2JpaEntity(
-            activeSession.getId(),
+            null,
             activeSession,
             subject,
             task

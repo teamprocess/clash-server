@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.record.v2.session;
 
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -58,10 +59,10 @@ public class RecordActiveSessionV2JpaEntity {
     @Column(nullable = true)
     private Instant endedAt;
 
-    @OneToOne(mappedBy = "activeSession", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "activeSession", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private RecordDevelopSessionV2JpaEntity developSession;
 
-    @OneToOne(mappedBy = "activeSession", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "activeSession", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private RecordTaskSessionV2JpaEntity taskSession;
 
     public static RecordActiveSessionV2JpaEntity create(
@@ -84,5 +85,15 @@ public class RecordActiveSessionV2JpaEntity {
 
     public void changeEndedAt(Instant endedAt) {
         this.endedAt = endedAt;
+    }
+
+    public void attachDevelopSession(RecordDevelopSessionV2JpaEntity developSession) {
+        this.developSession = developSession;
+        this.taskSession = null;
+    }
+
+    public void attachTaskSession(RecordTaskSessionV2JpaEntity taskSession) {
+        this.taskSession = taskSession;
+        this.developSession = null;
     }
 }
