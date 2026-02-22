@@ -1,5 +1,6 @@
 package com.process.clash.application.compete.rival.battle.service;
 
+import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.battle.data.ApplyBattleData;
 import com.process.clash.application.compete.rival.battle.policy.ApplyBattlePolicy;
 import com.process.clash.application.compete.rival.battle.port.in.ApplyBattleUseCase;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class ApplyBattleService implements ApplyBattleUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
     private final ApplyBattlePolicy applyBattlePolicy;
+    private final CompeteRefetchNotifier competeRefetchNotifier;
 
     @Override
     public void execute(ApplyBattleData.Command command) {
@@ -52,5 +55,6 @@ public class ApplyBattleService implements ApplyBattleUseCase {
         );
 
         userNoticeRepositoryPort.save(userNoticeForOpponent);
+        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentUserId));
     }
 }

@@ -1,5 +1,6 @@
 package com.process.clash.application.compete.rival.battle.service;
 
+import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.battle.data.ModifyBattleData;
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.battle.policy.ModifyBattlePolicy;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -23,6 +26,7 @@ public class AcceptBattleService implements AcceptBattleUseCase {
     private final ModifyBattlePolicy modifyBattlePolicy;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
+    private final CompeteRefetchNotifier competeRefetchNotifier;
 
     @Override
     public void execute(ModifyBattleData.Command command) {
@@ -35,12 +39,13 @@ public class AcceptBattleService implements AcceptBattleUseCase {
         Battle updatedBattle = battle.accept();
 
         battleRepositoryPort.save(updatedBattle);
+        Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserId(updatedBattle.rivalId(), command.actor().id());
 
         UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(
                         NoticeCategory.ACCEPT_BATTLE,
                         command.actor().id(),
-                        rivalRepositoryPort.findOpponentIdByIdAndUserId(updatedBattle.rivalId(), command.actor().id())
+                        opponentId
                 );
 
         userNoticeRepositoryPort.save(userNoticeForReceiver);
@@ -53,5 +58,6 @@ public class AcceptBattleService implements AcceptBattleUseCase {
                 );
 
         userNoticeRepositoryPort.save(userNoticeForSender);
+        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId, command.actor().id()));
     }
 }
