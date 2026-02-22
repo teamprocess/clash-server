@@ -35,6 +35,11 @@ public interface UserNoticeControllerDocument {
                                             "requiresAction": true,
                                             "isRead": false,
                                             "senderId": 42,
+                                            "senderName": "김철수",
+                                            "senderProfileImage": "https://example.com/profiles/sender.jpg",
+                                            "receiverId": 1,
+                                            "receiverName": "이영희",
+                                            "receiverProfileImage": null,
                                             "createdAt": "2026-02-21T10:00:00Z"
                                           }
                                         ]

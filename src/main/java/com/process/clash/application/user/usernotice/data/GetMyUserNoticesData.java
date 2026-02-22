@@ -24,8 +24,10 @@ public class GetMyUserNoticesData {
             boolean isRead,
             Long senderId,
             String senderName,
+            String senderProfileImage,
             Long receiverId,
             String receiverName,
+            String receiverProfileImage,
             Instant createdAt
     ) {
         public static NoticeItem from(UserNotice notice) {
@@ -35,8 +37,10 @@ public class GetMyUserNoticesData {
                     notice.isRead(),
                     notice.senderId(),
                     notice.senderName(),
+                    notice.senderProfileImage(),
                     notice.receiverId(),
                     notice.receiverName(),
+                    notice.receiverProfileImage(),
                     notice.createdAt()
             );
         }

@@ -35,8 +35,8 @@ class GetMyUserNoticesServiceTest {
     @DisplayName("알림이 있을 때 최신순으로 목록을 반환한다")
     void execute_returnsNoticeList() {
         Actor actor = new Actor(1L);
-        UserNotice notice1 = new UserNotice(1L, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, false, 2L, "senderA", 1L, "receiverA");
-        UserNotice notice2 = new UserNotice(2L, Instant.now(), Instant.now(), NoticeCategory.ACCEPT_RIVAL, true, 3L, "senderB", 1L, "receiverA");
+        UserNotice notice1 = new UserNotice(1L, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, false, 2L, "senderA", null, 1L, "receiverA", null);
+        UserNotice notice2 = new UserNotice(2L, Instant.now(), Instant.now(), NoticeCategory.ACCEPT_RIVAL, true, 3L, "senderB", null, 1L, "receiverA", null);
 
         when(userNoticeRepositoryPort.findAllByReceiverId(actor.id())).thenReturn(List.of(notice1, notice2));
 

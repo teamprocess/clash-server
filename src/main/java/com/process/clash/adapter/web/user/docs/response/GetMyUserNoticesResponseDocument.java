@@ -35,6 +35,21 @@ public class GetMyUserNoticesResponseDocument extends SuccessResponseDocument {
         @Schema(description = "발신자 ID", example = "42")
         public Long senderId;
 
+        @Schema(description = "발신자 이름", example = "김철수")
+        public String senderName;
+
+        @Schema(description = "발신자 프로필 이미지 URL", example = "https://example.com/profiles/sender.jpg", nullable = true)
+        public String senderProfileImage;
+
+        @Schema(description = "수신자 ID", example = "1")
+        public Long receiverId;
+
+        @Schema(description = "수신자 이름", example = "이영희")
+        public String receiverName;
+
+        @Schema(description = "수신자 프로필 이미지 URL", example = "https://example.com/profiles/receiver.jpg", nullable = true)
+        public String receiverProfileImage;
+
         @Schema(description = "생성 시각", example = "2026-02-21T10:00:00Z")
         public String createdAt;
     }

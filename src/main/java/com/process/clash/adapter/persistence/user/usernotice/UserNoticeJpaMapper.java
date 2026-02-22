@@ -30,8 +30,10 @@ public class UserNoticeJpaMapper {
                 userNoticeJpaEntity.isRead(),
                 userNoticeJpaEntity.getSender().getId(),
                 userNoticeJpaEntity.getSender().getName(),
+                userNoticeJpaEntity.getSender().getProfileImage(),
                 userNoticeJpaEntity.getReceiver().getId(),
-                userNoticeJpaEntity.getReceiver().getName()
+                userNoticeJpaEntity.getReceiver().getName(),
+                userNoticeJpaEntity.getReceiver().getProfileImage()
         );
     }
 }
