@@ -17,6 +17,7 @@ public enum BattleStatusCode implements StatusCode {
 
     // 409
     ALREADY_IN_BATTLE("ALREADY_IN_BATTLE", "이미 배틀이 존재합니다.", ErrorCategory.CONFLICT),
+    ALREADY_APPLIED_BATTLE("ALREADY_APPLIED_BATTLE", "이미 신청이 있습니다.", ErrorCategory.CONFLICT),
     ;
 
     private final String code;

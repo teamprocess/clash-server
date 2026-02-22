@@ -50,6 +50,17 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     List<BattleJpaEntity> findByUserIdWithOutRejected(@Param("userId") Long userId);
 
     /**
+     * 라이벌에 대한 PENDING 배틀 신청 존재 여부
+     */
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM battles b
+        WHERE b.fk_rival_id = :rivalId
+          AND b.battle_status = 'PENDING'
+    """, nativeQuery = true)
+    boolean existsPendingBattleByRivalId(@Param("rivalId") Long rivalId);
+
+    /**
      * 유저 관련 진행 중인 배틀 조회 (Optional)
      */
     @Query(value = """
