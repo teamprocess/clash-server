@@ -1,6 +1,7 @@
 package com.process.clash.application.record.v2.service;
 
 import com.process.clash.application.record.util.RecordDayWindow;
+import com.process.clash.application.record.util.RecordSessionWindowCalculator;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2DailyDateRequestException;
 import com.process.clash.application.record.v2.port.in.GetTodayRecordV2UseCase;
@@ -14,7 +15,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,12 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
         );
 
         long totalStudyTime = todaySessions.stream()
-            .mapToLong(session -> sessionSecondsInWindow(session, startOfDay, endLimit))
+            .mapToLong(session -> RecordSessionWindowCalculator.secondsInWindow(
+                session,
+                startOfDay,
+                endLimit,
+                recordZoneId
+            ))
             .sum();
 
         // studyStoppedAt은 "오늘 화면"에서만 의미가 있어 과거 날짜는 null로 반환
@@ -106,25 +111,6 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
             return isTodayRecordDate ? null : endLimit;
         }
         return sessionEnd.isAfter(endLimit) ? endLimit : sessionEnd;
-    }
-
-    private long sessionSecondsInWindow(
-        RecordSessionV2 session,
-        LocalDateTime dayStart,
-        LocalDateTime endLimit
-    ) {
-        LocalDateTime sessionStart = toLocalDateTime(session.startedAt());
-        LocalDateTime effectiveStart = sessionStart.isAfter(dayStart) ? sessionStart : dayStart;
-        LocalDateTime sessionEnd = session.endedAt() == null ? null : toLocalDateTime(session.endedAt());
-        LocalDateTime effectiveEnd = sessionEnd == null ? endLimit : sessionEnd;
-
-        if (effectiveEnd.isAfter(endLimit)) {
-            effectiveEnd = endLimit;
-        }
-        if (!effectiveEnd.isAfter(effectiveStart)) {
-            return 0L;
-        }
-        return ChronoUnit.SECONDS.between(effectiveStart, effectiveEnd);
     }
 
     private LocalDateTime toLocalDateTime(Instant instant) {

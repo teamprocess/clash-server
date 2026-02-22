@@ -5,12 +5,14 @@ import com.process.clash.application.record.v2.data.StartRecordV2Data;
 import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 public class StartRecordV2Dto {
 
     @Schema(name = "StartRecordV2DtoRequest")
     public record Request(
+        @NotNull(message = "세션 유형은 필수입니다.")
         RecordSessionTypeV2 sessionType,
         Long subjectId,
         Long taskId,

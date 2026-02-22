@@ -173,39 +173,18 @@ class StartRecordV2ServiceTest {
     }
 
     @Test
-    @DisplayName("sessionType이 null이어도 subject가 있으면 TASK로 추론해 시작한다")
-    void execute_infersTaskTypeWhenSessionTypeIsNull() {
+    @DisplayName("sessionType이 null이면 요청 형태와 무관하게 예외가 발생한다")
+    void execute_throwsWhenSessionTypeIsNull() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
-        RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 10L, "해시테이블", 0L, Instant.now(), Instant.now());
-        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+        StartRecordV2Data.Command taskLikeCommand = new StartRecordV2Data.Command(
             null,
             10L,
             11L,
             null,
             actor
         );
-
-        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
-        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
-        when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
-        when(recordTaskV2RepositoryPort.findByIdAndSubjectId(11L, 10L)).thenReturn(Optional.of(task));
-        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
-            .thenAnswer(invocation -> withId(invocation.getArgument(0), 101L));
-
-        StartRecordV2Data.Result result = startRecordV2Service.execute(command);
-
-        assertThat(result.session().sessionType()).isEqualTo(RecordSessionTypeV2.TASK);
-        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
-    }
-
-    @Test
-    @DisplayName("sessionType이 null이고 앱만 있으면 DEVELOP로 추론해 시작한다")
-    void execute_infersDevelopTypeWhenSessionTypeIsNull() {
-        Actor actor = new Actor(1L);
-        User user = createUser(1L);
-        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+        StartRecordV2Data.Command developLikeCommand = new StartRecordV2Data.Command(
             null,
             null,
             null,
@@ -215,15 +194,13 @@ class StartRecordV2ServiceTest {
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
-        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
-            .thenAnswer(invocation -> withId(invocation.getArgument(0), 201L));
-        when(recordDevelopSessionSegmentV2RepositoryPort.save(any()))
-            .thenAnswer(invocation -> invocation.getArgument(0));
 
-        StartRecordV2Data.Result result = startRecordV2Service.execute(command);
+        assertThatThrownBy(() -> startRecordV2Service.execute(taskLikeCommand))
+            .isInstanceOf(InvalidRecordV2StartRequestException.class);
+        assertThatThrownBy(() -> startRecordV2Service.execute(developLikeCommand))
+            .isInstanceOf(InvalidRecordV2StartRequestException.class);
 
-        assertThat(result.session().sessionType()).isEqualTo(RecordSessionTypeV2.DEVELOP);
-        verify(recordDevelopSessionSegmentV2RepositoryPort).save(any());
+        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
     }
 
     private RecordSessionV2 withId(RecordSessionV2 session, Long id) {

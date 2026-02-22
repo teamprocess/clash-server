@@ -1,6 +1,7 @@
 package com.process.clash.application.record.v2.service;
 
 import com.process.clash.application.record.util.RecordDayWindow;
+import com.process.clash.application.record.util.RecordSessionWindowCalculator;
 import com.process.clash.application.record.v2.data.GetAllSubjectsV2Data;
 import com.process.clash.application.record.v2.port.in.GetAllSubjectsV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
@@ -13,7 +14,6 @@ import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.infrastructure.config.RecordProperties;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +60,12 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
             .filter(session -> session.subjectId() != null && subjectIdSet.contains(session.subjectId()))
             .collect(Collectors.groupingBy(
                 RecordSessionV2::subjectId,
-                Collectors.summingLong(session -> sessionSecondsInWindow(session, dayStart, endLimit))
+                Collectors.summingLong(session -> RecordSessionWindowCalculator.secondsInWindow(
+                    session,
+                    dayStart,
+                    endLimit,
+                    recordZoneId
+                ))
             ));
 
         Map<Long, Long> taskStudyTimes = sessions.stream()
@@ -68,7 +73,12 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
             .filter(session -> session.taskId() != null)
             .collect(Collectors.groupingBy(
                 RecordSessionV2::taskId,
-                Collectors.summingLong(session -> sessionSecondsInWindow(session, dayStart, endLimit))
+                Collectors.summingLong(session -> RecordSessionWindowCalculator.secondsInWindow(
+                    session,
+                    dayStart,
+                    endLimit,
+                    recordZoneId
+                ))
             ));
 
         Map<Long, List<RecordTaskV2>> tasksBySubjectId = tasks.stream()
@@ -96,24 +106,5 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
             .toList();
 
         return GetAllSubjectsV2Data.Result.from(summaries);
-    }
-
-    private long sessionSecondsInWindow(
-        RecordSessionV2 session,
-        LocalDateTime dayStart,
-        LocalDateTime endLimit
-    ) {
-        LocalDateTime sessionStart = LocalDateTime.ofInstant(session.startedAt(), recordZoneId);
-        LocalDateTime effectiveStart = sessionStart.isAfter(dayStart) ? sessionStart : dayStart;
-        LocalDateTime effectiveEnd = session.endedAt() == null
-            ? endLimit
-            : LocalDateTime.ofInstant(session.endedAt(), recordZoneId);
-        if (effectiveEnd.isAfter(endLimit)) {
-            effectiveEnd = endLimit;
-        }
-        if (!effectiveEnd.isAfter(effectiveStart)) {
-            return 0L;
-        }
-        return ChronoUnit.SECONDS.between(effectiveStart, effectiveEnd);
     }
 }

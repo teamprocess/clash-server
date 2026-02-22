@@ -115,19 +115,10 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     }
 
     private RecordSessionTypeV2 resolveSessionType(StartRecordV2Data.Command command) {
-        if (command.sessionType() != null) {
-            return command.sessionType();
+        if (command.sessionType() == null) {
+            throw new InvalidRecordV2StartRequestException();
         }
-
-        // sessionType이 없는 구형/유연 요청을 payload 형태로 추론
-        if (command.subjectId() != null && command.appId() == null) {
-            return RecordSessionTypeV2.TASK;
-        }
-        if (command.subjectId() == null && command.taskId() == null && command.appId() != null) {
-            return RecordSessionTypeV2.DEVELOP;
-        }
-
-        throw new InvalidRecordV2StartRequestException();
+        return command.sessionType();
     }
 
     private void validateTaskStartRequest(StartRecordV2Data.Command command) {

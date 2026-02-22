@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "V2 기록 시작 요청")
 public class StartRecordV2RequestDocument {
 
-    @Schema(description = "세션 유형", example = "TASK")
+    @Schema(description = "세션 유형", example = "TASK", requiredMode = Schema.RequiredMode.REQUIRED)
     public String sessionType;
 
     @Schema(description = "과목 그룹 ID (sessionType=TASK 일 때 필수)", example = "1")
