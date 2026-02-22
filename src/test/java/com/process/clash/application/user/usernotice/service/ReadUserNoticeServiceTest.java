@@ -40,7 +40,13 @@ class ReadUserNoticeServiceTest {
     void execute_savesWhenNoticeIsUnread() {
         Actor actor = new Actor(1L);
         Long noticeId = 10L;
-        UserNotice unreadNotice = new UserNotice(noticeId, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, false, 2L, "senderA", "sender_a", null, 1L, "receiverA", "receiver_a", null);
+        UserNotice unreadNotice = new UserNotice(
+                noticeId, Instant.now(), Instant.now(),
+                NoticeCategory.APPLY_RIVAL, false,
+                2L, "senderA", "sender_a", null,
+                1L, "receiverA", "receiver_a", null,
+                null, null
+        );
 
         when(userNoticeRepositoryPort.findByIdAndReceiverId(noticeId, actor.id())).thenReturn(Optional.of(unreadNotice));
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenReturn(unreadNotice.markAsRead());
@@ -55,7 +61,13 @@ class ReadUserNoticeServiceTest {
     void execute_skipsSaveWhenNoticeIsAlreadyRead() {
         Actor actor = new Actor(1L);
         Long noticeId = 10L;
-        UserNotice readNotice = new UserNotice(noticeId, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, true, 2L, "senderA", "sender_a", null, 1L, "receiverA", "receiver_a", null);
+        UserNotice readNotice = new UserNotice(
+                noticeId, Instant.now(), Instant.now(),
+                NoticeCategory.APPLY_RIVAL, true,
+                2L, "senderA", "sender_a", null,
+                1L, "receiverA", "receiver_a", null,
+                null, null
+        );
 
         when(userNoticeRepositoryPort.findByIdAndReceiverId(noticeId, actor.id())).thenReturn(Optional.of(readNotice));
 
