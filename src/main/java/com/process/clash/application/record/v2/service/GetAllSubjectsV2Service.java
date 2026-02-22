@@ -1,6 +1,6 @@
 package com.process.clash.application.record.v2.service;
 
-import com.process.clash.application.record.util.RecordDateCalculator;
+import com.process.clash.application.record.util.RecordDayWindow;
 import com.process.clash.application.record.v2.data.GetAllSubjectsV2Data;
 import com.process.clash.application.record.v2.port.in.GetAllSubjectsV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
@@ -13,7 +13,6 @@ import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.infrastructure.config.RecordProperties;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
@@ -43,13 +42,10 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
         List<Long> subjectIds = subjects.stream().map(RecordSubjectV2::id).toList();
         List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllBySubjectIds(subjectIds);
 
-        // "기록일" 기준(경계시각 포함)으로 오늘 집계 구간을 계산
-        ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
-        int boundaryHour = recordProperties.dayBoundaryHour();
-        LocalDateTime dayStart = RecordDateCalculator.startOfRecordDay(nowZoned, boundaryHour);
-        LocalDateTime dayEnd = dayStart.plusDays(1);
-        LocalDateTime now = nowZoned.toLocalDateTime();
-        LocalDateTime endLimit = now.isBefore(dayEnd) ? now : dayEnd;
+        RecordDayWindow dayWindow = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour());
+        LocalDateTime dayStart = dayWindow.dayStart();
+        LocalDateTime dayEnd = dayWindow.dayEnd();
+        LocalDateTime endLimit = dayWindow.endLimit();
 
         List<RecordSessionV2> sessions = recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(
             command.actor().id(),

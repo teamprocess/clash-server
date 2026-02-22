@@ -111,21 +111,21 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     }
 
     private RecordSessionV2 updateSession(RecordSessionV2 session) {
-        RecordActiveSessionV2JpaEntity activeEntity = recordActiveSessionV2JpaRepository.findById(session.id())
+        RecordActiveSessionV2JpaEntity activeEntity = recordActiveSessionV2JpaRepository.findByIdWithDetails(session.id())
             .orElseThrow(ActiveSessionV2NotFoundException::new);
 
         activeEntity.changeEndedAt(session.endedAt());
 
         // DEVELOP 세션만 appId 변경 가능하므로 자식 develop 테이블도 동기화
         if (session.sessionType() == RecordSessionTypeV2.DEVELOP) {
-            RecordDevelopSessionV2JpaEntity developSession = recordDevelopSessionV2JpaRepository.findById(session.id())
-                .orElseThrow(RecordDevelopSessionV2NotFoundException::new);
+            RecordDevelopSessionV2JpaEntity developSession = activeEntity.getDevelopSession();
+            if (developSession == null) {
+                throw new RecordDevelopSessionV2NotFoundException();
+            }
             developSession.changeAppId(session.appId());
         }
 
-        return recordActiveSessionV2JpaRepository.findByIdWithDetails(session.id())
-            .map(recordSessionV2JpaMapper::toDomain)
-            .orElseThrow(ActiveSessionV2NotFoundException::new);
+        return recordSessionV2JpaMapper.toDomain(activeEntity);
     }
 
     private Instant toInstant(LocalDateTime localDateTime) {

@@ -1,6 +1,6 @@
 package com.process.clash.application.record.v2.service;
 
-import com.process.clash.application.record.util.RecordDateCalculator;
+import com.process.clash.application.record.util.RecordDayWindow;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2DailyDateRequestException;
 import com.process.clash.application.record.v2.port.in.GetTodayRecordV2UseCase;
@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -35,23 +34,22 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
         userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
-        ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
         int boundaryHour = recordProperties.dayBoundaryHour();
-        LocalDate todayRecordDate = RecordDateCalculator.recordDate(nowZoned, boundaryHour);
+        RecordDayWindow todayWindow = RecordDayWindow.today(recordZoneId, boundaryHour);
+        LocalDate todayRecordDate = todayWindow.recordDate();
         LocalDate recordDate = command.date() == null ? todayRecordDate : command.date();
         // 미래 기록일 조회는 허용하지 않음
         if (recordDate.isAfter(todayRecordDate)) {
             throw new InvalidRecordV2DailyDateRequestException();
         }
-        boolean isTodayRecordDate = recordDate.equals(todayRecordDate);
+        RecordDayWindow dayWindow = recordDate.equals(todayRecordDate)
+            ? todayWindow
+            : RecordDayWindow.of(recordDate, recordZoneId, boundaryHour);
+        boolean isTodayRecordDate = dayWindow.todayRecordDate();
         String date = recordDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
-        LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
-        LocalDateTime now = nowZoned.toLocalDateTime();
-        // 오늘 기록일은 "현재 시각"까지만, 과거 기록일은 하루 끝까지 집계
-        LocalDateTime endLimit = isTodayRecordDate && now.isBefore(endOfDay)
-            ? now
-            : endOfDay;
+        LocalDateTime startOfDay = dayWindow.dayStart();
+        LocalDateTime endOfDay = dayWindow.dayEnd();
+        LocalDateTime endLimit = dayWindow.endLimit();
 
         List<RecordSessionV2> todaySessions = recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(
             command.actor().id(),
