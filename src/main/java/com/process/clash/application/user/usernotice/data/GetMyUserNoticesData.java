@@ -23,6 +23,9 @@ public class GetMyUserNoticesData {
             NoticeCategory category,
             boolean isRead,
             Long senderId,
+            String senderName,
+            Long receiverId,
+            String receiverName,
             Instant createdAt
     ) {
         public static NoticeItem from(UserNotice notice) {
@@ -31,6 +34,9 @@ public class GetMyUserNoticesData {
                     notice.noticeCategory(),
                     notice.isRead(),
                     notice.senderId(),
+                    notice.senderName(),
+                    notice.receiverId(),
+                    notice.receiverName(),
                     notice.createdAt()
             );
         }

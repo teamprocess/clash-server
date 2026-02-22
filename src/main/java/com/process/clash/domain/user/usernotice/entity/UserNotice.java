@@ -11,7 +11,9 @@ public record UserNotice(
         NoticeCategory noticeCategory,
         boolean isRead,
         Long senderId,
-        Long receiverId
+        String senderName,
+        Long receiverId,
+        String receiverName
 ) {
 
     public static UserNotice createDefault(NoticeCategory noticeCategory, Long senderId, Long receiverId) {
@@ -23,11 +25,13 @@ public record UserNotice(
                 noticeCategory,
                 false,
                 senderId,
-                receiverId
+                null,
+                receiverId,
+                null
         );
     }
 
     public UserNotice markAsRead() {
-        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, receiverId);
+        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, receiverId, receiverName);
     }
 }

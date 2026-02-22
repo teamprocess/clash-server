@@ -17,6 +17,9 @@ public class GetMyUserNoticesDto {
                             notice.category().requiresAction(),
                             notice.isRead(),
                             notice.senderId(),
+                            notice.senderName(),
+                            notice.receiverId(),
+                            notice.receiverName(),
                             notice.createdAt() != null ? notice.createdAt().toString() : null
                     ))
                     .toList();
@@ -31,6 +34,9 @@ public class GetMyUserNoticesDto {
             boolean requiresAction,
             boolean isRead,
             Long senderId,
+            String senderName,
+            Long receiverId,
+            String receiverName,
             String createdAt
     ) {}
 }

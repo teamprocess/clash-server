@@ -29,7 +29,9 @@ public class UserNoticeJpaMapper {
                 userNoticeJpaEntity.getNoticeCategory(),
                 userNoticeJpaEntity.isRead(),
                 userNoticeJpaEntity.getSender().getId(),
-                userNoticeJpaEntity.getReceiver().getId()
+                userNoticeJpaEntity.getSender().getName(),
+                userNoticeJpaEntity.getReceiver().getId(),
+                userNoticeJpaEntity.getReceiver().getName()
         );
     }
 }
