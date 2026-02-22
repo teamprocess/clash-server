@@ -124,4 +124,19 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(@Param("userId") Long userId);
 
     List<RivalJpaEntity> findByIdIn(Set<Long> ids);
+
+    /**
+     * 상대방이 나에게 보낸 PENDING 라이벌 신청 존재 여부
+     */
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM rivals r
+        WHERE r.fk_first_user_id = :opponentId
+          AND r.fk_second_user_id = :myId
+          AND r.rival_linking_status = 'PENDING'
+    """, nativeQuery = true)
+    boolean existsPendingRivalRequestFrom(
+            @Param("opponentId") Long opponentId,
+            @Param("myId") Long myId
+    );
 }

@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.rival.policy;
 
 import com.process.clash.application.compete.rival.rival.data.ApplyRivalData;
 import com.process.clash.application.compete.rival.rival.exception.exception.badrequet.TooMuchRivalsException;
+import com.process.clash.application.compete.rival.rival.exception.exception.conflict.AlreadyAppliedRivalException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,13 @@ public class ApplyRivalPolicy {
         List<Long> opponentIds = command.ids().stream()
                 .map(id -> id.id())
                 .collect(Collectors.toList());
+
+        boolean hasAlreadyApplied = opponentIds.stream()
+                .anyMatch(opponentId -> rivalRepositoryPort.existsPendingRivalRequestFrom(opponentId, command.actor().id()));
+
+        if (hasAlreadyApplied) {
+            throw new AlreadyAppliedRivalException();
+        }
 
         Map<Long, Integer> opponentRivalCounts =
                 rivalRepositoryPort.countAllByOpponentIdsGrouped(opponentIds).stream()

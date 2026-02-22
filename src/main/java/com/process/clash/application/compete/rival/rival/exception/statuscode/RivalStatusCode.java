@@ -14,6 +14,9 @@ public enum RivalStatusCode implements StatusCode {
 
     // 404
     RIVAL_NOT_FOUND("RIVAL_NOT_FOUND", "라이벌이 존재하지 않습니다..", ErrorCategory.NOT_FOUND),
+
+    // 409
+    ALREADY_APPLIED_RIVAL("ALREADY_APPLIED_RIVAL", "이미 신청이 있습니다.", ErrorCategory.CONFLICT),
     ;
 
     private final String code;

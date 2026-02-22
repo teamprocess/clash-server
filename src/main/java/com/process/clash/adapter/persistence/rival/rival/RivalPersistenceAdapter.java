@@ -139,4 +139,9 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
                 .map(rivalJpaMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public boolean existsPendingRivalRequestFrom(Long opponentId, Long myId) {
+        return rivalJpaRepository.existsPendingRivalRequestFrom(opponentId, myId);
+    }
 }
