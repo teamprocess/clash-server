@@ -106,4 +106,35 @@ class StopRecordV2ServiceTest {
 
         verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());
     }
+
+    @Test
+    @DisplayName("TASK 세션 종료 시 개발 세그먼트를 건드리지 않는다")
+    void execute_doesNotTouchSegmentWhenTaskSession() {
+        Actor actor = new Actor(1L);
+        StopRecordV2Data.Command command = new StopRecordV2Data.Command(actor);
+
+        RecordSessionV2 activeSession = new RecordSessionV2(
+            100L,
+            1L,
+            RecordSessionTypeV2.TASK,
+            10L,
+            "자료구조",
+            null,
+            null,
+            null,
+            Instant.now().minusSeconds(600),
+            null
+        );
+
+        when(recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+            .thenReturn(Optional.of(activeSession));
+        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        stopRecordV2Service.execute(command);
+
+        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).findOpenSegmentBySessionIdForUpdate(any());
+        verify(recordSessionV2RepositoryPort).save(any(RecordSessionV2.class));
+        verify(recordActivityNotifierPort).notifyActivityStopped(actor);
+    }
 }

@@ -1,6 +1,9 @@
 package com.process.clash.application.record.v2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.process.clash.application.common.actor.Actor;
@@ -24,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -84,6 +88,35 @@ class GetTodayRecordV2ServiceTest {
         assertThat(result.sessions()).hasSize(1);
         assertThat(result.sessions().get(0).startedAt()).isEqualTo(dayStart.atZone(ZoneId.of("UTC")).toInstant());
         assertThat(result.sessions().get(0).endedAt()).isEqualTo(dayEnd.atZone(ZoneId.of("UTC")).toInstant());
+    }
+
+    @Test
+    @DisplayName("date가 없으면 현재 record-day 기준으로 조회한다")
+    void execute_usesCurrentRecordDayWhenDateIsNull() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(eq(actor.id()), any(), any()))
+            .thenReturn(List.of());
+
+        GetTodayRecordV2Data.Result result = getTodayRecordV2Service.execute(
+            new GetTodayRecordV2Data.Command(actor, null)
+        );
+
+        ArgumentCaptor<LocalDateTime> startCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        ArgumentCaptor<LocalDateTime> endCaptor = ArgumentCaptor.forClass(LocalDateTime.class);
+        verify(recordSessionV2RepositoryPort).findAllByUserIdAndTimeRange(
+            eq(actor.id()),
+            startCaptor.capture(),
+            endCaptor.capture()
+        );
+
+        LocalDateTime start = startCaptor.getValue();
+        LocalDateTime end = endCaptor.getValue();
+
+        assertThat(end).isEqualTo(start.plusDays(1));
+        assertThat(result.date()).isEqualTo(start.toLocalDate().toString());
     }
 
     private User createUser(Long id) {

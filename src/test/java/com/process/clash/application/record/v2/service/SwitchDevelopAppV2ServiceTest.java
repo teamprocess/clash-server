@@ -64,6 +64,16 @@ class SwitchDevelopAppV2ServiceTest {
     }
 
     @Test
+    @DisplayName("앱 ID가 없으면 예외가 발생한다")
+    void execute_throwsWhenAppIdIsNull() {
+        Actor actor = new Actor(1L);
+        SwitchDevelopAppV2Data.Command command = new SwitchDevelopAppV2Data.Command(actor, null);
+
+        assertThatThrownBy(() -> switchDevelopAppV2Service.execute(command))
+            .isInstanceOf(InvalidDevelopAppSwitchRequestException.class);
+    }
+
+    @Test
     @DisplayName("TASK 세션에서 앱 전환 요청 시 예외가 발생한다")
     void execute_throwsWhenSessionTypeIsTask() {
         Actor actor = new Actor(1L);
