@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -108,6 +110,33 @@ class UserPresenceServiceTest {
         verify(notifyPresenceStatusChangedPort, never()).notifyStatusChanged(
             1L,
             UserActivityStatus.ONLINE,
+            UserActivityStatus.ONLINE
+        );
+    }
+
+    @Test
+    @DisplayName("일부 notifier에서 예외가 발생해도 다른 notifier 알림은 계속된다")
+    void continuesDispatchWhenNotifierThrows() {
+        NotifyPresenceStatusChangedPort failingNotifier = mock(NotifyPresenceStatusChangedPort.class);
+        NotifyPresenceStatusChangedPort succeedingNotifier = mock(NotifyPresenceStatusChangedPort.class);
+        UserPresenceService service = new UserPresenceService(List.of(failingNotifier, succeedingNotifier));
+
+        doThrow(new RuntimeException("notify failed")).when(failingNotifier).notifyStatusChanged(
+            1L,
+            UserActivityStatus.OFFLINE,
+            UserActivityStatus.ONLINE
+        );
+
+        service.connected("conn-1", 1L);
+
+        verify(failingNotifier).notifyStatusChanged(
+            1L,
+            UserActivityStatus.OFFLINE,
+            UserActivityStatus.ONLINE
+        );
+        verify(succeedingNotifier).notifyStatusChanged(
+            1L,
+            UserActivityStatus.OFFLINE,
             UserActivityStatus.ONLINE
         );
     }

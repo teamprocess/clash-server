@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserPresenceService implements ReportUserPresenceUseCase, UserPresencePort {
@@ -254,11 +256,23 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
 
         for (StatusChange change : statusChanges) {
             for (NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort : notifyPresenceStatusChangedPorts) {
-                notifyPresenceStatusChangedPort.notifyStatusChanged(
-                    change.userId(),
-                    change.previousStatus(),
-                    change.currentStatus()
-                );
+                try {
+                    notifyPresenceStatusChangedPort.notifyStatusChanged(
+                        change.userId(),
+                        change.previousStatus(),
+                        change.currentStatus()
+                    );
+                } catch (RuntimeException exception) {
+                    // 특정 notifier 실패가 전체 전파를 막지 않도록 격리한다.
+                    log.warn(
+                        "Presence status notify failed. notifier={}, userId={}, previousStatus={}, currentStatus={}",
+                        notifyPresenceStatusChangedPort.getClass().getSimpleName(),
+                        change.userId(),
+                        change.previousStatus(),
+                        change.currentStatus(),
+                        exception
+                    );
+                }
             }
         }
     }

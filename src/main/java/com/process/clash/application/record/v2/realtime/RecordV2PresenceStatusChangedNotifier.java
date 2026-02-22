@@ -36,7 +36,7 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
         }
 
         recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(userId)
-            .ifPresent(activeSession -> stopDevelopSessionIfNeeded(userId, activeSession));
+            .ifPresent(this::stopDevelopSessionIfNeeded);
     }
 
     private boolean shouldStopDevelopSession(
@@ -51,7 +51,7 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
         return currentStatus == UserActivityStatus.AWAY || currentStatus == UserActivityStatus.OFFLINE;
     }
 
-    private void stopDevelopSessionIfNeeded(Long userId, RecordSessionV2 activeSession) {
+    private void stopDevelopSessionIfNeeded(RecordSessionV2 activeSession) {
         // TASK 세션은 제외하고 DEVELOP 세션만 자동 종료한다.
         if (activeSession.sessionType() != RecordSessionTypeV2.DEVELOP) {
             return;
@@ -61,6 +61,6 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
         recordDevelopSessionSegmentV2RepositoryPort.findOpenSegmentBySessionIdForUpdate(activeSession.id())
             .ifPresent(segment -> recordDevelopSessionSegmentV2RepositoryPort.save(segment.changeEndedAt(endedAt)));
         recordSessionV2RepositoryPort.save(activeSession.changeEndedAt(endedAt));
-        recordActivityNotifierPort.notifyActivityStopped(new Actor(userId));
+        recordActivityNotifierPort.notifyActivityStopped(new Actor(activeSession.userId()));
     }
 }
