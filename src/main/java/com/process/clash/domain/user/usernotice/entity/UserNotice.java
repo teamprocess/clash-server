@@ -12,9 +12,11 @@ public record UserNotice(
         boolean isRead,
         Long senderId,
         String senderName,
+        String senderUsername,
         String senderProfileImage,
         Long receiverId,
         String receiverName,
+        String receiverUsername,
         String receiverProfileImage
 ) {
 
@@ -29,13 +31,15 @@ public record UserNotice(
                 senderId,
                 null,
                 null,
+                null,
                 receiverId,
+                null,
                 null,
                 null
         );
     }
 
     public UserNotice markAsRead() {
-        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, senderProfileImage, receiverId, receiverName, receiverProfileImage);
+        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, senderUsername, senderProfileImage, receiverId, receiverName, receiverUsername, receiverProfileImage);
     }
 }

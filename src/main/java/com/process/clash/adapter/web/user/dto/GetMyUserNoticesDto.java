@@ -18,9 +18,11 @@ public class GetMyUserNoticesDto {
                             notice.isRead(),
                             notice.senderId(),
                             notice.senderName(),
+                            notice.senderUsername(),
                             notice.senderProfileImage(),
                             notice.receiverId(),
                             notice.receiverName(),
+                            notice.receiverUsername(),
                             notice.receiverProfileImage(),
                             notice.createdAt() != null ? notice.createdAt().toString() : null
                     ))
@@ -37,9 +39,11 @@ public class GetMyUserNoticesDto {
             boolean isRead,
             Long senderId,
             String senderName,
+            String senderUsername,
             String senderProfileImage,
             Long receiverId,
             String receiverName,
+            String receiverUsername,
             String receiverProfileImage,
             String createdAt
     ) {}
