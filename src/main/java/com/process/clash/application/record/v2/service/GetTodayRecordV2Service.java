@@ -42,11 +42,12 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
         if (recordDate.isAfter(todayRecordDate)) {
             throw new InvalidRecordV2DailyDateRequestException();
         }
+        boolean isTodayRecordDate = recordDate.equals(todayRecordDate);
         String date = recordDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
         LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
         LocalDateTime now = nowZoned.toLocalDateTime();
-        LocalDateTime endLimit = recordDate.equals(todayRecordDate) && now.isBefore(endOfDay)
+        LocalDateTime endLimit = isTodayRecordDate && now.isBefore(endOfDay)
             ? now
             : endOfDay;
 
@@ -60,17 +61,19 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
             .mapToLong(session -> sessionSecondsInWindow(session, startOfDay, endLimit))
             .sum();
 
-        Instant studyStoppedAt = todaySessions.stream()
-            .filter(session -> session.endedAt() != null)
-            .map(session -> {
-                LocalDateTime sessionEnd = toLocalDateTime(session.endedAt());
-                LocalDateTime cappedEnd = sessionEnd.isAfter(endLimit) ? endLimit : sessionEnd;
-                return cappedEnd.isAfter(startOfDay) ? cappedEnd : null;
-            })
-            .filter(cappedEnd -> cappedEnd != null)
-            .max(Comparator.naturalOrder())
-            .map(localDateTime -> localDateTime.atZone(recordZoneId).toInstant())
-            .orElse(null);
+        Instant studyStoppedAt = isTodayRecordDate
+            ? todaySessions.stream()
+                .filter(session -> session.endedAt() != null)
+                .map(session -> {
+                    LocalDateTime sessionEnd = toLocalDateTime(session.endedAt());
+                    LocalDateTime cappedEnd = sessionEnd.isAfter(endLimit) ? endLimit : sessionEnd;
+                    return cappedEnd.isAfter(startOfDay) ? cappedEnd : null;
+                })
+                .filter(cappedEnd -> cappedEnd != null)
+                .max(Comparator.naturalOrder())
+                .map(localDateTime -> localDateTime.atZone(recordZoneId).toInstant())
+                .orElse(null)
+            : null;
 
         return GetTodayRecordV2Data.Result.from(
             date,
@@ -83,15 +86,24 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
                         ? sessionStartLocal
                         : startOfDay;
                     LocalDateTime sessionEndLocal = session.endedAt() == null ? null : toLocalDateTime(session.endedAt());
-                    LocalDateTime sessionEnd = sessionEndLocal == null
-                        ? null
-                        : (sessionEndLocal.isAfter(endLimit) ? endLimit : sessionEndLocal);
+                    LocalDateTime sessionEnd = projectedSessionEnd(sessionEndLocal, endLimit, isTodayRecordDate);
                     Instant sessionStartInstant = sessionStart.atZone(recordZoneId).toInstant();
                     Instant sessionEndInstant = sessionEnd == null ? null : sessionEnd.atZone(recordZoneId).toInstant();
                     return RecordSessionV2Mapper.toSession(session, sessionStartInstant, sessionEndInstant);
                 })
                 .toList()
         );
+    }
+
+    private LocalDateTime projectedSessionEnd(
+        LocalDateTime sessionEnd,
+        LocalDateTime endLimit,
+        boolean isTodayRecordDate
+    ) {
+        if (sessionEnd == null) {
+            return isTodayRecordDate ? null : endLimit;
+        }
+        return sessionEnd.isAfter(endLimit) ? endLimit : sessionEnd;
     }
 
     private long sessionSecondsInWindow(

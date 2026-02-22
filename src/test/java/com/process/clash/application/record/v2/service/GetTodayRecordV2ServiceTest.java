@@ -62,7 +62,10 @@ class GetTodayRecordV2ServiceTest {
     void execute_usesRequestedDateWindow() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
-        LocalDate requestedDate = LocalDate.of(2026, 2, 20);
+        LocalDate requestedDate = RecordDateCalculator.recordDate(
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            6
+        ).minusDays(1);
         LocalDateTime dayStart = requestedDate.atTime(6, 0);
         LocalDateTime dayEnd = dayStart.plusDays(1);
 
@@ -87,9 +90,9 @@ class GetTodayRecordV2ServiceTest {
             new GetTodayRecordV2Data.Command(actor, requestedDate)
         );
 
-        assertThat(result.date()).isEqualTo("2026-02-20");
+        assertThat(result.date()).isEqualTo(requestedDate.toString());
         assertThat(result.totalStudyTime()).isEqualTo(86_400L);
-        assertThat(result.studyStoppedAt()).isEqualTo(dayEnd.atZone(ZoneId.of("UTC")).toInstant());
+        assertThat(result.studyStoppedAt()).isNull();
         assertThat(result.sessions()).hasSize(1);
         assertThat(result.sessions().get(0).startedAt()).isEqualTo(dayStart.atZone(ZoneId.of("UTC")).toInstant());
         assertThat(result.sessions().get(0).endedAt()).isEqualTo(dayEnd.atZone(ZoneId.of("UTC")).toInstant());
@@ -138,6 +141,44 @@ class GetTodayRecordV2ServiceTest {
             new GetTodayRecordV2Data.Command(actor, futureDate)
         )).isInstanceOf(InvalidRecordV2DailyDateRequestException.class);
         verify(recordSessionV2RepositoryPort, never()).findAllByUserIdAndTimeRange(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("과거 날짜 조회에서 진행중인 세션은 날짜 경계 시각으로 종료 시각이 보정된다")
+    void execute_capsOpenSessionEndAtDayBoundaryForPastDate() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        LocalDate requestedDate = RecordDateCalculator.recordDate(
+            ZonedDateTime.now(ZoneId.of("UTC")),
+            6
+        ).minusDays(1);
+        LocalDateTime dayStart = requestedDate.atTime(6, 0);
+        LocalDateTime dayEnd = dayStart.plusDays(1);
+
+        RecordSessionV2 openSession = new RecordSessionV2(
+            101L,
+            actor.id(),
+            RecordSessionTypeV2.TASK,
+            10L,
+            "자료구조",
+            11L,
+            "해시테이블",
+            null,
+            dayStart.minusHours(1).atZone(ZoneId.of("UTC")).toInstant(),
+            null
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd))
+            .thenReturn(List.of(openSession));
+
+        GetTodayRecordV2Data.Result result = getTodayRecordV2Service.execute(
+            new GetTodayRecordV2Data.Command(actor, requestedDate)
+        );
+
+        assertThat(result.studyStoppedAt()).isNull();
+        assertThat(result.sessions()).hasSize(1);
+        assertThat(result.sessions().get(0).endedAt()).isEqualTo(dayEnd.atZone(ZoneId.of("UTC")).toInstant());
     }
 
     private User createUser(Long id) {
