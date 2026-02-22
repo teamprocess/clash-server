@@ -20,6 +20,7 @@ public interface RivalRepositoryPort {
     Long findOpponentIdByIdAndUserIdInRejectCase(Long id, Long userId);
     Long findOpponentIdByIdAndUserId(Long id, Long userId);
     Optional<Rival> findById(Long id);
+    void deleteById(Long id);
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(Long userId);
     List<Rival> findByIdIn(Set<Long> ids);
 }

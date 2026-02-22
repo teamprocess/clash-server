@@ -40,7 +40,7 @@ public class CreateSectionData {
             Long sectionId,
             String major,
             String title,
-            String category,
+            Long categoryId,
             String description,
             List<String> keyPoints,
             Instant createdAt
@@ -50,7 +50,7 @@ public class CreateSectionData {
                     section.getId(),
                     section.getMajor().name(),
                     section.getTitle(),
-                    section.getCategory().getName(),
+                    section.getCategory().getId(),
                     section.getDescription(),
                     keyPoints,
                     section.getCreatedAt()

@@ -18,9 +18,9 @@ public class GetCategoriesDto {
         }
     }
 
-    public record CategoryVo(Long id, String name, Instant createdAt, Instant updatedAt) {
+    public record CategoryVo(Long id, String name, String imageUrl, Instant createdAt, Instant updatedAt) {
         public static CategoryVo from(GetCategoriesData.Result.CategoryVo vo) {
-            return new CategoryVo(vo.id(), vo.name(), vo.createdAt(), vo.updatedAt());
+            return new CategoryVo(vo.id(), vo.name(), vo.imageUrl(), vo.createdAt(), vo.updatedAt());
         }
     }
 }

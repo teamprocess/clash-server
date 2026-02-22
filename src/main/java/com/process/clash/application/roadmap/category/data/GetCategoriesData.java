@@ -18,11 +18,12 @@ public class GetCategoriesData {
             return new Result(categoryVos);
         }
 
-        public record CategoryVo(Long id, String name, Instant createdAt, Instant updatedAt) {
+        public record CategoryVo(Long id, String name, String imageUrl, Instant createdAt, Instant updatedAt) {
             public static CategoryVo from(Category category) {
                 return new CategoryVo(
                     category.getId(),
                     category.getName(),
+                    category.getImageUrl(),
                     category.getCreatedAt(),
                     category.getUpdatedAt()
                 );

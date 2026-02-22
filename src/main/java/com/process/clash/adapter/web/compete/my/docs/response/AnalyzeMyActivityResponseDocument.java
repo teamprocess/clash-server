@@ -34,13 +34,16 @@ public class AnalyzeMyActivityResponseDocument extends SuccessResponseDocument {
 
         @Schema(description = "상세 정보 (활동 시간 등)", example = "120")
         public Integer detailedInfo;
+
+        @Schema(description = "잔디 색상 비율 (0~100, 상위/하위 15% 제외한 70% 트리밍 평균 기준 50% 매핑)", example = "50")
+        public Integer colorRatio;
     }
 
     public static class VariationDoc {
         @Schema(description = "월", example = "1")
         public Integer month;
 
-        @Schema(description = "월별 평균 변동성", example = "12.5")
-        public Double avgVariationPerMonth;
+        @Schema(description = "월별 총합 변동성", example = "3600.0")
+        public Double totalVariationPerMonth;
     }
 }

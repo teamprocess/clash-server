@@ -158,7 +158,7 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
     @Query("""
         select new com.process.clash.application.compete.my.data.Variation(
                 month(us.date),
-                cast(avg(us.totalStudyTimeSeconds) as double)
+                cast(coalesce(sum(us.totalStudyTimeSeconds), 0) as double)
             )
         from UserStudyTimeJpaEntity us
         where us.user.id = :userId

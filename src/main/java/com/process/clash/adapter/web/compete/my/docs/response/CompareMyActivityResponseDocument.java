@@ -24,5 +24,8 @@ public class CompareMyActivityResponseDocument extends SuccessResponseDocument {
 
         @Schema(description = "GitHub 기여도", example = "85.3")
         public Double gitHubAttribution;
+
+        @Schema(description = "GitHub 커밋 수", example = "12.0")
+        public Double commitCount;
     }
 }

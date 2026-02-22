@@ -108,6 +108,7 @@ aws:
     bucket: ${AWS_S3_BUCKET:}
     region: ${AWS_S3_REGION:ap-northeast-2}
     profile-image-prefix: "users/profile-images"
+    category-image-prefix: "categories/images"
     public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
     presign-expiration-seconds: ${AWS_S3_PRESIGN_EXPIRATION_SECONDS:300}
 

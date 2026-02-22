@@ -12,6 +12,7 @@ public class CategoryJpaMapper {
         return new CategoryJpaEntity(
                 category.getId(),
                 category.getName(),
+                category.getImageUrl(),
                 category.getCreatedAt(),
                 category.getUpdatedAt()
         );
@@ -21,6 +22,7 @@ public class CategoryJpaMapper {
         return new Category(
                 entity.getId(),
                 entity.getName(),
+                entity.getImageUrl(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

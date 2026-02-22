@@ -27,6 +27,8 @@ public class CategoryJpaEntity {
     @Column(unique = true, nullable = false)
     private String name;
 
+    private String imageUrl;
+
     @CreatedDate
     @Column(nullable = false)
     private Instant createdAt;

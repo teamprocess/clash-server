@@ -22,7 +22,7 @@ public class UpdateSectionData {
     public record Result(
             Long sectionId,
             String title,
-            String category,
+            Long categoryId,
             String description,
             List<String> keyPoints,
             Instant updatedAt
@@ -31,7 +31,7 @@ public class UpdateSectionData {
             return new Result(
                     section.getId(),
                     section.getTitle(),
-                    section.getCategory().getName(),
+                    section.getCategory().getId(),
                     section.getDescription(),
                     keyPoints,
                     section.getUpdatedAt()
