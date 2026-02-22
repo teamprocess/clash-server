@@ -17,29 +17,42 @@ public record UserNotice(
         Long receiverId,
         String receiverName,
         String receiverUsername,
-        String receiverProfileImage
+        String receiverProfileImage,
+        Long rivalId,
+        Long battleId
 ) {
 
     public static UserNotice createDefault(NoticeCategory noticeCategory, Long senderId, Long receiverId) {
 
         return new UserNotice(
-                null,
-                null,
-                null,
-                noticeCategory,
-                false,
-                senderId,
-                null,
-                null,
-                null,
-                receiverId,
-                null,
-                null,
-                null
+                null, null, null, noticeCategory, false,
+                senderId, null, null, null,
+                receiverId, null, null, null,
+                null, null
+        );
+    }
+
+    public static UserNotice createForRival(NoticeCategory noticeCategory, Long senderId, Long receiverId, Long rivalId) {
+
+        return new UserNotice(
+                null, null, null, noticeCategory, false,
+                senderId, null, null, null,
+                receiverId, null, null, null,
+                rivalId, null
+        );
+    }
+
+    public static UserNotice createForBattle(NoticeCategory noticeCategory, Long senderId, Long receiverId, Long battleId) {
+
+        return new UserNotice(
+                null, null, null, noticeCategory, false,
+                senderId, null, null, null,
+                receiverId, null, null, null,
+                null, battleId
         );
     }
 
     public UserNotice markAsRead() {
-        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, senderUsername, senderProfileImage, receiverId, receiverName, receiverUsername, receiverProfileImage);
+        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, senderUsername, senderProfileImage, receiverId, receiverName, receiverUsername, receiverProfileImage, rivalId, battleId);
     }
 }

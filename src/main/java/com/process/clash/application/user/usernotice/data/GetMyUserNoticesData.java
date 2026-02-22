@@ -30,6 +30,8 @@ public class GetMyUserNoticesData {
             String receiverName,
             String receiverUsername,
             String receiverProfileImage,
+            Long rivalId,
+            Long battleId,
             Instant createdAt
     ) {
         public static NoticeItem from(UserNotice notice) {
@@ -45,6 +47,8 @@ public class GetMyUserNoticesData {
                     notice.receiverName(),
                     notice.receiverUsername(),
                     notice.receiverProfileImage(),
+                    notice.rivalId(),
+                    notice.battleId(),
                     notice.createdAt()
             );
         }

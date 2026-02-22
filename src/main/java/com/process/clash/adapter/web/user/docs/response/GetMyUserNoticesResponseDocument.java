@@ -56,6 +56,12 @@ public class GetMyUserNoticesResponseDocument extends SuccessResponseDocument {
         @Schema(description = "수신자 프로필 이미지 URL", example = "https://example.com/profiles/receiver.jpg", nullable = true)
         public String receiverProfileImage;
 
+        @Schema(description = "라이벌 ID (APPLY_RIVAL 카테고리일 때만 존재)", example = "7", nullable = true)
+        public Long rivalId;
+
+        @Schema(description = "배틀 ID (APPLY_BATTLE 카테고리일 때만 존재)", example = "3", nullable = true)
+        public Long battleId;
+
         @Schema(description = "생성 시각", example = "2026-02-21T10:00:00Z")
         public String createdAt;
     }

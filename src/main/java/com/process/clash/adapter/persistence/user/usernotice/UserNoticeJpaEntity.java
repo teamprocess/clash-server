@@ -48,4 +48,10 @@ public class UserNoticeJpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_receiver_id", nullable = false)
     private UserJpaEntity receiver;
+
+    @Column
+    private Long rivalId;
+
+    @Column
+    private Long battleId;
 }

@@ -16,7 +16,9 @@ public class UserNoticeJpaMapper {
                 userNotice.noticeCategory(),
                 userNotice.isRead(),
                 sender,
-                receiver
+                receiver,
+                userNotice.rivalId(),
+                userNotice.battleId()
         );
     }
 
@@ -35,7 +37,9 @@ public class UserNoticeJpaMapper {
                 userNoticeJpaEntity.getReceiver().getId(),
                 userNoticeJpaEntity.getReceiver().getName(),
                 userNoticeJpaEntity.getReceiver().getUsername(),
-                userNoticeJpaEntity.getReceiver().getProfileImage()
+                userNoticeJpaEntity.getReceiver().getProfileImage(),
+                userNoticeJpaEntity.getRivalId(),
+                userNoticeJpaEntity.getBattleId()
         );
     }
 }
