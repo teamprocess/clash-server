@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserPresenceService implements ReportUserPresenceUseCase, UserPresencePort {
 
-    private final NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort;
+    private final List<NotifyPresenceStatusChangedPort> notifyPresenceStatusChangedPorts;
     private final Object monitor = new Object();
     private final Map<String, SessionPresence> sessionByConnectionId = new HashMap<>();
     private final Map<Long, PresenceCounter> counterByUserId = new HashMap<>();
@@ -253,11 +253,13 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
         }
 
         for (StatusChange change : statusChanges) {
-            notifyPresenceStatusChangedPort.notifyStatusChanged(
-                change.userId(),
-                change.previousStatus(),
-                change.currentStatus()
-            );
+            for (NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort : notifyPresenceStatusChangedPorts) {
+                notifyPresenceStatusChangedPort.notifyStatusChanged(
+                    change.userId(),
+                    change.previousStatus(),
+                    change.currentStatus()
+                );
+            }
         }
     }
 
