@@ -18,6 +18,8 @@ import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegm
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
+import com.process.clash.application.realtime.data.UserActivityStatus;
+import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.enums.MonitoredApp;
@@ -58,6 +60,9 @@ class StartRecordV2ServiceTest {
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
+    @Mock
+    private UserPresencePort userPresencePort;
+
     private StartRecordV2Service startRecordV2Service;
 
     @BeforeEach
@@ -70,7 +75,8 @@ class StartRecordV2ServiceTest {
             userRepositoryPort,
             new SubjectV2Policy(),
             new MonitoredAppPolicy(),
-            recordActivityNotifierPort
+            recordActivityNotifierPort,
+            userPresencePort
         );
     }
 
@@ -118,6 +124,7 @@ class StartRecordV2ServiceTest {
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(userPresencePort.getStatus(actor.id())).thenReturn(UserActivityStatus.ONLINE);
         when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
             .thenAnswer(invocation -> withId(invocation.getArgument(0), 200L));
         when(recordDevelopSessionSegmentV2RepositoryPort.save(any()))
@@ -201,6 +208,31 @@ class StartRecordV2ServiceTest {
             .isInstanceOf(InvalidRecordV2StartRequestException.class);
 
         verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("DEVELOP 세션 시작 시 유저 상태가 ONLINE이 아니면 예외가 발생한다")
+    void execute_throwsWhenDevelopStartAndStatusIsNotOnline() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.DEVELOP,
+            null,
+            null,
+            MonitoredApp.VSCODE,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(userPresencePort.getStatus(actor.id())).thenReturn(UserActivityStatus.AWAY);
+
+        assertThatThrownBy(() -> startRecordV2Service.execute(command))
+            .isInstanceOf(InvalidRecordV2StartRequestException.class);
+
+        verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
+        verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
     }
 
     private RecordSessionV2 withId(RecordSessionV2 session, Long id) {

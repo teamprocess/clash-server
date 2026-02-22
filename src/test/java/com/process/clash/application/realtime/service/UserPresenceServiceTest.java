@@ -2,6 +2,7 @@ package com.process.clash.application.realtime.service;
 
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.NotifyPresenceStatusChangedPort;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,7 @@ class UserPresenceServiceTest {
 
     @BeforeEach
     void setUp() {
-        userPresenceService = new UserPresenceService(notifyPresenceStatusChangedPort);
+        userPresenceService = new UserPresenceService(List.of(notifyPresenceStatusChangedPort));
     }
 
     @Test
