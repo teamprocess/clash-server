@@ -68,6 +68,11 @@ public enum RecordV2StatusCode implements StatusCode {
         "INVALID_DEVELOP_APP_SWITCH_REQUEST",
         "개발 앱 전환 요청이 유효하지 않습니다.",
         ErrorCategory.BAD_REQUEST
+    ),
+    INVALID_RECORD_V2_DAILY_DATE_REQUEST(
+        "INVALID_RECORD_V2_DAILY_DATE_REQUEST",
+        "요청한 조회 날짜가 유효하지 않습니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;

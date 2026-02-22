@@ -1,13 +1,17 @@
 package com.process.clash.application.record.v2.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
+import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2DailyDateRequestException;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -21,6 +25,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,6 +122,22 @@ class GetTodayRecordV2ServiceTest {
 
         assertThat(end).isEqualTo(start.plusDays(1));
         assertThat(result.date()).isEqualTo(start.toLocalDate().toString());
+    }
+
+    @Test
+    @DisplayName("미래 날짜 조회 요청은 예외가 발생한다")
+    void execute_throwsWhenRequestedDateIsFuture() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        LocalDate todayRecordDate = RecordDateCalculator.recordDate(ZonedDateTime.now(ZoneId.of("UTC")), 6);
+        LocalDate futureDate = todayRecordDate.plusDays(1);
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> getTodayRecordV2Service.execute(
+            new GetTodayRecordV2Data.Command(actor, futureDate)
+        )).isInstanceOf(InvalidRecordV2DailyDateRequestException.class);
+        verify(recordSessionV2RepositoryPort, never()).findAllByUserIdAndTimeRange(any(), any(), any());
     }
 
     private User createUser(Long id) {

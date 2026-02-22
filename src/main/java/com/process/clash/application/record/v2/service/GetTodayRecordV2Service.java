@@ -2,6 +2,7 @@ package com.process.clash.application.record.v2.service;
 
 import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
+import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2DailyDateRequestException;
 import com.process.clash.application.record.v2.port.in.GetTodayRecordV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
@@ -38,6 +39,9 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
         int boundaryHour = recordProperties.dayBoundaryHour();
         LocalDate todayRecordDate = RecordDateCalculator.recordDate(nowZoned, boundaryHour);
         LocalDate recordDate = command.date() == null ? todayRecordDate : command.date();
+        if (recordDate.isAfter(todayRecordDate)) {
+            throw new InvalidRecordV2DailyDateRequestException();
+        }
         String date = recordDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
         LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
