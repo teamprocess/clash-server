@@ -115,6 +115,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     }
 
     private RecordSessionTypeV2 resolveSessionType(StartRecordV2Data.Command command) {
+        // V2 계약에서는 sessionType을 필수로 받아 모호한 추론을 제거한다.
         if (command.sessionType() == null) {
             throw new InvalidRecordV2StartRequestException();
         }

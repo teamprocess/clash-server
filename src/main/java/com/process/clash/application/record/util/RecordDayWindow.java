@@ -29,6 +29,7 @@ public record RecordDayWindow(
         LocalDateTime dayEnd = dayStart.plusDays(1);
         LocalDateTime nowLocal = now.toLocalDateTime();
         boolean isTodayRecordDate = recordDate.equals(todayRecordDate);
+        // 오늘 기록일이면 "현재 시각"까지만 집계하고, 과거 기록일이면 하루 끝까지 집계한다.
         LocalDateTime endLimit = isTodayRecordDate && nowLocal.isBefore(dayEnd)
             ? nowLocal
             : dayEnd;

@@ -19,6 +19,7 @@ public final class RecordSessionV2Mapper {
         Instant startedAt,
         Instant endedAt
     ) {
+        // startedAt/endedAt은 원본 세션 시각 대신 "조회 구간에 맞게 보정된 시각"을 받을 수 있다.
         if (session.sessionType() == RecordSessionTypeV2.DEVELOP) {
             return RecordSessionV2Data.Session.develop(
                 session.id(),
