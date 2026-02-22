@@ -39,6 +39,7 @@ public class DeleteSubjectTaskV2Service implements DeleteSubjectTaskV2UseCase {
         try {
             recordTaskV2RepositoryPort.deleteById(task.id());
         } catch (DataIntegrityViolationException exception) {
+            // 과거/연관 기록 FK 충돌도 도메인 충돌로 변환해 일관된 응답을 유지
             throw new TaskV2HasActiveSessionException(exception);
         }
     }

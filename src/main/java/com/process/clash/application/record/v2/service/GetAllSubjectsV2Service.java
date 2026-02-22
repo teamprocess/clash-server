@@ -43,6 +43,7 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
         List<Long> subjectIds = subjects.stream().map(RecordSubjectV2::id).toList();
         List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllBySubjectIds(subjectIds);
 
+        // "기록일" 기준(경계시각 포함)으로 오늘 집계 구간을 계산
         ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
         int boundaryHour = recordProperties.dayBoundaryHour();
         LocalDateTime dayStart = RecordDateCalculator.startOfRecordDay(nowZoned, boundaryHour);
@@ -56,6 +57,7 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
             dayEnd
         );
 
+        // 과목/세부작업 학습시간은 TASK 세션만 집계
         Set<Long> subjectIdSet = Set.copyOf(subjectIds);
         Map<Long, Long> subjectStudyTimes = sessions.stream()
             .filter(session -> session.sessionType() == RecordSessionTypeV2.TASK)
@@ -76,6 +78,7 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
         Map<Long, List<RecordTaskV2>> tasksBySubjectId = tasks.stream()
             .collect(Collectors.groupingBy(RecordTaskV2::subjectId));
 
+        // 과목별 요약 + 하위 task 요약을 한 번에 구성
         List<GetAllSubjectsV2Data.SubjectSummary> summaries = subjects.stream()
             .map(subject -> {
                 List<RecordTaskV2> subjectTasks = tasksBySubjectId.getOrDefault(subject.id(), Collections.emptyList());

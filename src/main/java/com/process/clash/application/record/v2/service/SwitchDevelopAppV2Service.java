@@ -36,6 +36,7 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
         RecordSessionV2 activeSession = loadActiveDevelopSession(command.actor().id());
         Instant switchedAt = Instant.now();
 
+        // 현재 앱과 동일하면 세그먼트를 만들지 않고 그대로 반환
         if (nextAppId.equals(activeSession.appId())) {
             return toResult(activeSession, switchedAt);
         }
@@ -43,11 +44,13 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
         Optional<RecordDevelopSessionSegmentV2> openSegment =
             recordDevelopSessionSegmentV2RepositoryPort.findOpenSegmentBySessionIdForUpdate(activeSession.id());
 
+        // 세션 appId만 꼬인 상태를 보정: 열린 세그먼트와 같으면 세그먼트 생성 없이 동기화만 수행
         if (openSegment.isPresent() && nextAppId.equals(openSegment.get().appId())) {
             RecordSessionV2 syncedSession = recordSessionV2RepositoryPort.save(activeSession.changeDevelopAppId(nextAppId));
             return toResult(syncedSession, switchedAt);
         }
 
+        // 기존 세그먼트를 닫고 새 앱 세그먼트를 시작해 앱 전환 이력을 분리 저장
         openSegment.ifPresent(segment ->
             recordDevelopSessionSegmentV2RepositoryPort.save(segment.changeEndedAt(switchedAt))
         );

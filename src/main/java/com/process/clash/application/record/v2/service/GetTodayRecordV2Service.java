@@ -39,6 +39,7 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
         int boundaryHour = recordProperties.dayBoundaryHour();
         LocalDate todayRecordDate = RecordDateCalculator.recordDate(nowZoned, boundaryHour);
         LocalDate recordDate = command.date() == null ? todayRecordDate : command.date();
+        // 미래 기록일 조회는 허용하지 않음
         if (recordDate.isAfter(todayRecordDate)) {
             throw new InvalidRecordV2DailyDateRequestException();
         }
@@ -47,6 +48,7 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
         LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
         LocalDateTime now = nowZoned.toLocalDateTime();
+        // 오늘 기록일은 "현재 시각"까지만, 과거 기록일은 하루 끝까지 집계
         LocalDateTime endLimit = isTodayRecordDate && now.isBefore(endOfDay)
             ? now
             : endOfDay;
@@ -61,6 +63,7 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
             .mapToLong(session -> sessionSecondsInWindow(session, startOfDay, endLimit))
             .sum();
 
+        // studyStoppedAt은 "오늘 화면"에서만 의미가 있어 과거 날짜는 null로 반환
         Instant studyStoppedAt = isTodayRecordDate
             ? todaySessions.stream()
                 .filter(session -> session.endedAt() != null)
@@ -100,6 +103,7 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
         LocalDateTime endLimit,
         boolean isTodayRecordDate
     ) {
+        // 미종료 세션은 오늘이면 진행중(null), 과거면 해당 기록일 종료 시점으로 보정
         if (sessionEnd == null) {
             return isTodayRecordDate ? null : endLimit;
         }

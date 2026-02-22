@@ -48,6 +48,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
         userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
+        // 빠른 실패: 이미 진행 중인 세션이 있으면 바로 차단
         if (recordSessionV2RepositoryPort.existsActiveSessionByUserId(command.actor().id())) {
             throw new RecordSessionV2AlreadyStartedException();
         }
@@ -59,6 +60,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
             RecordSessionV2 newSession = createSession(command, sessionType, startedAt);
             savedSession = recordSessionV2RepositoryPort.save(newSession);
 
+            // DEVELOP 세션은 앱 전환 히스토리 추적을 위해 시작 세그먼트를 함께 생성
             if (savedSession.sessionType() == RecordSessionTypeV2.DEVELOP && savedSession.appId() != null) {
                 recordDevelopSessionSegmentV2RepositoryPort.save(
                     RecordDevelopSessionSegmentV2.start(
@@ -70,6 +72,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
             }
             recordActivityNotifierPort.notifyActivityStarted(command.actor());
         } catch (DataIntegrityViolationException exception) {
+            // 동시 요청 레이스로 DB unique 제약에 걸린 경우도 동일한 도메인 예외로 정규화
             throw new RecordSessionV2AlreadyStartedException(exception);
         }
 
@@ -118,6 +121,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
             return command.sessionType();
         }
 
+        // sessionType이 없는 구형/유연 요청을 payload 형태로 추론
         if (command.subjectId() != null && command.appId() == null) {
             return RecordSessionTypeV2.TASK;
         }

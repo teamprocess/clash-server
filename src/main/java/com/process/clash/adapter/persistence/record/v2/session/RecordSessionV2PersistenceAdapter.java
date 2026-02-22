@@ -84,6 +84,7 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     }
 
     private RecordSessionV2 createSession(RecordSessionV2 session) {
+        // 부모(active) 저장 후 타입별 자식(task/develop) 테이블에 분기 저장
         UserJpaEntity user = userJpaRepository.getReferenceById(session.userId());
         RecordActiveSessionV2JpaEntity activeEntity = recordSessionV2JpaMapper.toActiveEntity(session, user);
         RecordActiveSessionV2JpaEntity savedActive = recordActiveSessionV2JpaRepository.save(activeEntity);
@@ -114,6 +115,7 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
         activeEntity.changeEndedAt(session.endedAt());
         recordActiveSessionV2JpaRepository.save(activeEntity);
 
+        // DEVELOP 세션만 appId 변경 가능하므로 자식 develop 테이블도 동기화
         if (session.sessionType() == RecordSessionTypeV2.DEVELOP) {
             RecordDevelopSessionV2JpaEntity developSession = recordDevelopSessionV2JpaRepository.findById(session.id())
                 .orElseThrow(RecordDevelopSessionV2NotFoundException::new);
