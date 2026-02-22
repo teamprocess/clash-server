@@ -41,13 +41,14 @@ public class ApplyBattleService implements ApplyBattleUseCase {
         LocalDate endDate = startDate.plusDays(command.duration());
 
         Battle battle = Battle.createDefault(startDate, endDate, rivalEntityId);
-        battleRepositoryPort.save(battle);
+        Battle savedBattle = battleRepositoryPort.save(battle);
 
         // 상대방에게 알림 전송 (상대방 사용자 ID 사용)
-        UserNotice userNoticeForOpponent = UserNotice.createDefault(
+        UserNotice userNoticeForOpponent = UserNotice.createForBattle(
                 NoticeCategory.APPLY_BATTLE,
                 userId,           // 신청자 (나)
-                opponentUserId    // 받는 사람 (상대방)
+                opponentUserId,   // 받는 사람 (상대방)
+                savedBattle.id()  // 배틀 ID
         );
 
         userNoticeRepositoryPort.save(userNoticeForOpponent);

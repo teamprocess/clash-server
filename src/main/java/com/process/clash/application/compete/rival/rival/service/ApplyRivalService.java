@@ -34,13 +34,14 @@ public class ApplyRivalService implements ApplyRivalUseCase {
                 .map(opponentId -> Rival.createDefault(command.actor().id(), opponentId.id()))
                 .toList();
 
-        rivalRepositoryPort.saveAll(rivals);
+        List<Rival> savedRivals = rivalRepositoryPort.saveAll(rivals);
 
-        List<UserNotice> userNotices = rivals.stream()
-                .map(rival -> UserNotice.createDefault(
+        List<UserNotice> userNotices = savedRivals.stream()
+                .map(rival -> UserNotice.createForRival(
                         NoticeCategory.APPLY_RIVAL,
                         rival.firstUserId(),
-                        rival.secondUserId()
+                        rival.secondUserId(),
+                        rival.id()
                 ))
                 .toList();
 

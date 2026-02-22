@@ -24,6 +24,8 @@ public class GetMyUserNoticesDto {
                             notice.receiverName(),
                             notice.receiverUsername(),
                             notice.receiverProfileImage(),
+                            notice.rivalId(),
+                            notice.battleId(),
                             notice.createdAt() != null ? notice.createdAt().toString() : null
                     ))
                     .toList();
@@ -45,6 +47,8 @@ public class GetMyUserNoticesDto {
             String receiverName,
             String receiverUsername,
             String receiverProfileImage,
+            Long rivalId,
+            Long battleId,
             String createdAt
     ) {}
 }

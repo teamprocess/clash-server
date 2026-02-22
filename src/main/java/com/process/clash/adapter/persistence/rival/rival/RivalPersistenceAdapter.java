@@ -41,7 +41,7 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
-    public void saveAll(List<Rival> rivals) {
+    public List<Rival> saveAll(List<Rival> rivals) {
         Set<Long> allUserIds = rivals.stream()
                 .flatMap(rival -> Stream.of(rival.firstUserId(), rival.secondUserId()))
                 .collect(Collectors.toSet());
@@ -70,7 +70,9 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
                 })
                 .toList();
 
-        rivalJpaRepository.saveAll(entities);
+        return rivalJpaRepository.saveAll(entities).stream()
+                .map(rivalJpaMapper::toDomain)
+                .toList();
     }
 
     @Override
