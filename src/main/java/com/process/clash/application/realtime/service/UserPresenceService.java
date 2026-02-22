@@ -12,13 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserPresenceService implements ReportUserPresenceUseCase, UserPresencePort {
 
-    private final NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort;
+    private final List<NotifyPresenceStatusChangedPort> notifyPresenceStatusChangedPorts;
     private final Object monitor = new Object();
     private final Map<String, SessionPresence> sessionByConnectionId = new HashMap<>();
     private final Map<Long, PresenceCounter> counterByUserId = new HashMap<>();
@@ -253,11 +255,25 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
         }
 
         for (StatusChange change : statusChanges) {
-            notifyPresenceStatusChangedPort.notifyStatusChanged(
-                change.userId(),
-                change.previousStatus(),
-                change.currentStatus()
-            );
+            for (NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort : notifyPresenceStatusChangedPorts) {
+                try {
+                    notifyPresenceStatusChangedPort.notifyStatusChanged(
+                        change.userId(),
+                        change.previousStatus(),
+                        change.currentStatus()
+                    );
+                } catch (RuntimeException exception) {
+                    // 특정 notifier 실패가 전체 전파를 막지 않도록 격리한다.
+                    log.warn(
+                        "Presence status notify failed. notifier={}, userId={}, previousStatus={}, currentStatus={}",
+                        notifyPresenceStatusChangedPort.getClass().getSimpleName(),
+                        change.userId(),
+                        change.previousStatus(),
+                        change.currentStatus(),
+                        exception
+                    );
+                }
+            }
         }
     }
 
