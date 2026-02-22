@@ -24,6 +24,12 @@ public class UserNoticeJpaMapper {
 
     public UserNotice toDomain(UserNoticeJpaEntity userNoticeJpaEntity) {
 
+        boolean isSelfNotice = userNoticeJpaEntity.getSender().getId()
+                .equals(userNoticeJpaEntity.getReceiver().getId());
+
+        String senderName = isSelfNotice ? "Clash" : userNoticeJpaEntity.getSender().getName();
+        String senderUsername = isSelfNotice ? "clash" : userNoticeJpaEntity.getSender().getUsername();
+
         return new UserNotice(
                 userNoticeJpaEntity.getId(),
                 userNoticeJpaEntity.getCreatedAt(),
@@ -31,8 +37,8 @@ public class UserNoticeJpaMapper {
                 userNoticeJpaEntity.getNoticeCategory(),
                 userNoticeJpaEntity.isRead(),
                 userNoticeJpaEntity.getSender().getId(),
-                userNoticeJpaEntity.getSender().getName(),
-                userNoticeJpaEntity.getSender().getUsername(),
+                senderName,
+                senderUsername,
                 userNoticeJpaEntity.getSender().getProfileImage(),
                 userNoticeJpaEntity.getReceiver().getId(),
                 userNoticeJpaEntity.getReceiver().getName(),
