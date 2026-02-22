@@ -15,7 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +54,24 @@ public class GetMissionResultService implements GetMissionResultUseCase {
 
         if (history.isCleared()) {
             List<Mission> missions = missionRepositoryPort.findAllByChapterId(mission.getChapterId());
+            List<Long> missionIds = missions.stream().map(Mission::getId).toList();
+
+            List<UserMissionHistory> allHistories = userMissionHistoryRepositoryPort.findAllByUserIdAndMissionIdIn(actor.id(), missionIds);
+            Map<Long, UserMissionHistory> historyMap = allHistories.stream()
+                    .collect(Collectors.toMap(UserMissionHistory::getMissionId, Function.identity()));
+
+            // 미클리어된 미션 중 orderIndex가 가장 낮은 것 (현재 미션은 이미 클리어됨)
             Optional<Mission> nextMission = missions.stream()
-                    .filter(m -> m.getOrderIndex() > mission.getOrderIndex())
-                    .min((a, b) -> a.getOrderIndex().compareTo(b.getOrderIndex()));
+                    .filter(m -> m.getOrderIndex() != null)
+                    .sorted((m1, m2) -> Integer.compare(m1.getOrderIndex(), m2.getOrderIndex()))
+                    .filter(m -> {
+                        if (m.getId().equals(missionId)) {
+                            return false;
+                        }
+                        UserMissionHistory h = historyMap.get(m.getId());
+                        return h == null || !h.isCleared();
+                    })
+                    .findFirst();
 
             if (nextMission.isPresent()) {
                 nextMissionId = nextMission.get().getId();
