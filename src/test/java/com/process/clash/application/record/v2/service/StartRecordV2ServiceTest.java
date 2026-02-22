@@ -29,7 +29,6 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -71,8 +70,7 @@ class StartRecordV2ServiceTest {
             userRepositoryPort,
             new SubjectV2Policy(),
             new MonitoredAppPolicy(),
-            recordActivityNotifierPort,
-            ZoneId.of("UTC")
+            recordActivityNotifierPort
         );
     }
 

@@ -13,7 +13,6 @@ import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
     private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final RecordDevelopSessionSegmentV2RepositoryPort recordDevelopSessionSegmentV2RepositoryPort;
     private final MonitoredAppPolicy monitoredAppPolicy;
-    private final ZoneId recordZoneId;
 
     @Override
     public SwitchDevelopAppV2Data.Result execute(SwitchDevelopAppV2Data.Command command) {
@@ -82,7 +80,7 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
     private SwitchDevelopAppV2Data.Result toResult(RecordSessionV2 session, Instant switchedAt) {
         return SwitchDevelopAppV2Data.Result.from(
             switchedAt,
-            RecordSessionV2Mapper.toSession(session, recordZoneId)
+            RecordSessionV2Mapper.toSession(session)
         );
     }
 }

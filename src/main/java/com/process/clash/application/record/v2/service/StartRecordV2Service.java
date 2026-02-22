@@ -23,7 +23,6 @@ import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,6 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     private final SubjectV2Policy subjectV2Policy;
     private final MonitoredAppPolicy monitoredAppPolicy;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
-    private final ZoneId recordZoneId;
 
     @Override
     public StartRecordV2Data.Result execute(StartRecordV2Data.Command command) {
@@ -78,7 +76,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
 
         return StartRecordV2Data.Result.from(
             startedAt,
-            RecordSessionV2Mapper.toSession(savedSession, recordZoneId)
+            RecordSessionV2Mapper.toSession(savedSession)
         );
     }
 

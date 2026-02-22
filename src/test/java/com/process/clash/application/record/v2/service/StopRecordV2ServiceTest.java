@@ -17,7 +17,6 @@ import com.process.clash.domain.record.v2.entity.RecordDevelopSessionSegmentV2;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,8 +44,7 @@ class StopRecordV2ServiceTest {
         stopRecordV2Service = new StopRecordV2Service(
             recordSessionV2RepositoryPort,
             recordDevelopSessionSegmentV2RepositoryPort,
-            recordActivityNotifierPort,
-            ZoneId.of("UTC")
+            recordActivityNotifierPort
         );
     }
 

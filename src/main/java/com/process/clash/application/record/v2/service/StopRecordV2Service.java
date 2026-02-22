@@ -10,7 +10,6 @@ import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ public class StopRecordV2Service implements StopRecordV2UseCase {
     private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final RecordDevelopSessionSegmentV2RepositoryPort recordDevelopSessionSegmentV2RepositoryPort;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
-    private final ZoneId recordZoneId;
 
     @Override
     public StopRecordV2Data.Result execute(StopRecordV2Data.Command command) {
@@ -41,7 +39,7 @@ public class StopRecordV2Service implements StopRecordV2UseCase {
 
         return StopRecordV2Data.Result.from(
             endedAt,
-            RecordSessionV2Mapper.toSession(savedSession, recordZoneId)
+            RecordSessionV2Mapper.toSession(savedSession)
         );
     }
 }

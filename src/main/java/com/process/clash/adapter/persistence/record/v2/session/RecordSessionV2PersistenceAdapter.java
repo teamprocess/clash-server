@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     private final ZoneId recordZoneId;
 
     @Override
+    @Transactional
     public RecordSessionV2 save(RecordSessionV2 session) {
         if (session.id() == null) {
             return createSession(session);
@@ -113,14 +115,12 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
             .orElseThrow(ActiveSessionV2NotFoundException::new);
 
         activeEntity.changeEndedAt(session.endedAt());
-        recordActiveSessionV2JpaRepository.save(activeEntity);
 
         // DEVELOP 세션만 appId 변경 가능하므로 자식 develop 테이블도 동기화
         if (session.sessionType() == RecordSessionTypeV2.DEVELOP) {
             RecordDevelopSessionV2JpaEntity developSession = recordDevelopSessionV2JpaRepository.findById(session.id())
                 .orElseThrow(RecordDevelopSessionV2NotFoundException::new);
             developSession.changeAppId(session.appId());
-            recordDevelopSessionV2JpaRepository.save(developSession);
         }
 
         return recordActiveSessionV2JpaRepository.findByIdWithDetails(session.id())

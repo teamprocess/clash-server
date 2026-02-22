@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.record.v2.session;
 
+import com.process.clash.adapter.persistence.record.v2.task.RecordTaskV2JpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
@@ -34,18 +35,17 @@ public class RecordSessionV2JpaMapper {
             );
         }
 
+        RecordTaskSessionV2JpaEntity taskSession = entity.getTaskSession();
+        RecordTaskV2JpaEntity task = taskSession == null ? null : taskSession.getTask();
+
         return new RecordSessionV2(
             entity.getId(),
             entity.getUser().getId(),
             sessionType,
-            entity.getTaskSession() == null ? null : entity.getTaskSession().getSubject().getId(),
-            entity.getTaskSession() == null ? null : entity.getTaskSession().getSubject().getName(),
-            entity.getTaskSession() == null || entity.getTaskSession().getTask() == null
-                ? null
-                : entity.getTaskSession().getTask().getId(),
-            entity.getTaskSession() == null || entity.getTaskSession().getTask() == null
-                ? null
-                : entity.getTaskSession().getTask().getName(),
+            taskSession == null ? null : taskSession.getSubject().getId(),
+            taskSession == null ? null : taskSession.getSubject().getName(),
+            task == null ? null : task.getId(),
+            task == null ? null : task.getName(),
             null,
             entity.getStartedAt(),
             entity.getEndedAt()

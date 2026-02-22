@@ -10,7 +10,6 @@ import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,10 +28,7 @@ class GetCurrentRecordV2ServiceTest {
 
     @BeforeEach
     void setUp() {
-        getCurrentRecordV2Service = new GetCurrentRecordV2Service(
-            recordSessionV2RepositoryPort,
-            ZoneId.of("UTC")
-        );
+        getCurrentRecordV2Service = new GetCurrentRecordV2Service(recordSessionV2RepositoryPort);
     }
 
     @Test

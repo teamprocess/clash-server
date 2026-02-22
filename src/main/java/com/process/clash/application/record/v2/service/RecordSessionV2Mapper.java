@@ -12,7 +12,7 @@ public final class RecordSessionV2Mapper {
     private RecordSessionV2Mapper() {
     }
 
-    public static RecordSessionV2Data.Session toSession(RecordSessionV2 session, ZoneId unusedRecordZoneId) {
+    public static RecordSessionV2Data.Session toSession(RecordSessionV2 session) {
         return toSession(session, session.startedAt(), session.endedAt());
     }
 
