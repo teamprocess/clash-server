@@ -34,4 +34,9 @@ public class UserSectionProgress {
     public void completeSection() {
         this.isCompleted = true;
     }
+
+    public void completeFinalChapter() {
+        this.completedChapters += 1;
+        this.isCompleted = true;
+    }
 }

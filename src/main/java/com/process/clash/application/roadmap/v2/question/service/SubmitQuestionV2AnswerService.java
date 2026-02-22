@@ -125,10 +125,12 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
 
                 if (nextChapter.isPresent()) {
                     progress.moveToNextChapter(nextChapter.get().getId());
-                    userSectionProgressRepositoryPort.save(progress);
                     nextChapterId = nextChapter.get().getId();
                     nextChapterOrderIndex = nextChapter.get().getOrderIndex();
+                } else {
+                    progress.completeFinalChapter();
                 }
+                userSectionProgressRepositoryPort.save(progress);
             }
         }
 
