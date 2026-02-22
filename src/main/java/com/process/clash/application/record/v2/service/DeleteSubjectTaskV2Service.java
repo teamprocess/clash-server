@@ -12,6 +12,7 @@ import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPo
 import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +36,10 @@ public class DeleteSubjectTaskV2Service implements DeleteSubjectTaskV2UseCase {
         if (recordSessionV2RepositoryPort.existsActiveSessionByTaskId(task.id())) {
             throw new TaskV2HasActiveSessionException();
         }
-        recordTaskV2RepositoryPort.deleteById(task.id());
+        try {
+            recordTaskV2RepositoryPort.deleteById(task.id());
+        } catch (DataIntegrityViolationException exception) {
+            throw new TaskV2HasActiveSessionException(exception);
+        }
     }
 }

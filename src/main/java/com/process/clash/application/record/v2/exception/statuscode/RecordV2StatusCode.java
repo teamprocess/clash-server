@@ -41,12 +41,12 @@ public enum RecordV2StatusCode implements StatusCode {
     ),
     SUBJECT_V2_HAS_ACTIVE_SESSION(
         "SUBJECT_V2_HAS_ACTIVE_SESSION",
-        "진행 중인 세션이 있어 과목 그룹을 삭제할 수 없습니다.",
+        "관련 기록이 있어 과목 그룹을 삭제할 수 없습니다.",
         ErrorCategory.CONFLICT
     ),
     TASK_V2_HAS_ACTIVE_SESSION(
         "TASK_V2_HAS_ACTIVE_SESSION",
-        "진행 중인 세션이 있어 세부 작업을 삭제할 수 없습니다.",
+        "관련 기록이 있어 세부 작업을 삭제할 수 없습니다.",
         ErrorCategory.CONFLICT
     ),
     SUBJECT_V2_ACCESS_DENIED(
