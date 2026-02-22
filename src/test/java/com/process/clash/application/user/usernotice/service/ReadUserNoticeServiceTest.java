@@ -40,7 +40,7 @@ class ReadUserNoticeServiceTest {
     void execute_savesWhenNoticeIsUnread() {
         Actor actor = new Actor(1L);
         Long noticeId = 10L;
-        UserNotice unreadNotice = new UserNotice(noticeId, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, false, 2L, 1L);
+        UserNotice unreadNotice = new UserNotice(noticeId, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, false, 2L, "senderA", null, 1L, "receiverA", null);
 
         when(userNoticeRepositoryPort.findByIdAndReceiverId(noticeId, actor.id())).thenReturn(Optional.of(unreadNotice));
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenReturn(unreadNotice.markAsRead());
@@ -55,7 +55,7 @@ class ReadUserNoticeServiceTest {
     void execute_skipsSaveWhenNoticeIsAlreadyRead() {
         Actor actor = new Actor(1L);
         Long noticeId = 10L;
-        UserNotice readNotice = new UserNotice(noticeId, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, true, 2L, 1L);
+        UserNotice readNotice = new UserNotice(noticeId, Instant.now(), Instant.now(), NoticeCategory.APPLY_RIVAL, true, 2L, "senderA", null, 1L, "receiverA", null);
 
         when(userNoticeRepositoryPort.findByIdAndReceiverId(noticeId, actor.id())).thenReturn(Optional.of(readNotice));
 

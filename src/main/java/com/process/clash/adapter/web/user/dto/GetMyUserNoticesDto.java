@@ -17,6 +17,11 @@ public class GetMyUserNoticesDto {
                             notice.category().requiresAction(),
                             notice.isRead(),
                             notice.senderId(),
+                            notice.senderName(),
+                            notice.senderProfileImage(),
+                            notice.receiverId(),
+                            notice.receiverName(),
+                            notice.receiverProfileImage(),
                             notice.createdAt() != null ? notice.createdAt().toString() : null
                     ))
                     .toList();
@@ -31,6 +36,11 @@ public class GetMyUserNoticesDto {
             boolean requiresAction,
             boolean isRead,
             Long senderId,
+            String senderName,
+            String senderProfileImage,
+            Long receiverId,
+            String receiverName,
+            String receiverProfileImage,
             String createdAt
     ) {}
 }

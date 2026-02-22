@@ -29,7 +29,11 @@ public class UserNoticeJpaMapper {
                 userNoticeJpaEntity.getNoticeCategory(),
                 userNoticeJpaEntity.isRead(),
                 userNoticeJpaEntity.getSender().getId(),
-                userNoticeJpaEntity.getReceiver().getId()
+                userNoticeJpaEntity.getSender().getName(),
+                userNoticeJpaEntity.getSender().getProfileImage(),
+                userNoticeJpaEntity.getReceiver().getId(),
+                userNoticeJpaEntity.getReceiver().getName(),
+                userNoticeJpaEntity.getReceiver().getProfileImage()
         );
     }
 }
