@@ -42,6 +42,8 @@ public interface UserNoticeControllerDocument {
                                             "receiverName": "이영희",
                                             "receiverUsername": "younghee_lee",
                                             "receiverProfileImage": null,
+                                            "rivalId": 7,
+                                            "battleId": null,
                                             "createdAt": "2026-02-21T10:00:00Z"
                                           }
                                         ]
