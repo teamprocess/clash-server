@@ -38,6 +38,9 @@ public class GetMyUserNoticesResponseDocument extends SuccessResponseDocument {
         @Schema(description = "발신자 이름", example = "김철수")
         public String senderName;
 
+        @Schema(description = "발신자 유저네임", example = "chulsoo_kim")
+        public String senderUsername;
+
         @Schema(description = "발신자 프로필 이미지 URL", example = "https://example.com/profiles/sender.jpg", nullable = true)
         public String senderProfileImage;
 
@@ -46,6 +49,9 @@ public class GetMyUserNoticesResponseDocument extends SuccessResponseDocument {
 
         @Schema(description = "수신자 이름", example = "이영희")
         public String receiverName;
+
+        @Schema(description = "수신자 유저네임", example = "younghee_lee")
+        public String receiverUsername;
 
         @Schema(description = "수신자 프로필 이미지 URL", example = "https://example.com/profiles/receiver.jpg", nullable = true)
         public String receiverProfileImage;
