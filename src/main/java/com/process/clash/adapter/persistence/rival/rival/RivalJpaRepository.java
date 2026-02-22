@@ -107,7 +107,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
      */
     @Query("""
         select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle(
-            case when r.firstUser.id = :userId then r.secondUser.id else r.firstUser.id end,
+            r.id,
             case when r.firstUser.id = :userId then r.secondUser.name else r.firstUser.name end,
             case when r.firstUser.id = :userId then r.secondUser.profileImage else r.firstUser.profileImage end
         )
