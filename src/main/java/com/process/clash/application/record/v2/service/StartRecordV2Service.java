@@ -3,6 +3,7 @@ package com.process.clash.application.record.v2.service;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
+import com.process.clash.application.record.v2.exception.exception.badrequest.DevelopStartRequiresOnlineException;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2StartRequestException;
 import com.process.clash.application.record.v2.exception.exception.conflict.RecordSessionV2AlreadyStartedException;
 import com.process.clash.application.record.v2.exception.exception.notfound.SubjectV2NotFoundException;
@@ -144,7 +145,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
         }
 
         if (userPresencePort.getStatus(userId) != UserActivityStatus.ONLINE) {
-            throw new InvalidRecordV2StartRequestException();
+            throw new DevelopStartRequiresOnlineException();
         }
     }
 }

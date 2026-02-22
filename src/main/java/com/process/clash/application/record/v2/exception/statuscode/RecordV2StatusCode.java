@@ -64,6 +64,11 @@ public enum RecordV2StatusCode implements StatusCode {
         "기록 시작 요청이 유효하지 않습니다.",
         ErrorCategory.BAD_REQUEST
     ),
+    DEVELOP_START_REQUIRES_ONLINE(
+        "DEVELOP_START_REQUIRES_ONLINE",
+        "자리비움/오프라인 상태에서는 개발 기록을 시작할 수 없습니다.",
+        ErrorCategory.BAD_REQUEST
+    ),
     INVALID_DEVELOP_APP_SWITCH_REQUEST(
         "INVALID_DEVELOP_APP_SWITCH_REQUEST",
         "개발 앱 전환 요청이 유효하지 않습니다.",

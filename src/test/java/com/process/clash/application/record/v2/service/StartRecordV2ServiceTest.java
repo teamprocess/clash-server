@@ -11,6 +11,7 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
+import com.process.clash.application.record.v2.exception.exception.badrequest.DevelopStartRequiresOnlineException;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2StartRequestException;
 import com.process.clash.application.record.v2.exception.exception.conflict.RecordSessionV2AlreadyStartedException;
 import com.process.clash.application.record.v2.policy.SubjectV2Policy;
@@ -228,7 +229,7 @@ class StartRecordV2ServiceTest {
         when(userPresencePort.getStatus(actor.id())).thenReturn(UserActivityStatus.AWAY);
 
         assertThatThrownBy(() -> startRecordV2Service.execute(command))
-            .isInstanceOf(InvalidRecordV2StartRequestException.class);
+            .isInstanceOf(DevelopStartRequiresOnlineException.class);
 
         verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
         verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());

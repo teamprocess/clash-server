@@ -2,7 +2,7 @@ package com.process.clash.application.record.v2.realtime;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
-import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2StartRequestException;
+import com.process.clash.application.record.v2.exception.exception.badrequest.DevelopStartRequiresOnlineException;
 import com.process.clash.application.record.v2.port.in.StartRecordV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.realtime.port.in.ReportUserPresenceUseCase;
@@ -100,7 +100,7 @@ class RecordV2PresenceFlowIntegrationTest {
             MonitoredApp.VSCODE,
             actor
         )))
-            .isInstanceOf(InvalidRecordV2StartRequestException.class);
+            .isInstanceOf(DevelopStartRequiresOnlineException.class);
 
         assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isEmpty();
         reportUserPresenceUseCase.disconnected(connectionId);
