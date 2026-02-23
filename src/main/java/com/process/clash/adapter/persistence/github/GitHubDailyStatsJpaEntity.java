@@ -49,6 +49,27 @@ public class GitHubDailyStatsJpaEntity {
     @Column(nullable = false)
     private long deletions;
 
+    @Column
+    private String topCommitRepo;
+
+    @Column
+    private String topPrRepo;
+
+    @Column
+    private Instant firstCommitAt;
+
+    @Column
+    private Instant lastCommitAt;
+
+    @Column(nullable = false)
+    private int prMergedCount;
+
+    @Column(nullable = false)
+    private int prOpenCount;
+
+    @Column(nullable = false)
+    private int prClosedCount;
+
     @Column(nullable = false)
     private Instant syncedAt;
 
@@ -59,6 +80,13 @@ public class GitHubDailyStatsJpaEntity {
             Integer reviewCount,
             long additions,
             long deletions,
+            String topCommitRepo,
+            String topPrRepo,
+            Instant firstCommitAt,
+            Instant lastCommitAt,
+            int prMergedCount,
+            int prOpenCount,
+            int prClosedCount,
             Instant syncedAt
     ) {
         this.commitCount = commitCount;
@@ -67,6 +95,13 @@ public class GitHubDailyStatsJpaEntity {
         this.reviewCount = reviewCount;
         this.additions = additions;
         this.deletions = deletions;
+        this.topCommitRepo = topCommitRepo;
+        this.topPrRepo = topPrRepo;
+        this.firstCommitAt = firstCommitAt;
+        this.lastCommitAt = lastCommitAt;
+        this.prMergedCount = prMergedCount;
+        this.prOpenCount = prOpenCount;
+        this.prClosedCount = prClosedCount;
         this.syncedAt = syncedAt;
     }
 }

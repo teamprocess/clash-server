@@ -12,6 +12,13 @@ public record GitHubDailyStats(
         int reviewedPrCount,
         long additions,
         long deletions,
+        String topCommitRepo,
+        String topPrRepo,
+        Instant firstCommitAt,
+        Instant lastCommitAt,
+        int prMergedCount,
+        int prOpenCount,
+        int prClosedCount,
         Instant syncedAt
 ) {
 
@@ -22,6 +29,6 @@ public record GitHubDailyStats(
 
     // 예외 안나오게 기본 생성자로 껍데기만 만들기
     public GitHubDailyStats(Long userId, LocalDate studyDate) {
-        this(userId, studyDate, 0, 0, 0, 0, 0L, 0L, Instant.now());
+        this(userId, studyDate, 0, 0, 0, 0, 0L, 0L, null, null, null, null, 0, 0, 0, Instant.now());
     }
 }
