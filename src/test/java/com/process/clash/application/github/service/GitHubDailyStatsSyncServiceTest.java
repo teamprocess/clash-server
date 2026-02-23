@@ -135,6 +135,13 @@ class GitHubDailyStatsSyncServiceTest {
                 4,
                 5L,
                 6L,
+                "repo-a",
+                "repo-pr-a",
+                Instant.parse("2026-01-20T09:00:00Z"),
+                Instant.parse("2026-01-20T18:00:00Z"),
+                1,
+                2,
+                3,
                 clock.instant()
         );
         when(statsFetchPort.fetchDailyStats(any(), any())).thenReturn(List.of(stats));

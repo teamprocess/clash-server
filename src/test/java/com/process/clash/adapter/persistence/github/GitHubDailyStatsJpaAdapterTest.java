@@ -35,6 +35,13 @@ class GitHubDailyStatsJpaAdapterTest {
                 4,
                 10L,
                 5L,
+                "repo-a",
+                "repo-pr-a",
+                Instant.parse("2026-01-19T00:30:00Z"),
+                Instant.parse("2026-01-19T09:30:00Z"),
+                1,
+                2,
+                3,
                 Instant.parse("2026-01-19T00:00:00Z")
         );
 
@@ -47,6 +54,13 @@ class GitHubDailyStatsJpaAdapterTest {
                 6,
                 100L,
                 50L,
+                "repo-z",
+                "repo-pr-z",
+                Instant.parse("2026-01-19T01:30:00Z"),
+                Instant.parse("2026-01-19T11:30:00Z"),
+                4,
+                5,
+                6,
                 Instant.parse("2026-01-19T01:00:00Z")
         );
 
@@ -61,5 +75,10 @@ class GitHubDailyStatsJpaAdapterTest {
         assertThat(rows).hasSize(1);
         assertThat(rows.get(0).getCommitCount()).isEqualTo(9);
         assertThat(rows.get(0).getAdditions()).isEqualTo(100L);
+        assertThat(rows.get(0).getTopCommitRepo()).isEqualTo("repo-z");
+        assertThat(rows.get(0).getTopPrRepo()).isEqualTo("repo-pr-z");
+        assertThat(rows.get(0).getPrMergedCount()).isEqualTo(4);
+        assertThat(rows.get(0).getPrOpenCount()).isEqualTo(5);
+        assertThat(rows.get(0).getPrClosedCount()).isEqualTo(6);
     }
 }
