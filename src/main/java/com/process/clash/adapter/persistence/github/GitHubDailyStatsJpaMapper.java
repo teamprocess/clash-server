@@ -16,6 +16,13 @@ public class GitHubDailyStatsJpaMapper {
                 stat.reviewedPrCount(),
                 stat.additions(),
                 stat.deletions(),
+                stat.topCommitRepo(),
+                stat.topPrRepo(),
+                stat.firstCommitAt(),
+                stat.lastCommitAt(),
+                stat.prMergedCount(),
+                stat.prOpenCount(),
+                stat.prClosedCount(),
                 stat.syncedAt()
         );
     }
@@ -28,6 +35,13 @@ public class GitHubDailyStatsJpaMapper {
                 stat.reviewedPrCount(),
                 stat.additions(),
                 stat.deletions(),
+                stat.topCommitRepo(),
+                stat.topPrRepo(),
+                stat.firstCommitAt(),
+                stat.lastCommitAt(),
+                stat.prMergedCount(),
+                stat.prOpenCount(),
+                stat.prClosedCount(),
                 stat.syncedAt()
         );
     }
@@ -42,6 +56,13 @@ public class GitHubDailyStatsJpaMapper {
                 entity.getReviewCount(),
                 entity.getAdditions(),
                 entity.getDeletions(),
+                entity.getTopCommitRepo(),
+                entity.getTopPrRepo(),
+                entity.getFirstCommitAt(),
+                entity.getLastCommitAt(),
+                entity.getPrMergedCount(),
+                entity.getPrOpenCount(),
+                entity.getPrClosedCount(),
                 entity.getSyncedAt()
         );
     }
