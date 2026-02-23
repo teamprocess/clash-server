@@ -13,7 +13,7 @@ query (
         closedAt
         state
         repository {
-          name
+          nameWithOwner
         }
       }
       ... on Issue {

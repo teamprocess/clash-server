@@ -279,7 +279,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
                     counts.merge(studyDate, 1, Integer::sum);
 
-                    String repositoryName = node.path("repository").path("name").asText(null);
+                    String repositoryName = node.path("repository").path("nameWithOwner").asText(null);
                     if (repositoryName != null && !repositoryName.isBlank()) {
                         repoCountsByDate
                                 .computeIfAbsent(studyDate, key -> new HashMap<>())
@@ -453,7 +453,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
                     countsByDate.merge(studyDate, 1, Integer::sum);
 
-                    String repositoryName = node.path("repository").path("name").asText(null);
+                    String repositoryName = node.path("repository").path("nameWithOwner").asText(null);
                     if (repositoryName != null && !repositoryName.isBlank()) {
                         repoCountsByDate
                                 .computeIfAbsent(studyDate, key -> new HashMap<>())
@@ -653,7 +653,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                     commitStats.commitCount += 1;
                     commitStats.additions += node.path("additions").asLong(0);
                     commitStats.deletions += node.path("deletions").asLong(0);
-                    commitStats.repositoryCommitCounts.merge(name, 1, Integer::sum);
+                    commitStats.repositoryCommitCounts.merge(repo.nameWithOwner(), 1, Integer::sum);
 
                     if (commitStats.firstCommitAt == null || committedAt.isBefore(commitStats.firstCommitAt)) {
                         commitStats.firstCommitAt = committedAt;
