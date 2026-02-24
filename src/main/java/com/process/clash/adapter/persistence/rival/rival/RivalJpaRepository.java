@@ -139,4 +139,21 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
             @Param("opponentId") Long opponentId,
             @Param("myId") Long myId
     );
+
+    /**
+     * 두 유저 사이에 활성(PENDING or ACCEPTED) 라이벌 관계 존재 여부 (방향 무관)
+     */
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM rivals r
+        WHERE (
+            (r.fk_first_user_id = :myId AND r.fk_second_user_id = :opponentId)
+            OR (r.fk_first_user_id = :opponentId AND r.fk_second_user_id = :myId)
+        )
+        AND r.rival_linking_status IN ('PENDING', 'ACCEPTED')
+    """, nativeQuery = true)
+    boolean existsActiveRivalBetween(
+            @Param("myId") Long myId,
+            @Param("opponentId") Long opponentId
+    );
 }

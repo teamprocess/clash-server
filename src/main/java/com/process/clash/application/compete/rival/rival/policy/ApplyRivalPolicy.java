@@ -30,7 +30,7 @@ public class ApplyRivalPolicy {
                 .collect(Collectors.toList());
 
         boolean hasAlreadyApplied = opponentIds.stream()
-                .anyMatch(opponentId -> rivalRepositoryPort.existsPendingRivalRequestFrom(opponentId, command.actor().id()));
+                .anyMatch(opponentId -> rivalRepositoryPort.existsActiveRivalBetween(command.actor().id(), opponentId));
 
         if (hasAlreadyApplied) {
             throw new AlreadyAppliedRivalException();

@@ -24,4 +24,5 @@ public interface RivalRepositoryPort {
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(Long userId);
     List<Rival> findByIdIn(Set<Long> ids);
     boolean existsPendingRivalRequestFrom(Long opponentId, Long myId);
+    boolean existsActiveRivalBetween(Long myId, Long opponentId);
 }
