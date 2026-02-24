@@ -29,6 +29,7 @@ public class GetMyRivalActingData {
     }
 
     public record MyRival(
+            Long rivalId,
             Long id,
             String name,
             String username,
@@ -39,6 +40,7 @@ public class GetMyRivalActingData {
     ) {
 
         public static MyRival of(
+            Long rivalId,
             User user,
             Long activeTime,
             String usingApp,
@@ -46,6 +48,7 @@ public class GetMyRivalActingData {
         ) {
 
             return new MyRival(
+                    rivalId,
                     user.id(),
                     user.name(),
                     user.username(),

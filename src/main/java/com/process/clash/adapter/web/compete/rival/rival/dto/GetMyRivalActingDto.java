@@ -15,6 +15,7 @@ public class GetMyRivalActingDto {
             return new Response(
                 result.myRivals().stream()
                     .map(data -> new MyRival(
+                        data.rivalId(),
                         data.id(),
                         data.name(),
                         data.username(),
@@ -29,6 +30,7 @@ public class GetMyRivalActingDto {
     }
 
     private record MyRival(
+            Long rivalId,
             Long id,
             String name,
             String username,
