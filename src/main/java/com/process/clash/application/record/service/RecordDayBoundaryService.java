@@ -67,6 +67,9 @@ public class RecordDayBoundaryService {
         });
 
         recordSessionRepositoryPort.saveAll(sessionsToClose);
+        if (!sessionsToClose.isEmpty()) {
+            recordSessionRepositoryPort.flush();
+        }
         recordSessionRepositoryPort.saveAll(sessionsToCreate);
     }
 

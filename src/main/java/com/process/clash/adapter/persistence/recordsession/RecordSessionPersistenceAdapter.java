@@ -56,48 +56,55 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
             return;
         }
 
-        List<RecordSession> newSessions = new ArrayList<>();
-        List<RecordSession> existingSessions = new ArrayList<>();
-
-        for (RecordSession recordSession : recordSessions) {
-            if (recordSession.id() == null) {
-                newSessions.add(recordSession);
-            } else {
-                existingSessions.add(recordSession);
-            }
-        }
-
+        List<RecordSession> existingSessions = recordSessions.stream()
+                .filter(recordSession -> recordSession.id() != null)
+                .toList();
         if (!existingSessions.isEmpty()) {
-            List<Long> ids = existingSessions.stream()
-                    .map(RecordSession::id)
-                    .toList();
-            Map<Long, RecordSessionJpaEntity> existingEntities = recordSessionJpaRepository.findAllById(ids).stream()
-                    .collect(Collectors.toMap(RecordSessionJpaEntity::getId, entity -> entity));
-
-            for (RecordSession session : existingSessions) {
-                RecordSessionJpaEntity entity = existingEntities.get(session.id());
-                if (entity != null) {
-                    entity.changeEndedAt(session.endedAt());
-                    entity.changeAppId(session.appId());
-                }
-            }
-
-            recordSessionJpaRepository.saveAll(existingEntities.values());
-            recordSessionJpaRepository.flush();
+            updateExistingSessions(existingSessions);
         }
 
+        List<RecordSession> newSessions = recordSessions.stream()
+                .filter(recordSession -> recordSession.id() == null)
+                .toList();
         if (!newSessions.isEmpty()) {
-            List<RecordSessionJpaEntity> entitiesToCreate = newSessions.stream()
-                    .map(session -> {
-                        UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
-                        RecordTaskJpaEntity task = session.task() == null
-                                ? null
-                                : recordTaskJpaRepository.getReferenceById(session.task().id());
-                        return recordSessionJpaMapper.toJpaEntity(session, user, task);
-                    })
-                    .toList();
-            recordSessionJpaRepository.saveAll(entitiesToCreate);
+            createNewSessions(newSessions);
         }
+    }
+
+    @Override
+    public void flush() {
+        recordSessionJpaRepository.flush();
+    }
+
+    private void updateExistingSessions(List<RecordSession> existingSessions) {
+        List<Long> ids = existingSessions.stream()
+                .map(RecordSession::id)
+                .toList();
+        Map<Long, RecordSessionJpaEntity> existingEntities = recordSessionJpaRepository.findAllById(ids).stream()
+                .collect(Collectors.toMap(RecordSessionJpaEntity::getId, entity -> entity));
+
+        for (RecordSession session : existingSessions) {
+            RecordSessionJpaEntity entity = existingEntities.get(session.id());
+            if (entity != null) {
+                entity.changeEndedAt(session.endedAt());
+                entity.changeAppId(session.appId());
+            }
+        }
+
+        recordSessionJpaRepository.saveAll(existingEntities.values());
+    }
+
+    private void createNewSessions(List<RecordSession> newSessions) {
+        List<RecordSessionJpaEntity> entitiesToCreate = newSessions.stream()
+                .map(session -> {
+                    UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
+                    RecordTaskJpaEntity task = session.task() == null
+                            ? null
+                            : recordTaskJpaRepository.getReferenceById(session.task().id());
+                    return recordSessionJpaMapper.toJpaEntity(session, user, task);
+                })
+                .toList();
+        recordSessionJpaRepository.saveAll(entitiesToCreate);
     }
 
     @Override

@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface RecordSessionRepositoryPort {
     RecordSession save(RecordSession recordSession);
     void saveAll(List<RecordSession> recordSessions);
+    void flush();
     Optional<RecordSession> findById(Long id);
     List<RecordSession> findAllByUserId(Long userId);
     Boolean existsActiveSessionByUserId(Long userId);
