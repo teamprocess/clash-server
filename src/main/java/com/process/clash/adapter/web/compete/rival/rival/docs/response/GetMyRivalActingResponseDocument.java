@@ -22,7 +22,10 @@ public class GetMyRivalActingResponseDocument extends SuccessMessageResponseDocu
     }
 
     public static class MyRivalDoc {
-        @Schema(description = "라이벌 ID", example = "1")
+        @Schema(description = "라이벌 관계 ID (삭제 시 사용)", example = "10")
+        public Long rivalId;
+
+        @Schema(description = "상대방 유저 ID", example = "2")
         public Long id;
 
         @Schema(description = "이름", example = "이몽룡")
