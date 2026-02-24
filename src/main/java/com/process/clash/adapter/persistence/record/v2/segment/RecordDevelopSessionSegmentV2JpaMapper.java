@@ -14,7 +14,8 @@ public class RecordDevelopSessionSegmentV2JpaMapper {
         return RecordDevelopSessionSegmentV2JpaEntity.create(
             developSession,
             segment.appId(),
-            segment.startedAt()
+            segment.startedAt(),
+            segment.endedAt()
         );
     }
 

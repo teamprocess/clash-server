@@ -111,13 +111,15 @@ public class RecordDayBoundaryV2Service {
             return;
         }
 
-        RecordDevelopSessionSegmentV2 savedSegment = recordDevelopSessionSegmentV2RepositoryPort.save(
-            RecordDevelopSessionSegmentV2.start(session.id(), session.appId(), startedAt)
+        RecordDevelopSessionSegmentV2 segment = RecordDevelopSessionSegmentV2.start(
+            session.id(),
+            session.appId(),
+            startedAt
         );
-
         if (endedAt != null) {
-            recordDevelopSessionSegmentV2RepositoryPort.save(savedSegment.changeEndedAt(endedAt));
+            segment = segment.changeEndedAt(endedAt);
         }
+        recordDevelopSessionSegmentV2RepositoryPort.save(segment);
     }
 
     private void createOpenDevelopSegmentIfNeeded(

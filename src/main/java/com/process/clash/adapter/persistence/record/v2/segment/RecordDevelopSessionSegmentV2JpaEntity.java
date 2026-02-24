@@ -62,6 +62,15 @@ public class RecordDevelopSessionSegmentV2JpaEntity {
         MonitoredApp appId,
         Instant startedAt
     ) {
+        return create(developSession, appId, startedAt, null);
+    }
+
+    public static RecordDevelopSessionSegmentV2JpaEntity create(
+        RecordDevelopSessionV2JpaEntity developSession,
+        MonitoredApp appId,
+        Instant startedAt,
+        Instant endedAt
+    ) {
         return new RecordDevelopSessionSegmentV2JpaEntity(
             null,
             null,
@@ -69,7 +78,7 @@ public class RecordDevelopSessionSegmentV2JpaEntity {
             developSession,
             appId,
             startedAt,
-            null
+            endedAt
         );
     }
 
@@ -77,7 +86,7 @@ public class RecordDevelopSessionSegmentV2JpaEntity {
         this.endedAt = endedAt;
     }
 
-    public void changeDevelopSession(RecordDevelopSessionV2JpaEntity developSession) {
+    void changeDevelopSession(RecordDevelopSessionV2JpaEntity developSession) {
         this.developSession = developSession;
     }
 }
