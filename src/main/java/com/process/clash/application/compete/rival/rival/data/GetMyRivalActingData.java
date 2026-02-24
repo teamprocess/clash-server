@@ -29,6 +29,7 @@ public class GetMyRivalActingData {
     }
 
     public record MyRival(
+            Long id,
             String name,
             String username,
             String profileImage,
@@ -45,6 +46,7 @@ public class GetMyRivalActingData {
         ) {
 
             return new MyRival(
+                    user.id(),
                     user.name(),
                     user.username(),
                     user.profileImage(),
