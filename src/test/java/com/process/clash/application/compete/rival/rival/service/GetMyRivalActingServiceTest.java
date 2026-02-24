@@ -99,6 +99,8 @@ class GetMyRivalActingServiceTest {
         GetMyRivalActingData.Result result = getMyRivalActingService.execute(command);
 
         assertThat(result.myRivals()).hasSize(2);
+        assertThat(result.myRivals().get(0).rivalId()).isEqualTo(100L);
+        assertThat(result.myRivals().get(1).rivalId()).isEqualTo(101L);
         assertThat(result.myRivals().get(0).status()).isEqualTo(UserActivityStatus.ONLINE);
         assertThat(result.myRivals().get(1).status()).isEqualTo(UserActivityStatus.AWAY);
         assertThat(result.myRivals().get(0).usingApp()).isEqualTo("CLASH");

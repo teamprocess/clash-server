@@ -99,6 +99,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                     );
 
                     return GetMyRivalActingData.MyRival.of(
+                            rival.id(),
                             opponent,
                             activeTime,
                             "CLASH", // TODO: 더미 변경 필요
