@@ -46,6 +46,11 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     }
 
     @Override
+    public void flush() {
+        recordActiveSessionV2JpaRepository.flush();
+    }
+
+    @Override
     public Boolean existsActiveSessionByUserId(Long userId) {
         return recordActiveSessionV2JpaRepository.existsByUserIdAndEndedAtIsNull(userId);
     }

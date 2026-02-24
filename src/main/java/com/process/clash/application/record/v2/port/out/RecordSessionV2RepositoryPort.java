@@ -12,6 +12,8 @@ public interface RecordSessionV2RepositoryPort {
 
     RecordSessionV2 save(RecordSessionV2 session);
 
+    void flush();
+
     Boolean existsActiveSessionByUserId(Long userId);
 
     Optional<RecordSessionV2> findActiveSessionByUserId(Long userId);

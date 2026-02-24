@@ -46,6 +46,7 @@ public class RecordDayBoundaryV2Service {
 
         Optional<RecordDevelopSessionSegmentV2> openDevelopSegment = findOpenDevelopSegmentForUpdateIfNeeded(session);
         recordSessionV2RepositoryPort.save(session.changeEndedAt(firstBoundary));
+        recordSessionV2RepositoryPort.flush();
         closeDevelopSegmentAtBoundaryIfNeeded(openDevelopSegment, firstBoundary);
 
         Instant segmentStart = firstBoundary;
@@ -60,7 +61,7 @@ public class RecordDayBoundaryV2Service {
 
         RecordSessionV2 openSession = createContinuationSession(session, segmentStart, null);
         RecordSessionV2 savedOpenSession = recordSessionV2RepositoryPort.save(openSession);
-        createOpenDevelopSegmentIfNeeded(savedOpenSession, segmentStart, firstBoundary, openDevelopSegment);
+        createOpenDevelopSegmentIfNeeded(savedOpenSession, segmentStart, openDevelopSegment);
     }
 
     private RecordSessionV2 createContinuationSession(
@@ -121,19 +122,18 @@ public class RecordDayBoundaryV2Service {
 
     private void createOpenDevelopSegmentIfNeeded(
         RecordSessionV2 openSession,
-        Instant startedAt,
-        Instant boundary,
+        Instant openSessionStartedAt,
         Optional<RecordDevelopSessionSegmentV2> previousOpenSegment
     ) {
         Optional<RecordDevelopSessionSegmentV2> transferCandidate = previousOpenSegment
-            .filter(segment -> !segment.startedAt().isBefore(boundary));
+            .filter(segment -> !segment.startedAt().isBefore(openSessionStartedAt));
 
         if (transferCandidate.isPresent()) {
             transferOpenDevelopSegment(transferCandidate.get(), openSession.id());
             return;
         }
 
-        createDevelopSegmentIfNeeded(openSession, startedAt, null);
+        createDevelopSegmentIfNeeded(openSession, openSessionStartedAt, null);
     }
 
     private void transferOpenDevelopSegment(
