@@ -109,31 +109,22 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
 
         if (streaks.isEmpty()) return streaks;
 
-        List<Integer> sorted = streaks.stream()
+        int max = streaks.stream()
                 .map(Streak::detailedInfo)
                 .filter(v -> v != null)
-                .sorted()
-                .toList();
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
 
-        int total = sorted.size();
-        int trimCount = (int) Math.floor(total * 0.15);
-        List<Integer> trimmed = sorted.subList(trimCount, total - trimCount);
-
-        if (trimmed.isEmpty()) {
-            return streaks.stream().map(s -> new Streak(s.date(), s.detailedInfo(), 0)).toList();
-        }
-
-        double baseline = trimmed.stream().mapToInt(Integer::intValue).average().orElse(0);
-
-        if (baseline == 0) {
+        if (max == 0) {
             return streaks.stream().map(s -> new Streak(s.date(), s.detailedInfo(), 0)).toList();
         }
 
         return streaks.stream()
                 .map(s -> {
                     int value = s.detailedInfo() != null ? s.detailedInfo() : 0;
-                    int ratio = (int) Math.round((double) value / baseline * 50);
-                    return new Streak(s.date(), s.detailedInfo(), Math.max(0, Math.min(100, ratio)));
+                    int ratio = (int) Math.round((double) value / max * 100);
+                    return new Streak(s.date(), s.detailedInfo(), ratio);
                 })
                 .toList();
     }
