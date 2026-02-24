@@ -67,19 +67,6 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
             }
         }
 
-        if (!newSessions.isEmpty()) {
-            List<RecordSessionJpaEntity> entitiesToCreate = newSessions.stream()
-                    .map(session -> {
-                        UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
-                        RecordTaskJpaEntity task = session.task() == null
-                                ? null
-                                : recordTaskJpaRepository.getReferenceById(session.task().id());
-                        return recordSessionJpaMapper.toJpaEntity(session, user, task);
-                    })
-                    .toList();
-            recordSessionJpaRepository.saveAll(entitiesToCreate);
-        }
-
         if (!existingSessions.isEmpty()) {
             List<Long> ids = existingSessions.stream()
                     .map(RecordSession::id)
@@ -96,6 +83,20 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
             }
 
             recordSessionJpaRepository.saveAll(existingEntities.values());
+            recordSessionJpaRepository.flush();
+        }
+
+        if (!newSessions.isEmpty()) {
+            List<RecordSessionJpaEntity> entitiesToCreate = newSessions.stream()
+                    .map(session -> {
+                        UserJpaEntity user = userJpaRepository.getReferenceById(session.user().id());
+                        RecordTaskJpaEntity task = session.task() == null
+                                ? null
+                                : recordTaskJpaRepository.getReferenceById(session.task().id());
+                        return recordSessionJpaMapper.toJpaEntity(session, user, task);
+                    })
+                    .toList();
+            recordSessionJpaRepository.saveAll(entitiesToCreate);
         }
     }
 
