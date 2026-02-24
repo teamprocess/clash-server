@@ -5,7 +5,7 @@ import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.compete.my.port.in.AnalyzeMyActivityUseCase;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
 
     private record ActivityData(List<Streak> streaks, List<Variation> variations) {}
 
@@ -68,7 +68,7 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
         LocalDateTime startOfDay = now.atTime(6, 0, 0);
         LocalDateTime endOfDay = now.plusDays(1).atTime(6, 0, 0);
 
-        Long todayActiveTime = recordSessionRepositoryPort.getTotalStudyTimeInSeconds(
+        Long todayActiveTime = recordSessionV2RepositoryPort.getTotalStudyTimeInSeconds(
                 userId,
                 startOfDay,
                 endOfDay

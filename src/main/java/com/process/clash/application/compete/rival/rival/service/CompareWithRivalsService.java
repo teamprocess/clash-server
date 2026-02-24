@@ -6,7 +6,7 @@ import com.process.clash.application.compete.rival.rival.exception.exception.not
 import com.process.clash.application.compete.rival.rival.port.in.CompareWithRivalsUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
@@ -35,7 +35,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final ZoneId recordZoneId;
     private final RecordProperties recordProperties;
 
@@ -133,9 +133,9 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
         Instant endDateTime = ZonedDateTime.now(recordZoneId).toInstant();
 
         return switch (period) {
-            case DAY -> recordSessionRepositoryPort.findDailyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
-            case WEEK -> recordSessionRepositoryPort.findWeeklyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
-            case MONTH -> recordSessionRepositoryPort.findMonthlyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
+            case DAY -> recordSessionV2RepositoryPort.findDailyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
+            case WEEK -> recordSessionV2RepositoryPort.findWeeklyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
+            case MONTH -> recordSessionV2RepositoryPort.findMonthlyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
             case SEASON -> null; //TODO: 나중에 처리
             case YEAR -> null; //TODO: 나중에 처리
         };

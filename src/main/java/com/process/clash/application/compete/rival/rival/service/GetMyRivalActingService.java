@@ -5,7 +5,7 @@ import com.process.clash.application.compete.rival.rival.port.in.GetMyRivalActin
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final UserPresencePort userPresencePort;
     private final RecordProperties recordProperties;
@@ -71,7 +71,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                 .stream()
                 .collect(Collectors.toMap(User::id, user -> user));
 
-        Map<Long, Long> studyTimeMap = recordSessionRepositoryPort
+        Map<Long, Long> studyTimeMap = recordSessionV2RepositoryPort
                 .getTotalStudyTimeInSecondsByUserIds(opponentIds, startOfDay, endOfDay);
         Map<Long, UserActivityStatus> activityStatusByUserId = userPresencePort.getStatuses(opponentIds);
 

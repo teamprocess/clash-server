@@ -7,10 +7,8 @@ import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.GetGroupActivityUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.group.vo.GroupMemberVo;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
-import com.process.clash.domain.group.entity.Group;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
-import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.infrastructure.config.RecordProperties;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -32,7 +30,7 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
     private static final int PAGE_SIZE = 10;
 
     private final GroupRepositoryPort groupRepositoryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final GroupPolicy groupPolicy;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
@@ -86,13 +84,12 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
         LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
         LocalDateTime endOfDay = startOfDay.plusDays(1);
 
-        return recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(memberIds, startOfDay, endOfDay);
+        return recordSessionV2RepositoryPort.getTotalStudyTimeInSecondsByUserIds(memberIds, startOfDay, endOfDay);
     }
 
     private Set<Long> fetchActiveUserIds() {
-        List<RecordSession> activeSessions = recordSessionRepositoryPort.findAllActiveSessions();
-        return activeSessions.stream()
-            .map(session -> session.user().id())
+        return recordSessionV2RepositoryPort.findAllActiveUserIds()
+            .stream()
             .collect(Collectors.toSet());
     }
 }

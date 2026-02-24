@@ -76,4 +76,8 @@ public class RecordDevelopSessionSegmentV2JpaEntity {
     public void changeEndedAt(Instant endedAt) {
         this.endedAt = endedAt;
     }
+
+    public void changeDevelopSession(RecordDevelopSessionV2JpaEntity developSession) {
+        this.developSession = developSession;
+    }
 }

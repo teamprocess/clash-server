@@ -32,6 +32,11 @@ public class RecordDevelopSessionSegmentV2PersistenceAdapter implements RecordDe
         RecordDevelopSessionSegmentV2JpaEntity existing = recordDevelopSessionSegmentV2JpaRepository
             .findById(segment.id())
             .orElseThrow(RecordDevelopSegmentV2NotFoundException::new);
+        if (!existing.getDevelopSession().getId().equals(segment.sessionId())) {
+            RecordDevelopSessionV2JpaEntity session = recordDevelopSessionV2JpaRepository
+                .getReferenceById(segment.sessionId());
+            existing.changeDevelopSession(session);
+        }
         existing.changeEndedAt(segment.endedAt());
         return recordDevelopSessionSegmentV2JpaMapper.toDomain(
             recordDevelopSessionSegmentV2JpaRepository.saveAndFlush(existing)

@@ -4,7 +4,7 @@ import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.ranking.port.in.GetRankingUseCase;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class GetRankingService implements GetRankingUseCase {
 
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final ZoneId recordZoneId;
 
     @Override
@@ -81,6 +81,6 @@ public class GetRankingService implements GetRankingUseCase {
             case YEAR -> endDate.minusYears(1);
         };
 
-        return recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
+        return recordSessionV2RepositoryPort.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
     }
 }

@@ -6,6 +6,7 @@ import com.process.clash.adapter.persistence.record.v2.task.RecordTaskV2JpaEntit
 import com.process.clash.adapter.persistence.record.v2.task.RecordTaskV2JpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;
 import com.process.clash.application.record.v2.exception.exception.notfound.RecordDevelopSessionV2NotFoundException;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
@@ -15,7 +16,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +78,18 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     }
 
     @Override
+    public List<RecordSessionV2> findAllActiveSessions() {
+        return recordActiveSessionV2JpaRepository.findAllActiveSessions().stream()
+            .map(recordSessionV2JpaMapper::toDomain)
+            .toList();
+    }
+
+    @Override
+    public List<Long> findAllActiveUserIds() {
+        return recordActiveSessionV2JpaRepository.findAllActiveUserIds();
+    }
+
+    @Override
     public Boolean existsActiveSessionBySubjectId(Long subjectId) {
         return recordTaskSessionV2JpaRepository.existsActiveBySubjectId(subjectId);
     }
@@ -82,6 +97,65 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     @Override
     public Boolean existsActiveSessionByTaskId(Long taskId) {
         return recordTaskSessionV2JpaRepository.existsActiveByTaskId(taskId);
+    }
+
+    @Override
+    public Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository.getTotalStudyTimeInSeconds(
+            userId,
+            toInstant(startOfDay),
+            toInstant(endOfDay),
+            now
+        );
+    }
+
+    @Override
+    public Map<Long, Long> getTotalStudyTimeInSecondsByUserIds(
+        List<Long> userIds,
+        LocalDateTime startTime,
+        LocalDateTime endTime
+    ) {
+        if (userIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository
+            .getTotalStudyTimeInSecondsByUserIds(userIds, toInstant(startTime), toInstant(endTime), now)
+            .stream()
+            .collect(Collectors.toMap(
+                RecordActiveSessionV2JpaRepository.UserStudyTimeProjectionV2::getUserId,
+                RecordActiveSessionV2JpaRepository.UserStudyTimeProjectionV2::getTotalSeconds
+            ));
+    }
+
+    @Override
+    public List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
+        Long userId,
+        LocalDateTime startDate,
+        LocalDateTime endDate
+    ) {
+        return recordActiveSessionV2JpaRepository.findStudyTimeRankingByUserIdAndPeriod(
+            userId,
+            toInstant(startDate),
+            toInstant(endDate)
+        );
+    }
+
+    @Override
+    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+        return recordActiveSessionV2JpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+        return recordActiveSessionV2JpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate);
+    }
+
+    @Override
+    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+        return recordActiveSessionV2JpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate);
     }
 
     private RecordSessionV2 createSession(RecordSessionV2 session) {
