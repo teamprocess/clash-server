@@ -7,18 +7,11 @@ import com.process.clash.application.github.exception.exception.internalserver.G
 import com.process.clash.application.github.exception.exception.internalserver.GithubGraphqlResponseErrorException;
 import com.process.clash.application.github.model.GithubSyncTarget;
 import com.process.clash.application.github.port.out.GithubStatsFetchPort;
+import com.process.clash.application.github.service.GithubPullRequestSnapshotAggregator;
 import com.process.clash.application.github.service.GithubReviewAggregator;
 import com.process.clash.application.github.service.StudyDateCalculator;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import java.io.IOException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -29,6 +22,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Component
 @Slf4j
@@ -42,6 +42,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     private final GithubGraphqlQueries queries;
     private final StudyDateCalculator studyDateCalculator;
     private final GithubReviewAggregator reviewAggregator;
+    private final GithubPullRequestSnapshotAggregator pullRequestSnapshotAggregator;
     private final Clock clock;
 
     public GithubGraphqlAdapter(
@@ -50,6 +51,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             GithubGraphqlQueries queries,
             StudyDateCalculator studyDateCalculator,
             GithubReviewAggregator reviewAggregator,
+            GithubPullRequestSnapshotAggregator pullRequestSnapshotAggregator,
             Clock clock
     ) {
         this.githubWebClient = githubWebClient;
@@ -57,6 +59,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         this.queries = queries;
         this.studyDateCalculator = studyDateCalculator;
         this.reviewAggregator = reviewAggregator;
+        this.pullRequestSnapshotAggregator = pullRequestSnapshotAggregator;
         this.clock = clock;
     }
 
@@ -66,48 +69,57 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             return List.of();
         }
 
+        List<LocalDate> orderedStudyDates = studyDates.stream()
+                .sorted()
+                .toList();
+
         // 전체 기간을 먼저 계산해 공통 질의 범위를 재사용
-        LocalDate startDate = studyDates.getFirst();
-        LocalDate endDate = studyDates.getLast();
+        LocalDate startDate = orderedStudyDates.getFirst();
+        LocalDate endDate = orderedStudyDates.getLast();
         Instant rangeStart = studyDateCalculator.rangeStartUtc(startDate);
         Instant rangeEndExclusive = studyDateCalculator.rangeEndExclusiveUtc(endDate);
         Instant rangeEndInclusive = rangeEndExclusive.minusMillis(1);
 
         // 날짜별 집계를 위한 초기 버킷 생성
-        Map<LocalDate, MutableStats> statsByDate = initializeStats(studyDates);
+        Map<LocalDate, MutableStats> statsByDate = initializeStats(orderedStudyDates);
+        Set<LocalDate> studyDateSet = statsByDate.keySet();
 
         // 리뷰/커밋은 전체 기간을 조회한 뒤 날짜별로 집계
         Map<LocalDate, Integer> reviewCounts = fetchReviewCounts(target, rangeStart, rangeEndInclusive);
         mergeReviewCounts(statsByDate, reviewCounts);
 
-        Map<LocalDate, CommitStats> commitStats = fetchCommitStats(target, rangeStart, rangeEndInclusive, statsByDate.keySet());
+        Map<LocalDate, CommitStats> commitStats = fetchCommitStats(target, rangeStart, rangeEndInclusive, studyDateSet);
         mergeCommitStats(statsByDate, commitStats);
 
-        // PR/이슈는 전체 기간 검색 결과를 받아 날짜별로 집계 (1000건 초과 시 fallback)
-        Map<LocalDate, Integer> prCounts = fetchSearchCountsByDate(
+        // PR 생성/상태 지표 수집
+        PullRequestStats pullRequestStats = fetchPullRequestStats(
                 target,
-                "is:pr",
+                orderedStudyDates,
                 rangeStart,
                 rangeEndInclusive,
-                statsByDate.keySet()
+                studyDateSet
         );
+        mergePullRequestStats(statsByDate, pullRequestStats);
+
+        // 이슈는 createdAt 기준으로 날짜별 집계
         Map<LocalDate, Integer> issueCounts = fetchSearchCountsByDate(
                 target,
                 "is:issue",
+                "created",
+                "createdAt",
                 rangeStart,
                 rangeEndInclusive,
-                statsByDate.keySet()
+                studyDateSet
         );
 
-        for (LocalDate studyDate : studyDates) {
+        for (LocalDate studyDate : orderedStudyDates) {
             MutableStats mutable = statsByDate.get(studyDate);
-            mutable.prCount = prCounts.getOrDefault(studyDate, 0);
             mutable.issueCount = issueCounts.getOrDefault(studyDate, 0);
         }
 
         Instant syncedAt = clock.instant();
-        List<GitHubDailyStats> results = new ArrayList<>(studyDates.size());
-        for (LocalDate studyDate : studyDates) {
+        List<GitHubDailyStats> results = new ArrayList<>(orderedStudyDates.size());
+        for (LocalDate studyDate : orderedStudyDates) {
             MutableStats mutable = statsByDate.get(studyDate);
             results.add(new GitHubDailyStats(
                     target.userId(),
@@ -118,6 +130,13 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                     mutable.reviewedPrCount,
                     mutable.additions,
                     mutable.deletions,
+                    mutable.topCommitRepo,
+                    mutable.topPrRepo,
+                    mutable.firstCommitAt,
+                    mutable.lastCommitAt,
+                    mutable.prMergedCount,
+                    mutable.prOpenCount,
+                    mutable.prClosedCount,
                     syncedAt
             ));
         }
@@ -133,36 +152,100 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         return statsByDate;
     }
 
-    private int fetchSearchCount(GithubSyncTarget target, String typeQualifier, Instant startUtc, Instant endInclusive) {
-        // 날짜 범위를 제한한 단건 카운트 조회 (fallback 경로)
-        String queryValue = String.format(Locale.ROOT,
-                "%s author:%s created:%s..%s",
-                typeQualifier,
-                target.githubLogin(),
-                INSTANT_FORMATTER.format(startUtc),
-                INSTANT_FORMATTER.format(endInclusive)
-        );
-        Map<String, Object> variables = Map.of("query", queryValue);
-        JsonNode data = executeQuery(target, "search-issue-count", variables);
-        return data.path("search").path("issueCount").asInt(0);
-    }
-
-    private Map<LocalDate, Integer> fetchSearchCountsByDate(
+    private PullRequestStats fetchPullRequestStats(
             GithubSyncTarget target,
-            String typeQualifier,
+            List<LocalDate> orderedStudyDates,
             Instant rangeStart,
             Instant rangeEndInclusive,
             Set<LocalDate> studyDates
     ) {
-        Map<LocalDate, Integer> counts = new HashMap<>();
-        // 전체 기간을 한 번에 조회하고 클라이언트에서 날짜별로 집계
-        String queryValue = String.format(Locale.ROOT,
-                "%s author:%s created:%s..%s",
-                typeQualifier,
-                target.githubLogin(),
-                INSTANT_FORMATTER.format(rangeStart),
-                INSTANT_FORMATTER.format(rangeEndInclusive)
+        PullRequestCreatedStats createdStats = fetchPullRequestCreatedStatsByDate(
+                target,
+                rangeStart,
+                rangeEndInclusive,
+                orderedStudyDates,
+                studyDates
         );
+
+        Map<LocalDate, Integer> mergedCounts = fetchSearchCountsByDate(
+                target,
+                "is:pr is:merged",
+                "merged",
+                "mergedAt",
+                rangeStart,
+                rangeEndInclusive,
+                studyDates
+        );
+
+        Map<LocalDate, Integer> closedCounts = fetchSearchCountsByDate(
+                target,
+                "is:pr is:closed -is:merged",
+                "closed",
+                "closedAt",
+                rangeStart,
+                rangeEndInclusive,
+                studyDates
+        );
+
+        int baselineOpen = fetchOpenBaselineCount(target, rangeStart);
+        Map<LocalDate, Integer> openCounts = pullRequestSnapshotAggregator.calculateOpenCounts(
+                orderedStudyDates,
+                baselineOpen,
+                createdStats.countsByDate,
+                mergedCounts,
+                closedCounts
+        );
+
+        Map<LocalDate, String> topPrRepoByDate = new HashMap<>();
+        for (Map.Entry<LocalDate, Map<String, Integer>> entry : createdStats.repoCountsByDate.entrySet()) {
+            String topRepo = pullRequestSnapshotAggregator.selectTopRepository(entry.getValue());
+            if (topRepo != null) {
+                topPrRepoByDate.put(entry.getKey(), topRepo);
+            }
+        }
+
+        return new PullRequestStats(
+                createdStats.countsByDate,
+                mergedCounts,
+                closedCounts,
+                openCounts,
+                topPrRepoByDate
+        );
+    }
+
+    private int fetchOpenBaselineCount(GithubSyncTarget target, Instant rangeStart) {
+        long createdBeforeStart = fetchSearchCount(
+                target,
+                buildBeforeQuery(target, "is:pr", "created", rangeStart)
+        );
+        long mergedBeforeStart = fetchSearchCount(
+                target,
+                buildBeforeQuery(target, "is:pr is:merged", "merged", rangeStart)
+        );
+        long closedBeforeStart = fetchSearchCount(
+                target,
+                buildBeforeQuery(target, "is:pr is:closed -is:merged", "closed", rangeStart)
+        );
+
+        long baseline = Math.max(0L, createdBeforeStart - mergedBeforeStart - closedBeforeStart);
+        if (baseline > Integer.MAX_VALUE) {
+            log.warn("PR open baseline이 int 범위를 초과했습니다. userId={}, baseline={}", target.userId(), baseline);
+            return Integer.MAX_VALUE;
+        }
+        return (int) baseline;
+    }
+
+    private PullRequestCreatedStats fetchPullRequestCreatedStatsByDate(
+            GithubSyncTarget target,
+            Instant rangeStart,
+            Instant rangeEndInclusive,
+            List<LocalDate> orderedStudyDates,
+            Set<LocalDate> studyDates
+    ) {
+        Map<LocalDate, Integer> counts = new HashMap<>();
+        Map<LocalDate, Map<String, Integer>> repoCountsByDate = new HashMap<>();
+
+        String queryValue = buildRangeQuery(target, "is:pr", "created", rangeStart, rangeEndInclusive);
 
         String cursor = null;
         boolean hasNext = true;
@@ -180,21 +263,124 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             if (firstPage) {
                 firstPage = false;
                 int totalCount = search.path("issueCount").asInt(0);
-                // GitHub Search는 1000건 제한이 있어 초과 시 기존 방식으로 정확도 보장
+                // GitHub Search는 1000건 제한이 있어 초과 시 날짜별 fallback으로 전환
                 if (totalCount > 1000) {
-                    return fetchSearchCountsByDateFallback(target, typeQualifier, studyDates);
+                    return fetchPullRequestCreatedStatsByDateFallback(target, orderedStudyDates);
                 }
             }
 
             JsonNode nodes = search.path("nodes");
             if (nodes.isArray()) {
                 for (JsonNode node : nodes) {
-                    String createdAtRaw = node.path("createdAt").asText(null);
-                    if (createdAtRaw == null) {
+                    LocalDate studyDate = toStudyDate(node, "createdAt", studyDates);
+                    if (studyDate == null) {
                         continue;
                     }
-                    LocalDate studyDate = studyDateCalculator.toStudyDate(Instant.parse(createdAtRaw));
-                    if (!studyDates.contains(studyDate)) {
+
+                    counts.merge(studyDate, 1, Integer::sum);
+
+                    String repositoryName = node.path("repository").path("nameWithOwner").asText(null);
+                    if (repositoryName != null && !repositoryName.isBlank()) {
+                        repoCountsByDate
+                                .computeIfAbsent(studyDate, key -> new HashMap<>())
+                                .merge(repositoryName, 1, Integer::sum);
+                    }
+                }
+            }
+
+            JsonNode pageInfo = search.path("pageInfo");
+            hasNext = pageInfo.path("hasNextPage").asBoolean(false);
+            cursor = pageInfo.path("endCursor").asText(null);
+        }
+
+        return new PullRequestCreatedStats(counts, repoCountsByDate);
+    }
+
+    private PullRequestCreatedStats fetchPullRequestCreatedStatsByDateFallback(
+            GithubSyncTarget target,
+            List<LocalDate> orderedStudyDates
+    ) {
+        Map<LocalDate, Integer> counts = new HashMap<>();
+        Map<LocalDate, Map<String, Integer>> repoCountsByDate = new HashMap<>();
+
+        for (LocalDate studyDate : orderedStudyDates) {
+            Instant startUtc = studyDateCalculator.rangeStartUtc(studyDate);
+            Instant endUtcExclusive = studyDateCalculator.rangeEndExclusiveUtc(studyDate);
+            Instant endUtcInclusive = endUtcExclusive.minusMillis(1);
+            String queryValue = buildRangeQuery(target, "is:pr", "created", startUtc, endUtcInclusive);
+
+            SearchNodesByDateResult dayResult = fetchSearchNodesByDate(target, queryValue, "createdAt", Set.of(studyDate));
+
+            counts.put(studyDate, dayResult.totalCount);
+
+            Map<String, Integer> dayRepoCounts = dayResult.repoCountsByDate.get(studyDate);
+            if (dayRepoCounts != null && !dayRepoCounts.isEmpty()) {
+                repoCountsByDate.put(studyDate, dayRepoCounts);
+            }
+
+            // 하루 단위에서도 1000건이 초과되면 대표 레포는 일부 노드(최대 1000건) 기준으로 근사
+            if (dayResult.totalCount > 1000) {
+                log.warn(
+                        "PR 생성 검색 결과가 하루 1000건 제한을 초과했습니다. 대표 레포 정확도가 낮아질 수 있습니다. userId={}, date={}, totalCount={}",
+                        target.userId(),
+                        studyDate,
+                        dayResult.totalCount
+                );
+            }
+        }
+
+        return new PullRequestCreatedStats(counts, repoCountsByDate);
+    }
+
+    private int fetchSearchCount(
+            GithubSyncTarget target,
+            String queryValue
+    ) {
+        Map<String, Object> variables = Map.of("query", queryValue);
+        JsonNode data = executeQuery(target, "search-issue-count", variables);
+        return data.path("search").path("issueCount").asInt(0);
+    }
+
+    private Map<LocalDate, Integer> fetchSearchCountsByDate(
+            GithubSyncTarget target,
+            String typeQualifier,
+            String dateQualifier,
+            String timestampField,
+            Instant rangeStart,
+            Instant rangeEndInclusive,
+            Set<LocalDate> studyDates
+    ) {
+        Map<LocalDate, Integer> counts = new HashMap<>();
+
+        String queryValue = buildRangeQuery(target, typeQualifier, dateQualifier, rangeStart, rangeEndInclusive);
+
+        String cursor = null;
+        boolean hasNext = true;
+        boolean firstPage = true;
+
+        while (hasNext) {
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("query", queryValue);
+            variables.put("first", PAGE_SIZE);
+            variables.put("after", cursor);
+
+            JsonNode data = executeQuery(target, "search-issue-nodes", variables);
+            JsonNode search = data.path("search");
+
+            if (firstPage) {
+                firstPage = false;
+                int totalCount = search.path("issueCount").asInt(0);
+                // GitHub Search는 1000건 제한이 있어 초과 시 날짜별 count fallback으로 정확도 보장
+                if (totalCount > 1000) {
+                    return fetchSearchCountsByDateFallback(target, typeQualifier, dateQualifier, studyDates);
+                }
+            }
+
+            JsonNode nodes = search.path("nodes");
+            if (nodes.isArray()) {
+                for (JsonNode node : nodes) {
+                    LocalDate studyDate = toStudyDate(node, timestampField, studyDates);
+                    if (studyDate == null) {
                         continue;
                     }
                     counts.merge(studyDate, 1, Integer::sum);
@@ -212,6 +398,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
     private Map<LocalDate, Integer> fetchSearchCountsByDateFallback(
             GithubSyncTarget target,
             String typeQualifier,
+            String dateQualifier,
             Set<LocalDate> studyDates
     ) {
         Map<LocalDate, Integer> counts = new HashMap<>();
@@ -220,10 +407,113 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
             Instant startUtc = studyDateCalculator.rangeStartUtc(studyDate);
             Instant endUtcExclusive = studyDateCalculator.rangeEndExclusiveUtc(studyDate);
             Instant endUtcInclusive = endUtcExclusive.minusMillis(1);
-            int count = fetchSearchCount(target, typeQualifier, startUtc, endUtcInclusive);
+
+            String queryValue = buildRangeQuery(target, typeQualifier, dateQualifier, startUtc, endUtcInclusive);
+            int count = fetchSearchCount(target, queryValue);
             counts.put(studyDate, count);
         }
         return counts;
+    }
+
+    private SearchNodesByDateResult fetchSearchNodesByDate(
+            GithubSyncTarget target,
+            String queryValue,
+            String timestampField,
+            Set<LocalDate> studyDates
+    ) {
+        Map<LocalDate, Integer> countsByDate = new HashMap<>();
+        Map<LocalDate, Map<String, Integer>> repoCountsByDate = new HashMap<>();
+
+        int totalCount = 0;
+        String cursor = null;
+        boolean hasNext = true;
+        boolean firstPage = true;
+
+        while (hasNext) {
+            Map<String, Object> variables = new HashMap<>();
+            variables.put("query", queryValue);
+            variables.put("first", PAGE_SIZE);
+            variables.put("after", cursor);
+
+            JsonNode data = executeQuery(target, "search-issue-nodes", variables);
+            JsonNode search = data.path("search");
+
+            if (firstPage) {
+                firstPage = false;
+                totalCount = search.path("issueCount").asInt(0);
+            }
+
+            JsonNode nodes = search.path("nodes");
+            if (nodes.isArray()) {
+                for (JsonNode node : nodes) {
+                    LocalDate studyDate = toStudyDate(node, timestampField, studyDates);
+                    if (studyDate == null) {
+                        continue;
+                    }
+
+                    countsByDate.merge(studyDate, 1, Integer::sum);
+
+                    String repositoryName = node.path("repository").path("nameWithOwner").asText(null);
+                    if (repositoryName != null && !repositoryName.isBlank()) {
+                        repoCountsByDate
+                                .computeIfAbsent(studyDate, key -> new HashMap<>())
+                                .merge(repositoryName, 1, Integer::sum);
+                    }
+                }
+            }
+
+            JsonNode pageInfo = search.path("pageInfo");
+            hasNext = pageInfo.path("hasNextPage").asBoolean(false);
+            cursor = pageInfo.path("endCursor").asText(null);
+        }
+
+        return new SearchNodesByDateResult(totalCount, countsByDate, repoCountsByDate);
+    }
+
+    private String buildRangeQuery(
+            GithubSyncTarget target,
+            String typeQualifier,
+            String dateQualifier,
+            Instant startUtc,
+            Instant endInclusive
+    ) {
+        return String.format(
+                Locale.ROOT,
+                "%s author:%s %s:%s..%s",
+                typeQualifier,
+                target.githubLogin(),
+                dateQualifier,
+                INSTANT_FORMATTER.format(startUtc),
+                INSTANT_FORMATTER.format(endInclusive)
+        );
+    }
+
+    private String buildBeforeQuery(
+            GithubSyncTarget target,
+            String typeQualifier,
+            String dateQualifier,
+            Instant before
+    ) {
+        return String.format(
+                Locale.ROOT,
+                "%s author:%s %s:<%s",
+                typeQualifier,
+                target.githubLogin(),
+                dateQualifier,
+                INSTANT_FORMATTER.format(before)
+        );
+    }
+
+    private LocalDate toStudyDate(JsonNode node, String timestampField, Set<LocalDate> studyDates) {
+        String timestampRaw = node.path(timestampField).asText(null);
+        if (timestampRaw == null || timestampRaw.isBlank()) {
+            return null;
+        }
+        LocalDate studyDate = studyDateCalculator.toStudyDate(Instant.parse(timestampRaw));
+        if (!studyDates.contains(studyDate)) {
+            return null;
+        }
+        return studyDate;
     }
 
     private Map<LocalDate, Integer> fetchReviewCounts(GithubSyncTarget target, Instant rangeStart, Instant rangeEndInclusive) {
@@ -299,7 +589,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                     String nameWithOwner = node.path("nameWithOwner").asText(null);
                     String defaultBranchName = node.path("defaultBranchRef").path("name").asText(null);
                     if (nameWithOwner != null && defaultBranchName != null) {
-                        repos.add(new RepoInfo(nameWithOwner, defaultBranchName));
+                        repos.add(new RepoInfo(nameWithOwner));
                     }
                 }
             }
@@ -363,6 +653,14 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                     commitStats.commitCount += 1;
                     commitStats.additions += node.path("additions").asLong(0);
                     commitStats.deletions += node.path("deletions").asLong(0);
+                    commitStats.repositoryCommitCounts.merge(repo.nameWithOwner(), 1, Integer::sum);
+
+                    if (commitStats.firstCommitAt == null || committedAt.isBefore(commitStats.firstCommitAt)) {
+                        commitStats.firstCommitAt = committedAt;
+                    }
+                    if (commitStats.lastCommitAt == null || committedAt.isAfter(commitStats.lastCommitAt)) {
+                        commitStats.lastCommitAt = committedAt;
+                    }
                 }
             }
 
@@ -403,7 +701,23 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                 mutable.commitCount = stats.commitCount;
                 mutable.additions = stats.additions;
                 mutable.deletions = stats.deletions;
+                mutable.firstCommitAt = stats.firstCommitAt;
+                mutable.lastCommitAt = stats.lastCommitAt;
+                mutable.topCommitRepo = pullRequestSnapshotAggregator.selectTopRepository(stats.repositoryCommitCounts);
             }
+        }
+    }
+
+    private void mergePullRequestStats(Map<LocalDate, MutableStats> statsByDate, PullRequestStats pullRequestStats) {
+        for (Map.Entry<LocalDate, MutableStats> entry : statsByDate.entrySet()) {
+            LocalDate studyDate = entry.getKey();
+            MutableStats mutable = entry.getValue();
+
+            mutable.prCount = pullRequestStats.createdCountsByDate.getOrDefault(studyDate, 0);
+            mutable.prMergedCount = pullRequestStats.mergedCountsByDate.getOrDefault(studyDate, 0);
+            mutable.prClosedCount = pullRequestStats.closedCountsByDate.getOrDefault(studyDate, 0);
+            mutable.prOpenCount = pullRequestStats.openCountsByDate.getOrDefault(studyDate, 0);
+            mutable.topPrRepo = pullRequestStats.topRepositoryByDate.get(studyDate);
         }
     }
 
@@ -512,14 +826,75 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
         private int reviewedPrCount;
         private long additions;
         private long deletions;
+        private String topCommitRepo;
+        private String topPrRepo;
+        private Instant firstCommitAt;
+        private Instant lastCommitAt;
+        private int prMergedCount;
+        private int prOpenCount;
+        private int prClosedCount;
     }
 
     private static class CommitStats {
         private int commitCount;
         private long additions;
         private long deletions;
+        private Instant firstCommitAt;
+        private Instant lastCommitAt;
+        private final Map<String, Integer> repositoryCommitCounts = new HashMap<>();
     }
 
-    private record RepoInfo(String nameWithOwner, String defaultBranch) {
+    private static class PullRequestCreatedStats {
+        private final Map<LocalDate, Integer> countsByDate;
+        private final Map<LocalDate, Map<String, Integer>> repoCountsByDate;
+
+        private PullRequestCreatedStats(
+                Map<LocalDate, Integer> countsByDate,
+                Map<LocalDate, Map<String, Integer>> repoCountsByDate
+        ) {
+            this.countsByDate = countsByDate;
+            this.repoCountsByDate = repoCountsByDate;
+        }
+    }
+
+    private static class PullRequestStats {
+        private final Map<LocalDate, Integer> createdCountsByDate;
+        private final Map<LocalDate, Integer> mergedCountsByDate;
+        private final Map<LocalDate, Integer> closedCountsByDate;
+        private final Map<LocalDate, Integer> openCountsByDate;
+        private final Map<LocalDate, String> topRepositoryByDate;
+
+        private PullRequestStats(
+                Map<LocalDate, Integer> createdCountsByDate,
+                Map<LocalDate, Integer> mergedCountsByDate,
+                Map<LocalDate, Integer> closedCountsByDate,
+                Map<LocalDate, Integer> openCountsByDate,
+                Map<LocalDate, String> topRepositoryByDate
+        ) {
+            this.createdCountsByDate = createdCountsByDate;
+            this.mergedCountsByDate = mergedCountsByDate;
+            this.closedCountsByDate = closedCountsByDate;
+            this.openCountsByDate = openCountsByDate;
+            this.topRepositoryByDate = topRepositoryByDate;
+        }
+    }
+
+    private static class SearchNodesByDateResult {
+        private final int totalCount;
+        private final Map<LocalDate, Integer> countsByDate;
+        private final Map<LocalDate, Map<String, Integer>> repoCountsByDate;
+
+        private SearchNodesByDateResult(
+                int totalCount,
+                Map<LocalDate, Integer> countsByDate,
+                Map<LocalDate, Map<String, Integer>> repoCountsByDate
+        ) {
+            this.totalCount = totalCount;
+            this.countsByDate = countsByDate;
+            this.repoCountsByDate = repoCountsByDate;
+        }
+    }
+
+    private record RepoInfo(String nameWithOwner) {
     }
 }

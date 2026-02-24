@@ -9,6 +9,12 @@ query (
       __typename
       ... on PullRequest {
         createdAt
+        mergedAt
+        closedAt
+        state
+        repository {
+          nameWithOwner
+        }
       }
       ... on Issue {
         createdAt

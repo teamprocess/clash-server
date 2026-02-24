@@ -2,8 +2,8 @@ package com.process.clash.adapter.web.compete.my.docs.response;
 
 import com.process.clash.adapter.web.common.docs.response.SuccessResponseDocument;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Schema(description = "깃허브 비교 응답")
 public class CompareGitHubResponseDocument extends SuccessResponseDocument {
@@ -55,11 +55,11 @@ public class CompareGitHubResponseDocument extends SuccessResponseDocument {
         @Schema(description = "삭제된 라인 수", example = "20")
         public Long removeLines;
 
-        @Schema(description = "첫 커밋 시간", example = "2025-01-01T09:00:00")
-        public LocalDateTime firstCommit;
+        @Schema(description = "첫 커밋 시간", example = "2025-01-01T09:00:00Z")
+        public Instant firstCommit;
 
-        @Schema(description = "마지막 커밋 시간", example = "2025-01-01T21:30:00")
-        public LocalDateTime lastCommit;
+        @Schema(description = "마지막 커밋 시간", example = "2025-01-01T21:30:00Z")
+        public Instant lastCommit;
     }
 
     public static class PullRequestDoc {
@@ -77,15 +77,6 @@ public class CompareGitHubResponseDocument extends SuccessResponseDocument {
 
         @Schema(description = "닫힌 PR 수", example = "0")
         public Integer closedCount;
-
-        @Schema(description = "리뷰 중인 PR 수", example = "0")
-        public Integer inReviewCount;
-
-        @Schema(description = "승인된 PR 수", example = "0")
-        public Integer approvedCount;
-
-        @Schema(description = "요청된 PR 수", example = "0")
-        public Integer requestCount;
     }
 
     public static class IssueDoc {

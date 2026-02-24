@@ -3,8 +3,8 @@ package com.process.clash.application.compete.my.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class CompareGitHubData {
 
@@ -59,19 +59,19 @@ public class CompareGitHubData {
             String representationRepo,
             Long addLines,
             Long removeLines,
-            LocalDateTime firstCommit,
-            LocalDateTime lastCommit
+            Instant firstCommit,
+            Instant lastCommit
     ) {
 
         public static Commit from(GitHubDailyStats gitHubDailyStats) {
 
             return new Commit(
                     gitHubDailyStats.commitCount(),
-                    "멧돼지", //TODO: 나중에 수정
+                    gitHubDailyStats.topCommitRepo(),
                     gitHubDailyStats.additions(),
                     gitHubDailyStats.deletions(),
-                    LocalDateTime.now().minusHours(1), //TODO: 나중에 수정
-                    LocalDateTime.now() //TODO: 나중에 수정
+                    gitHubDailyStats.firstCommitAt(),
+                    gitHubDailyStats.lastCommitAt()
             );
         }
     }
@@ -81,23 +81,17 @@ public class CompareGitHubData {
             String representationRepo,
             Integer mergedCount,
             Integer openCount,
-            Integer closedCount,
-            Integer inReviewCount,
-            Integer approvedCount,
-            Integer requestCount
+            Integer closedCount
     ) {
 
         public static PullRequest from(GitHubDailyStats gitHubDailyStats) {
 
             return new PullRequest(
                     gitHubDailyStats.prCount(),
-                    "멧돼지", //TODO: 나중에 수정
-                    0, //TODO: 나중에 수정
-                    9, //TODO: 나중에 수정
-                    0, //TODO: 나중에 수정
-                    5, //TODO: 나중에 수정
-                    2, //TODO: 나중에 수정
-                    3 //TODO: 나중에 수정
+                    gitHubDailyStats.topPrRepo(),
+                    gitHubDailyStats.prMergedCount(),
+                    gitHubDailyStats.prOpenCount(),
+                    gitHubDailyStats.prClosedCount()
             );
         }
     }
