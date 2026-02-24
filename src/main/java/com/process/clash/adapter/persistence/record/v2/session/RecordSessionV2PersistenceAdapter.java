@@ -12,6 +12,7 @@ import com.process.clash.application.record.v2.exception.exception.notfound.Reco
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
+import com.process.clash.infrastructure.config.RecordProperties;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -33,6 +34,7 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     private final RecordTaskV2JpaRepository recordTaskV2JpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final RecordSessionV2JpaMapper recordSessionV2JpaMapper;
+    private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
 
     @Override
@@ -141,26 +143,66 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
         LocalDateTime startDate,
         LocalDateTime endDate
     ) {
+        Instant now = Instant.now();
         return recordActiveSessionV2JpaRepository.findStudyTimeRankingByUserIdAndPeriod(
             userId,
             toInstant(startDate),
-            toInstant(endDate)
+            toInstant(endDate),
+            now
         );
     }
 
     @Override
     public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
-        return recordActiveSessionV2JpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate);
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository.findDailyStudyTimeByUserIds(
+                userIds,
+                startDate,
+                endDate,
+                now,
+                recordZoneId.getId(),
+                recordProperties.dayBoundaryHour()
+            ).stream()
+            .map(this::toStudyTimeRow)
+            .toList();
     }
 
     @Override
     public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
-        return recordActiveSessionV2JpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate);
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository.findWeeklyStudyTimeByUserIds(
+                userIds,
+                startDate,
+                endDate,
+                now,
+                recordZoneId.getId(),
+                recordProperties.dayBoundaryHour()
+            ).stream()
+            .map(this::toStudyTimeRow)
+            .toList();
     }
 
     @Override
     public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
-        return recordActiveSessionV2JpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate);
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository.findMonthlyStudyTimeByUserIds(
+                userIds,
+                startDate,
+                endDate,
+                now,
+                recordZoneId.getId(),
+                recordProperties.dayBoundaryHour()
+            ).stream()
+            .map(this::toStudyTimeRow)
+            .toList();
+    }
+
+    private Object[] toStudyTimeRow(RecordActiveSessionV2JpaRepository.UserStudyTimePeriodProjectionV2 projection) {
+        return new Object[] {
+            projection.getUserId(),
+            projection.getRecordedDate(),
+            projection.getPoint()
+        };
     }
 
     private RecordSessionV2 createSession(RecordSessionV2 session) {

@@ -149,7 +149,7 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(ss.ended_at, current_timestamp), :endDate)
+                            least(coalesce(ss.ended_at, :now), :endDate)
                             - greatest(ss.started_at, :startDate)
                         ))
                     ), 0
@@ -162,25 +162,32 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
                 and :userId in (r.fk_first_user_id, r.fk_second_user_id)
                 and r.rival_linking_status = 'ACCEPTED')
         where ss.started_at < :endDate
-            and coalesce(ss.ended_at, current_timestamp) >= :startDate
+            and coalesce(ss.ended_at, :now) >= :startDate
         group by u.id, u.name, u.profile_image, u.username
         order by point desc
     """, nativeQuery = true)
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
         @Param("userId") Long userId,
         @Param("startDate") Instant startDate,
-        @Param("endDate") Instant endDate
+        @Param("endDate") Instant endDate,
+        @Param("now") Instant now
     );
 
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
-            cast(date_trunc('day', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) as recordedDate,
+            cast(
+                date_trunc(
+                    'day',
+                    (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+                    - make_interval(hours => :dayBoundaryHour)
+                ) as date
+            ) as recordedDate,
             cast(
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            least(coalesce(s.ended_at, :now), :endDate)
                             - greatest(s.started_at, :startDate)
                         ))
                     ), 0
@@ -189,25 +196,42 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
         FROM record_active_sessions_v2 s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
-            AND coalesce(s.ended_at, current_timestamp) >= :startDate
-        GROUP BY s.fk_user_id, date_trunc('day', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours')
-        ORDER BY s.fk_user_id, date_trunc('day', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') ASC
+            AND coalesce(s.ended_at, :now) >= :startDate
+        GROUP BY s.fk_user_id, date_trunc(
+            'day',
+            (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+            - make_interval(hours => :dayBoundaryHour)
+        )
+        ORDER BY s.fk_user_id, date_trunc(
+            'day',
+            (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+            - make_interval(hours => :dayBoundaryHour)
+        ) ASC
     """, nativeQuery = true)
-    List<Object[]> findDailyStudyTimeByUserIds(
+    List<UserStudyTimePeriodProjectionV2> findDailyStudyTimeByUserIds(
         @Param("userIds") List<Long> userIds,
         @Param("startDate") Instant startDate,
-        @Param("endDate") Instant endDate
+        @Param("endDate") Instant endDate,
+        @Param("now") Instant now,
+        @Param("recordTimezone") String recordTimezone,
+        @Param("dayBoundaryHour") int dayBoundaryHour
     );
 
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
-            cast(date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) as recordedDate,
+            cast(
+                date_trunc(
+                    'week',
+                    (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+                    - make_interval(hours => :dayBoundaryHour)
+                ) as date
+            ) as recordedDate,
             cast(
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            least(coalesce(s.ended_at, :now), :endDate)
                             - greatest(s.started_at, :startDate)
                         ))
                     ), 0
@@ -216,25 +240,42 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
         FROM record_active_sessions_v2 s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
-            AND coalesce(s.ended_at, current_timestamp) >= :startDate
-        GROUP BY s.fk_user_id, date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours')
-        ORDER BY s.fk_user_id, date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') ASC
+            AND coalesce(s.ended_at, :now) >= :startDate
+        GROUP BY s.fk_user_id, date_trunc(
+            'week',
+            (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+            - make_interval(hours => :dayBoundaryHour)
+        )
+        ORDER BY s.fk_user_id, date_trunc(
+            'week',
+            (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+            - make_interval(hours => :dayBoundaryHour)
+        ) ASC
     """, nativeQuery = true)
-    List<Object[]> findWeeklyStudyTimeByUserIds(
+    List<UserStudyTimePeriodProjectionV2> findWeeklyStudyTimeByUserIds(
         @Param("userIds") List<Long> userIds,
         @Param("startDate") Instant startDate,
-        @Param("endDate") Instant endDate
+        @Param("endDate") Instant endDate,
+        @Param("now") Instant now,
+        @Param("recordTimezone") String recordTimezone,
+        @Param("dayBoundaryHour") int dayBoundaryHour
     );
 
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
-            cast(date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) as recordedDate,
+            cast(
+                date_trunc(
+                    'month',
+                    (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+                    - make_interval(hours => :dayBoundaryHour)
+                ) as date
+            ) as recordedDate,
             cast(
                 coalesce(
                     sum(
                         extract(epoch from (
-                            least(coalesce(s.ended_at, current_timestamp), :endDate)
+                            least(coalesce(s.ended_at, :now), :endDate)
                             - greatest(s.started_at, :startDate)
                         ))
                     ), 0
@@ -243,13 +284,30 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
         FROM record_active_sessions_v2 s
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
-            AND coalesce(s.ended_at, current_timestamp) >= :startDate
-        GROUP BY s.fk_user_id, date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours')
-        ORDER BY s.fk_user_id, date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') ASC
+            AND coalesce(s.ended_at, :now) >= :startDate
+        GROUP BY s.fk_user_id, date_trunc(
+            'month',
+            (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+            - make_interval(hours => :dayBoundaryHour)
+        )
+        ORDER BY s.fk_user_id, date_trunc(
+            'month',
+            (s.started_at AT TIME ZONE cast(:recordTimezone as text))
+            - make_interval(hours => :dayBoundaryHour)
+        ) ASC
     """, nativeQuery = true)
-    List<Object[]> findMonthlyStudyTimeByUserIds(
+    List<UserStudyTimePeriodProjectionV2> findMonthlyStudyTimeByUserIds(
         @Param("userIds") List<Long> userIds,
         @Param("startDate") Instant startDate,
-        @Param("endDate") Instant endDate
+        @Param("endDate") Instant endDate,
+        @Param("now") Instant now,
+        @Param("recordTimezone") String recordTimezone,
+        @Param("dayBoundaryHour") int dayBoundaryHour
     );
+
+    interface UserStudyTimePeriodProjectionV2 {
+        Long getUserId();
+        java.sql.Date getRecordedDate();
+        Long getPoint();
+    }
 }
