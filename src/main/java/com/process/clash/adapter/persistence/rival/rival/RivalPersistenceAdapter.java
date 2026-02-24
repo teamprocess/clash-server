@@ -144,4 +144,9 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     public boolean existsPendingRivalRequestFrom(Long opponentId, Long myId) {
         return rivalJpaRepository.existsPendingRivalRequestFrom(opponentId, myId);
     }
+
+    @Override
+    public boolean existsActiveRivalBetween(Long myId, Long opponentId) {
+        return rivalJpaRepository.existsActiveRivalBetween(myId, opponentId);
+    }
 }
