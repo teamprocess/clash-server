@@ -9,8 +9,10 @@ import com.process.clash.application.group.exception.exception.notfound.GroupNot
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.JoinGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
+import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class JoinGroupService implements JoinGroupUseCase {
     private final GroupRepositoryPort groupRepositoryPort;
     private final PasswordEncoder passwordEncoder;
     private final GroupPolicy policy;
+    private final GroupRefetchNotifier groupRefetchNotifier;
 
     @Override
     public void execute(JoinGroupData.Command command) {
@@ -39,6 +42,8 @@ public class JoinGroupService implements JoinGroupUseCase {
         validatePassword(group, command.password());
 
         groupRepositoryPort.addMember(command.groupId(), command.actor().id());
+        List<Long> memberUserIds = groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(command.groupId()));
+        groupRefetchNotifier.notifyGroupsChanged(memberUserIds);
     }
 
     private void validatePassword(Group group, String password) {

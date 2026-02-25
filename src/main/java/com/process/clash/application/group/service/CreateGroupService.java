@@ -5,11 +5,13 @@ import com.process.clash.application.group.exception.exception.badrequest.GroupP
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.CreateGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
+import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class CreateGroupService implements CreateGroupUseCase {
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
     private final GroupPolicy policy;
+    private final GroupRefetchNotifier groupRefetchNotifier;
 
     @Override
     public void execute(CreateGroupData.Command command) {
@@ -45,6 +48,7 @@ public class CreateGroupService implements CreateGroupUseCase {
 
         Group savedGroup = groupRepositoryPort.save(group);
         groupRepositoryPort.addMember(savedGroup.id(), owner.id());
+        groupRefetchNotifier.notifyMyGroupsChanged(List.of(owner.id()));
     }
 
     private String resolvePassword(Boolean passwordRequired, String password) {
