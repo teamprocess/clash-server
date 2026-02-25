@@ -104,13 +104,12 @@ public record User(
     }
 
     public User spendGoods(GoodsType goodsType, int amount) {
-        int nextTotalCookie = this.totalCookie;
-        int nextTotalToken = this.totalToken;
-
-        switch (goodsType) {
-            case COOKIE -> nextTotalCookie -= amount;
-            case TOKEN -> nextTotalToken -= amount;
+        if (goodsType != GoodsType.COOKIE) {
+            throw new IllegalArgumentException("Unsupported goods type: " + goodsType);
         }
+
+        int nextTotalCookie = this.totalCookie - amount;
+        int nextTotalToken = this.totalToken;
 
         return new User(
                 this.id,

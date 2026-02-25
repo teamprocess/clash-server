@@ -53,7 +53,7 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
         int amount = toIntPrice(price);
         GoodsType goodsType = product.type().toGoodsType();
 
-        if (!hasEnoughGoods(user, goodsType, amount)) {
+        if (!hasEnoughGoods(user, amount)) {
             throw new InsufficientGoodsException();
         }
 
@@ -97,10 +97,7 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
         return (int) price;
     }
 
-    private boolean hasEnoughGoods(User user, GoodsType goodsType, int amount) {
-        return switch (goodsType) {
-            case COOKIE -> user.totalCookie() >= amount;
-            case TOKEN -> user.totalToken() >= amount;
-        };
+    private boolean hasEnoughGoods(User user, int amount) {
+        return user.totalCookie() >= amount;
     }
 }

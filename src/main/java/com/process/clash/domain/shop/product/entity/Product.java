@@ -45,6 +45,8 @@ public record Product(
             String description,
             Season season
     ) {
+        ProductGoodsType productGoodsType = type != null ? type : ProductGoodsType.COOKIE;
+
         return new Product(
                 null,
                 null,
@@ -52,7 +54,7 @@ public record Product(
                 title,
                 category,
                 image,
-                type,
+                productGoodsType,
                 price,
                 discount != null ? discount : 0,
                 description,

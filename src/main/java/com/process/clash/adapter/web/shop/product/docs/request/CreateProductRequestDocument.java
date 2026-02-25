@@ -16,7 +16,7 @@ public class CreateProductRequestDocument {
     @Schema(description = "이미지 URL")
     public String image;
 
-    @Schema(description = "재화 유형")
+    @Schema(description = "재화 유형 (COOKIE 고정, 미입력 시 COOKIE)")
     public ProductGoodsType type;
 
     @Schema(description = "가격")

@@ -21,7 +21,6 @@ public class CreateProductDto {
             ProductCategory category,
             @NotBlank(message = "이미지 링크는 필수 입력값입니다.")
             String image,
-            @NotNull(message = "재화 종류는 필수 입력값입니다.")
             ProductGoodsType type,
             @NotNull(message = "상품 가격은 필수 입력값입니다.")
             @Min(value = 0, message = "가격은 0 이상이어야 합니다.")

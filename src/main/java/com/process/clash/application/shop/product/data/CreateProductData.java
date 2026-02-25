@@ -16,7 +16,13 @@ public class CreateProductData {
             Integer discount,
             String description,
             Long seasonId
-    ) {}
+    ) {
+        public Command {
+            if (type == null) {
+                type = ProductGoodsType.COOKIE;
+            }
+        }
+    }
 
     public record Result(
             Long productId
