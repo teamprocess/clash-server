@@ -8,7 +8,6 @@ import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,8 +27,7 @@ public class DeleteGroupService implements DeleteGroupUseCase {
             .orElseThrow(GroupNotFoundException::new);
 
         groupPolicy.validateOwnership(command.actor(), group);
-        List<Long> memberUserIds = new ArrayList<>(groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(group.id())));
-        memberUserIds.add(command.actor().id());
+        List<Long> memberUserIds = groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(group.id()));
         groupRepositoryPort.deleteById(group.id());
         groupRefetchNotifier.notifyGroupsChanged(memberUserIds);
     }

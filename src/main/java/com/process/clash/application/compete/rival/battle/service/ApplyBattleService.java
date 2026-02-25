@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,8 +56,6 @@ public class ApplyBattleService implements ApplyBattleUseCase {
 
         userNoticeRepositoryPort.save(userNoticeForOpponent);
         competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentUserId));
-        List<Long> changedUserIds = new ArrayList<>(List.of(opponentUserId));
-        changedUserIds.add(userId);
-        competeRefetchNotifier.notifyCompeteChanged(changedUserIds);
+        competeRefetchNotifier.notifyCompeteChanged(List.of(opponentUserId, userId));
     }
 }

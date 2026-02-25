@@ -9,7 +9,6 @@ import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,8 +50,7 @@ public class UpdateGroupService implements UpdateGroupUseCase {
         );
 
         groupRepositoryPort.save(updatedGroup);
-        List<Long> targetUserIds = new ArrayList<>(groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(group.id())));
-        targetUserIds.add(command.actor().id());
+        List<Long> targetUserIds = groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(group.id()));
         groupRefetchNotifier.notifyGroupsChanged(targetUserIds);
     }
 
