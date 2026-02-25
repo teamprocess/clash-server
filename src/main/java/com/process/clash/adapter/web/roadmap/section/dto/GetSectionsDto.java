@@ -27,11 +27,12 @@ public class GetSectionsDto {
             Long id,
             String title,
             Long categoryId,
+            String categoryImageUrl,
             Boolean completed,
             Boolean locked
     ) {
         public static SectionVo from(GetSectionsData.Result.SectionVo vo) {
-            return new SectionVo(vo.id(), vo.title(), vo.categoryId(), vo.completed(), vo.locked());
+            return new SectionVo(vo.id(), vo.title(), vo.categoryId(), vo.categoryImageUrl(), vo.completed(), vo.locked());
         }
     }
 }
