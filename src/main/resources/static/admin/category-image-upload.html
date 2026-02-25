@@ -57,17 +57,13 @@
         el.className = 'msg ' + (isError ? 'err' : 'ok');
     }
 
-    // 페이지 로드 시 바로 카테고리 조회 시도
+    // 페이지 로드 시 카테고리 조회 (서버에서 이미 ADMIN 검증 완료)
     loadCategories();
 
     async function loadCategories() {
         try {
             const res = await fetch('/api/admin/categories', { credentials: 'include' });
             const json = await res.json();
-            if (res.status === 401 || res.status === 403) {
-                showMsg(authMsg, '로그인이 필요합니다. 먼저 clash.kr 에서 로그인한 뒤 이 페이지를 다시 여세요.', true);
-                return;
-            }
             if (!res.ok || !json.success) {
                 throw new Error(json.error?.message || '카테고리 불러오기 실패');
             }
