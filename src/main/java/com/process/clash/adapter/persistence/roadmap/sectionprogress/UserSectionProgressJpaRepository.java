@@ -17,14 +17,14 @@ public interface UserSectionProgressJpaRepository extends JpaRepository<UserSect
     @Query(value = """
     SELECT userId, userName, profileImage, totalCompleted, userRank
     FROM (
-        SELECT 
-            u.id as userId, 
-            u.name as userName, 
+        SELECT
+            u.id as userId,
+            u.name as userName,
             u.profile_image as profileImage,
-            SUM(usp.completed_chapters) as totalCompleted,
-            RANK() OVER (ORDER BY SUM(usp.completed_chapters) DESC) as userRank
+            COALESCE(SUM(usp.completed_chapters), 0) as totalCompleted,
+            RANK() OVER (ORDER BY COALESCE(SUM(usp.completed_chapters), 0) DESC) as userRank
         FROM users u
-        JOIN user_section_progress usp ON u.id = usp.fk_user_id
+        LEFT JOIN user_section_progress usp ON u.id = usp.fk_user_id
         GROUP BY u.id
     ) rankTable
     WHERE userId = :targetUserId OR userRank <= 20
