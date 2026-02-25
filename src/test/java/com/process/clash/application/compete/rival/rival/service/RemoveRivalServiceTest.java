@@ -1,6 +1,7 @@
 package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.policy.RemoveRivalPolicy;
@@ -8,6 +9,7 @@ import com.process.clash.application.compete.rival.rival.port.out.RivalRepositor
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import java.time.Instant;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,11 +31,14 @@ class RemoveRivalServiceTest {
     @Mock
     private RivalRepositoryPort rivalRepositoryPort;
 
+    @Mock
+    private CompeteRefetchNotifier competeRefetchNotifier;
+
     private RemoveRivalService removeRivalService;
 
     @BeforeEach
     void setUp() {
-        removeRivalService = new RemoveRivalService(removeRivalPolicy, rivalRepositoryPort);
+        removeRivalService = new RemoveRivalService(removeRivalPolicy, rivalRepositoryPort, competeRefetchNotifier);
     }
 
     @Test
@@ -48,6 +53,7 @@ class RemoveRivalServiceTest {
         removeRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
         verify(rivalRepositoryPort).deleteById(rivalId);
+        verify(competeRefetchNotifier).notifyCompeteChanged(List.of(actor.id(), 2L));
     }
 
     @Test
@@ -63,5 +69,6 @@ class RemoveRivalServiceTest {
                 .isInstanceOf(RivalNotFoundException.class);
 
         verify(rivalRepositoryPort, never()).deleteById(rivalId);
+        verify(competeRefetchNotifier, never()).notifyCompeteChanged(org.mockito.ArgumentMatchers.any());
     }
 }

@@ -61,6 +61,10 @@ class ApplyRivalServiceTest {
         ArgumentCaptor<Collection<Long>> captor = ArgumentCaptor.forClass(Collection.class);
         verify(competeRefetchNotifier).notifyUserNoticeChanged(captor.capture());
         assertThat(captor.getValue()).containsExactlyInAnyOrder(2L, 3L);
+
+        ArgumentCaptor<Collection<Long>> competeCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(competeRefetchNotifier).notifyCompeteChanged(competeCaptor.capture());
+        assertThat(competeCaptor.getValue()).containsExactlyInAnyOrder(1L, 2L, 3L);
     }
 
     @Test

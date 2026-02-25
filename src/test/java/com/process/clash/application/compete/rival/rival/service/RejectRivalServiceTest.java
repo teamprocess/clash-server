@@ -70,6 +70,10 @@ class RejectRivalServiceTest {
         ArgumentCaptor<Collection<Long>> captor = ArgumentCaptor.forClass(Collection.class);
         verify(competeRefetchNotifier).notifyUserNoticeChanged(captor.capture());
         assertThat(captor.getValue()).containsExactlyInAnyOrder(opponentId, actor.id());
+
+        ArgumentCaptor<Collection<Long>> competeCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(competeRefetchNotifier).notifyCompeteChanged(competeCaptor.capture());
+        assertThat(competeCaptor.getValue()).containsExactlyInAnyOrder(opponentId, actor.id());
     }
 
     @Test
@@ -103,5 +107,6 @@ class RejectRivalServiceTest {
 
         verify(userNoticeRepositoryPort, never()).save(any());
         verify(competeRefetchNotifier, never()).notifyUserNoticeChanged(any());
+        verify(competeRefetchNotifier, never()).notifyCompeteChanged(any());
     }
 }
