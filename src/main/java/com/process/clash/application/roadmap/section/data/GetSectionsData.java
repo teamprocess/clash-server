@@ -20,6 +20,7 @@ public class GetSectionsData {
                 Long id,
                 String title,
                 Long categoryId,
+                String categoryImageUrl,
                 Boolean completed,
                 Boolean locked
         ) {
@@ -28,6 +29,7 @@ public class GetSectionsData {
                         section.getId(),
                         section.getTitle(),
                         section.getCategory().getId(),
+                        section.getCategory().getImageUrl(),
                         completed,
                         locked
                 );

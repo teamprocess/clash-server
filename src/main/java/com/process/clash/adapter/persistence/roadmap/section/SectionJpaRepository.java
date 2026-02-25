@@ -20,6 +20,7 @@ public interface SectionJpaRepository extends JpaRepository<SectionJpaEntity, Lo
     @EntityGraph(attributePaths = {"chapters", "keyPoints", "prerequisites"})
     List<SectionJpaEntity> findAllById(Iterable<Long> ids);
 
+    @EntityGraph(attributePaths = {"category"})
     List<SectionJpaEntity> findAllByMajorOrderByOrderIndexAsc(Major major);
 
     boolean existsByCategoryId(Long categoryId);
