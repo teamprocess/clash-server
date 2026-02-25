@@ -54,24 +54,32 @@
 </div>
 
 <script>
-    function showMsg(id, text, isError) {
-        const el = document.getElementById(id);
+    const usernameInput  = document.getElementById('username');
+    const passwordInput  = document.getElementById('password');
+    const loginBtn       = document.getElementById('loginBtn');
+    const loginMsg       = document.getElementById('loginMsg');
+    const uploadSection  = document.getElementById('uploadSection');
+    const categorySelect = document.getElementById('categorySelect');
+    const imageFile      = document.getElementById('imageFile');
+    const uploadBtn      = document.getElementById('uploadBtn');
+    const uploadMsg      = document.getElementById('uploadMsg');
+
+    function showMsg(el, text, isError) {
         el.textContent = text;
         el.className = 'msg ' + (isError ? 'err' : 'ok');
     }
 
     async function login() {
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-        const btn = document.getElementById('loginBtn');
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
 
         if (!username || !password) {
-            showMsg('loginMsg', '아이디와 비밀번호를 입력하세요.', true);
+            showMsg(loginMsg, '아이디와 비밀번호를 입력하세요.', true);
             return;
         }
 
-        btn.disabled = true;
-        btn.textContent = '로그인 중...';
+        loginBtn.disabled = true;
+        loginBtn.textContent = '로그인 중...';
 
         try {
             const res = await fetch('/api/auth/sign-in', {
@@ -80,69 +88,57 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password, rememberMe: false })
             });
-
             const json = await res.json();
             if (!res.ok || !json.success) {
-                showMsg('loginMsg', json.error?.message || '로그인 실패', true);
-                btn.disabled = false;
-                btn.textContent = '로그인';
-                return;
+                throw new Error(json.error?.message || '로그인 실패');
             }
 
-            btn.textContent = '로그인됨';
-            showMsg('loginMsg', `${json.data.name}(${json.data.username})으로 로그인되었습니다.`, false);
-            document.getElementById('uploadSection').classList.remove('hidden');
+            loginBtn.textContent = '로그인됨';
+            showMsg(loginMsg, `${json.data.name}(${json.data.username})으로 로그인되었습니다.`, false);
+            uploadSection.classList.remove('hidden');
             await loadCategories();
         } catch (e) {
-            showMsg('loginMsg', '오류: ' + e.message, true);
-            btn.disabled = false;
-            btn.textContent = '로그인';
+            showMsg(loginMsg, e.message, true);
+            loginBtn.disabled = false;
+            loginBtn.textContent = '로그인';
         }
     }
 
     async function loadCategories() {
-        const select = document.getElementById('categorySelect');
         try {
-            const res = await fetch('/api/admin/categories', {
-                credentials: 'include'
-            });
+            const res = await fetch('/api/admin/categories', { credentials: 'include' });
             const json = await res.json();
             if (!res.ok || !json.success) {
-                select.replaceChildren(new Option('카테고리 불러오기 실패', ''));
-                return;
+                throw new Error(json.error?.message || '카테고리 불러오기 실패');
             }
             const categories = json.data.categories;
-            select.replaceChildren();
+            categorySelect.replaceChildren();
             if (categories.length === 0) {
-                select.appendChild(new Option('카테고리 없음', ''));
+                categorySelect.appendChild(new Option('카테고리 없음', ''));
             } else {
-                categories.forEach(c => select.appendChild(new Option(`[${c.id}] ${c.name}`, c.id)));
+                categories.forEach(c => categorySelect.appendChild(new Option(`[${c.id}] ${c.name}`, c.id)));
             }
-
-            document.getElementById('imageFile').addEventListener('change', updateUploadBtn);
-            select.addEventListener('change', updateUploadBtn);
+            imageFile.addEventListener('change', updateUploadBtn);
+            categorySelect.addEventListener('change', updateUploadBtn);
             updateUploadBtn();
         } catch (e) {
-            select.innerHTML = '<option>오류: ' + e.message + '</option>';
+            categorySelect.replaceChildren(new Option(e.message, ''));
         }
     }
 
     function updateUploadBtn() {
-        const hasCategory = !!document.getElementById('categorySelect').value;
-        const hasFile = !!document.getElementById('imageFile').files[0];
-        document.getElementById('uploadBtn').disabled = !(hasCategory && hasFile);
+        uploadBtn.disabled = !(categorySelect.value && imageFile.files[0]);
     }
 
     async function uploadImage() {
-        const categoryId = document.getElementById('categorySelect').value;
-        const file = document.getElementById('imageFile').files[0];
-        const btn = document.getElementById('uploadBtn');
+        const categoryId = categorySelect.value;
+        const file = imageFile.files[0];
 
         if (!categoryId || !file) return;
 
-        btn.disabled = true;
-        btn.textContent = '업로드 중...';
-        showMsg('uploadMsg', '(1/3) 업로드 URL 발급 중...', false);
+        uploadBtn.disabled = true;
+        uploadBtn.textContent = '업로드 중...';
+        showMsg(uploadMsg, '(1/3) 업로드 URL 발급 중...', false);
 
         try {
             // Step 1: presigned URL 발급
@@ -154,26 +150,23 @@
             });
             const issueJson = await issueRes.json();
             if (!issueRes.ok || !issueJson.success) {
-                showMsg('uploadMsg', '업로드 URL 발급 실패: ' + (issueJson.error?.message || issueRes.status), true);
-                return;
+                throw new Error(issueJson.error?.message || `업로드 URL 발급 실패 (HTTP ${issueRes.status})`);
             }
-
             const { uploadUrl, fileUrl, contentType } = issueJson.data;
 
             // Step 2: S3에 직접 업로드
-            showMsg('uploadMsg', '(2/3) S3에 파일 업로드 중...', false);
+            showMsg(uploadMsg, '(2/3) S3에 파일 업로드 중...', false);
             const s3Res = await fetch(uploadUrl, {
                 method: 'PUT',
                 headers: { 'Content-Type': contentType },
                 body: file
             });
             if (!s3Res.ok) {
-                showMsg('uploadMsg', 'S3 업로드 실패: HTTP ' + s3Res.status, true);
-                return;
+                throw new Error(`S3 업로드 실패 (HTTP ${s3Res.status})`);
             }
 
             // Step 3: 서버에 imageUrl 반영
-            showMsg('uploadMsg', '(3/3) 이미지 URL 저장 중...', false);
+            showMsg(uploadMsg, '(3/3) 이미지 URL 저장 중...', false);
             const confirmRes = await fetch(`/api/admin/categories/${categoryId}/image`, {
                 method: 'PATCH',
                 credentials: 'include',
@@ -182,16 +175,14 @@
             });
             const confirmJson = await confirmRes.json();
             if (!confirmRes.ok || !confirmJson.success) {
-                showMsg('uploadMsg', '이미지 URL 저장 실패: ' + (confirmJson.error?.message || confirmRes.status), true);
-                return;
+                throw new Error(confirmJson.error?.message || `이미지 URL 저장 실패 (HTTP ${confirmRes.status})`);
             }
 
-            showMsg('uploadMsg', `업로드 완료! 이미지 URL: ${confirmJson.data.imageUrl}`, false);
+            showMsg(uploadMsg, `업로드 완료! 이미지 URL: ${confirmJson.data.imageUrl}`, false);
         } catch (e) {
-            showMsg('uploadMsg', '오류: ' + e.message, true);
+            showMsg(uploadMsg, e.message, true);
         } finally {
-            btn.disabled = false;
-            btn.textContent = '업로드';
+            uploadBtn.textContent = '업로드';
             updateUploadBtn();
         }
     }
