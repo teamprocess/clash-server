@@ -59,9 +59,6 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private int totalCookie;
 
-    @Column(nullable = false)
-    private int totalToken;
-
     @Enumerated(EnumType.STRING)
     private Major major;
 

@@ -2,7 +2,6 @@ package com.process.clash.application.shop.product.data;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 
 public class CreateProductData {
 
@@ -11,18 +10,11 @@ public class CreateProductData {
             String title,
             ProductCategory category,
             String image,
-            ProductGoodsType type,
             Long price,
             Integer discount,
             String description,
             Long seasonId
-    ) {
-        public Command {
-            if (type == null) {
-                type = ProductGoodsType.COOKIE;
-            }
-        }
-    }
+    ) {}
 
     public record Result(
             Long productId

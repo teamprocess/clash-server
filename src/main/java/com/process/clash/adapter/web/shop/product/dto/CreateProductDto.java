@@ -3,7 +3,6 @@ package com.process.clash.adapter.web.shop.product.dto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.shop.product.data.CreateProductData;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +20,6 @@ public class CreateProductDto {
             ProductCategory category,
             @NotBlank(message = "이미지 링크는 필수 입력값입니다.")
             String image,
-            ProductGoodsType type,
             @NotNull(message = "상품 가격은 필수 입력값입니다.")
             @Min(value = 0, message = "가격은 0 이상이어야 합니다.")
             Long price,
@@ -37,7 +35,6 @@ public class CreateProductDto {
                     title,
                     category,
                     image,
-                    type,
                     price,
                     discount,
                     description,
