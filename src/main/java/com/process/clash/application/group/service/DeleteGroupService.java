@@ -5,8 +5,11 @@ import com.process.clash.application.group.exception.exception.notfound.GroupNot
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.DeleteGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
+import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,7 @@ public class DeleteGroupService implements DeleteGroupUseCase {
 
     private final GroupRepositoryPort groupRepositoryPort;
     private final GroupPolicy groupPolicy;
+    private final GroupRefetchNotifier groupRefetchNotifier;
 
     @Override
     public void execute(DeleteGroupData.Command command) {
@@ -24,6 +28,9 @@ public class DeleteGroupService implements DeleteGroupUseCase {
             .orElseThrow(GroupNotFoundException::new);
 
         groupPolicy.validateOwnership(command.actor(), group);
+        List<Long> memberUserIds = new ArrayList<>(groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(group.id())));
+        memberUserIds.add(command.actor().id());
         groupRepositoryPort.deleteById(group.id());
+        groupRefetchNotifier.notifyGroupsChanged(memberUserIds);
     }
 }

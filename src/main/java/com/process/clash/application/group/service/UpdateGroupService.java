@@ -5,9 +5,12 @@ import com.process.clash.application.group.exception.exception.notfound.GroupNot
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.UpdateGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
+import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ public class UpdateGroupService implements UpdateGroupUseCase {
     private final GroupRepositoryPort groupRepositoryPort;
     private final GroupPolicy policy;
     private final PasswordEncoder passwordEncoder;
+    private final GroupRefetchNotifier groupRefetchNotifier;
 
     @Override
     public void execute(UpdateGroupData.Command command) {
@@ -47,6 +51,9 @@ public class UpdateGroupService implements UpdateGroupUseCase {
         );
 
         groupRepositoryPort.save(updatedGroup);
+        List<Long> targetUserIds = new ArrayList<>(groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(group.id())));
+        targetUserIds.add(command.actor().id());
+        groupRefetchNotifier.notifyGroupsChanged(targetUserIds);
     }
 
     private String resolvePassword(Boolean passwordRequired, String password, String currentPassword) {
