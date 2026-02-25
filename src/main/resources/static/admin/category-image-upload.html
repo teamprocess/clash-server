@@ -26,26 +26,17 @@
 <div class="container">
     <h1>카테고리 이미지 업로드 (Admin)</h1>
 
-    <!-- 1. 로그인 -->
-    <section id="loginSection">
-        <h2>1. 로그인</h2>
-        <label>아이디</label>
-        <input id="username" type="text" placeholder="username" />
-        <label>비밀번호</label>
-        <input id="password" type="password" placeholder="password" />
-        <button id="loginBtn" onclick="login()">로그인</button>
-        <div id="loginMsg"></div>
-    </section>
+    <div id="authMsg"></div>
 
-    <!-- 2. 카테고리 선택 + 이미지 업로드 -->
+    <!-- 카테고리 선택 + 이미지 업로드 -->
     <section id="uploadSection" class="hidden">
-        <h2>2. 카테고리 선택</h2>
+        <h2>1. 카테고리 선택</h2>
         <label>카테고리</label>
         <select id="categorySelect">
             <option value="">-- 불러오는 중 --</option>
         </select>
 
-        <h2>3. 이미지 선택 및 업로드</h2>
+        <h2>2. 이미지 선택 및 업로드</h2>
         <label>이미지 파일</label>
         <input id="imageFile" type="file" accept="image/*" />
         <button id="uploadBtn" onclick="uploadImage()" disabled>업로드</button>
@@ -54,10 +45,7 @@
 </div>
 
 <script>
-    const usernameInput  = document.getElementById('username');
-    const passwordInput  = document.getElementById('password');
-    const loginBtn       = document.getElementById('loginBtn');
-    const loginMsg       = document.getElementById('loginMsg');
+    const authMsg        = document.getElementById('authMsg');
     const uploadSection  = document.getElementById('uploadSection');
     const categorySelect = document.getElementById('categorySelect');
     const imageFile      = document.getElementById('imageFile');
@@ -69,40 +57,8 @@
         el.className = 'msg ' + (isError ? 'err' : 'ok');
     }
 
-    async function login() {
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value;
-
-        if (!username || !password) {
-            showMsg(loginMsg, '아이디와 비밀번호를 입력하세요.', true);
-            return;
-        }
-
-        loginBtn.disabled = true;
-        loginBtn.textContent = '로그인 중...';
-
-        try {
-            const res = await fetch('/api/auth/sign-in', {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, rememberMe: false })
-            });
-            const json = await res.json();
-            if (!res.ok || !json.success) {
-                throw new Error(json.error?.message || '로그인 실패');
-            }
-
-            loginBtn.textContent = '로그인됨';
-            showMsg(loginMsg, `${json.data.name}(${json.data.username})으로 로그인되었습니다.`, false);
-            uploadSection.classList.remove('hidden');
-            await loadCategories();
-        } catch (e) {
-            showMsg(loginMsg, e.message, true);
-            loginBtn.disabled = false;
-            loginBtn.textContent = '로그인';
-        }
-    }
+    // 페이지 로드 시 카테고리 조회 (서버에서 이미 ADMIN 검증 완료)
+    loadCategories();
 
     async function loadCategories() {
         try {
@@ -111,6 +67,7 @@
             if (!res.ok || !json.success) {
                 throw new Error(json.error?.message || '카테고리 불러오기 실패');
             }
+            uploadSection.classList.remove('hidden');
             const categories = json.data.categories;
             categorySelect.replaceChildren();
             if (categories.length === 0) {
@@ -122,7 +79,7 @@
             categorySelect.addEventListener('change', updateUploadBtn);
             updateUploadBtn();
         } catch (e) {
-            categorySelect.replaceChildren(new Option(e.message, ''));
+            showMsg(authMsg, e.message, true);
         }
     }
 
