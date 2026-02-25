@@ -1,23 +1,24 @@
 package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.data.AnalyzeBattleInfoData;
-import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.battle.policy.GetBattleInfoPolicy;
 import com.process.clash.application.compete.rival.battle.port.in.AnalyzeBattleInfoUseCase;
-import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
-import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.domain.common.enums.TargetCategory;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.rival.entity.Rival;
+import com.process.clash.infrastructure.config.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -25,10 +26,11 @@ import java.time.LocalDate;
 public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
 
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-    private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
+    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final GetBattleInfoPolicy getBattleInfoPolicy;
+    private final RecordProperties recordProperties;
 
     @Override
     public AnalyzeBattleInfoData.Result execute(AnalyzeBattleInfoData.Command command) {
@@ -73,9 +75,17 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
     }
 
     private Integer calculateStudyPoint(Long userId, LocalDate startDate, LocalDate endDate) {
-        Double avgStudyTime = userStudyTimeRepositoryPort
-                .findAverageStudyTimeByUserIdAndPeriod(userId, startDate, endDate);
-        return avgStudyTime != null ? (int) Math.round(avgStudyTime) : 0;
+        long numberOfDays = ChronoUnit.DAYS.between(startDate, endDate);
+        if (numberOfDays <= 0) return 0;
+
+        int boundaryHour = recordProperties.dayBoundaryHour();
+        LocalDateTime startDateTime = startDate.atTime(boundaryHour, 0);
+        LocalDateTime endDateTime = endDate.atTime(boundaryHour, 0);
+
+        Long totalStudyTime = recordSessionRepositoryPort.getTotalStudyTimeInSeconds(userId, startDateTime, endDateTime);
+        if (totalStudyTime == null) return 0;
+
+        return (int) Math.round((double) totalStudyTime / numberOfDays);
     }
 
     private Integer calculateGithubPoint(Long userId, LocalDate startDate, LocalDate endDate) {
