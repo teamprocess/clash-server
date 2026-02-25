@@ -7,8 +7,11 @@ import com.process.clash.application.group.exception.exception.notfound.GroupNot
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.QuitGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
+import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,7 @@ public class QuitGroupService implements QuitGroupUseCase {
 
     private final GroupRepositoryPort groupRepositoryPort;
     private final GroupPolicy policy;
+    private final GroupRefetchNotifier groupRefetchNotifier;
 
     @Override
     public void execute(QuitGroupData.Command command) {
@@ -32,5 +36,10 @@ public class QuitGroupService implements QuitGroupUseCase {
         }
 
         groupRepositoryPort.removeMember(command.groupId(), command.actor().id());
+        List<Long> targetUserIds = new ArrayList<>(
+            groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(command.groupId()))
+        );
+        targetUserIds.add(command.actor().id());
+        groupRefetchNotifier.notifyGroupsChanged(targetUserIds);
     }
 }

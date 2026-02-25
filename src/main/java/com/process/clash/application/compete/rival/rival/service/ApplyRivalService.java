@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,5 +52,8 @@ public class ApplyRivalService implements ApplyRivalUseCase {
                 .map(Rival::secondUserId)
                 .toList();
         competeRefetchNotifier.notifyUserNoticeChanged(opponentIds);
+        List<Long> changedUserIds = new ArrayList<>(opponentIds);
+        changedUserIds.add(command.actor().id());
+        competeRefetchNotifier.notifyCompeteChanged(changedUserIds);
     }
 }

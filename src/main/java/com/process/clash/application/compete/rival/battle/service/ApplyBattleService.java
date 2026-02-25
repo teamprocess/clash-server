@@ -56,5 +56,6 @@ public class ApplyBattleService implements ApplyBattleUseCase {
 
         userNoticeRepositoryPort.save(userNoticeForOpponent);
         competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentUserId));
+        competeRefetchNotifier.notifyCompeteChanged(List.of(opponentUserId, userId));
     }
 }
