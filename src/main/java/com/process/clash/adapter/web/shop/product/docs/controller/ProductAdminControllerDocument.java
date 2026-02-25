@@ -43,7 +43,6 @@ public interface ProductAdminControllerDocument {
                                       "title": "프로세스 삼겹살 헌터",
                                       "category": "NAMEPLATE",
                                       "image": "https://cdn.example.com/products/100.png",
-                                      "type": "COOKIE",
                                       "price": 12000,
                                       "discount": 10,
                                       "description": "프로세스 삼겹살 헌터",

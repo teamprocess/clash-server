@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
                     "description": "기본 아이템",
                     "category": "INSIGNIA",
                     "price": 100,
-                    "priceType": "COOKIE",
                     "discount": 0,
                     "popularity": 10,
                     "isSeasonal": false
