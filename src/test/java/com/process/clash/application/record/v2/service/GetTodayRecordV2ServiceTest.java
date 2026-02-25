@@ -194,7 +194,6 @@ class GetTodayRecordV2ServiceTest {
             "",
             0,
             0,
-            0,
             Major.NONE,
             UserStatus.ACTIVE
         );
