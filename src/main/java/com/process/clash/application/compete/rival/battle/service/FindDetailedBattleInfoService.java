@@ -1,10 +1,8 @@
 package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.data.FindDetailedBattleInfoData;
-import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.battle.policy.GetBattleInfoPolicy;
 import com.process.clash.application.compete.rival.battle.port.in.FindDetailedBattleInfoUseCase;
-import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
