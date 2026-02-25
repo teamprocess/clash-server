@@ -84,17 +84,19 @@
             const json = await res.json();
             if (!res.ok || !json.success) {
                 showMsg('loginMsg', json.error?.message || '로그인 실패', true);
+                btn.disabled = false;
+                btn.textContent = '로그인';
                 return;
             }
 
+            btn.textContent = '로그인됨';
             showMsg('loginMsg', `${json.data.name}(${json.data.username})으로 로그인되었습니다.`, false);
-            document.getElementById('loginSection').querySelector('button').textContent = '로그인됨';
             document.getElementById('uploadSection').classList.remove('hidden');
             await loadCategories();
         } catch (e) {
             showMsg('loginMsg', '오류: ' + e.message, true);
-        } finally {
             btn.disabled = false;
+            btn.textContent = '로그인';
         }
     }
 
@@ -106,13 +108,16 @@
             });
             const json = await res.json();
             if (!res.ok || !json.success) {
-                select.innerHTML = '<option>카테고리 불러오기 실패</option>';
+                select.replaceChildren(new Option('카테고리 불러오기 실패', ''));
                 return;
             }
             const categories = json.data.categories;
-            select.innerHTML = categories.length === 0
-                ? '<option value="">카테고리 없음</option>'
-                : categories.map(c => `<option value="${c.id}">[${c.id}] ${c.name}</option>`).join('');
+            select.replaceChildren();
+            if (categories.length === 0) {
+                select.appendChild(new Option('카테고리 없음', ''));
+            } else {
+                categories.forEach(c => select.appendChild(new Option(`[${c.id}] ${c.name}`, c.id)));
+            }
 
             document.getElementById('imageFile').addEventListener('change', updateUploadBtn);
             select.addEventListener('change', updateUploadBtn);
