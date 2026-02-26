@@ -162,11 +162,11 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
             @Param("endDate") Instant endDate
     );
 
-    // 주별 총 학습시간 집계 (여러 유저)
+    // 주별 총 학습시간 집계 (여러 유저) (1~7일=1주차, 8~14일=2주차, ...)
     @Query(value = """
         SELECT
             s.fk_user_id as userId,
-            cast(date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) as recordedDate,
+            cast(date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) + (floor((extract(day from (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') - 1) / 7) * 7)::int as recordedDate,
             cast(
                 coalesce(
                     sum(
@@ -181,8 +181,8 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
         WHERE s.fk_user_id IN :userIds
             AND s.started_at < :endDate
             AND coalesce(s.ended_at, current_timestamp) >= :startDate
-        GROUP BY s.fk_user_id, date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours')
-        ORDER BY s.fk_user_id, date_trunc('week', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') ASC
+        GROUP BY s.fk_user_id, cast(date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) + (floor((extract(day from (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') - 1) / 7) * 7)::int
+        ORDER BY s.fk_user_id, cast(date_trunc('month', (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') as date) + (floor((extract(day from (s.started_at AT TIME ZONE 'Asia/Seoul') - interval '6 hours') - 1) / 7) * 7)::int ASC
     """, nativeQuery = true)
     List<Object[]> findWeeklyStudyTimeByUserIds(
             @Param("userIds") List<Long> userIds,
