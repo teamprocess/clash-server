@@ -19,7 +19,6 @@ public class UserJpaMapper {
                 user.profileImage(),
                 user.totalExp(),
                 user.totalCookie(),
-                user.totalToken(),
                 user.major(),
                 user.userStatus()
         );
@@ -38,7 +37,6 @@ public class UserJpaMapper {
                 userJpaEntity.getProfileImage(),
                 userJpaEntity.getTotalExp(),
                 userJpaEntity.getTotalCookie(),
-                userJpaEntity.getTotalToken(),
                 userJpaEntity.getMajor(),
                 userJpaEntity.getUserStatus()
         );

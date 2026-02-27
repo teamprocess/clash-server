@@ -84,7 +84,6 @@ class GetMyProfileServiceTest {
             "",
             0,
             0,
-            0,
             Major.NONE,
             UserStatus.ACTIVE
         );

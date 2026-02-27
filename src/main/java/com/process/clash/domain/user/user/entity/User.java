@@ -1,6 +1,5 @@
 package com.process.clash.domain.user.user.entity;
 
-import com.process.clash.domain.common.enums.GoodsType;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
@@ -19,7 +18,6 @@ public record User(
         String profileImage,
         int totalExp,
         int totalCookie,
-        int totalToken,
         Major major,
         UserStatus userStatus
 ) {
@@ -34,7 +32,6 @@ public record User(
                 password,
                 Role.USER,
                 "",
-                0,
                 0,
                 0,
                 Major.NONE,
@@ -55,7 +52,6 @@ public record User(
                 this.profileImage,
                 this.totalExp,
                 this.totalCookie,
-                this.totalToken,
                 major,
                 this.userStatus
         );
@@ -74,7 +70,6 @@ public record User(
                 this.profileImage,
                 this.totalExp,
                 this.totalCookie,
-                this.totalToken,
                 this.major,
                 UserStatus.ACTIVE  // 상태를 ACTIVE로 변경
         );
@@ -97,20 +92,13 @@ public record User(
                 this.profileImage,
                 this.totalExp,
                 this.totalCookie,
-                this.totalToken,
                 this.major,
                 this.userStatus
         );
     }
 
-    public User spendGoods(GoodsType goodsType, int amount) {
-        int nextTotalCookie = this.totalCookie;
-        int nextTotalToken = this.totalToken;
-
-        switch (goodsType) {
-            case COOKIE -> nextTotalCookie -= amount;
-            case TOKEN -> nextTotalToken -= amount;
-        }
+    public User spendCookie(int amount) {
+        int nextTotalCookie = this.totalCookie - amount;
 
         return new User(
                 this.id,
@@ -124,7 +112,6 @@ public record User(
                 this.profileImage,
                 this.totalExp,
                 nextTotalCookie,
-                nextTotalToken,
                 this.major,
                 this.userStatus
         );
@@ -143,7 +130,6 @@ public record User(
                 profileImage,
                 this.totalExp,
                 this.totalCookie,
-                this.totalToken,
                 this.major,
                 this.userStatus
         );

@@ -3,7 +3,6 @@ package com.process.clash.application.profile.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.UserItemCategory;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class GetMyItemsData {
         String description,
         ProductCategory category,
         Long price,
-        ProductGoodsType priceType,
         Integer discount,
         Long popularity,
         Boolean isSeasonal,
@@ -40,7 +38,6 @@ public class GetMyItemsData {
             String description,
             ProductCategory category,
             Long price,
-            ProductGoodsType priceType,
             Integer discount,
             Long popularity,
             Boolean isSeasonal,
@@ -52,7 +49,6 @@ public class GetMyItemsData {
                 description,
                 category,
                 price,
-                priceType,
                 discount,
                 popularity,
                 isSeasonal,

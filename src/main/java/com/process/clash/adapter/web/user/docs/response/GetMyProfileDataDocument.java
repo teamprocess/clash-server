@@ -35,9 +35,6 @@ public class GetMyProfileDataDocument {
     @Schema(description = "총 쿠키", example = "300")
     public Integer totalCookie;
 
-    @Schema(description = "총 토큰", example = "20")
-    public Integer totalToken;
-
     @Schema(description = "전공", example = "SERVER")
     public String major;
 

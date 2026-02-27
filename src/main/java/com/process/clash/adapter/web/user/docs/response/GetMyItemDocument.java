@@ -20,9 +20,6 @@ public class GetMyItemDocument {
     @Schema(description = "가격", example = "100")
     public Integer price;
 
-    @Schema(description = "가격 타입", example = "COOKIE")
-    public String priceType;
-
     @Schema(description = "할인율", example = "0")
     public Integer discount;
 

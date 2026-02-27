@@ -2,7 +2,6 @@ package com.process.clash.adapter.persistence.shop.purchase;
 
 import com.process.clash.adapter.persistence.shop.product.ProductJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.common.enums.GoodsType;
 import jakarta.persistence.*;
 import jakarta.persistence.EntityListeners;
 import java.time.Instant;
@@ -36,10 +35,6 @@ public class PurchaseJpaEntity {
     @LastModifiedDate
     @Column(nullable = false)
     private Instant updatedAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private GoodsType goodsType;
 
     @Column(nullable = false)
     private Long price;

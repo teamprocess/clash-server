@@ -13,7 +13,6 @@ public class PurchaseJpaMapper {
                 purchase.id(),
                 purchase.createdAt(),
                 null,
-                purchase.goodsType(),
                 purchase.price(),
                 productJpaEntity,
                 userJpaEntity
@@ -24,7 +23,6 @@ public class PurchaseJpaMapper {
         return new Purchase(
                 purchaseJpaEntity.getId(),
                 purchaseJpaEntity.getCreatedAt(),
-                purchaseJpaEntity.getGoodsType(),
                 purchaseJpaEntity.getPrice(),
                 purchaseJpaEntity.getProduct().getId(),
                 purchaseJpaEntity.getUser().getId()

@@ -13,7 +13,6 @@ public class UserGoodsHistoryJpaMapper {
         return new UserGoodsHistoryJpaEntity(
                 userGoodsHistory.id(),
                 userGoodsHistory.createdAt(),
-                userGoodsHistory.goodsType(),
                 userGoodsHistory.goodsActingCategory(),
                 userGoodsHistory.variation(),
                 productJpaEntity,
@@ -26,7 +25,6 @@ public class UserGoodsHistoryJpaMapper {
         return new UserGoodsHistory(
                 userGoodsHistoryJpaEntity.getId(),
                 userGoodsHistoryJpaEntity.getCreatedAt(),
-                userGoodsHistoryJpaEntity.getGoodsType(),
                 userGoodsHistoryJpaEntity.getGoodsActingCategory(),
                 userGoodsHistoryJpaEntity.getVariation(),
                 userGoodsHistoryJpaEntity.getProduct() != null ? userGoodsHistoryJpaEntity.getProduct().getId() : null,

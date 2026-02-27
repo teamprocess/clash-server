@@ -4,7 +4,6 @@ import com.process.clash.application.shop.product.exception.exception.badrequest
 import com.process.clash.application.shop.product.exception.exception.badrequest.InvalidPriceException;
 import com.process.clash.application.shop.product.exception.exception.badrequest.InvalidTitleException;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import com.process.clash.domain.shop.season.entity.Season;
 import java.time.Instant;
 
@@ -15,7 +14,6 @@ public record Product(
         String title,
         ProductCategory category,
         String image,
-        ProductGoodsType type,
         Long price,
         Integer discount,
         String description,
@@ -39,7 +37,6 @@ public record Product(
             String title,
             ProductCategory category,
             String image,
-            ProductGoodsType type,
             Long price,
             Integer discount,
             String description,
@@ -52,7 +49,6 @@ public record Product(
                 title,
                 category,
                 image,
-                type,
                 price,
                 discount != null ? discount : 0,
                 description,
@@ -71,7 +67,6 @@ public record Product(
                 this.title,
                 this.category,
                 this.image,
-                this.type,
                 this.price,
                 this.discount,
                 this.description,
