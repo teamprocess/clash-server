@@ -66,7 +66,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             @Param("endDate") LocalDate endDate
     );
 
-    // WEEK: 여러 유저의 주별 평균 깃허브 기여도
+    // WEEK: 여러 유저의 주별 평균 깃허브 기여도 (1~7일=1주차, 8~14일=2주차, ...)
     @Query(value = """
         SELECT
             user_id AS userId,
@@ -75,14 +75,14 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
         FROM (
             SELECT
                 user_id,
-                cast(date_trunc('week', study_date) as date) AS week_start,
+                cast(date_trunc('month', study_date) as date) + (floor((extract(day from study_date) - 1) / 7) * 7)::int AS week_start,
                 AVG(commit_count + pr_count + review_count + issue_count) AS point,
-                ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date_trunc('week', study_date) DESC) as rn
+                ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY cast(date_trunc('month', study_date) as date) + (floor((extract(day from study_date) - 1) / 7) * 7)::int DESC) as rn
             FROM github_daily_stats
             WHERE user_id IN (:userIds)
-              AND study_date >= date_trunc('week', CAST(:startDate AS date))
-              AND study_date < :endDate
-            GROUP BY user_id, date_trunc('week', study_date)
+              AND study_date >= :startDate
+              AND study_date <= :endDate
+            GROUP BY user_id, cast(date_trunc('month', study_date) as date) + (floor((extract(day from study_date) - 1) / 7) * 7)::int
         ) subquery
         WHERE rn <= 10
         ORDER BY user_id, week_start ASC

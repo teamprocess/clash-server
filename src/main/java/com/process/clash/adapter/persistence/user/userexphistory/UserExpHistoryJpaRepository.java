@@ -46,7 +46,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     );
 
     /**
-     * WEEK: 유저별 주별 평균 경험치
+     * WEEK: 유저별 주별 평균 경험치 (1~7일=1주차, 8~14일=2주차, ...)
      */
     @Query(value = """
         SELECT
@@ -56,14 +56,14 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
         FROM (
             SELECT
                 fk_user_id,
-                cast(date_trunc('week', date) as date) AS week_start,
+                cast(date_trunc('month', date) as date) + (floor((extract(day from date) - 1) / 7) * 7)::int AS week_start,
                 AVG(earn_exp) AS point,
-                ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY date_trunc('week', date) DESC) as rn
+                ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY cast(date_trunc('month', date) as date) + (floor((extract(day from date) - 1) / 7) * 7)::int DESC) as rn
             FROM user_exp_history
             WHERE fk_user_id IN (:userIds)
-              AND date >= date_trunc('week', CAST(:startDate AS date))
-              AND date < :endDate
-            GROUP BY fk_user_id, date_trunc('week', date)
+              AND date >= :startDate
+              AND date <= :endDate
+            GROUP BY fk_user_id, cast(date_trunc('month', date) as date) + (floor((extract(day from date) - 1) / 7) * 7)::int
         ) subquery
         WHERE rn <= 10
         ORDER BY fk_user_id, week_start ASC
