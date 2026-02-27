@@ -201,9 +201,9 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             g.userId = ug.user.id
             and g.studyDate between :startDate and :endDate
         left join RivalJpaEntity r on
-            (ug.user.id in (r.firstUser.id, r.secondUser.id)
-                and :userId in (r.firstUser.id, r.secondUser.id)
-                and r.rivalLinkingStatus = 'ACCEPTED')
+            ((r.firstUser.id = ug.user.id and r.secondUser.id = :userId)
+                or (r.secondUser.id = ug.user.id and r.firstUser.id = :userId))
+            and r.rivalLinkingStatus = 'ACCEPTED'
         group by ug.user.id, ug.user.name, ug.user.profileImage, ug.user.username, ug.gitHubId
         order by sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount) desc
     """)
