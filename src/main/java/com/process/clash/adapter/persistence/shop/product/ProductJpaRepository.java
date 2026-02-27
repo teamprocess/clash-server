@@ -25,6 +25,12 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
     Page<ProductJpaEntity> findAll(Pageable pageable);
 
     @EntityGraph(attributePaths = "season")
+    Page<ProductJpaEntity> findByDiscountGreaterThan(Integer discount, Pageable pageable);
+
+    @EntityGraph(attributePaths = "season")
+    Page<ProductJpaEntity> findByCategoryAndDiscountGreaterThan(ProductCategory category, Integer discount, Pageable pageable);
+
+    @EntityGraph(attributePaths = "season")
     List<ProductJpaEntity> findByIdIn(List<Long> ids);
 
     @EntityGraph(attributePaths = "season")
@@ -43,6 +49,21 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
     @Query("""
             SELECT p
             FROM ProductJpaEntity p
+            WHERE p.discount > 0
+              AND (
+                    p.title ILIKE CONCAT('%', :keyword, '%')
+                 OR p.description ILIKE CONCAT('%', :keyword, '%')
+              )
+            """)
+    Page<ProductJpaEntity> searchDiscountedByKeyword(
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = "season")
+    @Query("""
+            SELECT p
+            FROM ProductJpaEntity p
             WHERE p.category = :category
               AND (
                     p.title ILIKE CONCAT('%', :keyword, '%')
@@ -50,6 +71,23 @@ public interface ProductJpaRepository extends JpaRepository<ProductJpaEntity, Lo
               )
             """)
     Page<ProductJpaEntity> searchByCategoryAndKeyword(
+            @Param("category") ProductCategory category,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
+
+    @EntityGraph(attributePaths = "season")
+    @Query("""
+            SELECT p
+            FROM ProductJpaEntity p
+            WHERE p.category = :category
+              AND p.discount > 0
+              AND (
+                    p.title ILIKE CONCAT('%', :keyword, '%')
+                 OR p.description ILIKE CONCAT('%', :keyword, '%')
+              )
+            """)
+    Page<ProductJpaEntity> searchDiscountedByCategoryAndKeyword(
             @Param("category") ProductCategory category,
             @Param("keyword") String keyword,
             Pageable pageable
