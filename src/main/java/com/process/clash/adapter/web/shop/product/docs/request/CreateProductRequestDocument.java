@@ -1,7 +1,6 @@
 package com.process.clash.adapter.web.shop.product.docs.request;
 
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "상품 생성 요청")
@@ -15,9 +14,6 @@ public class CreateProductRequestDocument {
 
     @Schema(description = "이미지 URL")
     public String image;
-
-    @Schema(description = "재화 유형")
-    public ProductGoodsType type;
 
     @Schema(description = "가격")
     public Long price;

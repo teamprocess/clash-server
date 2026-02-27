@@ -13,7 +13,6 @@ import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.usergoodshistory.port.out.UserGoodsHistoryRepositoryPort;
 import com.process.clash.application.user.useritem.port.out.UserItemRepositoryPort;
 import com.process.clash.domain.common.enums.GoodsActingCategory;
-import com.process.clash.domain.common.enums.GoodsType;
 import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.purchase.entity.Purchase;
 import com.process.clash.domain.user.user.entity.User;
@@ -51,19 +50,18 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
 
         long price = calculatePrice(product);
         int amount = toIntPrice(price);
-        GoodsType goodsType = product.type().toGoodsType();
 
-        if (!hasEnoughGoods(user, goodsType, amount)) {
+        if (!hasEnoughGoods(user, amount)) {
             throw new InsufficientGoodsException();
         }
 
-        User updatedUser = user.spendGoods(goodsType, amount);
+        User updatedUser = user.spendCookie(amount);
         userRepositoryPort.save(updatedUser);
 
         productRepositoryPort.save(product.increasePopularity());
 
         Purchase savedPurchase = purchaseRepositoryPort.save(
-                Purchase.create(goodsType, price, product.id(), userId)
+                Purchase.create(price, product.id(), userId)
         );
 
         try {
@@ -75,7 +73,6 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
         userGoodsHistoryRepositoryPort.save(new UserGoodsHistory(
                 null,
                 null,
-                goodsType,
                 GoodsActingCategory.PURCHASE,
                 -amount,
                 product.id(),
@@ -97,10 +94,7 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
         return (int) price;
     }
 
-    private boolean hasEnoughGoods(User user, GoodsType goodsType, int amount) {
-        return switch (goodsType) {
-            case COOKIE -> user.totalCookie() >= amount;
-            case TOKEN -> user.totalToken() >= amount;
-        };
+    private boolean hasEnoughGoods(User user, int amount) {
+        return user.totalCookie() >= amount;
     }
 }

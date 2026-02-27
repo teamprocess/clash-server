@@ -60,7 +60,6 @@ public class GetMyItemsService implements GetMyItemsUsecase {
                 product.description(),
                 product.category(),
                 product.price(),
-                product.type(),
                 product.discount(),
                 product.popularity(),
                 product.isSeasonal(),

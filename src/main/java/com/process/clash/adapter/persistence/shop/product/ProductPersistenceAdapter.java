@@ -51,22 +51,9 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
 
     @Override
     public PageResult findAllByPage(Integer page, Integer size, ProductSortType sort, ProductCategory category) {
-        Sort sortCondition = createSort(sort);
-        Pageable pageable = PageRequest.of(page - 1, size, sortCondition);
-
-        Page<ProductJpaEntity> pageResult;
-        if (category == null) {
-            pageResult = productJpaRepository.findAll(pageable);
-        } else {
-            pageResult = productJpaRepository.findByCategory(category, pageable);
-        }
-
-        List<Product> products = pageResult.getContent()
-                .stream()
-                .map(productJpaMapper::toDomain)
-                .toList();
-
-        return new PageResult(products, pageResult.getTotalElements());
+        Pageable pageable = createPageable(page, size, sort);
+        Page<ProductJpaEntity> pageResult = findAllBySortAndCategory(sort, category, pageable);
+        return toPageResult(pageResult);
     }
 
     @Override
@@ -77,31 +64,14 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
             ProductCategory category,
             String keyword
     ) {
-        Sort sortCondition = createSort(sort);
-        Pageable pageable = PageRequest.of(page - 1, size, sortCondition);
+        Pageable pageable = createPageable(page, size, sort);
         String normalizedKeyword = keyword == null ? "" : keyword.trim();
 
-        Page<ProductJpaEntity> pageResult;
-        if (normalizedKeyword.isEmpty()) {
-            if (category == null) {
-                pageResult = productJpaRepository.findAll(pageable);
-            } else {
-                pageResult = productJpaRepository.findByCategory(category, pageable);
-            }
-        } else {
-            if (category == null) {
-                pageResult = productJpaRepository.searchByKeyword(normalizedKeyword, pageable);
-            } else {
-                pageResult = productJpaRepository.searchByCategoryAndKeyword(category, normalizedKeyword, pageable);
-            }
-        }
+        Page<ProductJpaEntity> pageResult = normalizedKeyword.isEmpty()
+                ? findAllBySortAndCategory(sort, category, pageable)
+                : searchBySortCategoryAndKeyword(sort, category, normalizedKeyword, pageable);
 
-        List<Product> products = pageResult.getContent()
-                .stream()
-                .map(productJpaMapper::toDomain)
-                .toList();
-
-        return new PageResult(products, pageResult.getTotalElements());
+        return toPageResult(pageResult);
     }
 
     private Sort createSort(ProductSortType sortType) {
@@ -110,6 +80,57 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
             case POPULAR -> Sort.by(Sort.Direction.DESC, "popularity");
             case EXPENSIVE -> Sort.by(Sort.Direction.DESC, "price");
             case CHEAPEST -> Sort.by(Sort.Direction.ASC, "price");
+            case DISCOUNT -> Sort.by(Sort.Direction.DESC, "discount")
+                    .and(Sort.by(Sort.Direction.DESC, "createdAt"));
         };
+    }
+
+    private boolean isDiscountSort(ProductSortType sortType) {
+        return sortType == ProductSortType.DISCOUNT;
+    }
+
+    private Pageable createPageable(Integer page, Integer size, ProductSortType sortType) {
+        return PageRequest.of(page - 1, size, createSort(sortType));
+    }
+
+    private Page<ProductJpaEntity> findAllBySortAndCategory(
+            ProductSortType sortType,
+            ProductCategory category,
+            Pageable pageable
+    ) {
+        if (isDiscountSort(sortType)) {
+            return category == null
+                    ? productJpaRepository.findByDiscountGreaterThan(0, pageable)
+                    : productJpaRepository.findByCategoryAndDiscountGreaterThan(category, 0, pageable);
+        }
+
+        return category == null
+                ? productJpaRepository.findAll(pageable)
+                : productJpaRepository.findByCategory(category, pageable);
+    }
+
+    private Page<ProductJpaEntity> searchBySortCategoryAndKeyword(
+            ProductSortType sortType,
+            ProductCategory category,
+            String keyword,
+            Pageable pageable
+    ) {
+        if (isDiscountSort(sortType)) {
+            return category == null
+                    ? productJpaRepository.searchDiscountedByKeyword(keyword, pageable)
+                    : productJpaRepository.searchDiscountedByCategoryAndKeyword(category, keyword, pageable);
+        }
+
+        return category == null
+                ? productJpaRepository.searchByKeyword(keyword, pageable)
+                : productJpaRepository.searchByCategoryAndKeyword(category, keyword, pageable);
+    }
+
+    private PageResult toPageResult(Page<ProductJpaEntity> pageResult) {
+        List<Product> products = pageResult.getContent()
+                .stream()
+                .map(productJpaMapper::toDomain)
+                .toList();
+        return new PageResult(products, pageResult.getTotalElements());
     }
 }

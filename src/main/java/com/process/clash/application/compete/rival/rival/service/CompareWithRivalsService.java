@@ -21,10 +21,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -51,13 +51,8 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
         rivalIds.add(command.actor().id());
 
         LocalDate endDate = LocalDate.now(recordZoneId);
-        LocalDate startDate = switch (command.period()) {
-            case DAY -> endDate.minusDays(10);
-            case WEEK -> endDate.minusWeeks(10);
-            case MONTH -> endDate.minusMonths(10);
-            case SEASON -> null; //TODO: 나중에 처리
-            case YEAR -> null; //TODO: 나중에 처리
-        };
+        List<LocalDate> expectedDates = generateExpectedDates(command.period(), endDate);
+        LocalDate startDate = expectedDates.isEmpty() ? null : expectedDates.get(0);
 
         List<Object[]> results = switch (command.category()) {
             case GITHUB -> gitHub(command.period(), rivalIds, startDate, endDate);
@@ -87,21 +82,62 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
                     User user = userMap.get(userId);
                     List<TotalData.DataPoint> dataPoints = dataByUser.getOrDefault(userId, List.of());
 
-                    List<TotalData.DataPoint> limitedDataPoints = dataPoints.stream()
-                            .sorted(Comparator.comparing(TotalData.DataPoint::date).reversed())
-                            .limit(10)
-                            .sorted(Comparator.comparing(TotalData.DataPoint::date)) // 다시 오름차순
+                    Map<LocalDate, Double> dateValueMap = dataPoints.stream()
+                            .collect(Collectors.toMap(TotalData.DataPoint::date, TotalData.DataPoint::point));
+
+                    List<TotalData.DataPoint> filledDataPoints = expectedDates.stream()
+                            .map(date -> new TotalData.DataPoint(date, dateValueMap.getOrDefault(date, 0.0)))
                             .toList();
 
                     return new TotalData(
                             userId,
                             user.name(),
-                            limitedDataPoints
+                            filledDataPoints
                     );
                 })
                 .toList();
 
         return CompareWithRivalsData.Result.of(command.category(), command.period(), totalData);
+    }
+
+    private List<LocalDate> generateExpectedDates(PeriodCategory period, LocalDate endDate) {
+        return switch (period) {
+            case DAY -> IntStream.rangeClosed(0, 6)
+                    .mapToObj(i -> endDate.minusDays(6 - i))
+                    .toList();
+            case WEEK -> {
+                LocalDate[] dates = new LocalDate[7];
+                LocalDate ws = toWeekStart(endDate);
+                for (int i = 6; i >= 0; i--) {
+                    dates[i] = ws;
+                    ws = previousWeekStart(ws);
+                }
+                yield List.of(dates);
+            }
+            case MONTH -> {
+                LocalDate monthStart = endDate.withDayOfMonth(1);
+                yield IntStream.rangeClosed(0, 6)
+                        .mapToObj(i -> monthStart.minusMonths(6 - i))
+                        .toList();
+            }
+            case SEASON, YEAR -> List.of(); //TODO: 나중에 처리
+        };
+    }
+
+    // 해당 날짜가 속한 주의 시작일 반환 (1~7일=1일, 8~14일=8일, 15~21일=15일, 22~끝=22일)
+    private LocalDate toWeekStart(LocalDate date) {
+        int weekStartDay = ((date.getDayOfMonth() - 1) / 7) * 7 + 1;
+        return date.withDayOfMonth(weekStartDay);
+    }
+
+    // 이전 주의 시작일 반환
+    private LocalDate previousWeekStart(LocalDate weekStart) {
+        if (weekStart.getDayOfMonth() == 1) {
+            LocalDate prevMonth = weekStart.minusMonths(1);
+            int lastWeekStartDay = ((prevMonth.lengthOfMonth() - 1) / 7) * 7 + 1;
+            return prevMonth.withDayOfMonth(lastWeekStartDay);
+        }
+        return weekStart.minusDays(7);
     }
 
     private List<Object[]> exp(PeriodCategory period, List<Long> rivalIds, LocalDate startDate, LocalDate endDate) {

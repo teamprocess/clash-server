@@ -2,7 +2,6 @@ package com.process.clash.adapter.web.user.dto;
 
 import com.process.clash.application.profile.data.GetMyItemsData;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,7 +24,6 @@ public class GetMyItemsDto {
         String description,
         ProductCategory category,
         Long price,
-        ProductGoodsType priceType,
         Integer discount,
         Long popularity,
         Boolean isSeasonal,
@@ -38,7 +36,6 @@ public class GetMyItemsDto {
                     item.description(),
                     item.category(),
                     item.price(),
-                    item.priceType(),
                     item.discount(),
                     item.popularity(),
                     item.isSeasonal(),

@@ -4,5 +4,6 @@ public enum ProductSortType {
     LATEST,
     POPULAR,
     EXPENSIVE,
-    CHEAPEST
+    CHEAPEST,
+    DISCOUNT
 }

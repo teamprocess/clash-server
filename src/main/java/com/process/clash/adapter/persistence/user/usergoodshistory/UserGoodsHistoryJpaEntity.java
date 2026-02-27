@@ -3,7 +3,6 @@ package com.process.clash.adapter.persistence.user.usergoodshistory;
 import com.process.clash.adapter.persistence.shop.product.ProductJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.common.enums.GoodsActingCategory;
-import com.process.clash.domain.common.enums.GoodsType;
 import jakarta.persistence.*;
 import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
@@ -30,10 +29,6 @@ public class UserGoodsHistoryJpaEntity {
     @CreatedDate
     @Column(nullable = false)
     private Instant createdAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private GoodsType goodsType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

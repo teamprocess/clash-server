@@ -2,7 +2,6 @@ package com.process.clash.adapter.persistence.shop.product;
 
 import com.process.clash.adapter.persistence.shop.season.SeasonJpaEntity;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
 import jakarta.persistence.*;
 import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
@@ -44,10 +43,6 @@ public class ProductJpaEntity {
 
     @Column(nullable = false)
     private String image;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProductGoodsType type;
 
     @Column(nullable = false)
     private Long price;

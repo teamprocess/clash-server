@@ -30,7 +30,7 @@ public interface ProductControllerDocument {
     @Parameters({
             @Parameter(name = "page", description = "페이지 번호", example = "0"),
             @Parameter(name = "size", description = "페이지 크기", example = "20"),
-            @Parameter(name = "sort", description = "정렬 기준", example = "POPULARITY"),
+            @Parameter(name = "sort", description = "정렬 기준 (LATEST, POPULAR, EXPENSIVE, CHEAPEST, DISCOUNT)", example = "DISCOUNT"),
             @Parameter(name = "category", description = "카테고리 (INSIGNIA, NAMEPLATE, BANNER)", example = "INSIGNIA")
     })
     @ApiResponses({
@@ -48,7 +48,6 @@ public interface ProductControllerDocument {
                                             "title": "1개월 휴가권",
                                             "category": "INSIGNIA",
                                             "image": "https://cdn.example.com/products/100.png",
-                                            "type": "COOKIE",
                                             "price": 12000,
                                             "discount": 10,
                                             "description": "프로세스 1개월 휴가권",
@@ -82,7 +81,7 @@ public interface ProductControllerDocument {
             @Parameter(name = "keyword", description = "검색어", example = "휴가권"),
             @Parameter(name = "page", description = "페이지 번호", example = "0"),
             @Parameter(name = "size", description = "페이지 크기", example = "20"),
-            @Parameter(name = "sort", description = "정렬 기준", example = "POPULAR"),
+            @Parameter(name = "sort", description = "정렬 기준 (LATEST, POPULAR, EXPENSIVE, CHEAPEST, DISCOUNT)", example = "DISCOUNT"),
             @Parameter(name = "category", description = "카테고리 (INSIGNIA, NAMEPLATE, BANNER)", example = "ALL")
     })
     @ApiResponses({
@@ -100,7 +99,6 @@ public interface ProductControllerDocument {
                                             "title": "1개월 휴가권",
                                             "category": "INSIGNIA",
                                             "image": "https://cdn.example.com/products/100.png",
-                                            "type": "COOKIE",
                                             "price": 12000,
                                             "discount": 10,
                                             "description": "프로세스 1개월 휴가권",
@@ -144,7 +142,6 @@ public interface ProductControllerDocument {
                                             "title": "1개월 휴가권",
                                             "category": "INSIGNIA",
                                             "image": "https://cdn.example.com/products/100.png",
-                                            "type": "COOKIE",
                                             "price": 12000,
                                             "discount": 10,
                                             "description": "프로세스 1개월 휴가권",
@@ -180,7 +177,6 @@ public interface ProductControllerDocument {
                                             "title": "1개월 휴가권",
                                             "category": "INSIGNIA",
                                             "image": "https://cdn.example.com/products/100.png",
-                                            "type": "COOKIE",
                                             "price": 12000,
                                             "discount": 10,
                                             "description": "프로세스 1개월 휴가권",
@@ -216,7 +212,6 @@ public interface ProductControllerDocument {
                                             "title": "1개월 휴가권",
                                             "category": "INSIGNIA",
                                             "image": "https://cdn.example.com/products/100.png",
-                                            "type": "COOKIE",
                                             "price": 12000,
                                             "discount": 10,
                                             "description": "프로세스 1개월 휴가권",

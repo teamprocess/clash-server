@@ -2,8 +2,6 @@ package com.process.clash.application.shop.product.vo;
 
 import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
-import com.process.clash.domain.shop.product.enums.ProductGoodsType;
-
 import java.time.Instant;
 
 public record ProductVo(
@@ -11,7 +9,6 @@ public record ProductVo(
         String title,
         ProductCategory category,
         String image,
-        ProductGoodsType type,
         Long price,
         Integer discount,
         String description,
@@ -33,7 +30,6 @@ public record ProductVo(
                 domain.title(),
                 domain.category(),
                 domain.image(),
-                domain.type(),
                 domain.price(),
                 domain.discount(),
                 domain.description(),
