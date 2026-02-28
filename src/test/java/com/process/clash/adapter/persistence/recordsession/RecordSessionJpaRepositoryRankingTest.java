@@ -44,6 +44,7 @@ class RecordSessionJpaRepositoryRankingTest {
 
     private static final Instant PERIOD_START = Instant.parse("2026-02-01T00:00:00Z");
     private static final Instant PERIOD_END   = Instant.parse("2026-02-28T00:00:00Z");
+    private static final Instant NOW          = Instant.parse("2026-03-01T00:00:00Z");
 
     private int counter = 0;
 
@@ -96,7 +97,7 @@ class RecordSessionJpaRepositoryRankingTest {
         em.clear();
 
         List<UserRanking> rankings = repository.findStudyTimeRankingByUserIdAndPeriod(
-            userA.getId(), PERIOD_START, PERIOD_END
+            userA.getId(), PERIOD_START, PERIOD_END, NOW
         );
 
         UserRanking rankA = rankings.stream()
@@ -125,7 +126,7 @@ class RecordSessionJpaRepositoryRankingTest {
         em.clear();
 
         List<UserRanking> rankings = repository.findStudyTimeRankingByUserIdAndPeriod(
-            requester.getId(), PERIOD_START, PERIOD_END
+            requester.getId(), PERIOD_START, PERIOD_END, NOW
         );
 
         UserRanking rivalRanking = rankings.stream()
@@ -151,7 +152,7 @@ class RecordSessionJpaRepositoryRankingTest {
         em.clear();
 
         List<UserRanking> rankings = repository.findStudyTimeRankingByUserIdAndPeriod(
-            requester.getId(), PERIOD_START, PERIOD_END
+            requester.getId(), PERIOD_START, PERIOD_END, NOW
         );
 
         UserRanking normalRanking = rankings.stream()
@@ -180,7 +181,7 @@ class RecordSessionJpaRepositoryRankingTest {
         em.clear();
 
         List<UserRanking> rankings = repository.findStudyTimeRankingByUserIdAndPeriod(
-            requester.getId(), PERIOD_START, PERIOD_END
+            requester.getId(), PERIOD_START, PERIOD_END, NOW
         );
 
         UserRanking selfRanking = rankings.stream()
@@ -206,7 +207,7 @@ class RecordSessionJpaRepositoryRankingTest {
         em.clear();
 
         List<UserRanking> rankings = repository.findStudyTimeRankingByUserIdAndPeriod(
-            user.getId(), PERIOD_START, PERIOD_END
+            user.getId(), PERIOD_START, PERIOD_END, NOW
         );
 
         assertThat(rankings).noneMatch(r -> r.userId().equals(user.getId()));
@@ -233,7 +234,7 @@ class RecordSessionJpaRepositoryRankingTest {
         em.clear();
 
         List<UserRanking> rankings = repository.findStudyTimeRankingByUserIdAndPeriod(
-            highUser.getId(), PERIOD_START, PERIOD_END
+            highUser.getId(), PERIOD_START, PERIOD_END, NOW
         );
 
         List<Long> orderedIds = rankings.stream().map(UserRanking::userId).toList();

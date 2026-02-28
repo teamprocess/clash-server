@@ -166,12 +166,13 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
 
         // study_sessions에서 직접 실시간 계산 (명시적 시간대 사용)
         Instant startDateTime = startDate.atTime(recordProperties.dayBoundaryHour(), 0).atZone(recordZoneId).toInstant();
+        Instant now = Instant.now();
         Instant endDateTime = ZonedDateTime.now(recordZoneId).toInstant();
 
         return switch (period) {
-            case DAY -> recordSessionRepositoryPort.findDailyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
-            case WEEK -> recordSessionRepositoryPort.findWeeklyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
-            case MONTH -> recordSessionRepositoryPort.findMonthlyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime);
+            case DAY -> recordSessionRepositoryPort.findDailyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime, now);
+            case WEEK -> recordSessionRepositoryPort.findWeeklyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime, now);
+            case MONTH -> recordSessionRepositoryPort.findMonthlyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime, now);
             case SEASON -> null; //TODO: 나중에 처리
             case YEAR -> null; //TODO: 나중에 처리
         };
