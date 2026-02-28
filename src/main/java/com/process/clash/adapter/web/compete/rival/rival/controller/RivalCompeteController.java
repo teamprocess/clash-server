@@ -7,7 +7,6 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.rival.data.*;
 import com.process.clash.application.compete.rival.rival.port.in.*;
-import com.process.clash.application.compete.rival.rival.data.FindAllRivalsData;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 import jakarta.validation.Valid;

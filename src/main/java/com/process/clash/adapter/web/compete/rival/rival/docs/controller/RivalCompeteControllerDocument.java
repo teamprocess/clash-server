@@ -4,7 +4,6 @@ import com.process.clash.adapter.web.compete.rival.rival.docs.request.ApplyRival
 import com.process.clash.adapter.web.compete.rival.rival.docs.request.ModifyRivalRequestDocument;
 import com.process.clash.adapter.web.compete.rival.rival.docs.response.*;
 import com.process.clash.adapter.web.compete.rival.rival.dto.*;
-import com.process.clash.adapter.web.compete.rival.rival.dto.FindAllRivalsDto;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
