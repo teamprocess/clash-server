@@ -185,7 +185,37 @@ class StartRecordV2ServiceTest {
     void execute_startsTaskSessionWithOnlyTask() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
+        RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
         RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "해시테이블", false, 0L, Instant.now(), Instant.now());
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            null,
+            11L,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
+        when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
+        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
+            .thenAnswer(invocation -> withId(invocation.getArgument(0), 100L));
+
+        StartRecordV2Data.Result result = startRecordV2Service.execute(command);
+
+        assertThat(result.session().subject()).isNotNull();
+        assertThat(result.session().subject().id()).isEqualTo(10L);
+        assertThat(result.session().task()).isNotNull();
+        assertThat(result.session().task().id()).isEqualTo(11L);
+    }
+
+    @Test
+    @DisplayName("TASK 세션 시작 시 task에 subject가 없으면 subject 없이 시작한다")
+    void execute_startsTaskSessionWithOnlyTaskAndNoSubject() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "해시테이블", false, 0L, Instant.now(), Instant.now());
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
             RecordSessionTypeV2.TASK,
             null,

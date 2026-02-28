@@ -107,6 +107,12 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
                     .orElseThrow(TaskV2NotFoundException::new);
             }
 
+            if (subject == null && task != null && task.subjectId() != null) {
+                subject = recordSubjectV2RepositoryPort.findById(task.subjectId())
+                    .orElseThrow(SubjectV2NotFoundException::new);
+                subjectV2Policy.validateOwnership(command.actor(), subject);
+            }
+
             if (subject != null && task != null && !Objects.equals(task.subjectId(), subject.id())) {
                 throw new InvalidRecordV2StartRequestException();
             }
