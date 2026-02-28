@@ -8,11 +8,14 @@ import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
+import com.process.clash.infrastructure.config.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,8 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordProperties recordProperties;
+    private final ZoneId recordZoneId;
 
     private record ActivityData(List<Streak> streaks, List<Variation> variations) {}
 
@@ -61,12 +66,16 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
 
     private ActivityData studyTime(Long userId, LocalDate startDate, LocalDate endDate) {
 
-        LocalDate now = LocalDate.now();
+        ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
+        LocalDate now = nowZoned.toLocalDate();
+        if (nowZoned.getHour() < recordProperties.dayBoundaryHour()) {
+            now = now.minusDays(1);
+        }
 
         List<Streak> streaks = new ArrayList<>(userStudyTimeRepositoryPort.findStreakByUserId(userId, startDate, endDate));
 
-        LocalDateTime startOfDay = now.atTime(6, 0, 0);
-        LocalDateTime endOfDay = now.plusDays(1).atTime(6, 0, 0);
+        LocalDateTime startOfDay = now.atTime(recordProperties.dayBoundaryHour(), 0, 0);
+        LocalDateTime endOfDay = now.plusDays(1).atTime(recordProperties.dayBoundaryHour(), 0, 0);
 
         Long todayActiveTime = recordSessionRepositoryPort.getTotalStudyTimeInSeconds(
                 userId,
