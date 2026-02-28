@@ -6,6 +6,9 @@ import com.process.clash.application.compete.rival.rival.port.out.RivalRepositor
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.entity.RecordTask;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.rival.rival.entity.Rival;
@@ -93,6 +96,23 @@ class GetMyRivalActingServiceTest {
             any(),
             any()
         )).thenReturn(Map.of(2L, 1800L, 3L, 600L));
+        when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList()))
+            .thenReturn(List.of(
+                RecordSession.createActivity(
+                    200L,
+                    rivalUserA,
+                    MonitoredApp.VSCODE,
+                    Instant.now().minusSeconds(300),
+                    null
+                ),
+                RecordSession.create(
+                    201L,
+                    rivalUserB,
+                    new RecordTask(301L, "Task B", 0L, Instant.now().minusSeconds(3_600), Instant.now(), rivalUserB),
+                    Instant.now().minusSeconds(600),
+                    null
+                )
+            ));
         when(userPresencePort.getStatuses(anyList()))
             .thenReturn(Map.of(2L, UserActivityStatus.ONLINE, 3L, UserActivityStatus.AWAY, 1L, UserActivityStatus.ONLINE));
 
@@ -103,8 +123,8 @@ class GetMyRivalActingServiceTest {
         assertThat(result.myRivals().get(1).rivalId()).isEqualTo(101L);
         assertThat(result.myRivals().get(0).status()).isEqualTo(UserActivityStatus.ONLINE);
         assertThat(result.myRivals().get(1).status()).isEqualTo(UserActivityStatus.AWAY);
-        assertThat(result.myRivals().get(0).usingApp()).isEqualTo("CLASH");
-        assertThat(result.myRivals().get(1).usingApp()).isEqualTo("CLASH");
+        assertThat(result.myRivals().get(0).usingApp()).isEqualTo("VSCODE");
+        assertThat(result.myRivals().get(1).usingApp()).isNull();
     }
 
     private User createUser(Long id, String username, String name) {
