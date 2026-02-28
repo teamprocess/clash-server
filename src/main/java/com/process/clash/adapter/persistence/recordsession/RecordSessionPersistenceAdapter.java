@@ -130,6 +130,17 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
     }
 
     @Override
+    public List<RecordSession> findAllActiveSessionsByUserIds(List<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+
+        return recordSessionJpaRepository.findAllByUserIdInAndEndedAtIsNull(userIds).stream()
+                .map(recordSessionJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public List<RecordSession> findAllByUserIdAndTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime) {
         return recordSessionJpaRepository.findAllOverlappingByUserId(
                         userId,

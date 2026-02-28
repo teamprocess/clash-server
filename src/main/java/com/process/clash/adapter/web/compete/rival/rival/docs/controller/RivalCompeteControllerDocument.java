@@ -73,7 +73,7 @@ public interface RivalCompeteControllerDocument {
                                             "username": "mongryong",
                                             "profileImage": "https://cdn.example.com/profile/2.png",
                                             "activeTime": 9000,
-                                            "usingApp": "CLASH",
+                                            "usingApp": "VSCODE",
                                             "status": "ONLINE"
                                           }
                                         ]
