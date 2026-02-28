@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.record.v2.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.record.v2.docs.controller.RecordV2ControllerDocument;
+import com.process.clash.adapter.web.record.v2.dto.GetActivityStatisticsV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetCurrentRecordV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetMonitoredAppsV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetTodayRecordV2Dto;
@@ -12,17 +13,20 @@ import com.process.clash.adapter.web.record.v2.dto.SwitchDevelopAppV2Dto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.v2.data.GetCurrentRecordV2Data;
+import com.process.clash.application.record.v2.data.GetActivityStatisticsV2Data;
 import com.process.clash.application.record.v2.data.GetMonitoredAppsV2Data;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
 import com.process.clash.application.record.v2.data.StopRecordV2Data;
 import com.process.clash.application.record.v2.data.SwitchDevelopAppV2Data;
+import com.process.clash.application.record.v2.port.in.GetActivityStatisticsV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetCurrentRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetMonitoredAppsV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetTodayRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.StartRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.StopRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.SwitchDevelopAppV2UseCase;
+import com.process.clash.domain.common.enums.PeriodCategory;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +50,7 @@ public class RecordV2Controller implements RecordV2ControllerDocument {
     private final GetCurrentRecordV2UseCase getCurrentRecordV2UseCase;
     private final GetMonitoredAppsV2UseCase getMonitoredAppsV2UseCase;
     private final SwitchDevelopAppV2UseCase switchDevelopAppV2UseCase;
+    private final GetActivityStatisticsV2UseCase getActivityStatisticsV2UseCase;
 
     @GetMapping("/daily")
     public ApiResponse<GetTodayRecordV2Dto.Response> getDailyRecord(
@@ -115,6 +120,20 @@ public class RecordV2Controller implements RecordV2ControllerDocument {
         return ApiResponse.success(
             GetMonitoredAppsV2Dto.Response.from(result),
             "활동 기록 가능 앱 목록을 조회했습니다."
+        );
+    }
+
+    @GetMapping("/activity_statistics")
+    public ApiResponse<GetActivityStatisticsV2Dto.Response> getActivityStatistics(
+        @AuthenticatedActor Actor actor,
+        @RequestParam PeriodCategory duration
+    ) {
+        GetActivityStatisticsV2Data.Command command = new GetActivityStatisticsV2Data.Command(actor, duration);
+        GetActivityStatisticsV2Data.Result result = getActivityStatisticsV2UseCase.execute(command);
+
+        return ApiResponse.success(
+            GetActivityStatisticsV2Dto.Response.from(result),
+            "앱별 활동 시간을 조회했습니다."
         );
     }
 

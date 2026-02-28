@@ -78,6 +78,11 @@ public enum RecordV2StatusCode implements StatusCode {
         "INVALID_RECORD_V2_DAILY_DATE_REQUEST",
         "요청한 조회 날짜가 유효하지 않습니다.",
         ErrorCategory.BAD_REQUEST
+    ),
+    INVALID_ACTIVITY_STATISTICS_DURATION(
+        "INVALID_ACTIVITY_STATISTICS_DURATION",
+        "조회 기간은 DAY, WEEK, MONTH만 허용됩니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;
