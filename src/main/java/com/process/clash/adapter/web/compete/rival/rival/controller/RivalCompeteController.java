@@ -24,6 +24,7 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     private final ApplyRivalUseCase applyRivalUseCase;
     private final AcceptRivalUseCase acceptRivalUseCase;
     private final RejectRivalUseCase rejectRivalUseCase;
+    private final CancelRivalUseCase cancelRivalUseCase;
     private final RemoveRivalUseCase removeRivalUseCase;
     private final CompareWithRivalsUseCase compareWithRivalsUseCase;
 
@@ -98,6 +99,18 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
         ModifyRivalData.Command command = request.toCommand(actor);
         rejectRivalUseCase.execute(command);
         return ApiResponse.success("라이벌을 성공적으로 거절했습니다.");
+    }
+
+    // 라이벌 - 라이벌 신청 취소
+    @PostMapping("/cancel")
+    public ApiResponse<Void> cancelRival(
+            @AuthenticatedActor Actor actor,
+            @Valid @RequestBody ModifyRivalDto.Request request
+    ) {
+
+        ModifyRivalData.Command command = request.toCommand(actor);
+        cancelRivalUseCase.execute(command);
+        return ApiResponse.success("라이벌 신청을 성공적으로 취소했습니다.");
     }
 
     // 라이벌 - 라이벌 삭제

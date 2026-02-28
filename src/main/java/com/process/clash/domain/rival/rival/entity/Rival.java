@@ -48,4 +48,16 @@ public record Rival(
                 this.secondUserId
         );
     }
+
+    public Rival cancel() {
+
+        return new Rival(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                RivalLinkingStatus.CANCELED,
+                this.firstUserId,
+                this.secondUserId
+        );
+    }
 }
