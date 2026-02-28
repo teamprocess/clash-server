@@ -5,6 +5,7 @@ import com.process.clash.application.record.exception.exception.badrequest.Inval
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.port.in.SwitchActivityAppUseCase;
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.record.entity.RecordSessionSegment;
@@ -25,6 +26,7 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
 
     private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
+    private final RecordActivityNotifierPort recordActivityNotifierPort;
     private final MonitoredAppPolicy monitoredAppPolicy;
     private final ZoneId recordZoneId;
 
@@ -43,12 +45,14 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         Optional<RecordSessionSegment> openSegment = findOpenSegment(activeSession.id());
         if (isSameAppAsOpenSegment(openSegment, nextAppId)) {
             RecordSession syncedSession = syncSessionAppId(activeSession, nextAppId);
+            recordActivityNotifierPort.notifySessionChanged(command.actor());
             return toResult(syncedSession, switchedAt);
         }
 
         closeOpenSegment(openSegment, switchedAt);
         createOpenSegment(activeSession.id(), nextAppId, switchedAt);
         RecordSession switchedSession = syncSessionAppId(activeSession, nextAppId);
+        recordActivityNotifierPort.notifySessionChanged(command.actor());
 
         return toResult(switchedSession, switchedAt);
     }

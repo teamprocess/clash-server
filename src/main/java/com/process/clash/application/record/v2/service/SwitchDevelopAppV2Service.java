@@ -1,6 +1,7 @@
 package com.process.clash.application.record.v2.service;
 
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.SwitchDevelopAppV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidDevelopAppSwitchRequestException;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;
@@ -24,6 +25,7 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
 
     private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final RecordDevelopSessionSegmentV2RepositoryPort recordDevelopSessionSegmentV2RepositoryPort;
+    private final RecordActivityNotifierPort recordActivityNotifierPort;
     private final MonitoredAppPolicy monitoredAppPolicy;
 
     @Override
@@ -45,6 +47,7 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
         // 세션 appId만 꼬인 상태를 보정: 열린 세그먼트와 같으면 세그먼트 생성 없이 동기화만 수행
         if (openSegment.isPresent() && nextAppId.equals(openSegment.get().appId())) {
             RecordSessionV2 syncedSession = recordSessionV2RepositoryPort.save(activeSession.changeDevelopAppId(nextAppId));
+            recordActivityNotifierPort.notifySessionChanged(command.actor());
             return toResult(syncedSession, switchedAt);
         }
 
@@ -57,6 +60,7 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
         );
 
         RecordSessionV2 switchedSession = recordSessionV2RepositoryPort.save(activeSession.changeDevelopAppId(nextAppId));
+        recordActivityNotifierPort.notifySessionChanged(command.actor());
         return toResult(switchedSession, switchedAt);
     }
 
