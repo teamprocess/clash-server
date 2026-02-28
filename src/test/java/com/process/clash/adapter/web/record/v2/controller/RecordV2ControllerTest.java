@@ -9,13 +9,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.record.v2.data.GetActivityStatisticsV2Data;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
+import com.process.clash.application.record.v2.port.in.GetActivityStatisticsV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetCurrentRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetMonitoredAppsV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetTodayRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.StartRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.StopRecordV2UseCase;
 import com.process.clash.application.record.v2.port.in.SwitchDevelopAppV2UseCase;
+import com.process.clash.domain.common.enums.PeriodCategory;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,6 +56,9 @@ class RecordV2ControllerTest {
     @Mock
     private SwitchDevelopAppV2UseCase switchDevelopAppV2UseCase;
 
+    @Mock
+    private GetActivityStatisticsV2UseCase getActivityStatisticsV2UseCase;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -63,7 +69,8 @@ class RecordV2ControllerTest {
             stopRecordV2UseCase,
             getCurrentRecordV2UseCase,
             getMonitoredAppsV2UseCase,
-            switchDevelopAppV2UseCase
+            switchDevelopAppV2UseCase,
+            getActivityStatisticsV2UseCase
         );
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
@@ -108,6 +115,27 @@ class RecordV2ControllerTest {
     void oldTodayEndpoint_isNotFound() throws Exception {
         mockMvc.perform(get("/api/v2/record/today"))
             .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("GET /api/v2/record/activity_statistics 는 duration 파라미터를 커맨드에 전달한다")
+    void getActivityStatistics_passesDurationParameterToUseCase() throws Exception {
+        when(getActivityStatisticsV2UseCase.execute(any()))
+            .thenReturn(GetActivityStatisticsV2Data.Result.from(
+                List.of(new GetActivityStatisticsV2Data.AppActivity("VSCODE", 1200))
+            ));
+
+        mockMvc.perform(get("/api/v2/record/activity_statistics").param("duration", "WEEK"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("앱별 활동 시간을 조회했습니다."))
+            .andExpect(jsonPath("$.data.apps[0].appId").value("VSCODE"))
+            .andExpect(jsonPath("$.data.apps[0].studyTime").value(1200));
+
+        ArgumentCaptor<GetActivityStatisticsV2Data.Command> captor =
+            ArgumentCaptor.forClass(GetActivityStatisticsV2Data.Command.class);
+        verify(getActivityStatisticsV2UseCase).execute(captor.capture());
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().duration())
+            .isEqualTo(PeriodCategory.WEEK);
     }
 
     private HandlerMethodArgumentResolver authenticatedActorResolver() {
