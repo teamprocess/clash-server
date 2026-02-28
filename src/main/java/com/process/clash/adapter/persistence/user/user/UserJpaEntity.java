@@ -38,10 +38,10 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -69,6 +69,5 @@ public class UserJpaEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
-    @Column(name = "deleted_at")
     private Instant deletedAt;
 }
