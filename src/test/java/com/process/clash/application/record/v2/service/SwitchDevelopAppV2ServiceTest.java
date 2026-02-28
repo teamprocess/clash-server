@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.SwitchDevelopAppV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidDevelopAppSwitchRequestException;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;
@@ -37,6 +38,9 @@ class SwitchDevelopAppV2ServiceTest {
     @Mock
     private RecordDevelopSessionSegmentV2RepositoryPort recordDevelopSessionSegmentV2RepositoryPort;
 
+    @Mock
+    private RecordActivityNotifierPort recordActivityNotifierPort;
+
     private SwitchDevelopAppV2Service switchDevelopAppV2Service;
 
     @BeforeEach
@@ -44,6 +48,7 @@ class SwitchDevelopAppV2ServiceTest {
         switchDevelopAppV2Service = new SwitchDevelopAppV2Service(
             recordSessionV2RepositoryPort,
             recordDevelopSessionSegmentV2RepositoryPort,
+            recordActivityNotifierPort,
             new MonitoredAppPolicy()
         );
     }
@@ -136,6 +141,7 @@ class SwitchDevelopAppV2ServiceTest {
         assertThat(result.session().develop().appId()).isEqualTo(MonitoredApp.INTELLIJ_IDEA);
         verify(recordDevelopSessionSegmentV2RepositoryPort, times(2)).save(any(RecordDevelopSessionSegmentV2.class));
         verify(recordSessionV2RepositoryPort).save(any(RecordSessionV2.class));
+        verify(recordActivityNotifierPort).notifySessionChanged(actor);
     }
 
     @Test
@@ -165,5 +171,6 @@ class SwitchDevelopAppV2ServiceTest {
         assertThat(result.session().develop().appId()).isEqualTo(MonitoredApp.VSCODE);
         verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any(RecordDevelopSessionSegmentV2.class));
         verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordActivityNotifierPort, never()).notifySessionChanged(any());
     }
 }

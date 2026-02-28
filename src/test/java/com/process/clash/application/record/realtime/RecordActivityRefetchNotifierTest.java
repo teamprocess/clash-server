@@ -34,6 +34,9 @@ class RecordActivityRefetchNotifierTest {
     @Mock
     private CompeteRefetchNotifier competeRefetchNotifier;
 
+    @Mock
+    private RecordRefetchNotifier recordRefetchNotifier;
+
     private RecordActivityRefetchNotifier recordActivityRefetchNotifier;
 
     @BeforeEach
@@ -42,7 +45,8 @@ class RecordActivityRefetchNotifierTest {
             groupRepositoryPort,
             rivalRepositoryPort,
             groupRefetchNotifier,
-            competeRefetchNotifier
+            competeRefetchNotifier,
+            recordRefetchNotifier
         );
     }
 
@@ -60,6 +64,7 @@ class RecordActivityRefetchNotifierTest {
 
         recordActivityRefetchNotifier.notifyActivityStarted(actor);
 
+        verify(recordRefetchNotifier).notifyRecordActivityStarted(List.of(actor.id()));
         verify(groupRefetchNotifier).notifyGroupActivityStarted(memberUserIds);
         verify(competeRefetchNotifier).notifyRivalActivityStarted(rivalUserIds);
     }
@@ -74,7 +79,19 @@ class RecordActivityRefetchNotifierTest {
 
         recordActivityRefetchNotifier.notifyActivityStopped(actor);
 
+        verify(recordRefetchNotifier).notifyRecordActivityStopped(List.of(actor.id()));
         verify(groupRepositoryPort, never()).findMemberUserIdsByGroupIds(anyList());
         verifyNoInteractions(groupRefetchNotifier, competeRefetchNotifier);
+    }
+
+    @Test
+    @DisplayName("세션 데이터 변경 시 본인에게만 record refetch를 notify한다")
+    void notifySessionChanged_notifiesOnlyRecordDomain() {
+        Actor actor = new Actor(1L);
+
+        recordActivityRefetchNotifier.notifySessionChanged(actor);
+
+        verify(recordRefetchNotifier).notifyRecordSessionChanged(List.of(actor.id()));
+        verifyNoInteractions(groupRepositoryPort, rivalRepositoryPort, groupRefetchNotifier, competeRefetchNotifier);
     }
 }
