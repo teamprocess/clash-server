@@ -52,7 +52,7 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
     @Query("select u from UserJpaEntity u where u.id = :id and u.deletedAt is null")
     Optional<UserJpaEntity> findById(@Param("id") Long id);
 
-    @Query("select u from UserJpaEntity u where u.id = :id")
+    @Query(value = "SELECT * FROM users WHERE id = :id", nativeQuery = true)
     Optional<UserJpaEntity> findByIdIncludingDeleted(@Param("id") Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

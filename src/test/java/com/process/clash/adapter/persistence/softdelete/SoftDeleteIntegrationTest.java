@@ -46,9 +46,14 @@ class SoftDeleteIntegrationTest {
         em.flush();
         em.clear();
 
-        UserJpaEntity raw = em.find(UserJpaEntity.class, userId);
-        assertThat(raw).isNotNull();
-        assertThat(raw.getDeletedAt()).isNotNull();
+        // @SQLRestriction("deleted_at IS NULL")을 우회해 row 직접 확인
+        Object[] row = (Object[]) em.getEntityManager()
+            .createNativeQuery("SELECT id, deleted_at FROM users WHERE id = :id")
+            .setParameter("id", userId)
+            .getSingleResult();
+
+        assertThat(row[0]).isNotNull();  // row가 존재한다
+        assertThat(row[1]).isNotNull();  // deleted_at이 채워졌다
     }
 
     @Test
