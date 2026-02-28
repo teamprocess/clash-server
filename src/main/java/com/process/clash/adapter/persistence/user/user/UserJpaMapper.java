@@ -21,7 +21,7 @@ public class UserJpaMapper {
                 user.totalCookie(),
                 user.major(),
                 user.userStatus(),
-                null
+                user.deletedAt()
         );
     }
 
