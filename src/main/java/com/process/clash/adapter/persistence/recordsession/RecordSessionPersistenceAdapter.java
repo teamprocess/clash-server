@@ -185,11 +185,12 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
 
     @Override
     public List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-
+        Instant now = Instant.now();
         return recordSessionJpaRepository.findStudyTimeRankingByUserIdAndPeriod(
                 userId,
                 toInstant(startDate),
-                toInstant(endDate)
+                toInstant(endDate),
+                now
         );
     }
 
@@ -198,20 +199,20 @@ public class RecordSessionPersistenceAdapter implements RecordSessionRepositoryP
     }
 
     @Override
-    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate, Instant now) {
 
-        return recordSessionJpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate);
+        return recordSessionJpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate, now);
     }
 
     @Override
-    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate, Instant now) {
 
-        return recordSessionJpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate);
+        return recordSessionJpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate, now);
     }
 
     @Override
-    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate) {
+    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate, Instant now) {
 
-        return recordSessionJpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate);
+        return recordSessionJpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate, now);
     }
 }
