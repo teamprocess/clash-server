@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,6 +22,7 @@ import java.time.Instant;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = now() WHERE id = ?")
 public class UserJpaEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,4 +66,7 @@ public class UserJpaEntity {
 
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 }

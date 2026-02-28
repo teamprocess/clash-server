@@ -33,7 +33,7 @@ public class FindDetailedBattleInfoData {
 
             return new Result(
                     battle.id(),
-                    Enemy.from(user),
+                    user != null ? Enemy.from(user) : null,
                     battle.endDate(),
                     myOverallPercentage
             );

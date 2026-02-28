@@ -27,6 +27,7 @@ import com.process.clash.application.user.user.data.IssueProfileImageUploadUrlDa
 import com.process.clash.application.user.user.data.UpdateMyProfileImageData;
 import com.process.clash.application.user.user.port.in.IssueProfileImageUploadUrlUseCase;
 import com.process.clash.application.user.user.port.in.UpdateMyProfileImageUseCase;
+import com.process.clash.application.user.user.port.in.WithdrawUseCase;
 import com.process.clash.application.user.usergithub.data.GetMyGitHubLinkStatusData;
 import com.process.clash.application.user.usergithub.data.LinkGitHubOAuthData;
 import com.process.clash.application.user.usergithub.port.in.GetMyGitHubLinkStatusUsecase;
@@ -38,6 +39,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,6 +63,15 @@ public class UserController implements UserControllerDocument {
     private final GetMyGitHubLinkStatusUsecase getMyGitHubLinkStatusUsecase;
     private final IssueProfileImageUploadUrlUseCase issueProfileImageUploadUrlUseCase;
     private final UpdateMyProfileImageUseCase updateMyProfileImageUseCase;
+    private final WithdrawUseCase withdrawUseCase;
+
+    @DeleteMapping("/me")
+    public ApiResponse<Void> withdraw(
+            @AuthenticatedActor Actor actor
+    ) {
+        withdrawUseCase.execute(actor);
+        return ApiResponse.success("회원 탈퇴가 완료되었습니다.");
+    }
 
     @GetMapping("/me")
     public ApiResponse<GetMyProfileDto.Response> getMyProfile(
