@@ -48,8 +48,8 @@ class SoftDeleteIntegrationTest {
 
         // @SQLRestriction("deleted_at IS NULL")을 우회해 row 직접 확인
         Object[] row = (Object[]) em.getEntityManager()
-            .createNativeQuery("SELECT id, deleted_at FROM users WHERE id = :id")
-            .setParameter("id", userId)
+            .createNativeQuery("SELECT id, deleted_at FROM users WHERE id = ?1")
+            .setParameter(1, userId)
             .getSingleResult();
 
         assertThat(row[0]).isNotNull();  // row가 존재한다
