@@ -22,7 +22,8 @@ public class RecordSessionJpaMapper {
             task,
             recordSession.recordType(),
             recordSession.appId(),
-            recordSession.startedAt()
+            recordSession.startedAt(),
+            recordSession.endedAt()
         );
     }
 
