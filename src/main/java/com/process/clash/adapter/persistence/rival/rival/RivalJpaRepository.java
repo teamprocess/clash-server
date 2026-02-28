@@ -45,7 +45,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     );
 
     /**
-     * 내 라이벌 전체 조회
+     * 내 라이벌 전체 조회 (ACCEPTED만)
      */
     @Query(value = """
         SELECT *
@@ -54,6 +54,16 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
           AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     List<RivalJpaEntity> findAllByUserId(@Param("userId") Long userId);
+
+    /**
+     * 내 라이벌 전체 조회 (모든 상태)
+     */
+    @Query(value = """
+        SELECT *
+        FROM rivals r
+        WHERE r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId
+    """, nativeQuery = true)
+    List<RivalJpaEntity> findAllRivalsByUserId(@Param("userId") Long userId);
 
     /**
      * 내 라이벌 상대방 ID 목록

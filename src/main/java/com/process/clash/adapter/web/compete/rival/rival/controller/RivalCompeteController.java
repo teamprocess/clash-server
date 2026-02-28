@@ -18,14 +18,28 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class RivalCompeteController implements RivalCompeteControllerDocument {
 
+    private final FindAllRivalsUseCase findAllRivalsUseCase;
     private final GetMyRivalActingUseCase getMyRivalActingUseCase;
     private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;
     private final SearchRivalByKeywordUseCase searchRivalByKeywordUseCase;
     private final ApplyRivalUseCase applyRivalUseCase;
     private final AcceptRivalUseCase acceptRivalUseCase;
     private final RejectRivalUseCase rejectRivalUseCase;
+    private final CancelRivalUseCase cancelRivalUseCase;
     private final RemoveRivalUseCase removeRivalUseCase;
     private final CompareWithRivalsUseCase compareWithRivalsUseCase;
+
+    // 라이벌 전체 조회 (모든 상태)
+    @GetMapping("/all")
+    public ApiResponse<FindAllRivalsDto.Response> findAllRivals(
+            @AuthenticatedActor Actor actor
+    ) {
+
+        FindAllRivalsData.Command command = FindAllRivalsData.Command.from(actor);
+        FindAllRivalsData.Result result = findAllRivalsUseCase.execute(command);
+        FindAllRivalsDto.Response response = FindAllRivalsDto.Response.from(result);
+        return ApiResponse.success(response, "라이벌 전체 목록을 성공적으로 조회했습니다.");
+    }
 
     // 내 라이벌 정보 조회
     @GetMapping
@@ -98,6 +112,18 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
         ModifyRivalData.Command command = request.toCommand(actor);
         rejectRivalUseCase.execute(command);
         return ApiResponse.success("라이벌을 성공적으로 거절했습니다.");
+    }
+
+    // 라이벌 - 라이벌 신청 취소
+    @PostMapping("/cancel")
+    public ApiResponse<Void> cancelRival(
+            @AuthenticatedActor Actor actor,
+            @Valid @RequestBody ModifyRivalDto.Request request
+    ) {
+
+        ModifyRivalData.Command command = request.toCommand(actor);
+        cancelRivalUseCase.execute(command);
+        return ApiResponse.success("라이벌 신청을 성공적으로 취소했습니다.");
     }
 
     // 라이벌 - 라이벌 삭제
