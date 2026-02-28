@@ -37,6 +37,10 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
 
         Battle battle = getBattleInfoPolicy.check(command.id());
 
+        if (battle.rivalId() == null) {
+            throw new RivalNotFoundException();
+        }
+
         Long userId = command.actor().id();
         TargetCategory category = command.category();
 
