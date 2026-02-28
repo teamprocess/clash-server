@@ -14,6 +14,7 @@ public interface RivalRepositoryPort {
     Rival save(Rival rival);
     List<Rival> saveAll(List<Rival> rivals);
     List<Rival> findAllByUserId(Long myId);
+    List<Rival> findAllRivalsByUserId(Long userId);
     int countAllByUserId(Long myId);
     List<Map<String, Object>> countAllByOpponentIdsGrouped(List<Long> opponentIds);
     List<Long> findOpponentIdByUserId(Long myId);

@@ -7,6 +7,7 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.rival.data.*;
 import com.process.clash.application.compete.rival.rival.port.in.*;
+import com.process.clash.application.compete.rival.rival.data.FindAllRivalsData;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class RivalCompeteController implements RivalCompeteControllerDocument {
 
+    private final FindAllRivalsUseCase findAllRivalsUseCase;
     private final GetMyRivalActingUseCase getMyRivalActingUseCase;
     private final GetAllAbleRivalsUseCase getAllAbleRivalsUseCase;
     private final SearchRivalByKeywordUseCase searchRivalByKeywordUseCase;
@@ -27,6 +29,18 @@ public class RivalCompeteController implements RivalCompeteControllerDocument {
     private final CancelRivalUseCase cancelRivalUseCase;
     private final RemoveRivalUseCase removeRivalUseCase;
     private final CompareWithRivalsUseCase compareWithRivalsUseCase;
+
+    // 라이벌 전체 조회 (모든 상태)
+    @GetMapping("/all")
+    public ApiResponse<FindAllRivalsDto.Response> findAllRivals(
+            @AuthenticatedActor Actor actor
+    ) {
+
+        FindAllRivalsData.Command command = FindAllRivalsData.Command.from(actor);
+        FindAllRivalsData.Result result = findAllRivalsUseCase.execute(command);
+        FindAllRivalsDto.Response response = FindAllRivalsDto.Response.from(result);
+        return ApiResponse.success(response, "라이벌 전체 목록을 성공적으로 조회했습니다.");
+    }
 
     // 내 라이벌 정보 조회
     @GetMapping
