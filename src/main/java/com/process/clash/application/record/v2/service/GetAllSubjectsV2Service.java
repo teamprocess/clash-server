@@ -68,18 +68,12 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
                 ))
             ));
 
-        Map<Long, Long> taskStudyTimes = sessions.stream()
-            .filter(session -> session.sessionType() == RecordSessionTypeV2.TASK)
-            .filter(session -> session.taskId() != null)
-            .collect(Collectors.groupingBy(
-                RecordSessionV2::taskId,
-                Collectors.summingLong(session -> RecordSessionWindowCalculator.secondsInWindow(
-                    session,
-                    dayStart,
-                    endLimit,
-                    recordZoneId
-                ))
-            ));
+        Map<Long, Long> taskStudyTimes = RecordSessionWindowCalculator.taskStudyTimesInWindow(
+            sessions,
+            dayStart,
+            endLimit,
+            recordZoneId
+        );
 
         Map<Long, List<RecordTaskV2>> tasksBySubjectId = tasks.stream()
             .collect(Collectors.groupingBy(RecordTaskV2::subjectId));

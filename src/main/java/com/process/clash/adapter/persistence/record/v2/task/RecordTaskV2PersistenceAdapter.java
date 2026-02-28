@@ -38,7 +38,7 @@ public class RecordTaskV2PersistenceAdapter implements RecordTaskV2RepositoryPor
             return recordTaskV2JpaMapper.toDomain(recordTaskV2JpaRepository.save(entity));
         }
 
-        RecordTaskV2JpaEntity existing = recordTaskV2JpaRepository.findById(task.id())
+        RecordTaskV2JpaEntity existing = recordTaskV2JpaRepository.findByIdAndUserId(task.id(), task.userId())
             .orElseThrow(TaskV2NotFoundException::new);
         RecordSubjectV2JpaEntity subject = task.subjectId() == null
             ? null

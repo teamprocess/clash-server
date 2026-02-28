@@ -8,13 +8,11 @@ import com.process.clash.application.record.v2.port.out.RecordSessionV2Repositor
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
-import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.infrastructure.config.RecordProperties;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,18 +45,12 @@ public class GetAllTasksV2Service implements GetAllTasksV2UseCase {
             dayEnd
         );
 
-        Map<Long, Long> taskStudyTimes = sessions.stream()
-            .filter(session -> session.sessionType() == RecordSessionTypeV2.TASK)
-            .filter(session -> session.taskId() != null)
-            .collect(Collectors.groupingBy(
-                RecordSessionV2::taskId,
-                Collectors.summingLong(session -> RecordSessionWindowCalculator.secondsInWindow(
-                    session,
-                    dayStart,
-                    endLimit,
-                    recordZoneId
-                ))
-            ));
+        Map<Long, Long> taskStudyTimes = RecordSessionWindowCalculator.taskStudyTimesInWindow(
+            sessions,
+            dayStart,
+            endLimit,
+            recordZoneId
+        );
 
         List<GetAllTasksV2Data.TaskSummary> summaries = tasks.stream()
             .map(task -> new GetAllTasksV2Data.TaskSummary(

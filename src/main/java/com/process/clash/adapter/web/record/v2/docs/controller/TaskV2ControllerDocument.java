@@ -1,6 +1,6 @@
 package com.process.clash.adapter.web.record.v2.docs.controller;
 
-import com.process.clash.adapter.web.record.v2.docs.request.CreateTaskV2RequestDocument;
+import com.process.clash.adapter.web.record.v2.docs.request.CreateSubjectTaskV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.request.UpdateTaskCompletionV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.CreateTaskV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.GetAllTasksV2ResponseDocument;
@@ -77,7 +77,7 @@ public interface TaskV2ControllerDocument {
         @Parameter(hidden = true) Actor actor,
         @RequestBody(description = "V2 세부 작업 생성 요청", required = true,
             content = @Content(
-                schema = @Schema(implementation = CreateTaskV2RequestDocument.class),
+                schema = @Schema(implementation = CreateSubjectTaskV2RequestDocument.class),
                 examples = @ExampleObject(value = """
                     {
                       "subjectId": 12,
