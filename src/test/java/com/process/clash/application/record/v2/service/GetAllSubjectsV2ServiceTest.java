@@ -70,9 +70,9 @@ class GetAllSubjectsV2ServiceTest {
         Actor actor = new Actor(1L);
         RecordSubjectV2 subject1 = new RecordSubjectV2(10L, 1L, "백엔드", 0L, Instant.now(), Instant.now());
         RecordSubjectV2 subject2 = new RecordSubjectV2(20L, 1L, "알고리즘", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task1 = new RecordTaskV2(11L, 10L, "ERD", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task2 = new RecordTaskV2(12L, 10L, "API", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task3 = new RecordTaskV2(21L, 20L, "DP", 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task1 = new RecordTaskV2(11L, 1L, 10L, "ERD", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task2 = new RecordTaskV2(12L, 1L, 10L, "API", true, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task3 = new RecordTaskV2(21L, 1L, 20L, "DP", false, 0L, Instant.now(), Instant.now());
 
         ZonedDateTime nowZoned = ZonedDateTime.now(ZoneId.of("UTC"));
         LocalDateTime dayStart = RecordDateCalculator.startOfRecordDay(nowZoned, 6);
@@ -152,7 +152,10 @@ class GetAllSubjectsV2ServiceTest {
             .orElseThrow();
 
         assertThat(erd.studyTime()).isEqualTo(expectedWindowSeconds);
+        assertThat(erd.completed()).isFalse();
         assertThat(api.studyTime()).isEqualTo(0L);
+        assertThat(api.completed()).isTrue();
         assertThat(dp.studyTime()).isEqualTo(0L);
+        assertThat(dp.completed()).isFalse();
     }
 }
