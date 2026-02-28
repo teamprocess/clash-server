@@ -35,8 +35,8 @@ public class AnalyzeMyActivityService implements AnalyzeMyActivityUseCase {
     @Override
     public AnalyzeMyActivityData.Result execute(AnalyzeMyActivityData.Command command) {
 
-        LocalDate endDate = LocalDate.now().plusDays(1); // 오늘 포함
-        LocalDate startDate = endDate.minusMonths(12);   // 정확히 12개월 기간
+        LocalDate endDate = LocalDate.now(recordZoneId).plusDays(1); // 오늘 포함
+        LocalDate startDate = endDate.minusMonths(12);              // 정확히 12개월 기간
 
         ActivityData data = switch (command.category()) {
             case GITHUB -> gitHub(command.actor().id(), startDate, endDate);
