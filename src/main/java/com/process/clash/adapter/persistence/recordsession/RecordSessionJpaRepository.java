@@ -120,9 +120,9 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
         from record_sessions ss
         inner join users u on u.id = ss.fk_user_id
         left join rivals r on
-            (u.id in (r.fk_first_user_id, r.fk_second_user_id)
-                and :userId in (r.fk_first_user_id, r.fk_second_user_id)
-                and r.rival_linking_status = 'ACCEPTED')
+            ((r.fk_first_user_id = u.id and r.fk_second_user_id = :userId)
+                or (r.fk_second_user_id = u.id and r.fk_first_user_id = :userId))
+            and r.rival_linking_status = 'ACCEPTED'
         where ss.started_at < :endDate
             and coalesce(ss.ended_at, current_timestamp) >= :startDate
         group by u.id, u.name, u.profile_image, u.username

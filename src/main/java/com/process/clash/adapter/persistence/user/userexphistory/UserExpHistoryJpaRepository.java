@@ -245,9 +245,9 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             )
         from UserExpHistoryJpaEntity ux
         left join RivalJpaEntity r on
-            (ux.user.id in (r.firstUser.id, r.secondUser.id)
-                and :userId in (r.firstUser.id, r.secondUser.id)
-                and r.rivalLinkingStatus = 'ACCEPTED')
+            ((r.firstUser.id = ux.user.id and r.secondUser.id = :userId)
+                or (r.secondUser.id = ux.user.id and r.firstUser.id = :userId))
+            and r.rivalLinkingStatus = 'ACCEPTED'
         where ux.actingCategory <> 'SEASON_RESET'
             and ux.date between :startDate and :endDate
         group by ux.user.id, ux.user.name, ux.user.profileImage, ux.user.username
