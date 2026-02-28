@@ -7,6 +7,7 @@ import com.process.clash.application.ranking.port.in.GetRankingUseCase;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.infrastructure.config.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class GetRankingService implements GetRankingUseCase {
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final ZoneId recordZoneId;
+    private final RecordProperties recordProperties;
 
     @Override
     public GetRankingData.Result execute(GetRankingData.Command command) {
@@ -44,42 +46,59 @@ public class GetRankingService implements GetRankingUseCase {
 
     private List<UserRanking> gitHub(Long userId, PeriodCategory periodCategory) {
 
-        LocalDate endDate = LocalDate.now();
+        // GitHub는 00시 기준 (캘린더 날짜 그대로)
+        LocalDate today = LocalDate.now(recordZoneId);
         LocalDate startDate = switch (periodCategory) {
-            case DAY -> endDate.minusDays(1);
-            case WEEK -> endDate.minusWeeks(1);
-            case MONTH -> endDate.minusMonths(1);
+            case DAY -> today;
+            case WEEK -> today.minusWeeks(1);
+            case MONTH -> today.minusMonths(1);
             case SEASON -> null; //TODO: 나중에 구현
-            case YEAR -> endDate.minusYears(1);
+            case YEAR -> today.minusYears(1);
         };
 
-        return gitHubDailyStatsQueryPort.findGitHubRankingByUserIdAndPeriod(userId, startDate, endDate);
+        return gitHubDailyStatsQueryPort.findGitHubRankingByUserIdAndPeriod(userId, startDate, today);
     }
 
     private List<UserRanking> exp(Long userId, PeriodCategory periodCategory) {
 
-        LocalDate endDate = LocalDate.now();
+        // EXP는 학습시간과 동일하게 경계시간(06:00) 기준
+        ZonedDateTime now = ZonedDateTime.now(recordZoneId);
+        LocalDate today = now.toLocalDate();
+        if (now.getHour() < recordProperties.dayBoundaryHour()) {
+            today = today.minusDays(1);
+        }
+
         LocalDate startDate = switch (periodCategory) {
-            case DAY -> endDate.minusDays(1);
-            case WEEK -> endDate.minusWeeks(1);
-            case MONTH -> endDate.minusMonths(1);
+            case DAY -> today;
+            case WEEK -> today.minusWeeks(1);
+            case MONTH -> today.minusMonths(1);
             case SEASON -> null; //TODO: 나중에 구현
-            case YEAR -> endDate.minusYears(1);
+            case YEAR -> today.minusYears(1);
         };
 
-        return userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(userId, startDate, endDate);
+        return userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(userId, startDate, today);
     }
 
     private List<UserRanking> activeTime(Long userId, PeriodCategory periodCategory) {
 
-        LocalDateTime endDate = ZonedDateTime.now(recordZoneId).toLocalDateTime();
-        LocalDateTime startDate = switch (periodCategory) {
-            case DAY -> endDate.minusDays(1);
-            case WEEK -> endDate.minusWeeks(1);
-            case MONTH -> endDate.minusMonths(1);
+        ZonedDateTime now = ZonedDateTime.now(recordZoneId);
+        LocalDate today = now.toLocalDate();
+        if (now.getHour() < recordProperties.dayBoundaryHour()) {
+            today = today.minusDays(1);
+        }
+
+        LocalDate startLocalDate = switch (periodCategory) {
+            case DAY -> today;
+            case WEEK -> today.minusWeeks(1);
+            case MONTH -> today.minusMonths(1);
             case SEASON -> null; //TODO: 나중에 구현
-            case YEAR -> endDate.minusYears(1);
+            case YEAR -> today.minusYears(1);
         };
+
+        LocalDateTime startDate = startLocalDate != null
+                ? startLocalDate.atTime(recordProperties.dayBoundaryHour(), 0)
+                : null;
+        LocalDateTime endDate = now.toLocalDateTime();
 
         return recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
     }
