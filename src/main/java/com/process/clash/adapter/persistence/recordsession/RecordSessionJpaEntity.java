@@ -71,7 +71,8 @@ public class RecordSessionJpaEntity {
         RecordTaskJpaEntity task,
         RecordType recordType,
         MonitoredApp appId,
-        Instant startedAt
+        Instant startedAt,
+        Instant endedAt
     ) {
         return new RecordSessionJpaEntity(
             null,
@@ -82,8 +83,18 @@ public class RecordSessionJpaEntity {
             recordType,
             appId,
             startedAt,
-            null
+            endedAt
         );
+    }
+
+    public static RecordSessionJpaEntity create(
+        UserJpaEntity user,
+        RecordTaskJpaEntity task,
+        RecordType recordType,
+        MonitoredApp appId,
+        Instant startedAt
+    ) {
+        return create(user, task, recordType, appId, startedAt, null);
     }
 
     public static RecordSessionJpaEntity create(UserJpaEntity user, RecordTaskJpaEntity task, Instant startedAt) {
