@@ -20,8 +20,12 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.infrastructure.config.RecordProperties;
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +38,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class GetActivityStatisticsV2ServiceTest {
+
+    private static final ZoneId UTC = ZoneId.of("UTC");
+    private static final Clock FIXED_CLOCK = Clock.fixed(Instant.parse("2026-02-01T10:00:00Z"), UTC);
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
@@ -49,7 +56,8 @@ class GetActivityStatisticsV2ServiceTest {
             userRepositoryPort,
             recordDevelopSessionSegmentV2RepositoryPort,
             new RecordProperties("UTC", 6),
-            java.time.ZoneId.of("UTC")
+            UTC,
+            FIXED_CLOCK
         );
     }
 
@@ -89,11 +97,13 @@ class GetActivityStatisticsV2ServiceTest {
         Instant end = endCaptor.getValue();
         Instant now = nowCaptor.getValue();
 
-        assertThat(now).isEqualTo(end);
-        assertThat(start).isBefore(end);
-        assertThat(Duration.between(start, end))
-            .isGreaterThanOrEqualTo(Duration.ofDays(6))
-            .isLessThan(Duration.ofDays(7));
+        Instant expectedStart = LocalDateTime.of(2026, 1, 26, 6, 0).toInstant(ZoneOffset.UTC);
+        Instant expectedEnd = FIXED_CLOCK.instant();
+
+        assertThat(start).isEqualTo(expectedStart);
+        assertThat(end).isEqualTo(expectedEnd);
+        assertThat(now).isEqualTo(expectedEnd);
+        assertThat(Duration.between(start, end)).isEqualTo(Duration.ofDays(6).plusHours(4));
     }
 
     @Test

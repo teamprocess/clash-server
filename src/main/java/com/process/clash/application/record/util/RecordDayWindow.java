@@ -1,5 +1,6 @@
 package com.process.clash.application.record.util;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,7 +15,11 @@ public record RecordDayWindow(
 ) {
 
     public static RecordDayWindow today(ZoneId zoneId, int boundaryHour) {
-        ZonedDateTime now = ZonedDateTime.now(zoneId);
+        return today(zoneId, boundaryHour, Clock.system(zoneId));
+    }
+
+    public static RecordDayWindow today(ZoneId zoneId, int boundaryHour, Clock clock) {
+        ZonedDateTime now = ZonedDateTime.now(clock.withZone(zoneId));
         LocalDate todayRecordDate = RecordDateCalculator.recordDate(now, boundaryHour);
         return from(now, todayRecordDate, boundaryHour);
     }

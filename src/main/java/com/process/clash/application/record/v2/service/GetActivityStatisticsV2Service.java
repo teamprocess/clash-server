@@ -9,6 +9,7 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.infrastructure.config.RecordProperties;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,6 +27,7 @@ public class GetActivityStatisticsV2Service implements GetActivityStatisticsV2Us
     private final RecordDevelopSessionSegmentV2RepositoryPort recordDevelopSessionSegmentV2RepositoryPort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
+    private final Clock clock;
 
     @Override
     public GetActivityStatisticsV2Data.Result execute(GetActivityStatisticsV2Data.Command command) {
@@ -64,7 +66,7 @@ public class GetActivityStatisticsV2Service implements GetActivityStatisticsV2Us
             default -> throw new InvalidActivityStatisticsDurationException();
         };
 
-        RecordDayWindow todayWindow = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour());
+        RecordDayWindow todayWindow = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour(), clock);
         LocalDateTime startTime = todayWindow.dayStart().minusDays(days - 1L);
 
         return new DurationWindow(startTime, todayWindow.endLimit(), days);

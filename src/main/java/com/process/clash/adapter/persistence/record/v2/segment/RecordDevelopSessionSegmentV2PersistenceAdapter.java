@@ -10,10 +10,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class RecordDevelopSessionSegmentV2PersistenceAdapter implements RecordDevelopSessionSegmentV2RepositoryPort {
 
     private final RecordDevelopSessionSegmentV2JpaRepository recordDevelopSessionSegmentV2JpaRepository;
@@ -66,10 +68,28 @@ public class RecordDevelopSessionSegmentV2PersistenceAdapter implements RecordDe
                 endTime,
                 now
             ).stream()
-            .map(row -> new AppActivityTotal(
-                MonitoredApp.valueOf(row.getAppId()),
-                row.getTotalSeconds()
-            ))
+            .map(this::toAppActivityTotal)
+            .flatMap(Optional::stream)
             .toList();
+    }
+
+    private Optional<AppActivityTotal> toAppActivityTotal(
+        RecordDevelopSessionSegmentV2JpaRepository.AppActivityTotalProjection row
+    ) {
+        String appId = row.getAppId();
+        if (appId == null || appId.isBlank()) {
+            log.warn("Skip app activity aggregation row due to empty appId");
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(new AppActivityTotal(
+                MonitoredApp.valueOf(appId),
+                row.getTotalSeconds()
+            ));
+        } catch (IllegalArgumentException e) {
+            log.warn("Skip app activity aggregation row due to unknown appId: {}", appId);
+            return Optional.empty();
+        }
     }
 }
