@@ -22,6 +22,41 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "라이벌 API", description = "라이벌 조회/등록/관리 및 비교")
 public interface RivalCompeteControllerDocument {
 
+    @Operation(summary = "라이벌 전체 조회", description = "모든 상태(PENDING, ACCEPTED, REJECTED, CANCELED)의 라이벌 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = FindAllRivalsResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "라이벌 전체 목록을 성공적으로 조회했습니다.",
+                                      "data": {
+                                        "rivals": [
+                                          {
+                                            "rivalId": 1,
+                                            "githubId": "mongryong",
+                                            "name": "이몽룡",
+                                            "profileImage": "https://cdn.example.com/profile/2.png",
+                                            "rivalLinkingStatus": "ACCEPTED"
+                                          },
+                                          {
+                                            "rivalId": 2,
+                                            "githubId": "chunhyang123",
+                                            "name": "성춘향",
+                                            "profileImage": "https://cdn.example.com/profile/3.png",
+                                            "rivalLinkingStatus": "PENDING"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<FindAllRivalsDto.Response> findAllRivals(
+            @Parameter(hidden = true) Actor actor
+    );
+
     @Operation(summary = "내 라이벌 조회", description = "등록된 라이벌의 현재 상태를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
@@ -182,6 +217,33 @@ public interface RivalCompeteControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<Void> rejectRival(
             @Parameter(hidden = true) Actor actor,
             @RequestBody(description = "라이벌 거절 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = ModifyRivalRequestDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "id": 3
+                                    }
+                                    """)
+                    ))
+            ModifyRivalDto.Request request
+    );
+
+    @Operation(summary = "라이벌 신청 취소", description = "내가 신청한 라이벌 요청을 취소합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "취소 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = ModifyRivalResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "라이벌 신청을 성공적으로 취소했습니다."
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> cancelRival(
+            @Parameter(hidden = true) Actor actor,
+            @RequestBody(description = "라이벌 취소 요청", required = true,
                     content = @Content(
                             schema = @Schema(implementation = ModifyRivalRequestDocument.class),
                             examples = @ExampleObject(value = """
