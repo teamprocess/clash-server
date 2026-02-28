@@ -43,17 +43,13 @@ public class SwitchActivityAppService implements SwitchActivityAppUseCase {
         }
 
         Optional<RecordSessionSegment> openSegment = findOpenSegment(activeSession.id());
-        if (isSameAppAsOpenSegment(openSegment, nextAppId)) {
-            RecordSession syncedSession = syncSessionAppId(activeSession, nextAppId);
-            recordActivityNotifierPort.notifySessionChanged(command.actor());
-            return toResult(syncedSession, switchedAt);
+        if (!isSameAppAsOpenSegment(openSegment, nextAppId)) {
+            closeOpenSegment(openSegment, switchedAt);
+            createOpenSegment(activeSession.id(), nextAppId, switchedAt);
         }
 
-        closeOpenSegment(openSegment, switchedAt);
-        createOpenSegment(activeSession.id(), nextAppId, switchedAt);
         RecordSession switchedSession = syncSessionAppId(activeSession, nextAppId);
         recordActivityNotifierPort.notifySessionChanged(command.actor());
-
         return toResult(switchedSession, switchedAt);
     }
 

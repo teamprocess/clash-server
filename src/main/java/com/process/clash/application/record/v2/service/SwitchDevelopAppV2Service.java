@@ -44,20 +44,15 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
         Optional<RecordDevelopSessionSegmentV2> openSegment =
             recordDevelopSessionSegmentV2RepositoryPort.findOpenSegmentBySessionIdForUpdate(activeSession.id());
 
-        // 세션 appId만 꼬인 상태를 보정: 열린 세그먼트와 같으면 세그먼트 생성 없이 동기화만 수행
-        if (openSegment.isPresent() && nextAppId.equals(openSegment.get().appId())) {
-            RecordSessionV2 syncedSession = recordSessionV2RepositoryPort.save(activeSession.changeDevelopAppId(nextAppId));
-            recordActivityNotifierPort.notifySessionChanged(command.actor());
-            return toResult(syncedSession, switchedAt);
+        // 세션 appId만 꼬인 상태가 아니면 기존 세그먼트를 닫고 새 앱 세그먼트를 시작해 앱 전환 이력을 분리 저장
+        if (!isSameAppAsOpenSegment(openSegment, nextAppId)) {
+            openSegment.ifPresent(segment ->
+                recordDevelopSessionSegmentV2RepositoryPort.save(segment.changeEndedAt(switchedAt))
+            );
+            recordDevelopSessionSegmentV2RepositoryPort.save(
+                RecordDevelopSessionSegmentV2.start(activeSession.id(), nextAppId, switchedAt)
+            );
         }
-
-        // 기존 세그먼트를 닫고 새 앱 세그먼트를 시작해 앱 전환 이력을 분리 저장
-        openSegment.ifPresent(segment ->
-            recordDevelopSessionSegmentV2RepositoryPort.save(segment.changeEndedAt(switchedAt))
-        );
-        recordDevelopSessionSegmentV2RepositoryPort.save(
-            RecordDevelopSessionSegmentV2.start(activeSession.id(), nextAppId, switchedAt)
-        );
 
         RecordSessionV2 switchedSession = recordSessionV2RepositoryPort.save(activeSession.changeDevelopAppId(nextAppId));
         recordActivityNotifierPort.notifySessionChanged(command.actor());
@@ -79,6 +74,10 @@ public class SwitchDevelopAppV2Service implements SwitchDevelopAppV2UseCase {
             throw new InvalidDevelopAppSwitchRequestException();
         }
         return activeSession;
+    }
+
+    private boolean isSameAppAsOpenSegment(Optional<RecordDevelopSessionSegmentV2> openSegment, MonitoredApp appId) {
+        return openSegment.isPresent() && appId.equals(openSegment.get().appId());
     }
 
     private SwitchDevelopAppV2Data.Result toResult(RecordSessionV2 session, Instant switchedAt) {
