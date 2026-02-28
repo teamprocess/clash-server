@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.user.docs.controller;
 
 import com.process.clash.adapter.web.user.docs.response.GetMyProfileResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityResponseDocument;
+import com.process.clash.adapter.web.user.docs.response.WithdrawResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubActivityDetailResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.GetMyGitHubLinkStatusResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.GetMyItemsResponseDocument;
@@ -181,6 +182,24 @@ public interface UserControllerDocument {
                                     """)
                     ))
             IssueProfileImageUploadUrlDto.Request request
+    );
+
+    @Operation(summary = "회원 탈퇴", description = "현재 로그인한 사용자의 계정을 삭제하고 세션을 만료시킵니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "탈퇴 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = WithdrawResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "회원 탈퇴가 완료되었습니다.",
+                                      "data": null
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> withdraw(
+            @Parameter(hidden = true) Actor actor
     );
 
     @Operation(summary = "내 프로필 이미지 반영", description = "S3 업로드가 끝난 파일 URL을 내 프로필 이미지로 저장합니다.")

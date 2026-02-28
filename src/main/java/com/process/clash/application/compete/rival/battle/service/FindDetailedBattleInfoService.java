@@ -33,6 +33,17 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
 
         Battle battle = getBattleInfoPolicy.check(command.id());
 
+        // 상대방이 탈퇴해 라이벌이 삭제된 경우 상대 정보 없이 반환
+        if (battle.rivalId() == null) {
+            LocalDate endDate = battle.battleStatus().equals(BattleStatus.DONE)
+                    ? battle.endDate()
+                    : LocalDate.now();
+            double myAverageExp = userExpHistoryRepositoryPort
+                    .findAverageExpByUserIdAndCategoryAndPeriod(command.actor().id(), battle.startDate(), endDate);
+            double myOverallPercentage = myAverageExp == 0 ? 0 : 100.0;
+            return FindDetailedBattleInfoData.Result.of(battle, null, myOverallPercentage);
+        }
+
         Rival rival = rivalRepositoryPort.findById(battle.rivalId())
                 .orElseThrow(RivalNotFoundException::new);
 

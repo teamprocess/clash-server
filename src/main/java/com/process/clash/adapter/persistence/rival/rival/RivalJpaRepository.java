@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.rival.rival;
 
 import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForBattle;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -61,7 +62,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     @Query(value = """
         SELECT *
         FROM rivals r
-        WHERE r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId
+        WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     List<RivalJpaEntity> findAllRivalsByUserId(@Param("userId") Long userId);
 
@@ -166,4 +167,14 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
             @Param("myId") Long myId,
             @Param("opponentId") Long opponentId
     );
+
+    /**
+     * 유저 탈퇴 시 해당 유저가 속한 모든 라이벌 physical delete
+     */
+    @Modifying
+    @Query(value = """
+        DELETE FROM rivals
+        WHERE fk_first_user_id = :userId OR fk_second_user_id = :userId
+    """, nativeQuery = true)
+    void deleteAllByUserId(@Param("userId") Long userId);
 }
