@@ -29,7 +29,7 @@ public class RecordSessionV2Data {
                 RecordSessionTypeV2.TASK,
                 startedAt,
                 endedAt,
-                new Subject(subjectId, subjectName),
+                subjectId == null ? null : new Subject(subjectId, subjectName),
                 taskId == null ? null : new Task(taskId, taskName),
                 null
             );

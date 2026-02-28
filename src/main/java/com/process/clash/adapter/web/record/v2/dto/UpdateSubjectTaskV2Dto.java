@@ -27,6 +27,7 @@ public class UpdateSubjectTaskV2Dto {
         Long id,
         Long subjectId,
         String name,
+        boolean completed,
         Long studyTime
     ) {
         public static Response from(UpdateSubjectTaskV2Data.Result result) {
@@ -35,6 +36,7 @@ public class UpdateSubjectTaskV2Dto {
                 task.id(),
                 task.subjectId(),
                 task.name(),
+                task.completed(),
                 task.studyTime()
             );
         }

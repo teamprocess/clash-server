@@ -11,7 +11,13 @@ public interface RecordTaskV2RepositoryPort {
 
     Optional<RecordTaskV2> findById(Long id);
 
+    Optional<RecordTaskV2> findByIdAndUserId(Long id, Long userId);
+
     Optional<RecordTaskV2> findByIdAndSubjectId(Long id, Long subjectId);
+
+    Optional<RecordTaskV2> findByIdAndSubjectIdAndUserId(Long id, Long subjectId, Long userId);
+
+    List<RecordTaskV2> findAllByUserIdOrderBySubjectIdDescNullsFirst(Long userId);
 
     List<RecordTaskV2> findAllBySubjectIds(Collection<Long> subjectIds);
 

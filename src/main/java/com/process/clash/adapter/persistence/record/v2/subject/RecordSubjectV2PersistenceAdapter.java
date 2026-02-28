@@ -46,7 +46,7 @@ public class RecordSubjectV2PersistenceAdapter implements RecordSubjectV2Reposit
 
     @Override
     public List<RecordSubjectV2> findAllByUserId(Long userId) {
-        return recordSubjectV2JpaRepository.findAllByUserIdOrderByCreatedAtAsc(userId).stream()
+        return recordSubjectV2JpaRepository.findAllByUserIdOrderByIdDesc(userId).stream()
             .map(recordSubjectV2JpaMapper::toDomain)
             .toList();
     }

@@ -9,8 +9,10 @@ public class RecordTaskV2JpaMapper {
     public RecordTaskV2 toDomain(RecordTaskV2JpaEntity entity) {
         return new RecordTaskV2(
             entity.getId(),
-            entity.getSubject().getId(),
+            entity.getUser().getId(),
+            entity.getSubject() == null ? null : entity.getSubject().getId(),
             entity.getName(),
+            entity.isCompleted(),
             0L,
             entity.getCreatedAt(),
             entity.getUpdatedAt()

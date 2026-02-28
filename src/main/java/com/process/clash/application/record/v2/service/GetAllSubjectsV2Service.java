@@ -92,6 +92,7 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
                     .map(task -> new GetAllSubjectsV2Data.TaskSummary(
                         task.id(),
                         task.name(),
+                        task.completed(),
                         taskStudyTimes.getOrDefault(task.id(), 0L)
                     ))
                     .toList();

@@ -94,7 +94,9 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
                 RecordDevelopSessionV2JpaEntity.create(activeEntity, session.appId())
             );
         } else {
-            RecordSubjectV2JpaEntity subject = recordSubjectV2JpaRepository.getReferenceById(session.subjectId());
+            RecordSubjectV2JpaEntity subject = session.subjectId() == null
+                ? null
+                : recordSubjectV2JpaRepository.getReferenceById(session.subjectId());
             RecordTaskV2JpaEntity task = session.taskId() == null
                 ? null
                 : recordTaskV2JpaRepository.getReferenceById(session.taskId());
