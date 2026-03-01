@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserEquippedItemJpaRepository extends JpaRepository<UserEquippedItemJpaEntity, Long> {
 
-    Optional<UserEquippedItemJpaEntity> findByUserIdAndCategory(Long userId, ProductCategory category);
+    Optional<UserEquippedItemJpaEntity> findByUser_IdAndCategory(Long userId, ProductCategory category);
 
-    List<UserEquippedItemJpaEntity> findAllByUserId(Long userId);
+    List<UserEquippedItemJpaEntity> findAllByUser_Id(Long userId);
 
-    List<UserEquippedItemJpaEntity> findAllByUserIdIn(Collection<Long> userIds);
+    List<UserEquippedItemJpaEntity> findAllByUser_IdIn(Collection<Long> userIds);
 
-    void deleteByUserIdAndProductId(Long userId, Long productId);
+    void deleteByUser_IdAndProduct_Id(Long userId, Long productId);
 }
