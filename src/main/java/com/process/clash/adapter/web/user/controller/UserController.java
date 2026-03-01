@@ -43,6 +43,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -133,7 +134,7 @@ public class UserController implements UserControllerDocument {
         return ApiResponse.success(response, "소유한 아이템 목록을 성공적으로 조회했습니다.");
     }
 
-    @GetMapping("/items/{productId}/equip")
+    @PostMapping("/items/{productId}/equip")
     public ApiResponse<EquippedItemsDto.Response> equipMyItem(
             @AuthenticatedActor Actor actor,
             @PathVariable Long productId
@@ -144,7 +145,7 @@ public class UserController implements UserControllerDocument {
         return ApiResponse.success(response, "아이템을 성공적으로 장착했습니다.");
     }
 
-    @GetMapping("/items/{productId}/unequip")
+    @DeleteMapping("/items/{productId}/unequip")
     public ApiResponse<EquippedItemsDto.Response> unequipMyItem(
             @AuthenticatedActor Actor actor,
             @PathVariable Long productId
