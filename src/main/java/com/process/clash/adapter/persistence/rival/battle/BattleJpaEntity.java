@@ -51,6 +51,6 @@ public class BattleJpaEntity {
     private UserJpaEntity winner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_rival_id", nullable = false)
+    @JoinColumn(name = "fk_rival_id", nullable = true)
     private RivalJpaEntity rival;
 }

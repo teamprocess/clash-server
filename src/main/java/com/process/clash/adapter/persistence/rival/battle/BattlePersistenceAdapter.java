@@ -69,4 +69,9 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     public boolean existsPendingBattleByRivalId(Long rivalId) {
         return battleJpaRepository.existsPendingBattleByRivalId(rivalId);
     }
+
+    @Override
+    public void rejectAllActiveBattlesByUserId(Long userId) {
+        battleJpaRepository.rejectAllActiveBattlesByUserId(userId);
+    }
 }

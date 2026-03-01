@@ -87,12 +87,12 @@ class UserSectionProgressJpaRepositoryTest {
 
         // 4. User 저장
         User noSectionProgressUser = new User(null, now, now, "userA", "userA@gmail.com", "유저A", "password",
-                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING);
+                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null);
         noSectionProgressUserJpaEntity = userJpaMapper.toJpaEntity(noSectionProgressUser);
         em.persist(noSectionProgressUserJpaEntity);
 
         User sectionProgressUser = new User(null, now, now, "userB", "userB@gmail.com", "유저B", "password",
-                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING);
+                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null);
         sectionProgressUserJpaEntity = userJpaMapper.toJpaEntity(sectionProgressUser);
         em.persist(sectionProgressUserJpaEntity);
 

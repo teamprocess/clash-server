@@ -28,4 +28,6 @@ public interface UserRepositoryPort {
 
     List<User> findAllByIds(List<Long> ids);
     List<User> findByIdIn(Set<Long> ids);
+    void deleteById(Long id);
+    Optional<User> findByIdIncludingDeleted(Long id);
 }

@@ -14,19 +14,20 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
-	Optional<UserJpaEntity> findByUsername(String username);
 
-	boolean existsByUsername(String username);
+    Optional<UserJpaEntity> findByUsername(String username);
 
-	boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 
     List<UserJpaEntity> findByIdIn(List<Long> ids);
 
-	Optional<UserJpaEntity> findByEmail(String email);
+    Optional<UserJpaEntity> findByEmail(String email);
 
-	List<UserJpaEntity> findByIdIn(Set<Long> ids);
+    List<UserJpaEntity> findByIdIn(Set<Long> ids);
 
-	@Query("""
+    @Query("""
         select new com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival(
             u.id,
             u.username,
@@ -38,9 +39,12 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
         left join UserGitHubJpaEntity ug on u.id = ug.user.id
         where u.id not in :excludedUserIds
     """)
-	List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(
-			@Param("excludedUserIds") List<Long> excludedUserIds
-	);
+    List<AbleRivalInfoForRival> findAbleRivalsWithUserInfo(
+            @Param("excludedUserIds") List<Long> excludedUserIds
+    );
+
+    @Query(value = "SELECT * FROM users WHERE id = :id", nativeQuery = true)
+    Optional<UserJpaEntity> findByIdIncludingDeleted(@Param("id") Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from UserJpaEntity u where u.id = :id")
