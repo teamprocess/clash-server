@@ -88,7 +88,8 @@ class RecordSessionJpaMapperTest {
             0,
             0,
             Major.NONE,
-            UserStatus.ACTIVE
+            UserStatus.ACTIVE,
+            null
         );
     }
 }
