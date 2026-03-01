@@ -5,9 +5,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.lenient;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +42,7 @@ class GetRankingServiceTest {
     @Mock private UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     @Mock private GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     @Mock private RecordSessionRepositoryPort recordSessionRepositoryPort;
+    @Mock private EquippedItemsAssembler equippedItemsAssembler;
 
     private GetRankingService service;
 
@@ -49,8 +53,11 @@ class GetRankingServiceTest {
             gitHubDailyStatsQueryPort,
             recordSessionRepositoryPort,
             TEST_ZONE,
-            RECORD_PROPS
+            RECORD_PROPS,
+            equippedItemsAssembler
         );
+
+        lenient().when(equippedItemsAssembler.loadByUserIds(any())).thenReturn(Map.of());
     }
 
     /** boundary-adjusted today (dayBoundaryHour 기준 오늘) */
