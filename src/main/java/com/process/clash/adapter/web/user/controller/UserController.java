@@ -123,7 +123,7 @@ public class UserController implements UserControllerDocument {
         return ApiResponse.success(response, "GitHub 연동 상태를 성공적으로 조회했습니다.");
     }
 
-    @GetMapping({"/me/items", "/items"})
+    @GetMapping("/me/items")
     public ApiResponse<GetMyItemsDto.Response> getMyItems(
         @AuthenticatedActor Actor actor,
         @RequestParam(name = "category", defaultValue = "ALL") UserItemCategory category
