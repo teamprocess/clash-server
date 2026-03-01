@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @ExtendWith(MockitoExtension.class)
 class EquipMyItemServiceTest {
@@ -89,6 +90,34 @@ class EquipMyItemServiceTest {
         service.execute(new EquipMyItemData.Command(new Actor(USER_ID), PRODUCT_ID));
 
         verify(userEquippedItemRepositoryPort, never()).save(equippedItem.changeProduct(PRODUCT_ID));
+    }
+
+    @Test
+    @DisplayName("동시에 같은 카테고리 장착 요청이 들어와 unique 충돌이 발생하면 재조회 후 슬롯을 갱신한다")
+    void equip_recoversFromConcurrentUniqueConflict() {
+        Product product = product(PRODUCT_ID, ProductCategory.INSIGNIA);
+        UserEquippedItem concurrentEquippedItem = new UserEquippedItem(
+                7L,
+                Instant.now().minusSeconds(90),
+                Instant.now().minusSeconds(40),
+                USER_ID,
+                99L,
+                ProductCategory.INSIGNIA
+        );
+        EquippedItemsData equippedItems = EquippedItemsData.empty();
+
+        when(productRepositoryPort.findById(PRODUCT_ID)).thenReturn(Optional.of(product));
+        when(userItemRepositoryPort.existsByUserIdAndProductId(USER_ID, PRODUCT_ID)).thenReturn(true);
+        when(userEquippedItemRepositoryPort.findByUserIdAndCategory(USER_ID, ProductCategory.INSIGNIA))
+                .thenReturn(Optional.empty(), Optional.of(concurrentEquippedItem));
+        when(userEquippedItemRepositoryPort.save(UserEquippedItem.create(USER_ID, PRODUCT_ID, ProductCategory.INSIGNIA)))
+                .thenThrow(new DataIntegrityViolationException("duplicate key"));
+        when(equippedItemsAssembler.loadByUserId(USER_ID)).thenReturn(equippedItems);
+
+        EquipMyItemData.Result result = service.execute(new EquipMyItemData.Command(new Actor(USER_ID), PRODUCT_ID));
+
+        verify(userEquippedItemRepositoryPort).save(concurrentEquippedItem.changeProduct(PRODUCT_ID));
+        assertThat(result.equippedItems()).isEqualTo(equippedItems);
     }
 
     @Test
