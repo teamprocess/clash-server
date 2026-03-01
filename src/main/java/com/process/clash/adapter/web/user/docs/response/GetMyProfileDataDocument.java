@@ -35,6 +35,9 @@ public class GetMyProfileDataDocument {
     @Schema(description = "총 쿠키", example = "300")
     public Integer totalCookie;
 
+    @Schema(description = "총 토큰 (폐기 예정 호환 필드)", example = "0")
+    public Integer totalToken;
+
     @Schema(description = "전공", example = "SERVER")
     public String major;
 
@@ -46,4 +49,31 @@ public class GetMyProfileDataDocument {
 
     @Schema(description = "실시간 활동 상태", example = "ONLINE")
     public String activityStatus;
+
+    @Schema(description = "현재 장착 아이템")
+    public EquippedItemsDocument equippedItems;
+
+    @Schema(description = "장착 아이템")
+    public static class EquippedItemsDocument {
+        @Schema(description = "인시그니아")
+        public EquippedItemDocument insigma;
+
+        @Schema(description = "네임플레이트")
+        public EquippedItemDocument nameplate;
+
+        @Schema(description = "배너")
+        public EquippedItemDocument banner;
+    }
+
+    @Schema(description = "장착 아이템 요약")
+    public static class EquippedItemDocument {
+        @Schema(description = "아이템 ID", example = "1")
+        public Long id;
+
+        @Schema(description = "아이템 이름", example = "기본 인시그니아")
+        public String name;
+
+        @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")
+        public String image;
+    }
 }

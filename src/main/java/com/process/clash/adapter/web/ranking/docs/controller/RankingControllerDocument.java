@@ -38,14 +38,28 @@ public interface RankingControllerDocument {
                                             "profileImage": "https://cdn.example.com/profile/1.png",
                                             "isRival": true,
                                             "linkedId": "github",
-                                            "point": 1200
+                                            "point": 1200,
+                                            "equipped_items": {
+                                              "insigma": {
+                                                "id": 1,
+                                                "name": "기본 인시그니아",
+                                                "image": "https://cdn.example.com/items/insignia.png"
+                                              },
+                                              "nameplate": null,
+                                              "banner": null
+                                            }
                                           },
                                           {
                                             "name": "김철수",
                                             "profileImage": "https://cdn.example.com/profile/2.png",
                                             "isRival": false,
                                             "linkedId": "gitlab",
-                                            "point": 980
+                                            "point": 980,
+                                            "equipped_items": {
+                                              "insigma": null,
+                                              "nameplate": null,
+                                              "banner": null
+                                            }
                                           }
                                         ]
                                       }

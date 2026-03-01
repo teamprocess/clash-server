@@ -20,10 +20,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 "profileImage": "https://cdn.example.com/profile/1.png",
                 "totalExp": 1200,
                 "totalCookie": 300,
+                "totalToken": 0,
                 "major": "SERVER",
                 "userStatus": "ACTIVE",
                 "githubLinked": true,
-                "activityStatus": "ONLINE"
+                "activityStatus": "ONLINE",
+                "equipped_items": {
+                  "insigma": {
+                    "id": 1,
+                    "name": "기본 인시그니아",
+                    "image": "https://cdn.example.com/items/insignia.png"
+                  },
+                  "nameplate": null,
+                  "banner": null
+                }
               }
             }
             """
