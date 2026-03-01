@@ -41,6 +41,7 @@ public class RecordDayBoundaryService {
         List<RecordSession> sessionsToCreate = new ArrayList<>();
         Set<Long> affectedUserIds = new LinkedHashSet<>();
 
+        // 아래 forEach는 최대 유저 수만큼 반복되며 큰 시간복잡도를 요하진 않습니다.
         activeSessions.forEach(session -> {
             Instant firstBoundary = nextBoundaryAfter(session.startedAt(), boundaryHour);
             if (!firstBoundary.isBefore(now)) {
