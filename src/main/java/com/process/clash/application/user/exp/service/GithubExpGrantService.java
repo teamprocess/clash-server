@@ -59,6 +59,12 @@ public class GithubExpGrantService {
     }
 
     private void grantForUser(GitHubDailyStats stats, LocalDate studyDate) {
+        Optional<User> userOpt = userRepositoryPort.findByIdForUpdate(stats.userId());
+        if (userOpt.isEmpty()) {
+            return;
+        }
+        User user = userOpt.get();
+
         int newEarnExp = calculateExp(stats);
 
         Optional<UserExpHistory> existing = userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(
@@ -94,10 +100,7 @@ public class GithubExpGrantService {
             ));
         }
 
-        userRepositoryPort.findByIdForUpdate(stats.userId()).ifPresent(user ->
-                userRepositoryPort.save(user.addExp(delta))
-        );
-
+        userRepositoryPort.save(user.addExp(delta));
         log.debug("GitHub EXP 지급 완료. userId={}, delta={}, newEarnExp={}", stats.userId(), delta, newEarnExp);
     }
 

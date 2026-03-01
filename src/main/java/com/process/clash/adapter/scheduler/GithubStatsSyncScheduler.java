@@ -19,15 +19,18 @@ public class GithubStatsSyncScheduler {
     @Scheduled(cron = "0 0 0-5,7-23 * * *", zone = "${github.sync.timezone:Asia/Seoul}")
     public void runHourly30DaysSyncExceptMorningSix() {
         log.info("GitHub 30일 동기화 스케줄러 시작.");
-        syncService.syncRecent30Days();
-        githubExpGrantService.grantForToday();
+        syncAndGrant(syncService::syncRecent30Days);
     }
 
     // 365일 동기화는 매일 오전 6시에만 작동. (이 시각에는 30일 동기화가 중복되기에 작동하지 않음)
     @Scheduled(cron = "0 0 6 * * *", zone = "${github.sync.timezone:Asia/Seoul}")
     public void runDaily365DaysSyncAtMorningSix() {
         log.info("GitHub 365일 동기화 스케줄러 시작.");
-        syncService.syncRecent365Days();
+        syncAndGrant(syncService::syncRecent365Days);
+    }
+
+    private void syncAndGrant(Runnable syncAction) {
+        syncAction.run();
         githubExpGrantService.grantForToday();
     }
 }

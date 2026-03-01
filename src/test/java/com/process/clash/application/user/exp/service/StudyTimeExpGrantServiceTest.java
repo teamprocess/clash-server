@@ -1,5 +1,6 @@
 package com.process.clash.application.user.exp.service;
 
+import com.process.clash.application.github.service.StudyDateCalculator;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
@@ -10,7 +11,6 @@ import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
 import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
-import com.process.clash.infrastructure.config.RecordProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,8 +52,7 @@ class StudyTimeExpGrantServiceTest {
             userStudyTimeRepositoryPort,
             userExpHistoryRepositoryPort,
             userRepositoryPort,
-            new RecordProperties("Asia/Seoul", BOUNDARY_HOUR),
-            ZONE
+            new StudyDateCalculator(ZONE, BOUNDARY_HOUR)
         );
     }
 
@@ -194,6 +193,7 @@ class StudyTimeExpGrantServiceTest {
             99L, Instant.now(), expectedDate, 6000, ExpActingCategory.STUDY_TIME, USER_ID // 600분 * 10 = 6000
         );
 
+        when(userRepositoryPort.findByIdForUpdate(USER_ID)).thenReturn(Optional.of(createUser(USER_ID, 6000)));
         when(userStudyTimeRepositoryPort.findByUserIdAndDate(USER_ID, expectedDate)).thenReturn(Optional.of(existingStudyTime));
         when(userStudyTimeRepositoryPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
         when(userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(USER_ID, expectedDate, ExpActingCategory.STUDY_TIME))

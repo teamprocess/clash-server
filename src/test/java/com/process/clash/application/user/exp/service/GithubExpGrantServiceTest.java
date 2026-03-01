@@ -143,6 +143,7 @@ class GithubExpGrantServiceTest {
         );
 
         when(gitHubDailyStatsQueryPort.findAllByStudyDate(TODAY)).thenReturn(List.of(stats));
+        when(userRepositoryPort.findByIdForUpdate(USER_ID)).thenReturn(Optional.of(createUser(USER_ID, sameExp)));
         when(userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(USER_ID, TODAY, ExpActingCategory.GITHUB))
             .thenReturn(Optional.of(existingHistory));
 
@@ -158,6 +159,7 @@ class GithubExpGrantServiceTest {
         GitHubDailyStats stats = createStats(USER_ID, 0, 0, 0, 0);
 
         when(gitHubDailyStatsQueryPort.findAllByStudyDate(TODAY)).thenReturn(List.of(stats));
+        when(userRepositoryPort.findByIdForUpdate(USER_ID)).thenReturn(Optional.of(createUser(USER_ID, 0)));
         when(userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(USER_ID, TODAY, ExpActingCategory.GITHUB))
             .thenReturn(Optional.empty());
 
@@ -255,12 +257,11 @@ class GithubExpGrantServiceTest {
         User user2 = createUser(2L, 0);
 
         when(gitHubDailyStatsQueryPort.findAllByStudyDate(TODAY)).thenReturn(List.of(stats1, stats2));
-        when(userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(eq(1L), eq(TODAY), eq(ExpActingCategory.GITHUB)))
-            .thenThrow(new RuntimeException("DB error"));
+        when(userRepositoryPort.findByIdForUpdate(1L)).thenThrow(new RuntimeException("DB error"));
+        when(userRepositoryPort.findByIdForUpdate(2L)).thenReturn(Optional.of(user2));
         when(userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(eq(2L), eq(TODAY), eq(ExpActingCategory.GITHUB)))
             .thenReturn(Optional.empty());
         when(userExpHistoryRepositoryPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
-        when(userRepositoryPort.findByIdForUpdate(2L)).thenReturn(Optional.of(user2));
         when(userRepositoryPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         githubExpGrantService.grantForToday();
