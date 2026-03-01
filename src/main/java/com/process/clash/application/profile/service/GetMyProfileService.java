@@ -18,6 +18,7 @@ public class GetMyProfileService implements GetMyProfileUsecase {
     private final UserRepositoryPort userRepositoryPort;
     private final UserGitHubRepositoryPort userGitHubRepositoryPort;
     private final UserPresencePort userPresencePort;
+    private final EquippedItemsAssembler equippedItemsAssembler;
 
     public GetMyProfileData.Result execute(GetMyProfileData.Command command) {
         User user = userRepositoryPort.findById(command.actor().id())
@@ -25,6 +26,11 @@ public class GetMyProfileService implements GetMyProfileUsecase {
 
         boolean githubLinked = userGitHubRepositoryPort.findByUserId(user.id()).isPresent();
         UserActivityStatus activityStatus = userPresencePort.getStatus(user.id());
-        return GetMyProfileData.Result.from(user, githubLinked, activityStatus);
+        return GetMyProfileData.Result.from(
+                user,
+                githubLinked,
+                activityStatus,
+                equippedItemsAssembler.loadByUserId(user.id())
+        );
     }
 }
