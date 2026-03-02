@@ -1,167 +1,73 @@
-package com.process.clash.domain.user.user.entity;
+package com.process.clash.adapter.persistence.user.user;
 
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import jakarta.persistence.*;
+import jakarta.persistence.EntityListeners;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
-public record User(
-        Long id,
-        Instant createdAt,
-        Instant updatedAt,
-        String username,
-        String email,
-        String name,
-        String password,
-        Role role,
-        String profileImage,
-        int totalExp,
-        int totalCookie,
-        Major major,
-        UserStatus userStatus,
-        Instant deletedAt
-) {
-    public boolean isDeleted() {
-        return deletedAt != null;
-    }
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = now() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
+public class UserJpaEntity {
 
-    public static User createDefault(String username, String email, String name, String password) {
-        return new User(
-                null,
-                null,
-                null,
-                username,
-                email,
-                name,
-                password,
-                Role.USER,
-                "",
-                0,
-                0,
-                Major.NONE,
-                UserStatus.PENDING,
-                null
-        );
-    }
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public User submitMajor(Major major) {
-        return new User(
-                this.id,
-                this.createdAt,
-                Instant.now(),
-                this.username,
-                this.email,
-                this.name,
-                this.password,
-                this.role,
-                this.profileImage,
-                this.totalExp,
-                this.totalCookie,
-                major,
-                this.userStatus,
-                this.deletedAt
-        );
-    }
+    @CreatedDate
+    @Column(nullable = false)
+    private Instant createdAt;
 
-    public User active() {
-        return new User(
-                this.id,
-                this.createdAt,
-                Instant.now(),
-                this.username,
-                this.email,
-                this.name,
-                this.password,
-                this.role,
-                this.profileImage,
-                this.totalExp,
-                this.totalCookie,
-                this.major,
-                UserStatus.ACTIVE,
-                this.deletedAt
-        );
-    }
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
 
-    public boolean isActive() {
-        return UserStatus.ACTIVE.equals(this.userStatus);
-    }
+    @Column(nullable = false)
+    private String username;
 
-    public User updateSignupInfo(String username, String email, String name, String encodedPassword) {
-        return new User(
-                this.id,
-                this.createdAt,
-                Instant.now(),
-                username,
-                email,
-                name,
-                encodedPassword,
-                this.role,
-                this.profileImage,
-                this.totalExp,
-                this.totalCookie,
-                this.major,
-                this.userStatus,
-                this.deletedAt
-        );
-    }
+    @Column(nullable = false)
+    private String email;
 
-    public User spendCookie(int amount) {
-        int nextTotalCookie = this.totalCookie - amount;
+    @Column(nullable = false)
+    private String name;
 
-        return new User(
-                this.id,
-                this.createdAt,
-                Instant.now(),
-                this.username,
-                this.email,
-                this.name,
-                this.password,
-                this.role,
-                this.profileImage,
-                this.totalExp,
-                nextTotalCookie,
-                this.major,
-                this.userStatus,
-                this.deletedAt
-        );
-    }
+    @Column(nullable = false)
+    private String password;
 
-    public User updateProfileImage(String profileImage) {
-        return new User(
-                this.id,
-                this.createdAt,
-                Instant.now(),
-                this.username,
-                this.email,
-                this.name,
-                this.password,
-                this.role,
-                profileImage,
-                this.totalExp,
-                this.totalCookie,
-                this.major,
-                this.userStatus,
-                this.deletedAt
-        );
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
-    public User addExp(int delta) {
-        return new User(
-                this.id,
-                this.createdAt,
-                Instant.now(),
-                this.username,
-                this.email,
-                this.name,
-                this.password,
-                this.role,
-                this.profileImage,
-                Math.max(0, this.totalExp + delta),
-                this.totalCookie,
-                this.major,
-                this.userStatus,
-                this.deletedAt
-        );
-    }
+    @Column
+    private String profileImage;
+
+    @Column(nullable = false)
+    private int totalExp;
+
+    @Column(nullable = false)
+    private int totalCookie;
+
+    @Enumerated(EnumType.STRING)
+    private Major major;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
+    private Instant deletedAt;
 }
