@@ -15,13 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 
@@ -50,33 +49,22 @@ class AuthEventTest {
 
     private String uniqueUsername;
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public VerificationCodePort verificationCodePort() {
-            return Mockito.mock(VerificationCodePort.class);
-        }
+    @MockitoBean
+    private VerificationCodePort verificationCodePort;
 
-        @Bean
-        public SendVerificationEmailPort sendVerificationEmailPort() {
-            return Mockito.mock(SendVerificationEmailPort.class);
-        }
+    @MockitoBean
+    private SendVerificationEmailPort sendVerificationEmailPort;
 
-        @Bean
-        public SessionManager sessionManager() {
-            return Mockito.mock(SessionManager.class);
-        }
+    @MockitoBean
+    private SessionManager sessionManager;
 
-        @Bean
-        public RecaptchaPort recaptchaPort() {
-            RecaptchaPort recaptchaPort = Mockito.mock(RecaptchaPort.class);
-            Mockito.when(recaptchaPort.verifyToken(anyString())).thenReturn(true);
-            return recaptchaPort;
-        }
-    }
+    @MockitoBean
+    private RecaptchaPort recaptchaPort;
 
     @BeforeEach
     void setUp() {
+        Mockito.when(recaptchaPort.verifyToken(anyString())).thenReturn(true);
+
         authEventRepository.deleteAll();
 
         // 테스트 유저 저장
