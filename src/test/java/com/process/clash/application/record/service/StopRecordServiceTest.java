@@ -6,6 +6,7 @@ import com.process.clash.application.record.exception.exception.notfound.ActiveS
 import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.record.entity.RecordTask;
@@ -19,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.Instant;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
@@ -40,6 +40,9 @@ class StopRecordServiceTest {
     @Mock
     private RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
 
+    @Mock
+    private StudyTimeExpGrantService studyTimeExpGrantService;
+
     private StopRecordService stopRecordService;
 
     @BeforeEach
@@ -48,6 +51,7 @@ class StopRecordServiceTest {
             recordSessionRepositoryPort,
             recordSessionSegmentRepositoryPort,
             recordActivityNotifierPort,
+            studyTimeExpGrantService,
             ZoneId.of("UTC")
         );
     }
@@ -78,6 +82,25 @@ class StopRecordServiceTest {
     }
 
     @Test
+    @DisplayName("기록 종료 시 학습시간 EXP 지급을 호출한다")
+    void execute_callsStudyTimeExpGrant() {
+        Actor actor = new Actor(1L);
+        StopRecordData.Command command = new StopRecordData.Command(actor);
+        User user = createUser(1L);
+        RecordTask task = createTask(11L, user);
+        Instant startedAt = Instant.now().minusSeconds(600);
+        RecordSession activeSession = RecordSession.create(100L, user, task, startedAt, null);
+
+        when(recordSessionRepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+            .thenReturn(Optional.of(activeSession));
+        when(recordSessionRepositoryPort.save(any(RecordSession.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        stopRecordService.execute(command);
+
+        verify(studyTimeExpGrantService).grant(eq(1L), eq(startedAt), any(Instant.class));
+    }
+
+    @Test
     @DisplayName("활성 세션이 없으면 publish 하지 않는다")
     void execute_skipsPublishWhenNoActiveSession() {
         Actor actor = new Actor(1L);
@@ -90,6 +113,7 @@ class StopRecordServiceTest {
             .isInstanceOf(ActiveSessionNotFound.class);
 
         verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());
+        verify(studyTimeExpGrantService, never()).grant(any(), any(), any());
     }
 
     private User createUser(Long id) {
@@ -106,7 +130,8 @@ class StopRecordServiceTest {
             0,
             0,
             Major.NONE,
-            UserStatus.ACTIVE
+            UserStatus.ACTIVE,
+            null
         );
     }
 

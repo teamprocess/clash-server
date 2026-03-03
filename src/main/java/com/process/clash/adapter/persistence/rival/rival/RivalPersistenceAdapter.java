@@ -158,4 +158,9 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     public boolean existsActiveRivalBetween(Long myId, Long opponentId) {
         return rivalJpaRepository.existsActiveRivalBetween(myId, opponentId);
     }
+
+    @Override
+    public void deleteAllByUserId(Long userId) {
+        rivalJpaRepository.deleteAllByUserId(userId);
+    }
 }

@@ -19,8 +19,13 @@ public record User(
         int totalExp,
         int totalCookie,
         Major major,
-        UserStatus userStatus
+        UserStatus userStatus,
+        Instant deletedAt
 ) {
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
     public static User createDefault(String username, String email, String name, String password) {
         return new User(
                 null,
@@ -35,7 +40,8 @@ public record User(
                 0,
                 0,
                 Major.NONE,
-                UserStatus.PENDING
+                UserStatus.PENDING,
+                null
         );
     }
 
@@ -53,7 +59,8 @@ public record User(
                 this.totalExp,
                 this.totalCookie,
                 major,
-                this.userStatus
+                this.userStatus,
+                this.deletedAt
         );
     }
 
@@ -71,7 +78,8 @@ public record User(
                 this.totalExp,
                 this.totalCookie,
                 this.major,
-                UserStatus.ACTIVE  // 상태를 ACTIVE로 변경
+                UserStatus.ACTIVE,
+                this.deletedAt
         );
     }
 
@@ -93,7 +101,8 @@ public record User(
                 this.totalExp,
                 this.totalCookie,
                 this.major,
-                this.userStatus
+                this.userStatus,
+                this.deletedAt
         );
     }
 
@@ -113,7 +122,8 @@ public record User(
                 this.totalExp,
                 nextTotalCookie,
                 this.major,
-                this.userStatus
+                this.userStatus,
+                this.deletedAt
         );
     }
 
@@ -131,7 +141,27 @@ public record User(
                 this.totalExp,
                 this.totalCookie,
                 this.major,
-                this.userStatus
+                this.userStatus,
+                this.deletedAt
+        );
+    }
+
+    public User addExp(int delta) {
+        return new User(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                this.profileImage,
+                Math.max(0, this.totalExp + delta),
+                this.totalCookie,
+                this.major,
+                this.userStatus,
+                this.deletedAt
         );
     }
 }

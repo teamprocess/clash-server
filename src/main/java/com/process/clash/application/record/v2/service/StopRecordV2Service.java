@@ -6,21 +6,25 @@ import com.process.clash.application.record.v2.exception.exception.notfound.Acti
 import com.process.clash.application.record.v2.port.in.StopRecordV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class StopRecordV2Service implements StopRecordV2UseCase {
 
     private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final RecordDevelopSessionSegmentV2RepositoryPort recordDevelopSessionSegmentV2RepositoryPort;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
+    private final StudyTimeExpGrantService studyTimeExpGrantService;
 
     @Override
     public StopRecordV2Data.Result execute(StopRecordV2Data.Command command) {
@@ -36,6 +40,12 @@ public class StopRecordV2Service implements StopRecordV2UseCase {
 
         RecordSessionV2 savedSession = recordSessionV2RepositoryPort.save(activeSession.changeEndedAt(endedAt));
         recordActivityNotifierPort.notifyActivityStopped(command.actor());
+
+        try {
+            studyTimeExpGrantService.grant(activeSession.userId(), activeSession.startedAt(), endedAt);
+        } catch (Exception e) {
+            log.error("학습시간 EXP 지급 실패. userId={}", activeSession.userId(), e);
+        }
 
         return StopRecordV2Data.Result.from(
             endedAt,

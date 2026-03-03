@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface GitHubDailyStatsQueryPort {
     Optional<GitHubDailyStats> findByUserIdAndStudyDate(Long userId, LocalDate studyDate);
+    List<GitHubDailyStats> findAllByStudyDate(LocalDate studyDate);
 
     List<GitHubDailyContributionDto> findDailyContributionsByUserId(Long userId, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
     List<Object[]> findDailyContributionsByUserIds(List<Long> userIds, LocalDate startDate, LocalDate endDate);
