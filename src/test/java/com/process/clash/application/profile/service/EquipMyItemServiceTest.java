@@ -10,7 +10,7 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.profile.data.EquipMyItemData;
 import com.process.clash.application.profile.data.EquippedItemsData;
 import com.process.clash.application.profile.exception.exception.badrequest.InvalidEquippableItemCategoryException;
-import com.process.clash.application.profile.exception.exception.badrequest.ItemNotOwnedException;
+import com.process.clash.application.profile.exception.exception.forbidden.ItemNotOwnedException;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.application.user.useritem.port.out.UserItemRepositoryPort;
 import com.process.clash.application.user.userequippeditem.port.out.UserEquippedItemRepositoryPort;

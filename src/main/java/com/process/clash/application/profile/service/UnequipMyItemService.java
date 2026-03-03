@@ -3,7 +3,7 @@ package com.process.clash.application.profile.service;
 import com.process.clash.application.profile.data.EquippedItemsData;
 import com.process.clash.application.profile.data.UnequipMyItemData;
 import com.process.clash.application.profile.port.in.UnequipMyItemUsecase;
-import com.process.clash.application.profile.exception.exception.badrequest.ItemNotOwnedException;
+import com.process.clash.application.profile.exception.exception.forbidden.ItemNotOwnedException;
 import com.process.clash.application.shop.product.exception.exception.notfound.ProductNotFoundException;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.application.user.useritem.port.out.UserItemRepositoryPort;

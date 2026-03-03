@@ -1,6 +1,5 @@
 package com.process.clash.adapter.web.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.process.clash.application.profile.data.GetMyProfileData;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.domain.common.enums.Major;
@@ -26,7 +25,6 @@ public class GetMyProfileDto {
         UserStatus userStatus,
         boolean githubLinked,
         UserActivityStatus activityStatus,
-        @JsonProperty("equipped_items")
         EquippedItemsDto.Response equippedItems
     ) {
         public static GetMyProfileDto.Response from(GetMyProfileData.Result result) {

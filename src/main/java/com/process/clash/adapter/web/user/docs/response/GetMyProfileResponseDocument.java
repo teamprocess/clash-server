@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 "userStatus": "ACTIVE",
                 "githubLinked": true,
                 "activityStatus": "ONLINE",
-                "equipped_items": {
+                "equippedItems": {
                   "insigma": {
                     "id": 1,
                     "name": "기본 인시그니아",

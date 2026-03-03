@@ -39,7 +39,7 @@ public interface RankingControllerDocument {
                                             "isRival": true,
                                             "linkedId": "github",
                                             "point": 1200,
-                                            "equipped_items": {
+                                            "equippedItems": {
                                               "insigma": {
                                                 "id": 1,
                                                 "name": "기본 인시그니아",
@@ -55,7 +55,7 @@ public interface RankingControllerDocument {
                                             "isRival": false,
                                             "linkedId": "gitlab",
                                             "point": 980,
-                                            "equipped_items": {
+                                            "equippedItems": {
                                               "insigma": null,
                                               "nameplate": null,
                                               "banner": null
