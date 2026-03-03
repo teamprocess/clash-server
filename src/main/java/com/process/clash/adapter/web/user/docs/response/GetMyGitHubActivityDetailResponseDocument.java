@@ -18,7 +18,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 "prCount": 1,
                 "reviewsCount": 0,
                 "additionLines": 120,
-                "deletionLines": 45
+                "deletionLines": 45,
+                "topCommitRepo": "process-clash/clash-server"
               }
             }
             """
