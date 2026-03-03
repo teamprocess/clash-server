@@ -16,10 +16,10 @@ import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
 import java.time.Instant;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -34,17 +34,8 @@ class UnequipMyItemServiceTest {
     @Mock private UserEquippedItemRepositoryPort userEquippedItemRepositoryPort;
     @Mock private EquippedItemsAssembler equippedItemsAssembler;
 
+    @InjectMocks
     private UnequipMyItemService service;
-
-    @BeforeEach
-    void setUp() {
-        service = new UnequipMyItemService(
-                productRepositoryPort,
-                userItemRepositoryPort,
-                userEquippedItemRepositoryPort,
-                equippedItemsAssembler
-        );
-    }
 
     @Test
     @DisplayName("장착 해제 시 대상 장착 정보를 삭제하고 최신 장착 목록을 반환한다")

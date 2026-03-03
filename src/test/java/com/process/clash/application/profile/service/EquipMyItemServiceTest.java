@@ -19,10 +19,10 @@ import com.process.clash.domain.shop.product.enums.ProductCategory;
 import com.process.clash.domain.user.userequippeditem.entity.UserEquippedItem;
 import java.time.Instant;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,17 +38,8 @@ class EquipMyItemServiceTest {
     @Mock private UserEquippedItemRepositoryPort userEquippedItemRepositoryPort;
     @Mock private EquippedItemsAssembler equippedItemsAssembler;
 
+    @InjectMocks
     private EquipMyItemService service;
-
-    @BeforeEach
-    void setUp() {
-        service = new EquipMyItemService(
-                productRepositoryPort,
-                userItemRepositoryPort,
-                userEquippedItemRepositoryPort,
-                equippedItemsAssembler
-        );
-    }
 
     @Test
     @DisplayName("장착 시 같은 카테고리 슬롯이 없으면 새 장착 데이터를 저장한다")

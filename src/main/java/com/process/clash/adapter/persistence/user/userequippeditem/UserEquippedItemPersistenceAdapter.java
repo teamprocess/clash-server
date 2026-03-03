@@ -34,13 +34,13 @@ public class UserEquippedItemPersistenceAdapter implements UserEquippedItemRepos
 
     @Override
     public Optional<UserEquippedItem> findByUserIdAndCategory(Long userId, ProductCategory category) {
-        return userEquippedItemJpaRepository.findByUser_IdAndCategory(userId, category)
+        return userEquippedItemJpaRepository.findByUserIdAndCategory(userId, category)
                 .map(userEquippedItemJpaMapper::toDomain);
     }
 
     @Override
     public List<UserEquippedItem> findAllByUserId(Long userId) {
-        return userEquippedItemJpaRepository.findAllByUser_Id(userId).stream()
+        return userEquippedItemJpaRepository.findAllByUserId(userId).stream()
                 .map(userEquippedItemJpaMapper::toDomain)
                 .toList();
     }
@@ -50,13 +50,13 @@ public class UserEquippedItemPersistenceAdapter implements UserEquippedItemRepos
         if (userIds == null || userIds.isEmpty()) {
             return List.of();
         }
-        return userEquippedItemJpaRepository.findAllByUser_IdIn(userIds).stream()
+        return userEquippedItemJpaRepository.findAllByUserIdIn(userIds).stream()
                 .map(userEquippedItemJpaMapper::toDomain)
                 .toList();
     }
 
     @Override
     public void deleteByUserIdAndProductId(Long userId, Long productId) {
-        userEquippedItemJpaRepository.deleteByUser_IdAndProduct_Id(userId, productId);
+        userEquippedItemJpaRepository.deleteByUserIdAndProductId(userId, productId);
     }
 }
