@@ -78,6 +78,22 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     }
 
     @Override
+    public List<Battle> saveAll(List<Battle> battles) {
+        List<BattleJpaEntity> entities = battles.stream()
+                .map(battle -> {
+                    UserJpaEntity winner = battle.winnerId() != null ? userJpaRepository.getReferenceById(battle.winnerId()) : null;
+                    RivalJpaEntity rivalJpaEntity = rivalJpaRepository.getReferenceById(battle.rivalId());
+                    return battleJpaMapper.toJpaEntity(battle, winner, rivalJpaEntity);
+                })
+                .toList();
+
+        return battleJpaRepository.saveAll(entities)
+                .stream()
+                .map(battleJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public List<Battle> findExpiredInProgressBattles(LocalDate today) {
         return battleJpaRepository.findExpiredInProgressBattles(today)
                 .stream()

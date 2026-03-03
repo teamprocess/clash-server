@@ -21,7 +21,7 @@ public class BattleFinishService {
     public void finishExpiredBattles(LocalDate today) {
         List<Battle> expiredBattles = battleRepositoryPort.findExpiredInProgressBattles(today);
 
-        expiredBattles.forEach(battle -> battleRepositoryPort.save(battle.finish()));
+        battleRepositoryPort.saveAll(expiredBattles.stream().map(Battle::finish).toList());
 
         log.info("Expired battles finished. count={}", expiredBattles.size());
     }
