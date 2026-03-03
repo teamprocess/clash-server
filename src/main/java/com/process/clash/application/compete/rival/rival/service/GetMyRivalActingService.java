@@ -9,6 +9,8 @@ import com.process.clash.application.record.port.out.RecordSessionRepositoryPort
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.infrastructure.config.RecordProperties;
@@ -73,6 +75,16 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
         Map<Long, Long> studyTimeMap = recordSessionRepositoryPort
                 .getTotalStudyTimeInSecondsByUserIds(opponentIds, startOfDay, endOfDay);
+
+        Map<Long, RecordSession> activeSessionByUserId = recordSessionRepositoryPort
+                .findAllActiveSessionsByUserIds(opponentIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        session -> session.user().id(),
+                        session -> session,
+                        (first, second) -> first
+                ));
+
         Map<Long, UserActivityStatus> activityStatusByUserId = userPresencePort.getStatuses(opponentIds);
 
         Long myId = command.actor().id();
@@ -97,12 +109,13 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                         opponentId,
                         UserActivityStatus.OFFLINE
                     );
+                    String usingApp = resolveUsingApp(activeSessionByUserId.get(opponentId));
 
                     return GetMyRivalActingData.MyRival.of(
                             rival.id(),
                             opponent,
                             activeTime,
-                            "CLASH", // TODO: 더미 변경 필요
+                            usingApp,
                             activityStatus
                     );
                 })
@@ -110,5 +123,18 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
 
         return GetMyRivalActingData.Result.from(myRivals);
+    }
+
+    private String resolveUsingApp(RecordSession activeSession) {
+        if (activeSession == null) {
+            return null;
+        }
+        if (activeSession.recordType() != RecordType.ACTIVITY) {
+            return null;
+        }
+        if (activeSession.appId() == null) {
+            return null;
+        }
+        return activeSession.appId().name();
     }
 }

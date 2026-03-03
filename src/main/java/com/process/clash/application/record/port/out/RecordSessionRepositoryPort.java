@@ -16,6 +16,7 @@ public interface RecordSessionRepositoryPort {
     Boolean existsActiveSessionByUserId(Long userId);
     Optional<RecordSession> findActiveSessionByUserId(Long userId);
     Optional<RecordSession> findActiveSessionByUserIdForUpdate(Long userId);
+    List<RecordSession> findAllActiveSessionsByUserIds(List<Long> userIds);
     List<RecordSession> findAllByUserIdAndTimeRange(Long userId, LocalDateTime startTime, LocalDateTime endTime);
     List<RecordSession> findAllActiveSessions();
     Boolean existsActiveSessionByTaskId(Long taskId);
