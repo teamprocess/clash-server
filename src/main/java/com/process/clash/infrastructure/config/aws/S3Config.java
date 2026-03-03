@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.aws;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

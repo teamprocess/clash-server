@@ -1,7 +1,7 @@
 package com.process.clash.adapter.aws;
 
 import com.process.clash.application.roadmap.category.port.out.CategoryImageUploadPort;
-import com.process.clash.infrastructure.config.S3Properties;
+import com.process.clash.infrastructure.config.aws.S3Properties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
