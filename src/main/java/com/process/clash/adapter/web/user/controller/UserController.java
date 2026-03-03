@@ -1,6 +1,7 @@
 package com.process.clash.adapter.web.user.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.user.dto.EquippedItemsDto;
 import com.process.clash.adapter.web.user.docs.controller.UserControllerDocument;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
@@ -13,16 +14,20 @@ import com.process.clash.adapter.web.user.dto.LinkGitHubOAuthDto;
 import com.process.clash.adapter.web.user.dto.UpdateMyProfileImageDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.profile.data.EquipMyItemData;
 import com.process.clash.application.profile.data.GetMyGitHubActivityDetailData;
 import com.process.clash.application.profile.data.GetMyGitHubActivityData;
 import com.process.clash.application.profile.data.GetMyActivityCalendarData;
 import com.process.clash.application.profile.data.GetMyItemsData;
 import com.process.clash.application.profile.data.GetMyProfileData;
+import com.process.clash.application.profile.data.UnequipMyItemData;
+import com.process.clash.application.profile.port.in.EquipMyItemUsecase;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityDetailUsecase;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityUsecase;
 import com.process.clash.application.profile.port.in.GetMyActivityCalendarUsecase;
 import com.process.clash.application.profile.port.in.GetMyItemsUsecase;
 import com.process.clash.application.profile.port.in.GetMyProfileUsecase;
+import com.process.clash.application.profile.port.in.UnequipMyItemUsecase;
 import com.process.clash.application.user.user.data.IssueProfileImageUploadUrlData;
 import com.process.clash.application.user.user.data.UpdateMyProfileImageData;
 import com.process.clash.application.user.user.port.in.IssueProfileImageUploadUrlUseCase;
@@ -58,6 +63,8 @@ public class UserController implements UserControllerDocument {
     private final GetMyGitHubActivityUsecase getMyGitHubActivityUsecase;
     private final GetMyGitHubActivityDetailUsecase getMyGitHubActivityDetailUsecase;
     private final GetMyItemsUsecase getMyItemsUsecase;
+    private final EquipMyItemUsecase equipMyItemUsecase;
+    private final UnequipMyItemUsecase unequipMyItemUsecase;
     private final GetMyActivityCalendarUsecase getMyActivityCalendarUsecase;
     private final LinkGitHubOAuthUsecase linkGitHubOAuthUsecase;
     private final GetMyGitHubLinkStatusUsecase getMyGitHubLinkStatusUsecase;
@@ -129,12 +136,34 @@ public class UserController implements UserControllerDocument {
     @GetMapping("/me/items")
     public ApiResponse<GetMyItemsDto.Response> getMyItems(
         @AuthenticatedActor Actor actor,
-        @RequestParam(defaultValue = "ALL") UserItemCategory category
+        @RequestParam(name = "category", defaultValue = "ALL") UserItemCategory category
     ) {
         GetMyItemsData.Command command = new GetMyItemsData.Command(actor, category);
         GetMyItemsData.Result result = getMyItemsUsecase.execute(command);
         GetMyItemsDto.Response response = GetMyItemsDto.Response.from(result);
-        return ApiResponse.success(response, "보유한 아이템 목록을 성공적으로 조회했습니다.");
+        return ApiResponse.success(response, "소유한 아이템 목록을 성공적으로 조회했습니다.");
+    }
+
+    @PostMapping("/items/{productId}/equip")
+    public ApiResponse<EquippedItemsDto.Response> equipMyItem(
+            @AuthenticatedActor Actor actor,
+            @PathVariable Long productId
+    ) {
+        EquipMyItemData.Command command = new EquipMyItemData.Command(actor, productId);
+        EquipMyItemData.Result result = equipMyItemUsecase.execute(command);
+        EquippedItemsDto.Response response = EquippedItemsDto.Response.from(result.equippedItems());
+        return ApiResponse.success(response, "아이템을 성공적으로 장착했습니다.");
+    }
+
+    @DeleteMapping("/items/{productId}/unequip")
+    public ApiResponse<EquippedItemsDto.Response> unequipMyItem(
+            @AuthenticatedActor Actor actor,
+            @PathVariable Long productId
+    ) {
+        UnequipMyItemData.Command command = new UnequipMyItemData.Command(actor, productId);
+        UnequipMyItemData.Result result = unequipMyItemUsecase.execute(command);
+        EquippedItemsDto.Response response = EquippedItemsDto.Response.from(result.equippedItems());
+        return ApiResponse.success(response, "아이템을 성공적으로 장착 해제했습니다.");
     }
 
     @GetMapping("/me/calendar")

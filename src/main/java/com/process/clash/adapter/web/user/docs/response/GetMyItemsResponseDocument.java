@@ -8,12 +8,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
         example = """
             {
               "success": true,
-              "message": "보유한 아이템 목록을 성공적으로 조회했습니다.",
+              "message": "소유한 아이템 목록을 성공적으로 조회했습니다.",
               "data": {
                 "items": [
                   {
                     "id": 1,
                     "title": "기본 인시그니아",
+                    "image": "https://cdn.example.com/items/insignia.png",
                     "description": "기본 아이템",
                     "category": "INSIGNIA",
                     "price": 100,

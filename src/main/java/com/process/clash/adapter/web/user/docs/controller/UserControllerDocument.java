@@ -10,6 +10,7 @@ import com.process.clash.adapter.web.user.docs.response.GetMyActivityCalendarRes
 import com.process.clash.adapter.web.user.docs.response.IssueProfileImageUploadUrlResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.LinkGitHubOAuthResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.UpdateMyProfileImageResponseDocument;
+import com.process.clash.adapter.web.user.dto.EquippedItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubLinkStatusDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
@@ -133,7 +134,27 @@ public interface UserControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMyItemsDto.Response> getMyItems(
             @Parameter(hidden = true) Actor actor,
-            @Parameter(description = "카테고리 (ALL, INSIGNIA, NAMEPLATE, BANNER)", required = true) UserItemCategory category
+            @Parameter(description = "카테고리 (ALL, INSIGMA, INSIGNIA, NAMEPLATE, BANNER)", required = true) UserItemCategory category
+    );
+
+    @Operation(summary = "아이템 장착", description = "보유한 아이템을 장착합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "장착 성공",
+                    content = @Content(schema = @Schema(implementation = EquippedItemsDto.Response.class)))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<EquippedItemsDto.Response> equipMyItem(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "상품 ID", required = true) Long productId
+    );
+
+    @Operation(summary = "아이템 장착 해제", description = "장착한 아이템을 해제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "해제 성공",
+                    content = @Content(schema = @Schema(implementation = EquippedItemsDto.Response.class)))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<EquippedItemsDto.Response> unequipMyItem(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "상품 ID", required = true) Long productId
     );
 
     @Operation(summary = "활동 캘린더 조회", description = "특정 월의 활동 캘린더를 조회합니다.")

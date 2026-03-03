@@ -3,6 +3,7 @@ package com.process.clash.adapter.persistence.user.useritem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import java.util.Set;
 
@@ -10,6 +11,14 @@ import java.util.Set;
 public interface UserItemJpaRepository extends JpaRepository<UserItemJpaEntity, Long> {
 
     boolean existsByUserIdAndProductId(Long userId, Long productId);
+
+    @Query("""
+            SELECT ui.product.id
+            FROM UserItemJpaEntity ui
+            WHERE ui.user.id = :userId
+            ORDER BY ui.product.id ASC
+            """)
+    List<Long> findProductIdsByUserId(@Param("userId") Long userId);
 
     @Query("""
             SELECT ui.product.id

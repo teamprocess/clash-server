@@ -3,7 +3,7 @@ package com.process.clash.application.profile.service;
 import com.process.clash.application.profile.data.GetMyItemsData;
 import com.process.clash.application.profile.port.in.GetMyItemsUsecase;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
-import com.process.clash.application.user.usergoodshistory.port.out.UserGoodsHistoryRepositoryPort;
+import com.process.clash.application.user.useritem.port.out.UserItemRepositoryPort;
 import com.process.clash.domain.common.enums.UserItemCategory;
 import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.product.enums.ProductCategory;
@@ -19,13 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GetMyItemsService implements GetMyItemsUsecase {
 
-    private final UserGoodsHistoryRepositoryPort userGoodsHistoryRepositoryPort;
+    private final UserItemRepositoryPort userItemRepositoryPort;
     private final ProductRepositoryPort productRepositoryPort;
 
     @Override
     public GetMyItemsData.Result execute(GetMyItemsData.Command command) {
-        List<Long> productIds = userGoodsHistoryRepositoryPort
-                .findDistinctProductIdsByUserId(command.actor().id());
+        List<Long> productIds = userItemRepositoryPort.findProductIdsByUserId(command.actor().id());
 
         if (productIds.isEmpty()) {
             return GetMyItemsData.Result.from(List.of());
@@ -48,7 +47,15 @@ public class GetMyItemsService implements GetMyItemsUsecase {
         if (category == null || category == UserItemCategory.ALL) {
             return true;
         }
-        return productCategory != null && productCategory.name().equals(category.name());
+        if (productCategory == null) {
+            return false;
+        }
+        return switch (category) {
+            case INSIGMA, INSIGNIA -> productCategory == ProductCategory.INSIGNIA;
+            case NAMEPLATE -> productCategory == ProductCategory.NAMEPLATE;
+            case BANNER -> productCategory == ProductCategory.BANNER;
+            default -> true;
+        };
     }
 
     private GetMyItemsData.Item toItem(Product product) {
@@ -57,6 +64,7 @@ public class GetMyItemsService implements GetMyItemsUsecase {
         return GetMyItemsData.Item.of(
                 product.id(),
                 product.title(),
+                product.image(),
                 product.description(),
                 product.category(),
                 product.price(),

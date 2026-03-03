@@ -20,10 +20,12 @@ public class GetMyProfileDto {
         String profileImage,
         int totalExp,
         int totalCookie,
+        int totalToken,
         Major major,
         UserStatus userStatus,
         boolean githubLinked,
-        UserActivityStatus activityStatus
+        UserActivityStatus activityStatus,
+        EquippedItemsDto.Response equippedItems
     ) {
         public static GetMyProfileDto.Response from(GetMyProfileData.Result result) {
             return new Response(
@@ -37,10 +39,12 @@ public class GetMyProfileDto {
               result.profileImage(),
               result.totalExp(),
               result.totalCookie(),
+              result.totalToken(),
               result.major(),
               result.userStatus(),
               result.githubLinked(),
-              result.activityStatus()
+              result.activityStatus(),
+              EquippedItemsDto.Response.from(result.equippedItems())
             );
         }
     }
