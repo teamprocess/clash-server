@@ -4,13 +4,18 @@ import com.process.clash.adapter.persistence.record.v2.session.RecordDevelopSess
 import com.process.clash.adapter.persistence.record.v2.session.RecordDevelopSessionV2JpaRepository;
 import com.process.clash.application.record.v2.exception.exception.notfound.RecordDevelopSegmentV2NotFoundException;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
+import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.v2.entity.RecordDevelopSessionSegmentV2;
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class RecordDevelopSessionSegmentV2PersistenceAdapter implements RecordDevelopSessionSegmentV2RepositoryPort {
 
     private final RecordDevelopSessionSegmentV2JpaRepository recordDevelopSessionSegmentV2JpaRepository;
@@ -48,5 +53,43 @@ public class RecordDevelopSessionSegmentV2PersistenceAdapter implements RecordDe
     public Optional<RecordDevelopSessionSegmentV2> findOpenSegmentBySessionIdForUpdate(Long sessionId) {
         return recordDevelopSessionSegmentV2JpaRepository.findOpenBySessionIdForUpdate(sessionId)
             .map(recordDevelopSessionSegmentV2JpaMapper::toDomain);
+    }
+
+    @Override
+    public List<AppActivityTotal> findAppActivityTotalsByUserIdAndRange(
+        Long userId,
+        Instant startTime,
+        Instant endTime,
+        Instant now
+    ) {
+        return recordDevelopSessionSegmentV2JpaRepository.findAppActivityTotalsByUserIdAndRange(
+                userId,
+                startTime,
+                endTime,
+                now
+            ).stream()
+            .map(this::toAppActivityTotal)
+            .flatMap(Optional::stream)
+            .toList();
+    }
+
+    private Optional<AppActivityTotal> toAppActivityTotal(
+        RecordDevelopSessionSegmentV2JpaRepository.AppActivityTotalProjection row
+    ) {
+        String appId = row.getAppId();
+        if (appId == null || appId.isBlank()) {
+            log.warn("Skip app activity aggregation row due to empty appId");
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(new AppActivityTotal(
+                MonitoredApp.valueOf(appId),
+                row.getTotalSeconds()
+            ));
+        } catch (IllegalArgumentException e) {
+            log.warn("Skip app activity aggregation row due to unknown appId: {}", appId);
+            return Optional.empty();
+        }
     }
 }

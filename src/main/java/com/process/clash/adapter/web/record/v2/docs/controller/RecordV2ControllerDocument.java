@@ -2,12 +2,14 @@ package com.process.clash.adapter.web.record.v2.docs.controller;
 
 import com.process.clash.adapter.web.record.v2.docs.request.StartRecordV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.request.SwitchDevelopAppV2RequestDocument;
+import com.process.clash.adapter.web.record.v2.docs.response.GetActivityStatisticsV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.GetCurrentRecordV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.GetDailyRecordV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.GetMonitoredAppsV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.StartRecordV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.StopRecordV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.SwitchDevelopAppV2ResponseDocument;
+import com.process.clash.adapter.web.record.v2.dto.GetActivityStatisticsV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetMonitoredAppsV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetTodayRecordV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.RecordSessionV2Dto;
@@ -15,6 +17,7 @@ import com.process.clash.adapter.web.record.v2.dto.StartRecordV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.StopRecordV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.SwitchDevelopAppV2Dto;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.domain.common.enums.PeriodCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -121,6 +124,37 @@ public interface RecordV2ControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<GetMonitoredAppsV2Dto.Response> getMonitoredApps(
         @Parameter(hidden = true) Actor actor
+    );
+
+    @Operation(summary = "앱별 활동 시간 조회", description = "지정 기간(DAY/WEEK/MONTH) 동안 앱별 하루 평균 활동 시간을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(
+                schema = @Schema(implementation = GetActivityStatisticsV2ResponseDocument.class),
+                examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "message": "앱별 활동 시간을 조회했습니다.",
+                      "data": {
+                        "apps": [
+                          {
+                            "appId": "VSCODE",
+                            "studyTime": 3600
+                          },
+                          {
+                            "appId": "INTELLIJ_IDEA",
+                            "studyTime": 1200
+                          }
+                        ]
+                      }
+                    }
+                    """)
+            ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetActivityStatisticsV2Dto.Response> getActivityStatistics(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "조회 기간 (DAY, WEEK, MONTH)", example = "WEEK", required = true)
+        @RequestParam PeriodCategory duration
     );
 
     @Operation(summary = "기록 시작", description = "V2 기록을 시작합니다.")
