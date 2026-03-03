@@ -13,26 +13,26 @@ public class AuthEventPersistenceAdapter implements AuthEventRepositoryPort {
     private final AuthEventJpaRepository repository;
 
     @Override
-    public void recordLogin(String username, String ipAddress, String device) {
-        AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "LOGIN", ipAddress, device, Instant.now());
-        repository.save(entity);
+    public void recordSignIn(String username, String ipAddress, String device) {
+        recordAuthEvent(username, "SIGN_IN", ipAddress, device);
     }
 
     @Override
-    public void recordNoRecapchaLogin(String username, String ipAddress, String device) {
-        AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "NO_RECAPCHA_LOGIN", ipAddress, device, Instant.now());
-        repository.save(entity);
+    public void recordDevSignIn(String username, String ipAddress, String device) {
+        recordAuthEvent(username, "DEV_SIGN_IN", ipAddress, device);
     }
 
     @Override
-    public void recordLogout(String username, String ipAddress, String device) {
-        AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "LOGOUT", ipAddress, device, Instant.now());
-        repository.save(entity);
+    public void recordSignOut(String username, String ipAddress, String device) {
+        recordAuthEvent(username, "SIGN_OUT", ipAddress, device);
     }
 
     @Override
     public void recordSessionExpired(String username, String ipAddress, String device) {
-        AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "SESSION_EXPIRE", ipAddress, device, Instant.now());
-        repository.save(entity);
+        recordAuthEvent(username, "SESSION_EXPIRED", ipAddress, device);
+    }
+
+    private void recordAuthEvent(String username, String eventType, String ipAddress, String device) {
+        repository.save(new AuthEventJpaEntity(username, eventType, ipAddress, device, Instant.now()));
     }
 }

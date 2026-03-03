@@ -24,6 +24,6 @@ public class SignOutService implements SignOutUseCase {
         // invalidate session
         sessionManager.invalidateSession();
 
-        authEventRepositoryPort.recordLogout(username, accessContext.ipAddress(), accessContext.userAgent());
+        authEventRepositoryPort.recordSignOut(username, accessContext.ipAddress(), accessContext.userAgent());
     }
 }

@@ -40,7 +40,7 @@ public class SignInService implements SignInUseCase {
 
 		// record login event using explicit access context (guaranteed non-null)
 		AccessContext ctx = command.accessContext();
-		authEventRepositoryPort.recordLogin(user.username(), ctx.ipAddress(), ctx.userAgent());
+		authEventRepositoryPort.recordSignIn(user.username(), ctx.ipAddress(), ctx.userAgent());
 
 		return new SignInData.Result(user.id(), user.username(), user.name(), user.role());
 	}

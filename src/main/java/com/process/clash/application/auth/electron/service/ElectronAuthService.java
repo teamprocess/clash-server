@@ -87,9 +87,9 @@ public class ElectronAuthService {
 
 		// 로그인 이벤트 기록
 		if (payload.noRecaptcha()) {
-			authEventRepositoryPort.recordNoRecapchaLogin(user.username(), accessContext.ipAddress(), accessContext.userAgent());
+			authEventRepositoryPort.recordDevSignIn(user.username(), accessContext.ipAddress(), accessContext.userAgent());
 		} else {
-			authEventRepositoryPort.recordLogin(user.username(), accessContext.ipAddress(), accessContext.userAgent());
+			authEventRepositoryPort.recordSignIn(user.username(), accessContext.ipAddress(), accessContext.userAgent());
 		}
 
 		return new ExchangeResult(user.id(), user.username(), user.role().name());
