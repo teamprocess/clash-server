@@ -1,5 +1,6 @@
 package com.process.clash.infrastructure.config;
 
+import com.process.clash.application.auth.electron.port.out.ElectronAuthConfigPort;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -11,7 +12,7 @@ import java.util.List;
 @Setter
 @Component
 @ConfigurationProperties(prefix = "electron.auth")
-public class ElectronAuthProps {
+public class ElectronAuthProps implements ElectronAuthConfigPort {
 	private List<String> allowedRedirectUris;
 	private String authWebUrl;
 	private String signupWebUrl;
