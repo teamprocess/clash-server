@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,4 +88,15 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         LIMIT 1
     """, nativeQuery = true)
     Optional<BattleJpaEntity> findActiveByUserId(@Param("userId") Long userId);
+
+    /**
+     * 종료일이 지났으나 아직 IN_PROGRESS 상태인 배틀 조회 (스케줄러용)
+     */
+    @Query(value = """
+        SELECT b.*
+        FROM battles b
+        WHERE b.battle_status = 'IN_PROGRESS'
+          AND b.end_date < :today
+    """, nativeQuery = true)
+    List<BattleJpaEntity> findExpiredInProgressBattles(@Param("today") LocalDate today);
 }

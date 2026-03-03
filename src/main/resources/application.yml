@@ -81,6 +81,9 @@ record:
   timezone: ${RECORD_TIMEZONE:Asia/Seoul}
   day-boundary-hour: ${RECORD_DAY_BOUNDARY_HOUR:6}
 
+battle:
+  timezone: ${BATTLE_TIMEZONE:Asia/Seoul}
+
 mail:
   sender:
     address: ${MAIL_SENDER_ADDRESS:no-reply@clash.kr}
