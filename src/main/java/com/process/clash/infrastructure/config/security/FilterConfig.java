@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.security;
 
 import com.process.clash.infrastructure.filter.RateLimitFilter;
 import com.process.clash.infrastructure.filter.RecaptchaFilter;

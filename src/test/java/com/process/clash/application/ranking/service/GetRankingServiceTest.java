@@ -16,7 +16,7 @@ import com.process.clash.application.record.port.out.RecordSessionRepositoryPort
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;

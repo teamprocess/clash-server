@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.github;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
