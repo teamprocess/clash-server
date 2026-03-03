@@ -9,7 +9,6 @@ import com.process.clash.application.mail.port.out.SendVerificationEmailPort;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.data.AuthPrincipal;
 import com.process.clash.application.user.user.exception.exception.conflict.UsernameAlreadyExistException;
-import com.process.clash.application.user.user.exception.exception.unauthorized.InvalidCredentialsException;
 import com.process.clash.application.user.user.port.out.AuthEventRepositoryPort;
 import com.process.clash.application.user.user.port.out.PendingUserCachePort;
 import com.process.clash.application.user.user.port.out.SessionManager;
@@ -28,9 +27,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ElectronAuthService {
 
-	// 타이밍 공격 방지를 위한 더미 BCrypt 해시
-	// 원본: "dummy-password-for-timing-attack-prevention"을 BCrypt로 인코딩한 결과
-	private static final String DUMMY_PASSWORD_HASH = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 	// 인증 코드 만료 시간: 5분
@@ -71,46 +67,6 @@ public class ElectronAuthService {
 		return new StartResult(loginUrl, state);
 	}
 
-	public String loginAndRedirect(String username, String password, String state, String redirectUri) {
-		// redirectUri 검증
-		if (!config.getAllowedRedirectUris().contains(redirectUri)) {
-			throw new InvalidRedirectUriException();
-		}
-
-		// state 검증 (소비하지 않음 - 실패 시 재시도 가능)
-		if (!store.validateState(state)) {
-			throw new InvalidStateException();
-		}
-
-		// recaptcha 검증은 RecaptchaFilter에서 이미 완료됨
-
-		// 사용자 인증 (타이밍 공격 방지)
-		User user = userRepositoryPort.findByUsername(username).orElse(null);
-
-		// 사용자가 존재하지 않아도 더미 비밀번호 비교를 수행하여 실행 시간을 일정하게 유지
-		String passwordToCheck = (user != null) ? user.password() : DUMMY_PASSWORD_HASH;
-		boolean matches = passwordEncoder.matches(password, passwordToCheck);
-
-		if (user == null || !matches) {
-			throw new InvalidCredentialsException();
-		}
-
-		// 모든 검증 성공 후 state 소비 (이제야 state 사용 완료)
-		if (!store.consumeState(state)) {
-			// 동시 요청으로 이미 소비된 경우
-			throw new InvalidStateException();
-		}
-
-		// 일회성 코드 생성
-		String code = UUID.randomUUID().toString().replace("-", "");
-		store.saveOneTimeCode(code, state, user.id());
-
-		// deep link URL 생성
-		return redirectUri
-				+ "?code=" + enc(code)
-				+ "&state=" + enc(state);
-	}
-
 	public ExchangeResult exchange(String code, String state, AccessContext accessContext) {
 		// 일회성 코드 검증 및 소비
 		ElectronAuthStorePort.OneTimeCodePayload payload = store.consumeOneTimeCode(code);
@@ -130,7 +86,11 @@ public class ElectronAuthService {
 		sessionManager.createSession(principal, true);
 
 		// 로그인 이벤트 기록
-		authEventRepositoryPort.recordLogin(user.username(), accessContext.ipAddress(), accessContext.userAgent());
+		if (payload.noRecaptcha()) {
+			authEventRepositoryPort.recordNoRecapchaLogin(user.username(), accessContext.ipAddress(), accessContext.userAgent());
+		} else {
+			authEventRepositoryPort.recordLogin(user.username(), accessContext.ipAddress(), accessContext.userAgent());
+		}
 
 		return new ExchangeResult(user.id(), user.username(), user.role().name());
 	}
@@ -249,7 +209,7 @@ public class ElectronAuthService {
 
 		// 일회성 코드 생성
 		String code = UUID.randomUUID().toString().replace("-", "");
-		store.saveOneTimeCode(code, state, savedUser.id());
+		store.saveOneTimeCode(code, state, savedUser.id(), false);
 
 		// deep link URL 생성
 		return redirectUri

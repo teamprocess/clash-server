@@ -3,6 +3,7 @@ package com.process.clash.adapter.web.auth.electron.controller;
 import com.process.clash.adapter.web.auth.electron.dto.ElectronAuthDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.common.util.AccessContextResolver;
+import com.process.clash.application.auth.electron.port.in.ElectronLoginUseCase;
 import com.process.clash.application.auth.electron.service.ElectronAuthService;
 import com.process.clash.application.common.data.AccessContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,8 @@ import java.util.Map;
 public class ElectronAuthController {
 
 	private final ElectronAuthService electronAuthService;
+	private final ElectronLoginUseCase electronSignInService;
+	private final ElectronLoginUseCase noRecapchaElectronSignInService;
 	private final AccessContextResolver accessContextResolver;
 
 	@PostMapping("/sign-in/start")
@@ -35,7 +38,14 @@ public class ElectronAuthController {
 	// 200 + JSON으로 deep link URL을 반환하여 클라이언트가 명시적으로 이동하도록 함
 	@PostMapping("/sign-in")
 	public ApiResponse<Map<String, String>> login(@Valid @RequestBody ElectronAuthDto.LoginRequest req) {
-		String redirectUrl = electronAuthService.loginAndRedirect(
+		String redirectUrl = electronSignInService.execute(
+				req.username(), req.password(), req.state(), req.redirectUri());
+		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
+	}
+
+	@PostMapping("/no-recapcha-sign-in")
+	public ApiResponse<Map<String, String>> noRecapchaLogin(@Valid @RequestBody ElectronAuthDto.LoginRequest req) {
+		String redirectUrl = noRecapchaElectronSignInService.execute(
 				req.username(), req.password(), req.state(), req.redirectUri());
 		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
 	}

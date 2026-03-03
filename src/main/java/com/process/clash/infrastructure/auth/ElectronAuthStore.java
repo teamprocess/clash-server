@@ -49,9 +49,9 @@ public class ElectronAuthStore implements ElectronAuthStorePort {
 	}
 
 	@Override
-	public void saveOneTimeCode(String code, String state, Long userId) {
+	public void saveOneTimeCode(String code, String state, Long userId, boolean noRecaptcha) {
 		try {
-			ElectronAuthStorePort.OneTimeCodePayload payload = new ElectronAuthStorePort.OneTimeCodePayload(state, userId);
+			ElectronAuthStorePort.OneTimeCodePayload payload = new ElectronAuthStorePort.OneTimeCodePayload(state, userId, noRecaptcha);
 			String value = objectMapper.writeValueAsString(payload);
 			redis.opsForValue().set(codeKey(code), value, CODE_TTL);
 		} catch (JsonProcessingException e) {
