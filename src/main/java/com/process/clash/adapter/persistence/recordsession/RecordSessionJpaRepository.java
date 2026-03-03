@@ -26,6 +26,9 @@ public interface RecordSessionJpaRepository extends JpaRepository<RecordSessionJ
     @EntityGraph(attributePaths = {"user", "task"})
     Optional<RecordSessionJpaEntity> findByUserIdAndEndedAtIsNull(Long userId);
 
+    @EntityGraph(attributePaths = {"user", "task"})
+    List<RecordSessionJpaEntity> findAllByUserIdInAndEndedAtIsNull(List<Long> userIds);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
         select s

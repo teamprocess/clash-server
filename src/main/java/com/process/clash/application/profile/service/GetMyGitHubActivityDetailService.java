@@ -34,7 +34,8 @@ public class GetMyGitHubActivityDetailService implements GetMyGitHubActivityDeta
                 stats.prCount(),
                 stats.reviewedPrCount(),
                 stats.additions(),
-                stats.deletions()
+                stats.deletions(),
+                stats.topCommitRepo()
         );
     }
 }

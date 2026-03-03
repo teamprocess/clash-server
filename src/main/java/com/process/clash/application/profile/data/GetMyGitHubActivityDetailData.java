@@ -19,7 +19,8 @@ public class GetMyGitHubActivityDetailData {
         int prCount,
         int reviewsCount,
         long additionLines,
-        long deletionLines
+        long deletionLines,
+        String topCommitRepo
     ) {
         public static Result of(
             String date,
@@ -30,7 +31,8 @@ public class GetMyGitHubActivityDetailData {
             int prCount,
             int reviewsCount,
             long additionLines,
-            long deletionLines
+            long deletionLines,
+            String topCommitRepo
         ) {
             return new Result(
                 date,
@@ -41,7 +43,8 @@ public class GetMyGitHubActivityDetailData {
                 prCount,
                 reviewsCount,
                 additionLines,
-                deletionLines
+                deletionLines,
+                topCommitRepo
             );
         }
     }

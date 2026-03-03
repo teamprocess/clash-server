@@ -51,7 +51,7 @@ class UpdateSubjectTaskV2ServiceTest {
     void execute_updatesTaskName() {
         Actor actor = new Actor(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "백엔드", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 10L, "ERD 설계", 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "ERD 설계", false, 0L, Instant.now(), Instant.now());
         UpdateSubjectTaskV2Data.Command command = new UpdateSubjectTaskV2Data.Command(actor, 10L, 11L, "ERD 검토");
 
         when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));

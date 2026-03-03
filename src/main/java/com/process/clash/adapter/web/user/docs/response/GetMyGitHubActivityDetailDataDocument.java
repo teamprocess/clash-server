@@ -31,4 +31,7 @@ public class GetMyGitHubActivityDetailDataDocument {
 
     @Schema(description = "삭제 라인", example = "45")
     public Long deletionLines;
+
+@Schema(description = "가장 많이 커밋한 저장소 이름", example = "process-clash/clash-server", nullable = true)
+    public String topCommitRepo;
 }

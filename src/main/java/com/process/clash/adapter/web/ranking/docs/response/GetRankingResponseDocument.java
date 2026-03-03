@@ -46,5 +46,34 @@ public class GetRankingResponseDocument {
 
         @Schema(description = "포인트", example = "1200")
         private Long point;
+
+        @Schema(description = "장착 아이템")
+        private EquippedItemsDoc equippedItems;
+    }
+
+    @Schema(name = "EquippedItems", description = "장착 아이템 정보")
+    public static class EquippedItemsDoc {
+
+        @Schema(description = "인시그니아")
+        private EquippedItemDoc insigma;
+
+        @Schema(description = "네임플레이트")
+        private EquippedItemDoc nameplate;
+
+        @Schema(description = "배너")
+        private EquippedItemDoc banner;
+    }
+
+    @Schema(name = "EquippedItem", description = "장착 아이템 요약")
+    public static class EquippedItemDoc {
+
+        @Schema(description = "아이템 ID", example = "1")
+        private Long id;
+
+        @Schema(description = "아이템 이름", example = "기본 인시그니아")
+        private String name;
+
+        @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")
+        private String image;
     }
 }

@@ -30,8 +30,8 @@ public class RecordTaskSessionV2JpaEntity {
     @JoinColumn(name = "id", nullable = false)
     private RecordActiveSessionV2JpaEntity activeSession;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fk_record_subject_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "fk_record_subject_id", nullable = true)
     private RecordSubjectV2JpaEntity subject;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)

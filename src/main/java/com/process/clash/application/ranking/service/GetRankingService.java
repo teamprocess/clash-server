@@ -1,6 +1,8 @@
 package com.process.clash.application.ranking.service;
 
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.profile.data.EquippedItemsData;
+import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.ranking.port.in.GetRankingUseCase;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class GetRankingService implements GetRankingUseCase {
     private final RecordSessionRepositoryPort recordSessionRepositoryPort;
     private final ZoneId recordZoneId;
     private final RecordProperties recordProperties;
+    private final EquippedItemsAssembler equippedItemsAssembler;
 
     @Override
     public GetRankingData.Result execute(GetRankingData.Command command) {
@@ -41,7 +45,7 @@ public class GetRankingService implements GetRankingUseCase {
             case ACTIVE_TIME -> activeTime(userId, periodCategory);
         };
 
-        return GetRankingData.Result.of(command.category(), command.period(), userRankings);
+        return GetRankingData.Result.of(command.category(), command.period(), attachEquippedItems(userRankings));
     }
 
     private List<UserRanking> gitHub(Long userId, PeriodCategory periodCategory) {
@@ -101,5 +105,29 @@ public class GetRankingService implements GetRankingUseCase {
         LocalDateTime endDate = now.toLocalDateTime();
 
         return recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    private List<UserRanking> attachEquippedItems(List<UserRanking> rankings) {
+        if (rankings == null || rankings.isEmpty()) {
+            return rankings;
+        }
+
+        Map<Long, EquippedItemsData> equippedItemsByUserId = equippedItemsAssembler.loadByUserIds(
+                rankings.stream()
+                        .map(UserRanking::userId)
+                        .toList()
+        );
+
+        return rankings.stream()
+                .map(ranking -> new UserRanking(
+                        ranking.userId(),
+                        ranking.name(),
+                        ranking.profileImage(),
+                        ranking.isRival(),
+                        ranking.linkedId(),
+                        ranking.point(),
+                        equippedItemsByUserId.getOrDefault(ranking.userId(), EquippedItemsData.empty())
+                ))
+                .toList();
     }
 }

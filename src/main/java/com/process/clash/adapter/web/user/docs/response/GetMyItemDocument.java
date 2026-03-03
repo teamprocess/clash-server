@@ -11,6 +11,9 @@ public class GetMyItemDocument {
     @Schema(description = "아이템 제목", example = "기본 인시그니아")
     public String title;
 
+    @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")
+    public String image;
+
     @Schema(description = "아이템 설명", example = "기본 아이템")
     public String description;
 

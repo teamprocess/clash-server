@@ -25,15 +25,18 @@ public class GetMyProfileData {
         String profileImage,
         int totalExp,
         int totalCookie,
+        int totalToken,
         Major major,
         UserStatus userStatus,
         boolean githubLinked,
-        UserActivityStatus activityStatus
+        UserActivityStatus activityStatus,
+        EquippedItemsData equippedItems
     ) {
         public static Result from(
             User user,
             boolean githubLinked,
-            UserActivityStatus activityStatus
+            UserActivityStatus activityStatus,
+            EquippedItemsData equippedItems
         ) {
             return new Result(
                 user.id(),
@@ -46,10 +49,12 @@ public class GetMyProfileData {
                 user.profileImage(),
                 user.totalExp(),
                 user.totalCookie(),
+                0,
                 user.major(),
                 user.userStatus(),
                 githubLinked,
-                activityStatus
+                activityStatus,
+                equippedItems
             );
         }
     }

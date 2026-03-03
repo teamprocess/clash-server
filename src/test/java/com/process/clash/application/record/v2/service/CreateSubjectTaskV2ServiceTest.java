@@ -2,6 +2,7 @@ package com.process.clash.application.record.v2.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,6 +59,25 @@ class CreateSubjectTaskV2ServiceTest {
         createSubjectTaskV2Service.execute(command);
 
         verify(recordTaskV2RepositoryPort).save(any(RecordTaskV2.class));
+    }
+
+    @Test
+    @DisplayName("subject 없이도 세부 작업을 생성한다")
+    void execute_createsTaskWithoutSubject() {
+        Actor actor = new Actor(1L);
+        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, null, "리팩터링");
+
+        when(recordTaskV2RepositoryPort.save(any(RecordTaskV2.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        createSubjectTaskV2Service.execute(command);
+
+        verify(recordSubjectV2RepositoryPort, never()).findById(any());
+        verify(recordTaskV2RepositoryPort).save(argThat(task ->
+            task.subjectId() == null
+                && task.userId().equals(1L)
+                && task.name().equals("리팩터링")
+        ));
     }
 
     @Test

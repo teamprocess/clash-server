@@ -43,6 +43,7 @@ public class GetAllSubjectsV2Dto {
         Long id,
         String name,
         String icon,
+        boolean completed,
         Long studyTime
     ) {
         public static TaskSummary from(GetAllSubjectsV2Data.TaskSummary task) {
@@ -50,6 +51,7 @@ public class GetAllSubjectsV2Dto {
                 task.id(),
                 task.name(),
                 DEFAULT_ICON,
+                task.completed(),
                 task.studyTime()
             );
         }

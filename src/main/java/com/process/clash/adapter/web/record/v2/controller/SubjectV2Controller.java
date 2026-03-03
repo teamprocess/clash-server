@@ -2,21 +2,18 @@ package com.process.clash.adapter.web.record.v2.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.record.v2.docs.controller.SubjectV2ControllerDocument;
-import com.process.clash.adapter.web.record.v2.dto.CreateSubjectTaskV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.CreateSubjectV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetAllSubjectsV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.UpdateSubjectTaskV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.UpdateSubjectV2Dto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.record.v2.data.CreateSubjectTaskV2Data;
 import com.process.clash.application.record.v2.data.CreateSubjectV2Data;
 import com.process.clash.application.record.v2.data.DeleteSubjectTaskV2Data;
 import com.process.clash.application.record.v2.data.DeleteSubjectV2Data;
 import com.process.clash.application.record.v2.data.GetAllSubjectsV2Data;
 import com.process.clash.application.record.v2.data.UpdateSubjectTaskV2Data;
 import com.process.clash.application.record.v2.data.UpdateSubjectV2Data;
-import com.process.clash.application.record.v2.port.in.CreateSubjectTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.CreateSubjectV2UseCase;
 import com.process.clash.application.record.v2.port.in.DeleteSubjectTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.DeleteSubjectV2UseCase;
@@ -43,7 +40,6 @@ public class SubjectV2Controller implements SubjectV2ControllerDocument {
     private final CreateSubjectV2UseCase createSubjectV2UseCase;
     private final UpdateSubjectV2UseCase updateSubjectV2UseCase;
     private final DeleteSubjectV2UseCase deleteSubjectV2UseCase;
-    private final CreateSubjectTaskV2UseCase createSubjectTaskV2UseCase;
     private final UpdateSubjectTaskV2UseCase updateSubjectTaskV2UseCase;
     private final DeleteSubjectTaskV2UseCase deleteSubjectTaskV2UseCase;
 
@@ -95,18 +91,6 @@ public class SubjectV2Controller implements SubjectV2ControllerDocument {
         deleteSubjectV2UseCase.execute(command);
 
         return ApiResponse.success("기존 과목 그룹을 삭제했습니다.");
-    }
-
-    @PostMapping("/{subjectId}/tasks")
-    public ApiResponse<Void> createTask(
-        @AuthenticatedActor Actor actor,
-        @PathVariable Long subjectId,
-        @Valid @RequestBody CreateSubjectTaskV2Dto.Request request
-    ) {
-        CreateSubjectTaskV2Data.Command command = request.toCommand(actor, subjectId);
-        createSubjectTaskV2UseCase.execute(command);
-
-        return ApiResponse.success("새로운 세부 작업을 생성했습니다.");
     }
 
     @PatchMapping("/{subjectId}/tasks/{taskId}")

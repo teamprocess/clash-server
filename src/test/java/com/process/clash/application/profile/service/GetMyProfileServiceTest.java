@@ -1,6 +1,7 @@
 package com.process.clash.application.profile.service;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.profile.data.EquippedItemsData;
 import com.process.clash.application.profile.data.GetMyProfileData;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
@@ -35,6 +36,9 @@ class GetMyProfileServiceTest {
     @Mock
     private UserPresencePort userPresencePort;
 
+    @Mock
+    private EquippedItemsAssembler equippedItemsAssembler;
+
     private GetMyProfileService getMyProfileService;
 
     @BeforeEach
@@ -42,7 +46,8 @@ class GetMyProfileServiceTest {
         getMyProfileService = new GetMyProfileService(
             userRepositoryPort,
             userGitHubRepositoryPort,
-            userPresencePort
+            userPresencePort,
+            equippedItemsAssembler
         );
     }
 
@@ -64,11 +69,13 @@ class GetMyProfileServiceTest {
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(userGitHubRepositoryPort.findByUserId(user.id())).thenReturn(Optional.of(userGitHub));
         when(userPresencePort.getStatus(user.id())).thenReturn(UserActivityStatus.AWAY);
+        when(equippedItemsAssembler.loadByUserId(user.id())).thenReturn(EquippedItemsData.empty());
 
         GetMyProfileData.Result result = getMyProfileService.execute(command);
 
         assertThat(result.githubLinked()).isTrue();
         assertThat(result.activityStatus()).isEqualTo(UserActivityStatus.AWAY);
+        assertThat(result.equippedItems()).isEqualTo(EquippedItemsData.empty());
     }
 
     private User createUser(Long id) {

@@ -7,4 +7,6 @@ public interface RecordActivityNotifierPort {
     void notifyActivityStarted(Actor actor);
 
     void notifyActivityStopped(Actor actor);
+
+    void notifySessionChanged(Actor actor);
 }

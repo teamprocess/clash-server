@@ -29,6 +29,7 @@ public class GetAllSubjectsV2Data {
     public record TaskSummary(
         Long id,
         String name,
+        boolean completed,
         Long studyTime
     ) {
     }

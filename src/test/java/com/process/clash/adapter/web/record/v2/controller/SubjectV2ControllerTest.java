@@ -13,7 +13,6 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.v2.data.CreateSubjectV2Data;
 import com.process.clash.application.record.v2.data.GetAllSubjectsV2Data;
-import com.process.clash.application.record.v2.port.in.CreateSubjectTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.CreateSubjectV2UseCase;
 import com.process.clash.application.record.v2.port.in.DeleteSubjectTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.DeleteSubjectV2UseCase;
@@ -52,9 +51,6 @@ class SubjectV2ControllerTest {
     private DeleteSubjectV2UseCase deleteSubjectV2UseCase;
 
     @Mock
-    private CreateSubjectTaskV2UseCase createSubjectTaskV2UseCase;
-
-    @Mock
     private UpdateSubjectTaskV2UseCase updateSubjectTaskV2UseCase;
 
     @Mock
@@ -70,7 +66,6 @@ class SubjectV2ControllerTest {
             createSubjectV2UseCase,
             updateSubjectV2UseCase,
             deleteSubjectV2UseCase,
-            createSubjectTaskV2UseCase,
             updateSubjectTaskV2UseCase,
             deleteSubjectTaskV2UseCase
         );
@@ -107,6 +102,15 @@ class SubjectV2ControllerTest {
         verify(createSubjectV2UseCase).execute(captor.capture());
         org.assertj.core.api.Assertions.assertThat(captor.getValue().name()).isEqualTo("백엔드 프로젝트");
         org.assertj.core.api.Assertions.assertThat(captor.getValue().actor().id()).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("기존 POST /api/v2/record/subjects/{subjectId}/tasks 경로는 더 이상 존재하지 않는다")
+    void oldCreateTaskEndpoint_isNotFound() throws Exception {
+        mockMvc.perform(post("/api/v2/record/subjects/1/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(java.util.Map.of("name", "ERD 설계"))))
+            .andExpect(status().isNotFound());
     }
 
     private HandlerMethodArgumentResolver authenticatedActorResolver() {

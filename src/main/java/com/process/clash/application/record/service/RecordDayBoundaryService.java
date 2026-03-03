@@ -1,5 +1,7 @@
 package com.process.clash.application.record.service;
 
+import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.entity.RecordSession;
@@ -10,7 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class RecordDayBoundaryService {
 
     private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordActivityNotifierPort recordActivityNotifierPort;
     private final StudyTimeExpGrantService studyTimeExpGrantService;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
@@ -34,7 +39,9 @@ public class RecordDayBoundaryService {
 
         List<RecordSession> sessionsToClose = new ArrayList<>();
         List<RecordSession> sessionsToCreate = new ArrayList<>();
+        Set<Long> affectedUserIds = new LinkedHashSet<>();
 
+        // 아래 forEach는 최대 유저 수만큼 반복되며 큰 시간복잡도를 요하진 않습니다.
         activeSessions.forEach(session -> {
             Instant firstBoundary = nextBoundaryAfter(session.startedAt(), boundaryHour);
             if (!firstBoundary.isBefore(now)) {
@@ -42,6 +49,9 @@ public class RecordDayBoundaryService {
             }
 
             sessionsToClose.add(session.changeEndedAt(firstBoundary));
+            if (session.user() != null && session.user().id() != null) {
+                affectedUserIds.add(session.user().id());
+            }
 
             Instant segmentStart = firstBoundary;
             Instant nextBoundary = nextBoundaryByLocalDay(firstBoundary);
@@ -87,6 +97,11 @@ public class RecordDayBoundaryService {
                 log.error("학습시간 EXP 지급 실패 (boundary rollover). userId={}", segment.user().id(), e);
             }
         });
+
+        for (Long userId : affectedUserIds) {
+            recordActivityNotifierPort.notifySessionChanged(new Actor(userId));
+        }
+
     }
 
     private Instant nextBoundaryAfter(Instant startedAt, int boundaryHour) {

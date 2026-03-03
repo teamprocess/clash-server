@@ -13,6 +13,7 @@ import com.process.clash.application.record.data.SwitchActivityAppData;
 import com.process.clash.application.record.exception.exception.badrequest.InvalidActivitySwitchRequestException;
 import com.process.clash.application.record.exception.exception.notfound.ActiveSessionNotFound;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -42,6 +43,9 @@ class SwitchActivityAppServiceTest {
     @Mock
     private RecordSessionSegmentRepositoryPort recordSessionSegmentRepositoryPort;
 
+    @Mock
+    private RecordActivityNotifierPort recordActivityNotifierPort;
+
     private SwitchActivityAppService switchActivityAppService;
 
     @BeforeEach
@@ -49,6 +53,7 @@ class SwitchActivityAppServiceTest {
         switchActivityAppService = new SwitchActivityAppService(
             recordSessionRepositoryPort,
             recordSessionSegmentRepositoryPort,
+            recordActivityNotifierPort,
             new MonitoredAppPolicy(),
             ZoneId.of("UTC")
         );
@@ -123,6 +128,7 @@ class SwitchActivityAppServiceTest {
         assertThat(result.session().activity().appId()).isEqualTo(MonitoredApp.INTELLIJ_IDEA);
         verify(recordSessionSegmentRepositoryPort, times(2)).save(any(RecordSessionSegment.class));
         verify(recordSessionRepositoryPort).save(any(RecordSession.class));
+        verify(recordActivityNotifierPort).notifySessionChanged(actor);
     }
 
     @Test
@@ -148,6 +154,7 @@ class SwitchActivityAppServiceTest {
         assertThat(result.session().activity().appId()).isEqualTo(MonitoredApp.VSCODE);
         verify(recordSessionSegmentRepositoryPort, never()).save(any(RecordSessionSegment.class));
         verify(recordSessionRepositoryPort, never()).save(any(RecordSession.class));
+        verify(recordActivityNotifierPort, never()).notifySessionChanged(any());
     }
 
     private User createUser(Long id) {

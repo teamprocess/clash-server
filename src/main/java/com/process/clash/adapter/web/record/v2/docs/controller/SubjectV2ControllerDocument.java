@@ -1,17 +1,14 @@
 package com.process.clash.adapter.web.record.v2.docs.controller;
 
-import com.process.clash.adapter.web.record.v2.docs.request.CreateSubjectTaskV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.request.CreateSubjectV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.request.UpdateSubjectTaskV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.request.UpdateSubjectV2RequestDocument;
-import com.process.clash.adapter.web.record.v2.docs.response.CreateSubjectTaskV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.CreateSubjectV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.DeleteSubjectTaskV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.DeleteSubjectV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.GetAllSubjectsV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.UpdateSubjectTaskV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.UpdateSubjectV2ResponseDocument;
-import com.process.clash.adapter.web.record.v2.dto.CreateSubjectTaskV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.CreateSubjectV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetAllSubjectsV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.UpdateSubjectTaskV2Dto;
@@ -142,34 +139,6 @@ public interface SubjectV2ControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<Void> deleteSubject(
         @Parameter(hidden = true) Actor actor,
         @Parameter(description = "과목 그룹 ID", example = "1") @PathVariable Long subjectId
-    );
-
-    @Operation(summary = "세부 작업 생성", description = "과목 그룹 하위의 V2 세부 작업을 생성합니다.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "생성 성공",
-            content = @Content(
-                schema = @Schema(implementation = CreateSubjectTaskV2ResponseDocument.class),
-                examples = @ExampleObject(value = """
-                    {
-                      "success": true,
-                      "message": "새로운 세부 작업을 생성했습니다."
-                    }
-                    """)
-            ))
-    })
-    com.process.clash.adapter.web.common.ApiResponse<Void> createTask(
-        @Parameter(hidden = true) Actor actor,
-        @Parameter(description = "과목 그룹 ID", example = "1") @PathVariable Long subjectId,
-        @RequestBody(description = "V2 세부 작업 생성 요청", required = true,
-            content = @Content(
-                schema = @Schema(implementation = CreateSubjectTaskV2RequestDocument.class),
-                examples = @ExampleObject(value = """
-                    {
-                      "name": "ERD 설계"
-                    }
-                    """)
-            ))
-        CreateSubjectTaskV2Dto.Request request
     );
 
     @Operation(summary = "세부 작업 수정", description = "과목 그룹 하위의 V2 세부 작업을 수정합니다.")

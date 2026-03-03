@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.record.v2.task;
 
 import com.process.clash.adapter.persistence.record.v2.subject.RecordSubjectV2JpaEntity;
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -43,21 +44,43 @@ public class RecordTaskV2JpaEntity {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fk_record_subject_id", nullable = false)
+    @Column(nullable = false)
+    private boolean completed;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "fk_record_subject_id", nullable = true)
     private RecordSubjectV2JpaEntity subject;
 
-    public static RecordTaskV2JpaEntity create(String name, RecordSubjectV2JpaEntity subject) {
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_user_id", nullable = false)
+    private UserJpaEntity user;
+
+    public static RecordTaskV2JpaEntity create(
+        String name,
+        boolean completed,
+        RecordSubjectV2JpaEntity subject,
+        UserJpaEntity user
+    ) {
         return new RecordTaskV2JpaEntity(
             null,
             null,
             null,
             name,
-            subject
+            completed,
+            subject,
+            user
         );
     }
 
     public void changeName(String name) {
         this.name = name;
+    }
+
+    public void changeCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public void changeSubject(RecordSubjectV2JpaEntity subject) {
+        this.subject = subject;
     }
 }

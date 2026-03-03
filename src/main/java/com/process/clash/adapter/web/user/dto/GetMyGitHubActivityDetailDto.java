@@ -13,7 +13,8 @@ public class GetMyGitHubActivityDetailDto {
         int prCount,
         int reviewsCount,
         long additionLines,
-        long deletionLines
+        long deletionLines,
+        String topCommitRepo
     ) {
         public static Response from(GetMyGitHubActivityDetailData.Result result) {
             return new Response(
@@ -25,7 +26,8 @@ public class GetMyGitHubActivityDetailDto {
                     result.prCount(),
                     result.reviewsCount(),
                     result.additionLines(),
-                    result.deletionLines()
+                    result.deletionLines(),
+                    result.topCommitRepo()
             );
         }
     }

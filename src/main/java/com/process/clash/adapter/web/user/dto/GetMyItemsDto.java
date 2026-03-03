@@ -21,6 +21,7 @@ public class GetMyItemsDto {
     public record Item(
         Long id,
         String title,
+        String image,
         String description,
         ProductCategory category,
         Long price,
@@ -33,6 +34,7 @@ public class GetMyItemsDto {
             return new Item(
                     item.id(),
                     item.title(),
+                    item.image(),
                     item.description(),
                     item.category(),
                     item.price(),

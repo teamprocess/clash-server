@@ -87,7 +87,7 @@ class StartRecordV2ServiceTest {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 10L, "해시테이블", 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "해시테이블", false, 0L, Instant.now(), Instant.now());
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
             RecordSessionTypeV2.TASK,
             10L,
@@ -99,7 +99,7 @@ class StartRecordV2ServiceTest {
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
         when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
-        when(recordTaskV2RepositoryPort.findByIdAndSubjectId(11L, 10L)).thenReturn(Optional.of(task));
+        when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
         when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
             .thenAnswer(invocation -> withId(invocation.getArgument(0), 100L));
 
@@ -133,7 +133,7 @@ class StartRecordV2ServiceTest {
 
         startRecordV2Service.execute(command);
 
-        verify(recordTaskV2RepositoryPort, never()).findByIdAndSubjectId(any(), any());
+        verify(recordTaskV2RepositoryPort, never()).findByIdAndUserId(any(), any());
         verify(recordDevelopSessionSegmentV2RepositoryPort).save(any());
         verify(recordActivityNotifierPort).notifyActivityStarted(actor);
     }
@@ -161,10 +161,32 @@ class StartRecordV2ServiceTest {
     }
 
     @Test
-    @DisplayName("잘못된 TASK 시작 요청은 예외가 발생한다")
+    @DisplayName("subject/task 둘 다 없으면 TASK 시작 요청은 예외가 발생한다")
     void execute_throwsWhenTaskRequestIsInvalid() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            null,
+            null,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+
+        assertThatThrownBy(() -> startRecordV2Service.execute(command))
+            .isInstanceOf(InvalidRecordV2StartRequestException.class);
+    }
+
+    @Test
+    @DisplayName("TASK 세션 시작 시 task만으로도 시작할 수 있다")
+    void execute_startsTaskSessionWithOnlyTask() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "해시테이블", false, 0L, Instant.now(), Instant.now());
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
             RecordSessionTypeV2.TASK,
             null,
@@ -175,6 +197,92 @@ class StartRecordV2ServiceTest {
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
+        when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
+        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
+            .thenAnswer(invocation -> withId(invocation.getArgument(0), 100L));
+
+        StartRecordV2Data.Result result = startRecordV2Service.execute(command);
+
+        assertThat(result.session().subject()).isNotNull();
+        assertThat(result.session().subject().id()).isEqualTo(10L);
+        assertThat(result.session().task()).isNotNull();
+        assertThat(result.session().task().id()).isEqualTo(11L);
+    }
+
+    @Test
+    @DisplayName("TASK 세션 시작 시 task에 subject가 없으면 subject 없이 시작한다")
+    void execute_startsTaskSessionWithOnlyTaskAndNoSubject() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "해시테이블", false, 0L, Instant.now(), Instant.now());
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            null,
+            11L,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
+        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
+            .thenAnswer(invocation -> withId(invocation.getArgument(0), 100L));
+
+        StartRecordV2Data.Result result = startRecordV2Service.execute(command);
+
+        assertThat(result.session().subject()).isNull();
+        assertThat(result.session().task()).isNotNull();
+        assertThat(result.session().task().id()).isEqualTo(11L);
+    }
+
+    @Test
+    @DisplayName("TASK 세션 시작 시 subject만으로도 시작할 수 있다")
+    void execute_startsTaskSessionWithOnlySubject() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            10L,
+            null,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
+        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
+            .thenAnswer(invocation -> withId(invocation.getArgument(0), 100L));
+
+        StartRecordV2Data.Result result = startRecordV2Service.execute(command);
+
+        assertThat(result.session().subject()).isNotNull();
+        assertThat(result.session().subject().id()).isEqualTo(10L);
+        assertThat(result.session().task()).isNull();
+    }
+
+    @Test
+    @DisplayName("subject/task를 함께 보낼 때 task가 subject 소속이 아니면 예외가 발생한다")
+    void execute_throwsWhenTaskDoesNotBelongToSubject() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 20L, "해시테이블", false, 0L, Instant.now(), Instant.now());
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            10L,
+            11L,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
+        when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
 
         assertThatThrownBy(() -> startRecordV2Service.execute(command))
             .isInstanceOf(InvalidRecordV2StartRequestException.class);

@@ -24,6 +24,7 @@ public class GetMyItemsData {
     public record Item(
         Long id,
         String title,
+        String image,
         String description,
         ProductCategory category,
         Long price,
@@ -35,6 +36,7 @@ public class GetMyItemsData {
         public static Item of(
             Long id,
             String title,
+            String image,
             String description,
             ProductCategory category,
             Long price,
@@ -46,6 +48,7 @@ public class GetMyItemsData {
             return new Item(
                 id,
                 title,
+                image,
                 description,
                 category,
                 price,

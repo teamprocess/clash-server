@@ -47,7 +47,7 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
             return false;
         }
 
-        // 이슈 #309: 자리비움/오프라인 전환 시 DEVELOP 세션은 유지되면 안 된다.
+        // 자리비움/오프라인 전환 시 DEVELOP 세션은 유지되면 안 된다.
         return currentStatus == UserActivityStatus.AWAY || currentStatus == UserActivityStatus.OFFLINE;
     }
 

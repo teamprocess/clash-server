@@ -8,7 +8,7 @@ public class StartRecordV2RequestDocument {
     @Schema(description = "세션 유형", example = "TASK", requiredMode = Schema.RequiredMode.REQUIRED)
     public String sessionType;
 
-    @Schema(description = "과목 그룹 ID (sessionType=TASK 일 때 필수)", example = "1")
+    @Schema(description = "과목 그룹 ID (TASK에서 선택, taskId와 함께 보내면 task가 해당 과목에 소속되어야 함)", example = "1")
     public Long subjectId;
 
     @Schema(description = "세부 작업 ID (선택)", example = "10")

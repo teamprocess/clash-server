@@ -9,10 +9,11 @@ public class CreateSubjectTaskV2Dto {
 
     @Schema(name = "CreateSubjectTaskV2DtoRequest")
     public record Request(
+        Long subjectId,
         @NotBlank(message = "name은 필수 입력값입니다.")
         String name
     ) {
-        public CreateSubjectTaskV2Data.Command toCommand(Actor actor, Long subjectId) {
+        public CreateSubjectTaskV2Data.Command toCommand(Actor actor) {
             return new CreateSubjectTaskV2Data.Command(actor, subjectId, name);
         }
     }
