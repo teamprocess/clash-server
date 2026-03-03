@@ -19,9 +19,11 @@ public class RecordActivityRefetchNotifier implements RecordActivityNotifierPort
     private final RivalRepositoryPort rivalRepositoryPort;
     private final GroupRefetchNotifier groupRefetchNotifier;
     private final CompeteRefetchNotifier competeRefetchNotifier;
+    private final RecordRefetchNotifier recordRefetchNotifier;
 
     @Override
     public void notifyActivityStarted(Actor actor) {
+        notifyRecord(actor, recordRefetchNotifier::notifyRecordActivityStarted);
         notify(
             actor,
             groupRefetchNotifier::notifyGroupActivityStarted,
@@ -31,11 +33,17 @@ public class RecordActivityRefetchNotifier implements RecordActivityNotifierPort
 
     @Override
     public void notifyActivityStopped(Actor actor) {
+        notifyRecord(actor, recordRefetchNotifier::notifyRecordActivityStopped);
         notify(
             actor,
             groupRefetchNotifier::notifyGroupActivityStopped,
             competeRefetchNotifier::notifyRivalActivityStopped
         );
+    }
+
+    @Override
+    public void notifySessionChanged(Actor actor) {
+        notifyRecord(actor, recordRefetchNotifier::notifyRecordSessionChanged);
     }
 
     private void notify(
@@ -56,6 +64,13 @@ public class RecordActivityRefetchNotifier implements RecordActivityNotifierPort
         if (rivalUserIds != null && !rivalUserIds.isEmpty()) {
             rivalNotifier.accept(rivalUserIds);
         }
+    }
+
+    private void notifyRecord(Actor actor, Consumer<List<Long>> recordNotifier) {
+        if (actor == null || actor.id() == null) {
+            return;
+        }
+        recordNotifier.accept(List.of(actor.id()));
     }
 
     private List<Long> findGroupMemberUserIds(Long userId) {
