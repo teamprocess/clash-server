@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.github;
 
 import com.process.clash.application.github.service.StudyDateCalculator;
 import org.springframework.beans.factory.annotation.Value;

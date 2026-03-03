@@ -8,7 +8,7 @@ import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.enums.RecordType;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;

@@ -6,7 +6,7 @@ import com.process.clash.application.record.port.out.RecordSessionRepositoryPort
 import com.process.clash.application.record.util.RecordDateCalculator;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.user.user.entity.User;
 import java.time.Instant;

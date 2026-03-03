@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.security;
 
 import lombok.Getter;
 import lombok.Setter;

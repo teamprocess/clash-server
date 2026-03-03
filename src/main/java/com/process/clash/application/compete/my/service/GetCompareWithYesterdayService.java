@@ -9,7 +9,7 @@ import com.process.clash.application.github.exception.exception.notfound.GithubD
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

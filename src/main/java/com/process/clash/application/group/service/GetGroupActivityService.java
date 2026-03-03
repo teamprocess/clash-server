@@ -11,7 +11,7 @@ import com.process.clash.application.record.port.out.RecordSessionRepositoryPort
 import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.record.entity.RecordSession;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

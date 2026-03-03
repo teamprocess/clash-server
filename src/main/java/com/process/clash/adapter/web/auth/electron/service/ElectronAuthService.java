@@ -15,7 +15,7 @@ import com.process.clash.application.user.user.port.out.SessionManager;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.infrastructure.auth.ElectronAuthStore;
-import com.process.clash.infrastructure.config.ElectronAuthProps;
+import com.process.clash.infrastructure.config.security.ElectronAuthProps;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.process.clash.adapter.web.auth.service.CustomUserDetailsService;
