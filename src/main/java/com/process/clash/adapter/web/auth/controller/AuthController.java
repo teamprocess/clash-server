@@ -43,7 +43,8 @@ public class AuthController implements AuthControllerDocument {
 	);
 
 	private final SignUpUseCase signUpUseCase;
-	private final SignInUseCase signInUseCase;
+	private final SignInUseCase signInService;
+	private final SignInUseCase noRecapchaSignInService;
 	private final SignOutUseCase signOutUseCase;
 	private final VerifyEmailUseCase verifyEmailUseCase;
 	private final CheckDuplicatedUsernameUseCase checkDuplicatedUsernameUseCase;
@@ -70,7 +71,19 @@ public class AuthController implements AuthControllerDocument {
 	) {
 		AccessContext context = accessContextResolver.extractAccessContext(httpRequest);
 		SignInData.Command command = request.toCommand(context);
-		SignInData.Result result = signInUseCase.execute(command);
+		SignInData.Result result = signInService.execute(command);
+		SignInDto.Response response = SignInDto.Response.fromResult(result);
+		return ApiResponse.success(response, "로그인을 성공했습니다.");
+	}
+
+	@PostMapping("/no-recapcha-sign-in")
+	public ApiResponse<SignInDto.Response> noRecapchaSignIn(
+			@Valid @RequestBody SignInDto.Request request,
+			HttpServletRequest httpRequest
+	) {
+		AccessContext context = accessContextResolver.extractAccessContext(httpRequest);
+		SignInData.Command command = request.toCommand(context);
+		SignInData.Result result = noRecapchaSignInService.execute(command);
 		SignInDto.Response response = SignInDto.Response.fromResult(result);
 		return ApiResponse.success(response, "로그인을 성공했습니다.");
 	}

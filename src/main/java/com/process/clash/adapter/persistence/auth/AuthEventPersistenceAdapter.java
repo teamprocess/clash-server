@@ -19,6 +19,12 @@ public class AuthEventPersistenceAdapter implements AuthEventRepositoryPort {
     }
 
     @Override
+    public void recordNoRecapchaLogin(String username, String ipAddress, String device) {
+        AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "NO_RECAPCHA_LOGIN", ipAddress, device, Instant.now());
+        repository.save(entity);
+    }
+
+    @Override
     public void recordLogout(String username, String ipAddress, String device) {
         AuthEventJpaEntity entity = new AuthEventJpaEntity(username, "LOGOUT", ipAddress, device, Instant.now());
         repository.save(entity);
