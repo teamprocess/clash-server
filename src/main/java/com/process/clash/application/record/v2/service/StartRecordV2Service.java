@@ -26,6 +26,7 @@ import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -93,20 +94,33 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
         if (sessionType == RecordSessionTypeV2.TASK) {
             validateTaskStartRequest(command);
 
-            RecordSubjectV2 subject = recordSubjectV2RepositoryPort.findById(command.subjectId())
-                .orElseThrow(SubjectV2NotFoundException::new);
-            subjectV2Policy.validateOwnership(command.actor(), subject);
+            RecordSubjectV2 subject = null;
+            if (command.subjectId() != null) {
+                subject = recordSubjectV2RepositoryPort.findById(command.subjectId())
+                    .orElseThrow(SubjectV2NotFoundException::new);
+                subjectV2Policy.validateOwnership(command.actor(), subject);
+            }
 
             RecordTaskV2 task = null;
             if (command.taskId() != null) {
-                task = recordTaskV2RepositoryPort.findByIdAndSubjectId(command.taskId(), subject.id())
+                task = recordTaskV2RepositoryPort.findByIdAndUserId(command.taskId(), command.actor().id())
                     .orElseThrow(TaskV2NotFoundException::new);
+            }
+
+            if (subject == null && task != null && task.subjectId() != null) {
+                subject = recordSubjectV2RepositoryPort.findById(task.subjectId())
+                    .orElseThrow(SubjectV2NotFoundException::new);
+                subjectV2Policy.validateOwnership(command.actor(), subject);
+            }
+
+            if (subject != null && task != null && !Objects.equals(task.subjectId(), subject.id())) {
+                throw new InvalidRecordV2StartRequestException();
             }
 
             return RecordSessionV2.createTask(
                 command.actor().id(),
-                subject.id(),
-                subject.name(),
+                subject == null ? null : subject.id(),
+                subject == null ? null : subject.name(),
                 task == null ? null : task.id(),
                 task == null ? null : task.name(),
                 startedAt
@@ -128,7 +142,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     }
 
     private void validateTaskStartRequest(StartRecordV2Data.Command command) {
-        if (command.subjectId() == null || command.appId() != null) {
+        if ((command.subjectId() == null && command.taskId() == null) || command.appId() != null) {
             throw new InvalidRecordV2StartRequestException();
         }
     }

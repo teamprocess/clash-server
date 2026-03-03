@@ -23,11 +23,14 @@ public class CreateSubjectTaskV2Service implements CreateSubjectTaskV2UseCase {
 
     @Override
     public void execute(CreateSubjectTaskV2Data.Command command) {
-        RecordSubjectV2 subject = recordSubjectV2RepositoryPort.findById(command.subjectId())
-            .orElseThrow(SubjectV2NotFoundException::new);
-        subjectV2Policy.validateOwnership(command.actor(), subject);
+        Long subjectId = command.subjectId();
+        if (subjectId != null) {
+            RecordSubjectV2 subject = recordSubjectV2RepositoryPort.findById(subjectId)
+                .orElseThrow(SubjectV2NotFoundException::new);
+            subjectV2Policy.validateOwnership(command.actor(), subject);
+        }
 
-        RecordTaskV2 task = RecordTaskV2.create(command.name(), subject.id());
+        RecordTaskV2 task = RecordTaskV2.create(command.name(), command.actor().id(), subjectId);
         recordTaskV2RepositoryPort.save(task);
     }
 }
