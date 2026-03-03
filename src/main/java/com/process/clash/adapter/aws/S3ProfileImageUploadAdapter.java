@@ -1,7 +1,7 @@
 package com.process.clash.adapter.aws;
 
 import com.process.clash.application.user.user.port.out.ProfileImageUploadPort;
-import com.process.clash.infrastructure.config.S3Properties;
+import com.process.clash.infrastructure.config.aws.S3Properties;
 import java.time.Duration;
 import java.util.UUID;
 import java.util.regex.Pattern;

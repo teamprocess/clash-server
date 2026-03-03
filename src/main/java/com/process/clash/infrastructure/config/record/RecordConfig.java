@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.record;
 
 import java.time.ZoneId;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

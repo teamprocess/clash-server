@@ -8,7 +8,7 @@ import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegm
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;

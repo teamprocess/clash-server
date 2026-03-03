@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.security;
 
 import com.process.clash.application.auth.electron.port.out.ElectronAuthConfigPort;
 import lombok.Getter;

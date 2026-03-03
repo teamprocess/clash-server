@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.config;
+package com.process.clash.infrastructure.config.aws;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
