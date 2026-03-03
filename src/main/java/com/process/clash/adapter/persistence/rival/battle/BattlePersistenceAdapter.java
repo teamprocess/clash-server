@@ -6,6 +6,8 @@ import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
+
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -73,5 +75,13 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     @Override
     public void rejectAllActiveBattlesByUserId(Long userId) {
         battleJpaRepository.rejectAllActiveBattlesByUserId(userId);
+    }
+
+    @Override
+    public List<Battle> findExpiredInProgressBattles(LocalDate today) {
+        return battleJpaRepository.findExpiredInProgressBattles(today)
+                .stream()
+                .map(battleJpaMapper::toDomain)
+                .toList();
     }
 }
