@@ -145,4 +145,23 @@ public record User(
                 this.deletedAt
         );
     }
+
+    public User addExp(int delta) {
+        return new User(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                this.profileImage,
+                Math.max(0, this.totalExp + delta),
+                this.totalCookie,
+                this.major,
+                this.userStatus,
+                this.deletedAt
+        );
+    }
 }

@@ -9,6 +9,7 @@ import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
+import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,6 +35,13 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
         UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(userExpHistory.userId());
         UserExpHistoryJpaEntity savedEntity = userExpHistoryJpaRepository.save(userExpHistoryJpaMapper.toJpaEntity(userExpHistory, userJpaEntity));
         return userExpHistoryJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<UserExpHistory> findByUserIdAndDateAndCategory(Long userId, LocalDate date, ExpActingCategory category) {
+        UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(userId);
+        return userExpHistoryJpaRepository.findByUserAndDateAndActingCategory(userJpaEntity, date, category)
+                .map(userExpHistoryJpaMapper::toDomain);
     }
 
     @Override

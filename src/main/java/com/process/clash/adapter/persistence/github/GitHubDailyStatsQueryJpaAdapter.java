@@ -28,6 +28,13 @@ public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPor
     }
 
     @Override
+    public List<GitHubDailyStats> findAllByStudyDate(LocalDate studyDate) {
+        return repository.findAllByStudyDate(studyDate).stream()
+                .map(mapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public List<GitHubDailyContributionDto> findDailyContributionsByUserId(Long userId, LocalDate startDate, LocalDate endDate, PageRequest pageRequest) {
 
         return repository.findDailyContributionsByUserId(userId, startDate, endDate, pageRequest);

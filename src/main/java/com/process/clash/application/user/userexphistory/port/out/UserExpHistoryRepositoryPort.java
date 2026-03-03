@@ -6,14 +6,17 @@ import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
+import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface UserExpHistoryRepositoryPort {
     UserExpHistory save(UserExpHistory userExpHistory);
+    Optional<UserExpHistory> findByUserIdAndDateAndCategory(Long userId, LocalDate date, ExpActingCategory category);
     List<Object[]> findDailyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
     List<Object[]> findWeeklyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);
     List<Object[]> findMonthlyDataByUserIds(List<Long> ids, LocalDate startDate, LocalDate endDate);

@@ -19,6 +19,8 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
 
     Optional<GitHubDailyStatsJpaEntity> findByUserIdAndStudyDate(Long userId, LocalDate studyDate);
 
+    List<GitHubDailyStatsJpaEntity> findAllByStudyDate(LocalDate studyDate);
+
     @Query("""
         select new com.process.clash.application.github.data.GitHubDailyContributionDto(
                 g.studyDate,

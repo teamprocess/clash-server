@@ -2,6 +2,7 @@ package com.process.clash.application.record.v2.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,7 @@ import com.process.clash.application.record.v2.data.StopRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.v2.entity.RecordDevelopSessionSegmentV2;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
@@ -37,6 +39,9 @@ class StopRecordV2ServiceTest {
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
+    @Mock
+    private StudyTimeExpGrantService studyTimeExpGrantService;
+
     private StopRecordV2Service stopRecordV2Service;
 
     @BeforeEach
@@ -44,7 +49,8 @@ class StopRecordV2ServiceTest {
         stopRecordV2Service = new StopRecordV2Service(
             recordSessionV2RepositoryPort,
             recordDevelopSessionSegmentV2RepositoryPort,
-            recordActivityNotifierPort
+            recordActivityNotifierPort,
+            studyTimeExpGrantService
         );
     }
 
@@ -55,23 +61,11 @@ class StopRecordV2ServiceTest {
         StopRecordV2Data.Command command = new StopRecordV2Data.Command(actor);
 
         RecordSessionV2 activeSession = new RecordSessionV2(
-            100L,
-            1L,
-            RecordSessionTypeV2.DEVELOP,
-            null,
-            null,
-            null,
-            null,
-            MonitoredApp.VSCODE,
-            Instant.now().minusSeconds(600),
-            null
+            100L, 1L, RecordSessionTypeV2.DEVELOP, null, null, null, null,
+            MonitoredApp.VSCODE, Instant.now().minusSeconds(600), null
         );
         RecordDevelopSessionSegmentV2 openSegment = new RecordDevelopSessionSegmentV2(
-            200L,
-            100L,
-            MonitoredApp.VSCODE,
-            Instant.now().minusSeconds(600),
-            null
+            200L, 100L, MonitoredApp.VSCODE, Instant.now().minusSeconds(600), null
         );
 
         when(recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
@@ -91,6 +85,27 @@ class StopRecordV2ServiceTest {
     }
 
     @Test
+    @DisplayName("세션 종료 시 학습시간 EXP 지급을 호출한다")
+    void execute_callsStudyTimeExpGrant() {
+        Actor actor = new Actor(1L);
+        StopRecordV2Data.Command command = new StopRecordV2Data.Command(actor);
+        Instant startedAt = Instant.now().minusSeconds(600);
+
+        RecordSessionV2 activeSession = new RecordSessionV2(
+            100L, 1L, RecordSessionTypeV2.TASK, 10L, "자료구조", null, null, null, startedAt, null
+        );
+
+        when(recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))
+            .thenReturn(Optional.of(activeSession));
+        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
+
+        stopRecordV2Service.execute(command);
+
+        verify(studyTimeExpGrantService).grant(eq(1L), eq(startedAt), any(Instant.class));
+    }
+
+    @Test
     @DisplayName("활성 세션이 없으면 예외가 발생한다")
     void execute_throwsWhenNoActiveSession() {
         Actor actor = new Actor(1L);
@@ -103,6 +118,7 @@ class StopRecordV2ServiceTest {
             .isInstanceOf(ActiveSessionV2NotFoundException.class);
 
         verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());
+        verify(studyTimeExpGrantService, never()).grant(any(), any(), any());
     }
 
     @Test
@@ -112,16 +128,8 @@ class StopRecordV2ServiceTest {
         StopRecordV2Data.Command command = new StopRecordV2Data.Command(actor);
 
         RecordSessionV2 activeSession = new RecordSessionV2(
-            100L,
-            1L,
-            RecordSessionTypeV2.TASK,
-            10L,
-            "자료구조",
-            null,
-            null,
-            null,
-            Instant.now().minusSeconds(600),
-            null
+            100L, 1L, RecordSessionTypeV2.TASK, 10L, "자료구조", null, null, null,
+            Instant.now().minusSeconds(600), null
         );
 
         when(recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(actor.id()))

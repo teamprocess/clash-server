@@ -10,11 +10,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
+import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
+
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistoryJpaEntity, Long> {
+
+    Optional<UserExpHistoryJpaEntity> findByUserAndDateAndActingCategory(
+            UserJpaEntity user,
+            LocalDate date,
+            ExpActingCategory actingCategory
+    );
 
     /**
      * DAY: 유저별 일별 경험치
