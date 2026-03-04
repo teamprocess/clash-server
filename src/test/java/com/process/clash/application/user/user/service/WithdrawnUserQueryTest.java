@@ -2,6 +2,7 @@ package com.process.clash.application.user.user.service;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.profile.data.GetMyProfileData;
+import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.profile.service.GetMyProfileService;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
@@ -43,6 +44,9 @@ class WithdrawnUserQueryTest {
     @Mock
     private UserPresencePort userPresencePort;
 
+    @Mock
+    private EquippedItemsAssembler equippedItemsAssembler;
+
     private GetMyProfileService getMyProfileService;
 
     @BeforeEach
@@ -50,7 +54,8 @@ class WithdrawnUserQueryTest {
         getMyProfileService = new GetMyProfileService(
                 userRepositoryPort,
                 userGitHubRepositoryPort,
-                userPresencePort
+                userPresencePort,
+                equippedItemsAssembler
         );
     }
 
