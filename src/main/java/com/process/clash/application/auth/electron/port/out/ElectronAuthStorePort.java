@@ -8,7 +8,7 @@ public interface ElectronAuthStorePort {
 
 	boolean consumeState(String state);
 
-	void saveOneTimeCode(String code, String state, Long userId);
+	void saveOneTimeCode(String code, String state, Long userId, boolean noRecaptcha);
 
 	OneTimeCodePayload consumeOneTimeCode(String code);
 
@@ -16,5 +16,5 @@ public interface ElectronAuthStorePort {
 
 	String consumeSignupSession(String state);
 
-	record OneTimeCodePayload(String state, Long userId) {}
+	record OneTimeCodePayload(String state, Long userId, boolean noRecaptcha) {}
 }
