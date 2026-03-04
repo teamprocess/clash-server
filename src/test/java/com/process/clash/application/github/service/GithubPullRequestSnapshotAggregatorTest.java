@@ -13,7 +13,7 @@ class GithubPullRequestSnapshotAggregatorTest {
     private final GithubPullRequestSnapshotAggregator aggregator = new GithubPullRequestSnapshotAggregator();
 
     @Test
-    void calculateOpenCounts_appliesBaselineAndDailyDeltas() {
+    void calculateOpenCounts_returnsDailyCreatedCounts() {
         List<LocalDate> dates = List.of(
                 LocalDate.of(2026, 2, 1),
                 LocalDate.of(2026, 2, 2),
@@ -25,34 +25,25 @@ class GithubPullRequestSnapshotAggregatorTest {
                 LocalDate.of(2026, 2, 2), 1,
                 LocalDate.of(2026, 2, 3), 0
         );
-        Map<LocalDate, Integer> merged = Map.of(
-                LocalDate.of(2026, 2, 1), 1,
-                LocalDate.of(2026, 2, 2), 2,
-                LocalDate.of(2026, 2, 3), 0
-        );
-        Map<LocalDate, Integer> closed = Map.of(
-                LocalDate.of(2026, 2, 1), 0,
-                LocalDate.of(2026, 2, 2), 0,
-                LocalDate.of(2026, 2, 3), 1
-        );
+        Map<LocalDate, Integer> result = aggregator.calculateOpenCounts(dates, created);
 
-        Map<LocalDate, Integer> result = aggregator.calculateOpenCounts(dates, 2, created, merged, closed);
-
-        assertThat(result).containsEntry(LocalDate.of(2026, 2, 1), 4);
-        assertThat(result).containsEntry(LocalDate.of(2026, 2, 2), 3);
-        assertThat(result).containsEntry(LocalDate.of(2026, 2, 3), 2);
+        assertThat(result).containsEntry(LocalDate.of(2026, 2, 1), 3);
+        assertThat(result).containsEntry(LocalDate.of(2026, 2, 2), 1);
+        assertThat(result).containsEntry(LocalDate.of(2026, 2, 3), 0);
     }
 
     @Test
-    void calculateOpenCounts_clampsNegativeToZero() {
-        List<LocalDate> dates = List.of(LocalDate.of(2026, 2, 1));
-        Map<LocalDate, Integer> created = Map.of(LocalDate.of(2026, 2, 1), 0);
-        Map<LocalDate, Integer> merged = Map.of(LocalDate.of(2026, 2, 1), 2);
-        Map<LocalDate, Integer> closed = Map.of(LocalDate.of(2026, 2, 1), 3);
+    void calculateOpenCounts_returnsZeroWhenDateMissing() {
+        List<LocalDate> dates = List.of(
+                LocalDate.of(2026, 2, 1),
+                LocalDate.of(2026, 2, 2)
+        );
+        Map<LocalDate, Integer> created = Map.of(LocalDate.of(2026, 2, 1), 2);
 
-        Map<LocalDate, Integer> result = aggregator.calculateOpenCounts(dates, 1, created, merged, closed);
+        Map<LocalDate, Integer> result = aggregator.calculateOpenCounts(dates, created);
 
-        assertThat(result).containsEntry(LocalDate.of(2026, 2, 1), 0);
+        assertThat(result).containsEntry(LocalDate.of(2026, 2, 1), 2);
+        assertThat(result).containsEntry(LocalDate.of(2026, 2, 2), 0);
     }
 
     @Test
