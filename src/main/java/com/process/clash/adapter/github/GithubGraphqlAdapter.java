@@ -187,13 +187,10 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                 studyDates
         );
 
-        int baselineOpen = fetchOpenBaselineCount(target, rangeStart);
+        // Open 지표는 "해당 학습일에 생성된 PR 수"로 계산한다.
         Map<LocalDate, Integer> openCounts = pullRequestSnapshotAggregator.calculateOpenCounts(
                 orderedStudyDates,
-                baselineOpen,
-                createdStats.countsByDate,
-                mergedCounts,
-                closedCounts
+                createdStats.countsByDate
         );
 
         Map<LocalDate, String> topPrRepoByDate = new HashMap<>();
@@ -211,28 +208,6 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                 openCounts,
                 topPrRepoByDate
         );
-    }
-
-    private int fetchOpenBaselineCount(GithubSyncTarget target, Instant rangeStart) {
-        long createdBeforeStart = fetchSearchCount(
-                target,
-                buildBeforeQuery(target, "is:pr", "created", rangeStart)
-        );
-        long mergedBeforeStart = fetchSearchCount(
-                target,
-                buildBeforeQuery(target, "is:pr is:merged", "merged", rangeStart)
-        );
-        long closedBeforeStart = fetchSearchCount(
-                target,
-                buildBeforeQuery(target, "is:pr is:closed -is:merged", "closed", rangeStart)
-        );
-
-        long baseline = Math.max(0L, createdBeforeStart - mergedBeforeStart - closedBeforeStart);
-        if (baseline > Integer.MAX_VALUE) {
-            log.warn("PR open baseline이 int 범위를 초과했습니다. userId={}, baseline={}", target.userId(), baseline);
-            return Integer.MAX_VALUE;
-        }
-        return (int) baseline;
     }
 
     private PullRequestCreatedStats fetchPullRequestCreatedStatsByDate(
@@ -485,22 +460,6 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                 dateQualifier,
                 INSTANT_FORMATTER.format(startUtc),
                 INSTANT_FORMATTER.format(endInclusive)
-        );
-    }
-
-    private String buildBeforeQuery(
-            GithubSyncTarget target,
-            String typeQualifier,
-            String dateQualifier,
-            Instant before
-    ) {
-        return String.format(
-                Locale.ROOT,
-                "%s author:%s %s:<%s",
-                typeQualifier,
-                target.githubLogin(),
-                dateQualifier,
-                INSTANT_FORMATTER.format(before)
         );
     }
 
