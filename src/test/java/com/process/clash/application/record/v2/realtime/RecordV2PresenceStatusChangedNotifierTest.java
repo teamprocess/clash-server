@@ -93,8 +93,8 @@ class RecordV2PresenceStatusChangedNotifierTest {
     }
 
     @Test
-    @DisplayName("TASK 세션은 자리비움/오프라인 전환 시에도 종료하지 않는다")
-    void notifyStatusChanged_doesNotStopTaskSession() {
+    @DisplayName("자리비움/오프라인 전환 시 TASK 세션도 자동 종료한다")
+    void notifyStatusChanged_stopsTaskSession() {
         Long userId = 1L;
         RecordSessionV2 taskSession = new RecordSessionV2(
             200L,
@@ -111,12 +111,18 @@ class RecordV2PresenceStatusChangedNotifierTest {
 
         when(recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(userId))
             .thenReturn(Optional.of(taskSession));
+        when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
+            .thenAnswer(invocation -> invocation.getArgument(0));
 
         notifier.notifyStatusChanged(userId, UserActivityStatus.ONLINE, UserActivityStatus.OFFLINE);
 
-        verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordSessionV2RepositoryPort).save(
+            argThat(session -> session.id().equals(taskSession.id()) && session.endedAt() != null)
+        );
         verify(recordDevelopSessionSegmentV2RepositoryPort, never()).findOpenSegmentBySessionIdForUpdate(any());
-        verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());
+        verify(recordActivityNotifierPort).notifyActivityStopped(
+            argThat(actor -> actor != null && userId.equals(actor.id()))
+        );
     }
 
     @Test
