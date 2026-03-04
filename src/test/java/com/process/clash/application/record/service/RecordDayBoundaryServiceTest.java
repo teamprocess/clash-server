@@ -1,5 +1,6 @@
 package com.process.clash.application.record.service;
 
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.common.enums.Major;
@@ -34,6 +35,9 @@ class RecordDayBoundaryServiceTest {
     private RecordSessionRepositoryPort recordSessionRepositoryPort;
 
     @Mock
+    private RecordActivityNotifierPort recordActivityNotifierPort;
+
+    @Mock
     private StudyTimeExpGrantService studyTimeExpGrantService;
 
     private RecordDayBoundaryService recordDayBoundaryService;
@@ -45,6 +49,7 @@ class RecordDayBoundaryServiceTest {
     void setUp() {
         recordDayBoundaryService = new RecordDayBoundaryService(
             recordSessionRepositoryPort,
+            recordActivityNotifierPort,
             studyTimeExpGrantService,
             new RecordProperties("Asia/Seoul", BOUNDARY_HOUR),
             ZONE
