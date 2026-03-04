@@ -33,7 +33,7 @@ public class FindAllBattleInfoResponseDocument extends SuccessMessageResponseDoc
         @Schema(description = "배틀 종료일", example = "2026-01-29")
         public LocalDate expireDate;
 
-        @Schema(description = "결과", example = "WIN")
+        @Schema(description = "결과", example = "WON")
         public String result; // WON, LOST, WINNING, LOSING, DRAW, PENDING
     }
 
