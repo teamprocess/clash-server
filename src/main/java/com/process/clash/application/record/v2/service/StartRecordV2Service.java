@@ -5,6 +5,7 @@ import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.DevelopStartRequiresOnlineException;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2StartRequestException;
+import com.process.clash.application.record.v2.exception.exception.badrequest.TaskStartRequiresOnlineException;
 import com.process.clash.application.record.v2.exception.exception.conflict.RecordSessionV2AlreadyStartedException;
 import com.process.clash.application.record.v2.exception.exception.notfound.SubjectV2NotFoundException;
 import com.process.clash.application.record.v2.exception.exception.notfound.TaskV2NotFoundException;
@@ -57,7 +58,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
         }
 
         RecordSessionTypeV2 sessionType = resolveSessionType(command);
-        validateDevelopStartStatus(command.actor().id(), sessionType);
+        validateStartStatus(command.actor().id(), sessionType);
         Instant startedAt = Instant.now();
         RecordSessionV2 savedSession;
         try {
@@ -153,13 +154,19 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
         }
     }
 
-    private void validateDevelopStartStatus(Long userId, RecordSessionTypeV2 sessionType) {
-        if (sessionType != RecordSessionTypeV2.DEVELOP) {
+    private void validateStartStatus(Long userId, RecordSessionTypeV2 sessionType) {
+        if (sessionType != RecordSessionTypeV2.DEVELOP && sessionType != RecordSessionTypeV2.TASK) {
             return;
         }
 
-        if (userPresencePort.getStatus(userId) != UserActivityStatus.ONLINE) {
+        if (userPresencePort.getStatus(userId) == UserActivityStatus.ONLINE) {
+            return;
+        }
+
+        if (sessionType == RecordSessionTypeV2.DEVELOP) {
             throw new DevelopStartRequiresOnlineException();
         }
+
+        throw new TaskStartRequiresOnlineException();
     }
 }

@@ -3,11 +3,14 @@ package com.process.clash.application.record.v2.realtime;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.DevelopStartRequiresOnlineException;
+import com.process.clash.application.record.v2.exception.exception.badrequest.TaskStartRequiresOnlineException;
 import com.process.clash.application.record.v2.port.in.StartRecordV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;
 import com.process.clash.application.realtime.port.in.ReportUserPresenceUseCase;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.enums.MonitoredApp;
+import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.domain.user.user.entity.User;
 import java.util.UUID;
@@ -37,6 +40,9 @@ class RecordV2PresenceFlowIntegrationTest {
 
     @Autowired
     private RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
+
+    @Autowired
+    private RecordSubjectV2RepositoryPort recordSubjectV2RepositoryPort;
 
     @Test
     @DisplayName("presence:away 수신 시 진행 중인 DEVELOP 세션이 종료된다")
@@ -84,6 +90,29 @@ class RecordV2PresenceFlowIntegrationTest {
     }
 
     @Test
+    @DisplayName("소켓 연결 종료 시 진행 중인 TASK 세션이 종료된다")
+    void disconnect_stopsTaskSession() {
+        User user = createActiveUser();
+        String connectionId = "conn-task-offline-v2-" + UUID.randomUUID();
+        Actor actor = new Actor(user.id());
+        RecordSubjectV2 subject = createSubject(user.id(), "알고리즘");
+
+        reportUserPresenceUseCase.connected(connectionId, user.id());
+        startRecordV2UseCase.execute(new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            subject.id(),
+            null,
+            null,
+            actor
+        ));
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isPresent();
+
+        reportUserPresenceUseCase.disconnected(connectionId);
+
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isEmpty();
+    }
+
+    @Test
     @DisplayName("이미 자리비움/오프라인이면 DEVELOP 세션을 시작할 수 없다")
     void cannotStartDevelopWhenNotOnline() {
         User user = createActiveUser();
@@ -106,6 +135,30 @@ class RecordV2PresenceFlowIntegrationTest {
         reportUserPresenceUseCase.disconnected(connectionId);
     }
 
+    @Test
+    @DisplayName("이미 자리비움/오프라인이면 TASK 세션을 시작할 수 없다")
+    void cannotStartTaskWhenNotOnline() {
+        User user = createActiveUser();
+        String connectionId = "conn-task-start-while-away-v2-" + UUID.randomUUID();
+        Actor actor = new Actor(user.id());
+        RecordSubjectV2 subject = createSubject(user.id(), "운영체제");
+
+        reportUserPresenceUseCase.connected(connectionId, user.id());
+        reportUserPresenceUseCase.markedAway(connectionId);
+
+        assertThatThrownBy(() -> startRecordV2UseCase.execute(new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            subject.id(),
+            null,
+            null,
+            actor
+        )))
+            .isInstanceOf(TaskStartRequiresOnlineException.class);
+
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isEmpty();
+        reportUserPresenceUseCase.disconnected(connectionId);
+    }
+
     private User createActiveUser() {
         String suffix = UUID.randomUUID().toString().substring(0, 8);
         User defaultUser = User.createDefault(
@@ -115,5 +168,9 @@ class RecordV2PresenceFlowIntegrationTest {
             "encoded-password"
         );
         return userRepositoryPort.save(defaultUser.active());
+    }
+
+    private RecordSubjectV2 createSubject(Long userId, String name) {
+        return recordSubjectV2RepositoryPort.save(RecordSubjectV2.create(name, userId));
     }
 }

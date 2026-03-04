@@ -3,6 +3,8 @@ package com.process.clash.application.record.v2.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +15,7 @@ import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.DevelopStartRequiresOnlineException;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2StartRequestException;
+import com.process.clash.application.record.v2.exception.exception.badrequest.TaskStartRequiresOnlineException;
 import com.process.clash.application.record.v2.exception.exception.conflict.RecordSessionV2AlreadyStartedException;
 import com.process.clash.application.record.v2.policy.SubjectV2Policy;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
@@ -79,6 +82,7 @@ class StartRecordV2ServiceTest {
             recordActivityNotifierPort,
             userPresencePort
         );
+        lenient().when(userPresencePort.getStatus(anyLong())).thenReturn(UserActivityStatus.ONLINE);
     }
 
     @Test
@@ -338,6 +342,31 @@ class StartRecordV2ServiceTest {
 
         assertThatThrownBy(() -> startRecordV2Service.execute(command))
             .isInstanceOf(DevelopStartRequiresOnlineException.class);
+
+        verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
+        verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
+    }
+
+    @Test
+    @DisplayName("TASK 세션 시작 시 유저 상태가 ONLINE이 아니면 예외가 발생한다")
+    void execute_throwsWhenTaskStartAndStatusIsNotOnline() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            10L,
+            null,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(userPresencePort.getStatus(actor.id())).thenReturn(UserActivityStatus.OFFLINE);
+
+        assertThatThrownBy(() -> startRecordV2Service.execute(command))
+            .isInstanceOf(TaskStartRequiresOnlineException.class);
 
         verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
         verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
