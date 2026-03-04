@@ -12,7 +12,7 @@ import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.user.entity.User;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseCase {
 
@@ -28,20 +29,6 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final GetBattleInfoPolicy getBattleInfoPolicy;
     private final ZoneId battleZoneId;
-
-    public FindDetailedBattleInfoService(
-            UserRepositoryPort userRepositoryPort,
-            RivalRepositoryPort rivalRepositoryPort,
-            UserExpHistoryRepositoryPort userExpHistoryRepositoryPort,
-            GetBattleInfoPolicy getBattleInfoPolicy,
-            @Value("${battle.timezone:Asia/Seoul}") String battleTimezone
-    ) {
-        this.userRepositoryPort = userRepositoryPort;
-        this.rivalRepositoryPort = rivalRepositoryPort;
-        this.userExpHistoryRepositoryPort = userExpHistoryRepositoryPort;
-        this.getBattleInfoPolicy = getBattleInfoPolicy;
-        this.battleZoneId = ZoneId.of(battleTimezone);
-    }
 
     @Override
     public FindDetailedBattleInfoData.Result execute(FindDetailedBattleInfoData.Command command) {

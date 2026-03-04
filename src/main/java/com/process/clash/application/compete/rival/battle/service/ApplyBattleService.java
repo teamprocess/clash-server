@@ -10,7 +10,7 @@ import com.process.clash.application.user.usernotice.port.out.UserNoticeReposito
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +19,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class ApplyBattleService implements ApplyBattleUseCase {
 
@@ -28,22 +29,6 @@ public class ApplyBattleService implements ApplyBattleUseCase {
     private final ApplyBattlePolicy applyBattlePolicy;
     private final CompeteRefetchNotifier competeRefetchNotifier;
     private final ZoneId battleZoneId;
-
-    public ApplyBattleService(
-            BattleRepositoryPort battleRepositoryPort,
-            RivalRepositoryPort rivalRepositoryPort,
-            UserNoticeRepositoryPort userNoticeRepositoryPort,
-            ApplyBattlePolicy applyBattlePolicy,
-            CompeteRefetchNotifier competeRefetchNotifier,
-            @Value("${battle.timezone:Asia/Seoul}") String battleTimezone
-    ) {
-        this.battleRepositoryPort = battleRepositoryPort;
-        this.rivalRepositoryPort = rivalRepositoryPort;
-        this.userNoticeRepositoryPort = userNoticeRepositoryPort;
-        this.applyBattlePolicy = applyBattlePolicy;
-        this.competeRefetchNotifier = competeRefetchNotifier;
-        this.battleZoneId = ZoneId.of(battleTimezone);
-    }
 
     @Override
     public void execute(ApplyBattleData.Command command) {
