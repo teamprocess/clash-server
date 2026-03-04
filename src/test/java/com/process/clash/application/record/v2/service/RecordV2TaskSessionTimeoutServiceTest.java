@@ -3,6 +3,7 @@ package com.process.clash.application.record.v2.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import java.time.Duration;
@@ -33,13 +35,17 @@ class RecordV2TaskSessionTimeoutServiceTest {
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
+    @Mock
+    private StudyTimeExpGrantService studyTimeExpGrantService;
+
     private RecordV2TaskSessionTimeoutService recordV2TaskSessionTimeoutService;
 
     @BeforeEach
     void setUp() {
         recordV2TaskSessionTimeoutService = new RecordV2TaskSessionTimeoutService(
             recordSessionV2RepositoryPort,
-            recordActivityNotifierPort
+            recordActivityNotifierPort,
+            studyTimeExpGrantService
         );
     }
 
@@ -89,6 +95,8 @@ class RecordV2TaskSessionTimeoutServiceTest {
         assertThat(actorCaptor.getAllValues())
             .extracting(Actor::id)
             .containsExactlyInAnyOrder(1L, 2L);
+        verify(studyTimeExpGrantService).grant(eq(1L), eq(firstSession.startedAt()), any(Instant.class));
+        verify(studyTimeExpGrantService).grant(eq(2L), eq(secondSession.startedAt()), any(Instant.class));
     }
 
     @Test
@@ -102,5 +110,6 @@ class RecordV2TaskSessionTimeoutServiceTest {
         assertThat(stoppedCount).isZero();
         verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
         verify(recordActivityNotifierPort, never()).notifyActivityStopped(any(Actor.class));
+        verify(studyTimeExpGrantService, never()).grant(any(), any(), any());
     }
 }

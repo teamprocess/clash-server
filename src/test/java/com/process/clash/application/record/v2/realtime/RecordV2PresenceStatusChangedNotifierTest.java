@@ -1,9 +1,18 @@
 package com.process.clash.application.record.v2.realtime;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.v2.entity.RecordDevelopSessionSegmentV2;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
@@ -17,13 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class RecordV2PresenceStatusChangedNotifierTest {
 
@@ -36,6 +38,9 @@ class RecordV2PresenceStatusChangedNotifierTest {
     @Mock
     private RecordActivityNotifierPort recordActivityNotifierPort;
 
+    @Mock
+    private StudyTimeExpGrantService studyTimeExpGrantService;
+
     private RecordV2PresenceStatusChangedNotifier notifier;
 
     @BeforeEach
@@ -43,7 +48,8 @@ class RecordV2PresenceStatusChangedNotifierTest {
         notifier = new RecordV2PresenceStatusChangedNotifier(
             recordSessionV2RepositoryPort,
             recordDevelopSessionSegmentV2RepositoryPort,
-            recordActivityNotifierPort
+            recordActivityNotifierPort,
+            studyTimeExpGrantService
         );
     }
 
@@ -90,6 +96,7 @@ class RecordV2PresenceStatusChangedNotifierTest {
         verify(recordActivityNotifierPort).notifyActivityStopped(
             argThat(actor -> actor != null && userId.equals(actor.id()))
         );
+        verify(studyTimeExpGrantService).grant(eq(userId), eq(startedAt), any(Instant.class));
     }
 
     @Test
@@ -123,6 +130,7 @@ class RecordV2PresenceStatusChangedNotifierTest {
         verify(recordActivityNotifierPort).notifyActivityStopped(
             argThat(actor -> actor != null && userId.equals(actor.id()))
         );
+        verify(studyTimeExpGrantService).grant(eq(userId), eq(taskSession.startedAt()), any(Instant.class));
     }
 
     @Test
@@ -133,7 +141,8 @@ class RecordV2PresenceStatusChangedNotifierTest {
         verifyNoInteractions(
             recordSessionV2RepositoryPort,
             recordDevelopSessionSegmentV2RepositoryPort,
-            recordActivityNotifierPort
+            recordActivityNotifierPort,
+            studyTimeExpGrantService
         );
     }
 
@@ -150,5 +159,6 @@ class RecordV2PresenceStatusChangedNotifierTest {
         verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
         verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any(RecordDevelopSessionSegmentV2.class));
         verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());
+        verify(studyTimeExpGrantService, never()).grant(any(), any(), any());
     }
 }
