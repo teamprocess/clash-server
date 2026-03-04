@@ -12,21 +12,12 @@ public class GithubPullRequestSnapshotAggregator {
 
     public Map<LocalDate, Integer> calculateOpenCounts(
             List<LocalDate> orderedStudyDates,
-            int baselineOpenCount,
-            Map<LocalDate, Integer> createdCounts,
-            Map<LocalDate, Integer> mergedCounts,
-            Map<LocalDate, Integer> closedCounts
+            Map<LocalDate, Integer> createdCounts
     ) {
         Map<LocalDate, Integer> result = new HashMap<>();
-        long runningOpen = Math.max(0, baselineOpenCount);
 
         for (LocalDate studyDate : orderedStudyDates) {
-            int created = createdCounts.getOrDefault(studyDate, 0);
-            int merged = mergedCounts.getOrDefault(studyDate, 0);
-            int closed = closedCounts.getOrDefault(studyDate, 0);
-
-            runningOpen = Math.max(0, runningOpen + created - merged - closed);
-            result.put(studyDate, clampToInt(runningOpen));
+            result.put(studyDate, createdCounts.getOrDefault(studyDate, 0));
         }
 
         return result;
@@ -52,15 +43,5 @@ public class GithubPullRequestSnapshotAggregator {
         }
 
         return selectedRepo;
-    }
-
-    private int clampToInt(long value) {
-        if (value < Integer.MIN_VALUE) {
-            return Integer.MIN_VALUE;
-        }
-        if (value > Integer.MAX_VALUE) {
-            return Integer.MAX_VALUE;
-        }
-        return (int) value;
     }
 }
