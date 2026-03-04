@@ -27,7 +27,7 @@ public class FindAllBattleInfoData {
             Long id,
             Enemy enemy,
             LocalDate expireDate,
-            String result // WON, LOST, WINNING, LOSING, DRAW, PENDING
+            String result // WON, LOST, WINNING, LOSING, DRAWING, DRAWN, PENDING
     ) {
         public static BattleInfo of(Long id, Enemy enemy, LocalDate expireDate, String result) {
             return new BattleInfo(id, enemy, expireDate, result);

@@ -103,10 +103,8 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
             LocalDate startDate,
             LocalDate endDate
     ) {
-        Double avgExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndCategoryAndPeriod(
-                        userId, startDate, endDate
-                );
-        return avgExp != null ? (int) Math.round(avgExp) : 0;
+        double avgExp = userExpHistoryRepositoryPort
+                .findAverageExpByUserIdAndPeriod(userId, startDate, endDate);
+        return (int) Math.round(avgExp);
     }
 }

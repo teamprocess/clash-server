@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -27,6 +28,7 @@ public class ApplyBattleService implements ApplyBattleUseCase {
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
     private final ApplyBattlePolicy applyBattlePolicy;
     private final CompeteRefetchNotifier competeRefetchNotifier;
+    private final ZoneId battleZoneId;
 
     @Override
     public void execute(ApplyBattleData.Command command) {
@@ -40,7 +42,7 @@ public class ApplyBattleService implements ApplyBattleUseCase {
         Long opponentUserId = rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalEntityId, userId);
 
         // 배틀 생성 (Rival 엔티티 ID 사용)
-        LocalDate startDate = LocalDate.now();
+        LocalDate startDate = LocalDate.now(battleZoneId);
         LocalDate endDate = startDate.plusDays(command.duration());
 
         Battle battle = Battle.createDefault(startDate, endDate, rivalEntityId);

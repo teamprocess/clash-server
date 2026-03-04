@@ -54,7 +54,7 @@ public class CompareMyActivityService implements CompareMyActivityUseCase {
         LocalDateTime endOfDay = boundaryToday.plusDays(1).atTime(recordProperties.dayBoundaryHour(), 0, 0);
 
         Double earnedExp = getValueOrDefault(
-                userExpHistoryRepositoryPort.findAverageExpByUserIdAndCategoryAndPeriod(id, boundaryToday, boundaryToday.plusDays(1))
+                userExpHistoryRepositoryPort.findAverageExpByUserIdAndPeriod(id, boundaryToday, boundaryToday.plusDays(1))
         );
 
         Long todayActiveTime = recordSessionRepositoryPort.getTotalStudyTimeInSeconds(id, startOfDay, endOfDay);
@@ -89,7 +89,7 @@ public class CompareMyActivityService implements CompareMyActivityUseCase {
 
     private List<Double> getActivityData(Long id, LocalDate expStart, LocalDate expEnd, LocalDate gitHubStart, LocalDate gitHubEnd) {
         Double earnedExp = getValueOrDefault(
-                userExpHistoryRepositoryPort.findAverageExpByUserIdAndCategoryAndPeriod(id, expStart, expEnd)
+                userExpHistoryRepositoryPort.findAverageExpByUserIdAndPeriod(id, expStart, expEnd)
         );
 
         Double studyTime = getValueOrDefault(
