@@ -39,7 +39,7 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
                     ? battle.endDate()
                     : LocalDate.now();
             double myAverageExp = userExpHistoryRepositoryPort
-                    .findAverageExpByUserIdAndCategoryAndPeriod(command.actor().id(), battle.startDate(), endDate);
+                    .findAverageExpByUserIdAndPeriod(command.actor().id(), battle.startDate(), endDate);
             double myOverallPercentage = myAverageExp == 0 ? 0 : 100.0;
             return FindDetailedBattleInfoData.Result.of(battle, null, myOverallPercentage);
         }
@@ -59,10 +59,10 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
         }
 
         double myAverageExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndCategoryAndPeriod(command.actor().id(), battle.startDate(), endDate);
+                .findAverageExpByUserIdAndPeriod(command.actor().id(), battle.startDate(), endDate);
 
         double enemyAverageExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndCategoryAndPeriod(rivalId, battle.startDate(), endDate);
+                .findAverageExpByUserIdAndPeriod(rivalId, battle.startDate(), endDate);
 
         double totalAverageExp = myAverageExp + enemyAverageExp;
         double myOverallPercentage = (totalAverageExp == 0) ? 0 : (myAverageExp / totalAverageExp) * 100;
