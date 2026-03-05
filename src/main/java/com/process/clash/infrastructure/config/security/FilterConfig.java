@@ -1,7 +1,7 @@
 package com.process.clash.infrastructure.config.security;
 
-import com.process.clash.infrastructure.filter.RateLimitFilter;
-import com.process.clash.infrastructure.filter.RecaptchaFilter;
+import com.process.clash.adapter.web.filter.RateLimitFilter;
+import com.process.clash.adapter.web.filter.RecaptchaFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

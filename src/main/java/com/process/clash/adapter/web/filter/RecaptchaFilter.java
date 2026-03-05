@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.filter;
+package com.process.clash.adapter.web.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.process.clash.adapter.web.common.CommonResponse;

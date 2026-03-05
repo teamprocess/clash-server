@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.security;
+package com.process.clash.adapter.security;
 
 import com.process.clash.application.user.user.data.AuthPrincipal;
 import com.process.clash.application.user.user.exception.exception.unauthorized.NotAuthenticatedException;
