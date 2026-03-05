@@ -4,10 +4,12 @@ import com.process.clash.application.compete.my.data.CompareGitHubData;
 import com.process.clash.application.compete.my.port.in.CompareGitHubUseCase;
 import com.process.clash.application.github.exception.exception.notfound.GithubDailyStatsNotFoundException;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
+import com.process.clash.application.github.service.StudyDateCalculator;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Service
@@ -15,11 +17,12 @@ import java.time.LocalDate;
 public class CompareGitHubService implements CompareGitHubUseCase {
 
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
+    private final StudyDateCalculator studyDateCalculator;
 
     @Override
     public CompareGitHubData.Result execute(CompareGitHubData.Command command) {
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = studyDateCalculator.toStudyDate(Instant.now());
 
         GitHubDailyStats yesterdayGitHubStat =
                 gitHubDailyStatsQueryPort.findByUserIdAndStudyDate(command.actor().id(), today.minusDays(1))
