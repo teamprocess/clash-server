@@ -6,21 +6,25 @@ import com.process.clash.application.realtime.port.out.NotifyPresenceStatusChang
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStatusChangedPort {
 
     private final RecordSessionV2RepositoryPort recordSessionV2RepositoryPort;
     private final RecordDevelopSessionSegmentV2RepositoryPort recordDevelopSessionSegmentV2RepositoryPort;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
+    private final StudyTimeExpGrantService studyTimeExpGrantService;
 
     @Override
     public void notifyStatusChanged(
@@ -31,15 +35,15 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
         if (userId == null || previousStatus == null || currentStatus == null) {
             return;
         }
-        if (!shouldStopDevelopSession(previousStatus, currentStatus)) {
+        if (!shouldStopActiveSession(previousStatus, currentStatus)) {
             return;
         }
 
         recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(userId)
-            .ifPresent(this::stopDevelopSessionIfNeeded);
+            .ifPresent(this::stopActiveSession);
     }
 
-    private boolean shouldStopDevelopSession(
+    private boolean shouldStopActiveSession(
         UserActivityStatus previousStatus,
         UserActivityStatus currentStatus
     ) {
@@ -47,20 +51,22 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
             return false;
         }
 
-        // 자리비움/오프라인 전환 시 DEVELOP 세션은 유지되면 안 된다.
+        // 자리비움/오프라인 전환 시 진행 중인 기록 세션은 유지되면 안 된다.
         return currentStatus == UserActivityStatus.AWAY || currentStatus == UserActivityStatus.OFFLINE;
     }
 
-    private void stopDevelopSessionIfNeeded(RecordSessionV2 activeSession) {
-        // TASK 세션은 제외하고 DEVELOP 세션만 자동 종료한다.
-        if (activeSession.sessionType() != RecordSessionTypeV2.DEVELOP) {
-            return;
-        }
-
+    private void stopActiveSession(RecordSessionV2 activeSession) {
         Instant endedAt = Instant.now();
-        recordDevelopSessionSegmentV2RepositoryPort.findOpenSegmentBySessionIdForUpdate(activeSession.id())
-            .ifPresent(segment -> recordDevelopSessionSegmentV2RepositoryPort.save(segment.changeEndedAt(endedAt)));
+        if (activeSession.sessionType() == RecordSessionTypeV2.DEVELOP) {
+            recordDevelopSessionSegmentV2RepositoryPort.findOpenSegmentBySessionIdForUpdate(activeSession.id())
+                .ifPresent(segment -> recordDevelopSessionSegmentV2RepositoryPort.save(segment.changeEndedAt(endedAt)));
+        }
         recordSessionV2RepositoryPort.save(activeSession.changeEndedAt(endedAt));
         recordActivityNotifierPort.notifyActivityStopped(new Actor(activeSession.userId()));
+        try {
+            studyTimeExpGrantService.grant(activeSession.userId(), activeSession.startedAt(), endedAt);
+        } catch (Exception e) {
+            log.error("학습시간 EXP 지급 실패 (presence auto stop). userId={}", activeSession.userId(), e);
+        }
     }
 }

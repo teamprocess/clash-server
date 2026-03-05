@@ -12,7 +12,7 @@ import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -49,7 +49,7 @@ class CompareMyActivityServiceTest {
             RECORD_PROPS,
             TEST_ZONE
         );
-        lenient().when(userExpHistoryRepositoryPort.findAverageExpByUserIdAndCategoryAndPeriod(any(), any(), any())).thenReturn(0.0);
+        lenient().when(userExpHistoryRepositoryPort.findAverageExpByUserIdAndPeriod(any(), any(), any())).thenReturn(0.0);
         lenient().when(userStudyTimeRepositoryPort.findAverageStudyTimeByUserIdAndPeriod(any(), any(), any())).thenReturn(0.0);
         lenient().when(recordSessionRepositoryPort.getTotalStudyTimeInSeconds(any(), any(), any())).thenReturn(0L);
         lenient().when(gitHubDailyStatsQueryPort.findAverageContributionByUserIdAndPeriod(any(), any(), any())).thenReturn(0.0);
@@ -79,7 +79,7 @@ class CompareMyActivityServiceTest {
         ArgumentCaptor<LocalDate> start = ArgumentCaptor.forClass(LocalDate.class);
         ArgumentCaptor<LocalDate> end   = ArgumentCaptor.forClass(LocalDate.class);
         verify(userExpHistoryRepositoryPort)
-            .findAverageExpByUserIdAndCategoryAndPeriod(eq(USER_ID), start.capture(), end.capture());
+            .findAverageExpByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
         assertThat(start.getValue()).isEqualTo(expectedBoundaryToday);
         assertThat(end.getValue()).isEqualTo(expectedBoundaryToday.plusDays(1));
@@ -113,7 +113,7 @@ class CompareMyActivityServiceTest {
         ArgumentCaptor<LocalDate> start = ArgumentCaptor.forClass(LocalDate.class);
         ArgumentCaptor<LocalDate> end   = ArgumentCaptor.forClass(LocalDate.class);
         verify(userExpHistoryRepositoryPort)
-            .findAverageExpByUserIdAndCategoryAndPeriod(eq(USER_ID), start.capture(), end.capture());
+            .findAverageExpByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
         assertThat(start.getValue()).isEqualTo(expectedBoundaryToday.minusDays(1));
         assertThat(end.getValue()).isEqualTo(expectedBoundaryToday);
@@ -147,7 +147,7 @@ class CompareMyActivityServiceTest {
         ArgumentCaptor<LocalDate> start = ArgumentCaptor.forClass(LocalDate.class);
         ArgumentCaptor<LocalDate> end   = ArgumentCaptor.forClass(LocalDate.class);
         verify(userExpHistoryRepositoryPort)
-            .findAverageExpByUserIdAndCategoryAndPeriod(eq(USER_ID), start.capture(), end.capture());
+            .findAverageExpByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
         assertThat(start.getValue()).isEqualTo(expectedBoundaryToday.minusWeeks(1));
         assertThat(end.getValue()).isEqualTo(expectedBoundaryToday);
@@ -181,7 +181,7 @@ class CompareMyActivityServiceTest {
         ArgumentCaptor<LocalDate> start = ArgumentCaptor.forClass(LocalDate.class);
         ArgumentCaptor<LocalDate> end   = ArgumentCaptor.forClass(LocalDate.class);
         verify(userExpHistoryRepositoryPort)
-            .findAverageExpByUserIdAndCategoryAndPeriod(eq(USER_ID), start.capture(), end.capture());
+            .findAverageExpByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
         assertThat(start.getValue()).isEqualTo(expectedBoundaryToday.minusMonths(1));
         assertThat(end.getValue()).isEqualTo(expectedBoundaryToday);

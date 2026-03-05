@@ -39,7 +39,10 @@ public class AuthControllerTest {
     private SignUpUseCase signUpUseCase;
 
     @MockitoBean
-    private SignInUseCase signInUseCase;
+    private SignInUseCase signInService;
+
+    @MockitoBean
+    private SignInUseCase noRecapchaSignInService;
 
     private void initMockMvc() {
         if (this.mockMvc == null) {
@@ -76,7 +79,7 @@ public class AuthControllerTest {
         String name = "테스트유저";
 
         when(signUpUseCase.execute(any())).thenReturn("signup_token");
-        when(signInUseCase.execute(any())).thenReturn(new SignInData.Result(1L, username, name, Role.USER));
+        when(signInService.execute(any())).thenReturn(new SignInData.Result(1L, username, name, Role.USER));
 
         // signup
         SignUpDto.Request signUpRequest = new SignUpDto.Request(username, email, password, name);

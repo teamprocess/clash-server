@@ -16,7 +16,7 @@ public class AnalyzeBattleInfoResponseDocument extends SuccessMessageResponseDoc
     public DataDoc data;
 
     public static class DataDoc {
-        @Schema(description = "분석 카테고리", example = "CLASH")
+        @Schema(description = "분석 카테고리", example = "EXP")
         public String category;
 
         @Schema(description = "배틀 ID", example = "1")

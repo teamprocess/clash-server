@@ -63,4 +63,18 @@ public record Battle(
                 this.rivalId
         );
     }
+
+    public Battle finish() {
+
+        return new Battle(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.startDate,
+                this.endDate,
+                BattleStatus.DONE,
+                this.winnerId,
+                this.rivalId
+        );
+    }
 }

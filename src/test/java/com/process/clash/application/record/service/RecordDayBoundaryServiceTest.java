@@ -1,5 +1,6 @@
 package com.process.clash.application.record.service;
 
+import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.common.enums.Major;
@@ -8,7 +9,7 @@ import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class RecordDayBoundaryServiceTest {
     private RecordSessionRepositoryPort recordSessionRepositoryPort;
 
     @Mock
+    private RecordActivityNotifierPort recordActivityNotifierPort;
+
+    @Mock
     private StudyTimeExpGrantService studyTimeExpGrantService;
 
     private RecordDayBoundaryService recordDayBoundaryService;
@@ -45,6 +49,7 @@ class RecordDayBoundaryServiceTest {
     void setUp() {
         recordDayBoundaryService = new RecordDayBoundaryService(
             recordSessionRepositoryPort,
+            recordActivityNotifierPort,
             studyTimeExpGrantService,
             new RecordProperties("Asia/Seoul", BOUNDARY_HOUR),
             ZONE

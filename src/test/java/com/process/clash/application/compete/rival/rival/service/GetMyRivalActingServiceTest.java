@@ -16,7 +16,7 @@ import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;

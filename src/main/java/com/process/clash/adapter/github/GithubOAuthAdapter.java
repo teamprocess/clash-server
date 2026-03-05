@@ -6,7 +6,7 @@ import com.process.clash.application.user.usergithub.exception.exception.interna
 import com.process.clash.application.user.usergithub.model.GithubOAuthToken;
 import com.process.clash.application.user.usergithub.model.GithubOAuthUser;
 import com.process.clash.application.user.usergithub.port.out.GithubOAuthPort;
-import com.process.clash.infrastructure.config.GithubOAuthProperties;
+import com.process.clash.infrastructure.config.github.GithubOAuthProperties;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

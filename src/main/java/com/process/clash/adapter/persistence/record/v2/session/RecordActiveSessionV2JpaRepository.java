@@ -1,6 +1,7 @@
 package com.process.clash.adapter.persistence.record.v2.session;
 
 import jakarta.persistence.LockModeType;
+import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +54,25 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
           and s.endedAt is null
     """)
     Optional<RecordActiveSessionV2JpaEntity> findActiveByUserIdForUpdate(@Param("userId") Long userId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+        select s
+        from RecordActiveSessionV2JpaEntity s
+        join fetch s.user
+        left join fetch s.developSession ds
+        left join fetch s.taskSession ts
+        left join fetch ts.subject sub
+        left join fetch ts.task task
+        where s.sessionType = :sessionType
+          and s.endedAt is null
+          and s.startedAt <= :startedBefore
+        order by s.startedAt asc
+    """)
+    List<RecordActiveSessionV2JpaEntity> findAllActiveBySessionTypeAndStartedAtBeforeForUpdate(
+        @Param("sessionType") RecordSessionTypeV2 sessionType,
+        @Param("startedBefore") Instant startedBefore
+    );
 
     @Query("""
         select s

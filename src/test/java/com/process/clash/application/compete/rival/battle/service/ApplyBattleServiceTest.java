@@ -11,6 +11,7 @@ import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +53,8 @@ class ApplyBattleServiceTest {
             rivalRepositoryPort,
             userNoticeRepositoryPort,
             applyBattlePolicy,
-            competeRefetchNotifier
+            competeRefetchNotifier,
+            ZoneId.of("Asia/Seoul")
         );
     }
 

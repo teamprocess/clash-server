@@ -144,7 +144,8 @@ public interface BattleControllerDocument {
                                         "profileImage": "https://cdn.example.com/profile/2.png"
                                       },
                                       "expireDate": "2026-01-29",
-                                      "myOverallPercentage": 65.5
+                                      "myOverallPercentage": 65.5,
+                                      "enemyOverallPercentage": 34.5
                                     }
                                   }
                                   """)
@@ -197,7 +198,7 @@ public interface BattleControllerDocument {
                                     "success": true,
                                     "message": "라이벌과의 배틀 정보 분석을 성공적으로 반환했습니다.",
                                     "data": {
-                                      "category": "CLASH",
+                                      "category": "EXP",
                                       "id": 1,
                                       "enemyPoint": 850,
                                       "myPoint": 720
@@ -210,7 +211,7 @@ public interface BattleControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "배틀 ID", example = "1", required = true)
             @PathVariable Long id,
-            @Parameter(description = "분석할 카테고리 (CLASH, GITHUB 등)", example = "CLASH", required = true)
+            @Parameter(description = "분석할 카테고리 (EXP, GITHUB, ACTIVE_TIME, SOLVED_AC)", example = "EXP", required = true)
             @PathVariable TargetCategory category
     );
 }

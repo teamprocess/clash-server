@@ -13,7 +13,7 @@ import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.user.entity.User;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

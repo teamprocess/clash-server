@@ -6,6 +6,7 @@ import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
 import com.process.clash.adapter.web.common.ApiResponse;
+import com.process.clash.adapter.web.common.util.AccessContextResolver;
 import com.process.clash.application.common.data.AccessContext;
 import com.process.clash.application.user.user.data.CheckDuplicateUsernameData;
 import com.process.clash.application.user.user.data.VerifyEmailData;
@@ -42,10 +43,12 @@ public class AuthController implements AuthControllerDocument {
 	);
 
 	private final SignUpUseCase signUpUseCase;
-	private final SignInUseCase signInUseCase;
+	private final SignInUseCase signInService;
+	private final SignInUseCase noRecapchaSignInService;
 	private final SignOutUseCase signOutUseCase;
 	private final VerifyEmailUseCase verifyEmailUseCase;
 	private final CheckDuplicatedUsernameUseCase checkDuplicatedUsernameUseCase;
+	private final AccessContextResolver accessContextResolver;
 
 	@PostMapping("/sign-up")
 	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
@@ -66,18 +69,28 @@ public class AuthController implements AuthControllerDocument {
 			@Valid @RequestBody SignInDto.Request request,
 			HttpServletRequest httpRequest
 	) {
-		AccessContext context = extractAccessContext(httpRequest);
-
+		AccessContext context = accessContextResolver.extractAccessContext(httpRequest);
 		SignInData.Command command = request.toCommand(context);
-		SignInData.Result result = signInUseCase.execute(command);
+		SignInData.Result result = signInService.execute(command);
+		SignInDto.Response response = SignInDto.Response.fromResult(result);
+		return ApiResponse.success(response, "로그인을 성공했습니다.");
+	}
 
+	@PostMapping("/no-recapcha-sign-in")
+	public ApiResponse<SignInDto.Response> noRecapchaSignIn(
+			@Valid @RequestBody SignInDto.Request request,
+			HttpServletRequest httpRequest
+	) {
+		AccessContext context = accessContextResolver.extractAccessContext(httpRequest);
+		SignInData.Command command = request.toCommand(context);
+		SignInData.Result result = noRecapchaSignInService.execute(command);
 		SignInDto.Response response = SignInDto.Response.fromResult(result);
 		return ApiResponse.success(response, "로그인을 성공했습니다.");
 	}
 
 	@PostMapping("/sign-out")
 	public ApiResponse<Void> signOut(HttpServletRequest httpRequest) {
-		AccessContext context = extractAccessContext(httpRequest);
+		AccessContext context = accessContextResolver.extractAccessContext(httpRequest);
 		signOutUseCase.execute(context);
 		return ApiResponse.success("로그아웃 되었습니다.");
 	}
@@ -122,19 +135,5 @@ public class AuthController implements AuthControllerDocument {
 				.status(HttpStatus.PERMANENT_REDIRECT) // 308
 				.header(HttpHeaders.LOCATION, newLocation)
 				.build();
-	}
-
-	private AccessContext extractAccessContext(HttpServletRequest request) {
-		String ip = extractIpAddress(request);
-		String userAgent = request.getHeader("User-Agent");
-		return AccessContext.of(ip, userAgent);
-	}
-
-	private String extractIpAddress(HttpServletRequest request) {
-		String xff = request.getHeader("X-Forwarded-For");
-		if (xff != null && !xff.isEmpty()) {
-			return xff.split(",")[0].trim();
-		}
-		return request.getRemoteAddr();
 	}
 }

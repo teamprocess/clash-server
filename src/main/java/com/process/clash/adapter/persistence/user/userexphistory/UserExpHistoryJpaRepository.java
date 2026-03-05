@@ -121,7 +121,8 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
         FROM user_exp_history
         WHERE fk_user_id = :userId
           AND date >= :startDate
-          AND date < :endDate
+          AND date <= :endDate
+          AND acting_category <> 'SEASON_RESET'
     """, nativeQuery = true)
     double findAverageExpByUserIdAndPeriod(
             @Param("userId") Long userId,

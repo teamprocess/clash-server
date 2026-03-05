@@ -75,6 +75,17 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     }
 
     @Override
+    public List<RecordSessionV2> findActiveTaskSessionsStartedBeforeForUpdate(Instant startedBeforeInclusive) {
+        return recordActiveSessionV2JpaRepository
+            .findAllActiveBySessionTypeAndStartedAtBeforeForUpdate(
+                RecordSessionTypeV2.TASK,
+                startedBeforeInclusive
+            ).stream()
+            .map(recordSessionV2JpaMapper::toDomain)
+            .toList();
+    }
+
+    @Override
     public Boolean existsActiveSessionBySubjectId(Long subjectId) {
         return recordTaskSessionV2JpaRepository.existsActiveBySubjectId(subjectId);
     }

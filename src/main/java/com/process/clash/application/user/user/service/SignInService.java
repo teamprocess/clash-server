@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SignInService implements SignInUseCase {
 
+	private static final String DUMMY_PASSWORD_HASH = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+
 	private final UserRepositoryPort userRepositoryPort;
 	private final PasswordEncoder passwordEncoder;
 	private final SessionManager sessionManager;
@@ -24,11 +26,12 @@ public class SignInService implements SignInUseCase {
 
 	@Override
 	public SignInData.Result execute(SignInData.Command command) {
-		User user = userRepositoryPort.findByUsername(command.username())
-				.orElseThrow(InvalidCredentialsException::new);
+		User user = userRepositoryPort.findByUsername(command.username()).orElse(null);
 
-		boolean matches = passwordEncoder.matches(command.password(), user.password());
-		if (!matches) {
+		String passwordToCheck = (user != null) ? user.password() : DUMMY_PASSWORD_HASH;
+		boolean matches = passwordEncoder.matches(command.password(), passwordToCheck);
+
+		if (user == null || !matches) {
 			throw new InvalidCredentialsException();
 		}
 
@@ -37,7 +40,7 @@ public class SignInService implements SignInUseCase {
 
 		// record login event using explicit access context (guaranteed non-null)
 		AccessContext ctx = command.accessContext();
-		authEventRepositoryPort.recordLogin(user.username(), ctx.ipAddress(), ctx.userAgent());
+		authEventRepositoryPort.recordSignIn(user.username(), ctx.ipAddress(), ctx.userAgent());
 
 		return new SignInData.Result(user.id(), user.username(), user.name(), user.role());
 	}

@@ -11,7 +11,7 @@ import com.process.clash.application.user.userexphistory.port.out.UserExpHistory
 import com.process.clash.domain.common.enums.TargetCategory;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.rival.entity.Rival;
-import com.process.clash.infrastructure.config.RecordProperties;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,10 +103,8 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
             LocalDate startDate,
             LocalDate endDate
     ) {
-        Double avgExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndCategoryAndPeriod(
-                        userId, startDate, endDate
-                );
-        return avgExp != null ? (int) Math.round(avgExp) : 0;
+        double avgExp = userExpHistoryRepositoryPort
+                .findAverageExpByUserIdAndPeriod(userId, startDate, endDate);
+        return (int) Math.round(avgExp);
     }
 }
