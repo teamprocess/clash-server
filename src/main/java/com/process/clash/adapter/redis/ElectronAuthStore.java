@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.auth;
+package com.process.clash.adapter.redis;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

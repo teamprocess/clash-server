@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.email;
+package com.process.clash.adapter.email;
 
 import com.process.clash.application.mail.exception.exception.InvalidMailException;
 import com.process.clash.application.mail.exception.exception.MailDeliveryException;

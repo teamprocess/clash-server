@@ -1,4 +1,4 @@
-package com.process.clash.infrastructure.security;
+package com.process.clash.adapter.security;
 
 import com.process.clash.domain.common.policy.RateLimitRule;
 import io.github.bucket4j.Bandwidth;
