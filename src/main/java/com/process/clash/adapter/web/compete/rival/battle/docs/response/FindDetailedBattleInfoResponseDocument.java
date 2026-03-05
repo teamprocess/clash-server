@@ -29,6 +29,9 @@ public class FindDetailedBattleInfoResponseDocument extends SuccessMessageRespon
 
         @Schema(description = "내 전체 승률 (%)", example = "65.5")
         public Double myOverallPercentage;
+
+        @Schema(description = "상대방 전체 승률 (%)", example = "34.5")
+        public Double enemyOverallPercentage;
     }
 
     public static class EnemyDoc {

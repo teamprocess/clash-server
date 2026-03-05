@@ -144,7 +144,8 @@ public interface BattleControllerDocument {
                                         "profileImage": "https://cdn.example.com/profile/2.png"
                                       },
                                       "expireDate": "2026-01-29",
-                                      "myOverallPercentage": 65.5
+                                      "myOverallPercentage": 65.5,
+                                      "enemyOverallPercentage": 34.5
                                     }
                                   }
                                   """)

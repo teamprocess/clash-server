@@ -13,7 +13,8 @@ public class FindDetailedBattleInfoDto {
             Long id,
             Enemy enemy,
             LocalDate expireDate,
-            Double myOverallPercentage
+            Double myOverallPercentage,
+            Double enemyOverallPercentage
     ) {
 
         public static Response from(FindDetailedBattleInfoData.Result result) {
@@ -22,7 +23,8 @@ public class FindDetailedBattleInfoDto {
                     result.id(),
                     result.enemy(),
                     result.expireDate(),
-                    result.myOverallPercentage()
+                    result.myOverallPercentage(),
+                    result.enemyOverallPercentage()
             );
         }
     }
