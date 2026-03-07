@@ -18,7 +18,8 @@ public class UserNoticeJpaMapper {
                 sender,
                 receiver,
                 userNotice.rivalId(),
-                userNotice.battleId()
+                userNotice.battleId(),
+                userNotice.deletedAt()
         );
     }
 
@@ -45,7 +46,8 @@ public class UserNoticeJpaMapper {
                 userNoticeJpaEntity.getReceiver().getUsername(),
                 userNoticeJpaEntity.getReceiver().getProfileImage(),
                 userNoticeJpaEntity.getRivalId(),
-                userNoticeJpaEntity.getBattleId()
+                userNoticeJpaEntity.getBattleId(),
+                userNoticeJpaEntity.getDeletedAt()
         );
     }
 }

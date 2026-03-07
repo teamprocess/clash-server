@@ -74,6 +74,33 @@ public interface BattleControllerDocument {
             ModifyBattleDto.Request request
     );
 
+    @Operation(summary = "배틀 취소", description = "내가 신청한 배틀을 취소합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "취소 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = ModifyBattleResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                  {
+                                    "success": true,
+                                    "message": "라이벌과의 배틀 신청을 성공적으로 취소하였습니다."
+                                  }
+                                  """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> cancelBattle(
+            @Parameter(hidden = true) Actor actor,
+            @RequestBody(description = "배틀 취소 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = ModifyBattleRequestDocument.class),
+                            examples = @ExampleObject(value = """
+                                  {
+                                    "id": 1
+                                  }
+                                  """)
+                    ))
+            ModifyBattleDto.Request request
+    );
+
     @Operation(summary = "배틀 거절", description = "신청받은 배틀을 거절합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "거절 성공",

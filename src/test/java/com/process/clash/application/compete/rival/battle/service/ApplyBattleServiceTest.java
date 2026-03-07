@@ -8,6 +8,7 @@ import com.process.clash.application.compete.rival.battle.port.out.BattleReposit
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
+import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -71,9 +72,10 @@ class ApplyBattleServiceTest {
             Instant.now(),
             LocalDate.now(),
             LocalDate.now().plusDays(7),
-            com.process.clash.domain.rival.battle.enums.BattleStatus.PENDING,
+            BattleStatus.PENDING,
             null,
-            rivalId
+            rivalId,
+            actor.id()
         );
 
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
@@ -86,5 +88,33 @@ class ApplyBattleServiceTest {
         ArgumentCaptor<Collection<Long>> competeCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(competeRefetchNotifier).notifyCompeteChanged(competeCaptor.capture());
         assertThat(competeCaptor.getValue()).containsExactlyInAnyOrder(actor.id(), opponentId);
+    }
+
+    @Test
+    @DisplayName("배틀 재신청 시 이전 CANCEL_BATTLE 알림을 soft delete한다")
+    void execute_softDeletesCancelBattleNoticeOnReApply() {
+        Actor actor = new Actor(1L);
+        Long rivalId = 10L;
+        Long opponentId = 2L;
+        ApplyBattleData.Command command = new ApplyBattleData.Command(actor, rivalId, 7);
+        Battle savedBattle = new Battle(
+            100L,
+            Instant.now(),
+            Instant.now(),
+            LocalDate.now(),
+            LocalDate.now().plusDays(7),
+            BattleStatus.PENDING,
+            null,
+            rivalId,
+            actor.id()
+        );
+
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(savedBattle);
+        when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        applyBattleService.execute(command);
+
+        verify(userNoticeRepositoryPort).deleteCancelBattleNoticeBySenderAndReceiver(actor.id(), opponentId);
     }
 }

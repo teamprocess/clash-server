@@ -3,6 +3,7 @@ package com.process.clash.application.compete.rival.rival.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
+import com.process.clash.application.compete.rival.rival.exception.exception.forbidden.RejectRivalForbiddenException;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
@@ -53,11 +54,12 @@ class RejectRivalServiceTest {
     }
 
     @Test
-    @DisplayName("라이벌 거절 시 상대방과 본인 모두에게 알림 소켓 이벤트를 전송한다")
-    void execute_notifiesBothUsersOnReject() {
+    @DisplayName("라이벌 거절 시 상대방에게만 알림 소켓 이벤트를 전송한다")
+    void execute_notifiesOnlyOpponentOnReject() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
+        // firstUserId = opponentId(신청자), secondUserId = actor.id(수신자)
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
 
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
@@ -67,9 +69,7 @@ class RejectRivalServiceTest {
 
         rejectRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
-        ArgumentCaptor<Collection<Long>> captor = ArgumentCaptor.forClass(Collection.class);
-        verify(competeRefetchNotifier).notifyUserNoticeChanged(captor.capture());
-        assertThat(captor.getValue()).containsExactlyInAnyOrder(opponentId, actor.id());
+        verify(competeRefetchNotifier).notifyUserNoticeChanged(java.util.List.of(opponentId));
 
         ArgumentCaptor<Collection<Long>> competeCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(competeRefetchNotifier).notifyCompeteChanged(competeCaptor.capture());
@@ -77,8 +77,8 @@ class RejectRivalServiceTest {
     }
 
     @Test
-    @DisplayName("라이벌 거절 시 상대방과 본인 각각 알림을 저장한다")
-    void execute_savesTwoNoticesOnReject() {
+    @DisplayName("라이벌 거절 시 상대방에게만 알림 1개를 저장한다")
+    void execute_savesOneNoticeOnReject() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
@@ -91,7 +91,43 @@ class RejectRivalServiceTest {
 
         rejectRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
-        verify(userNoticeRepositoryPort, times(2)).save(any(UserNotice.class));
+        verify(userNoticeRepositoryPort, times(1)).save(any(UserNotice.class));
+    }
+
+    @Test
+    @DisplayName("라이벌 거절 시 기존 APPLY_RIVAL 알림을 soft delete한다")
+    void execute_softDeletesApplyRivalNoticeOnReject() {
+        Actor actor = new Actor(1L);
+        Long rivalId = 10L;
+        Long opponentId = 2L;
+        Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
+
+        when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
+        when(rivalRepositoryPort.save(any(Rival.class))).thenReturn(rival.reject());
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
+        when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        rejectRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
+
+        verify(userNoticeRepositoryPort).deleteApplyRivalNoticeByRivalId(rivalId);
+    }
+
+    @Test
+    @DisplayName("라이벌 신청자가 거절을 시도하면 RejectRivalForbiddenException이 발생한다")
+    void execute_throwsWhenApplicantTriesToReject() {
+        Actor actor = new Actor(1L);
+        Long rivalId = 10L;
+        Long opponentId = 2L;
+        // actor가 firstUserId(신청자)인 경우
+        Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, actor.id(), opponentId);
+
+        when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
+
+        assertThatThrownBy(() -> rejectRivalService.execute(ModifyRivalData.Command.of(actor, rivalId)))
+                .isInstanceOf(RejectRivalForbiddenException.class);
+
+        verify(rivalRepositoryPort, never()).save(any());
+        verify(userNoticeRepositoryPort, never()).save(any());
     }
 
     @Test

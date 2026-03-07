@@ -45,7 +45,7 @@ class ReadUserNoticeServiceTest {
                 NoticeCategory.APPLY_RIVAL, false,
                 2L, "senderA", "sender_a", null,
                 1L, "receiverA", "receiver_a", null,
-                null, null
+                null, null, null
         );
 
         when(userNoticeRepositoryPort.findByIdAndReceiverId(noticeId, actor.id())).thenReturn(Optional.of(unreadNotice));
@@ -66,7 +66,7 @@ class ReadUserNoticeServiceTest {
                 NoticeCategory.APPLY_RIVAL, true,
                 2L, "senderA", "sender_a", null,
                 1L, "receiverA", "receiver_a", null,
-                null, null
+                null, null, null
         );
 
         when(userNoticeRepositoryPort.findByIdAndReceiverId(noticeId, actor.id())).thenReturn(Optional.of(readNotice));

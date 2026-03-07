@@ -70,4 +70,34 @@ public class UserNoticePersistenceAdapter implements UserNoticeRepositoryPort {
         return userNoticeJpaRepository.findByIdAndReceiver_Id(id, receiverId)
                 .map(userNoticeJpaMapper::toDomain);
     }
+
+    @Override
+    public void deleteApplyRivalNoticeByRivalId(Long rivalId) {
+        userNoticeJpaRepository.softDeleteApplyRivalNoticeByRivalId(rivalId);
+    }
+
+    @Override
+    public void deleteCancelRivalNoticeBySenderAndReceiver(Long senderId, Long receiverId) {
+        userNoticeJpaRepository.softDeleteCancelRivalNoticeBySenderAndReceiver(senderId, receiverId);
+    }
+
+    @Override
+    public void deleteCancelRivalNoticesBySenderAndReceivers(Long senderId, List<Long> receiverIds) {
+        userNoticeJpaRepository.softDeleteCancelRivalNoticesBySenderAndReceivers(senderId, receiverIds);
+    }
+
+    @Override
+    public void deleteCancelBattleNoticeBySenderAndReceiver(Long senderId, Long receiverId) {
+        userNoticeJpaRepository.softDeleteCancelBattleNoticeBySenderAndReceiver(senderId, receiverId);
+    }
+
+    @Override
+    public void deleteApplyBattleNoticeByBattleId(Long battleId) {
+        userNoticeJpaRepository.softDeleteApplyBattleNoticeByBattleId(battleId);
+    }
+
+    @Override
+    public void deleteAllNotices() {
+        userNoticeJpaRepository.softDeleteAllNotices();
+    }
 }

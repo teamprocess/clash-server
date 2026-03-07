@@ -42,6 +42,8 @@ public class CancelRivalService implements CancelRivalUseCase {
 
         Rival savedRival = rivalRepositoryPort.save(updatedRival);
 
+        userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalId(savedRival.id());
+
         Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(savedRival.id(), command.actor().id());
 
         UserNotice userNoticeForReceiver = UserNotice
@@ -54,7 +56,7 @@ public class CancelRivalService implements CancelRivalUseCase {
         userNoticeRepositoryPort.save(userNoticeForReceiver);
 
         List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
+        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId));
         competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
     }
 }

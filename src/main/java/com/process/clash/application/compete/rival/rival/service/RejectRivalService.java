@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
+import com.process.clash.application.compete.rival.rival.exception.exception.forbidden.RejectRivalForbiddenException;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.in.RejectRivalUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
@@ -29,9 +30,14 @@ public class RejectRivalService implements RejectRivalUseCase {
         Rival rival = rivalRepositoryPort.findById(command.id())
                 .orElseThrow(RivalNotFoundException::new);
 
+        if (!rival.secondUserId().equals(command.actor().id()))
+            throw new RejectRivalForbiddenException();
+
         Rival updatedRival = rival.reject();
 
         Rival savedRival = rivalRepositoryPort.save(updatedRival);
+
+        userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalId(savedRival.id());
 
         Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(savedRival.id(), command.actor().id());
 
@@ -44,17 +50,8 @@ public class RejectRivalService implements RejectRivalUseCase {
 
         userNoticeRepositoryPort.save(userNoticeForReceiver);
 
-        UserNotice userNoticeForSender = UserNotice
-                .createDefault(
-                        NoticeCategory.SHOW_REJECT_RIVAL,
-                        command.actor().id(),
-                        command.actor().id()
-                );
-
-        userNoticeRepositoryPort.save(userNoticeForSender);
-
         List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
+        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId));
         competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
     }
 }
