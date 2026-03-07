@@ -44,17 +44,8 @@ public class RejectRivalService implements RejectRivalUseCase {
 
         userNoticeRepositoryPort.save(userNoticeForReceiver);
 
-        UserNotice userNoticeForSender = UserNotice
-                .createDefault(
-                        NoticeCategory.SHOW_REJECT_RIVAL,
-                        command.actor().id(),
-                        command.actor().id()
-                );
-
-        userNoticeRepositoryPort.save(userNoticeForSender);
-
         List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
+        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId));
         competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
     }
 }

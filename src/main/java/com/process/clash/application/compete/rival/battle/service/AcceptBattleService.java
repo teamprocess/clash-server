@@ -50,16 +50,8 @@ public class AcceptBattleService implements AcceptBattleUseCase {
 
         userNoticeRepositoryPort.save(userNoticeForReceiver);
 
-        UserNotice userNoticeForSender = UserNotice
-                .createDefault(
-                        NoticeCategory.SHOW_ACCEPT_BATTLE,
-                        command.actor().id(),
-                        command.actor().id()
-                );
-
-        userNoticeRepositoryPort.save(userNoticeForSender);
         List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
+        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId));
         competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
     }
 }
