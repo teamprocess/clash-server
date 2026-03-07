@@ -4,5 +4,6 @@ public enum BattleStatus {
     IN_PROGRESS,
     PENDING,
     DONE,
-    REJECTED
+    REJECTED,
+    CANCELED
 }

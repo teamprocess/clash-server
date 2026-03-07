@@ -20,6 +20,7 @@ public class BattleController implements BattleControllerDocument {
     private final ApplyBattleUseCase applyBattleUseCase;
     private final AcceptBattleUseCase acceptBattleUseCase;
     private final RejectBattleUseCase rejectBattleUseCase;
+    private final CancelBattleUseCase cancelBattleUseCase;
     private final FindAbleRivalsUseCase findAbleRivalsUseCase;
     private final FindDetailedBattleInfoUseCase findDetailedBattleInfoUseCase;
     private final FindAllBattleInfoUseCase findAllBattleInfoUseCase;
@@ -47,6 +48,18 @@ public class BattleController implements BattleControllerDocument {
         ModifyBattleData.Command command = request.toCommand(actor);
         acceptBattleUseCase.execute(command);
         return ApiResponse.success("라이벌과의 배틀 신청을 성공적으로 승인하였습니다.");
+    }
+
+    // 라이벌과의 경쟁 - 배틀 취소
+    @PostMapping("/cancel")
+    public ApiResponse<Void> cancelBattle(
+            @AuthenticatedActor Actor actor,
+            @Valid @RequestBody ModifyBattleDto.Request request
+    ) {
+
+        ModifyBattleData.Command command = request.toCommand(actor);
+        cancelBattleUseCase.execute(command);
+        return ApiResponse.success("라이벌과의 배틀 신청을 성공적으로 취소하였습니다.");
     }
 
     // 라이벌과의 경쟁 - 배틀 거절

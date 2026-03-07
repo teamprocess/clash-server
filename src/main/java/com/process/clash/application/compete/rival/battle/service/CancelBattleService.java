@@ -2,12 +2,15 @@ package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.battle.data.ModifyBattleData;
+import com.process.clash.application.compete.rival.battle.exception.exception.badrequest.CancelBattleInvalidStatusException;
+import com.process.clash.application.compete.rival.battle.exception.exception.forbidden.CancelBattleForbiddenException;
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
-import com.process.clash.application.compete.rival.battle.port.in.RejectBattleUseCase;
+import com.process.clash.application.compete.rival.battle.port.in.CancelBattleUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
+import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class RejectBattleService implements RejectBattleUseCase {
+public class CancelBattleService implements CancelBattleUseCase {
 
     private final BattleRepositoryPort battleRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
@@ -32,17 +35,23 @@ public class RejectBattleService implements RejectBattleUseCase {
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
 
-        Battle updatedBattle = battle.reject();
+        if (!command.actor().id().equals(battle.applicantId()))
+            throw new CancelBattleForbiddenException();
 
-        Battle savedBattle = battleRepositoryPort.save(updatedBattle);
+        if (battle.battleStatus() != BattleStatus.PENDING)
+            throw new CancelBattleInvalidStatusException();
 
-        userNoticeRepositoryPort.deleteApplyBattleNoticeByBattleId(savedBattle.id());
+        Battle cancelledBattle = battle.cancel();
 
-        Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserId(savedBattle.rivalId(), command.actor().id());
+        battleRepositoryPort.save(cancelledBattle);
+
+        userNoticeRepositoryPort.deleteApplyBattleNoticeByBattleId(battle.id());
+
+        Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserId(battle.rivalId(), command.actor().id());
 
         UserNotice userNoticeForReceiver = UserNotice
                 .createDefault(
-                        NoticeCategory.REJECT_BATTLE,
+                        NoticeCategory.CANCEL_BATTLE,
                         command.actor().id(),
                         opponentId
                 );

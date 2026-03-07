@@ -27,8 +27,9 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     public Battle save(Battle battle) {
 
         UserJpaEntity winner = battle.winnerId() != null ? userJpaRepository.getReferenceById(battle.winnerId()) : null;
+        UserJpaEntity applicant = battle.applicantId() != null ? userJpaRepository.getReferenceById(battle.applicantId()) : null;
         RivalJpaEntity rivalJpaEntity = rivalJpaRepository.getReferenceById(battle.rivalId());
-        BattleJpaEntity savedEntity = battleJpaRepository.save(battleJpaMapper.toJpaEntity(battle, winner, rivalJpaEntity));
+        BattleJpaEntity savedEntity = battleJpaRepository.save(battleJpaMapper.toJpaEntity(battle, winner, applicant, rivalJpaEntity));
         return battleJpaMapper.toDomain(savedEntity);
     }
 
@@ -82,8 +83,9 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
         List<BattleJpaEntity> entities = battles.stream()
                 .map(battle -> {
                     UserJpaEntity winner = battle.winnerId() != null ? userJpaRepository.getReferenceById(battle.winnerId()) : null;
+                    UserJpaEntity applicant = battle.applicantId() != null ? userJpaRepository.getReferenceById(battle.applicantId()) : null;
                     RivalJpaEntity rivalJpaEntity = rivalJpaRepository.getReferenceById(battle.rivalId());
-                    return battleJpaMapper.toJpaEntity(battle, winner, rivalJpaEntity);
+                    return battleJpaMapper.toJpaEntity(battle, winner, applicant, rivalJpaEntity);
                 })
                 .toList();
 

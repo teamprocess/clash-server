@@ -13,10 +13,11 @@ public record Battle(
         LocalDate endDate,
         BattleStatus battleStatus,
         Long winnerId,
-        Long rivalId
+        Long rivalId,
+        Long applicantId
 ) {
 
-    public static Battle createDefault(LocalDate startDate, LocalDate endDate, Long rivalId) {
+    public static Battle createDefault(LocalDate startDate, LocalDate endDate, Long rivalId, Long applicantId) {
 
         return new Battle(
                 null,
@@ -26,7 +27,8 @@ public record Battle(
                 endDate,
                 BattleStatus.PENDING,
                 null,
-                rivalId
+                rivalId,
+                applicantId
         );
     }
 
@@ -46,7 +48,8 @@ public record Battle(
                 this.endDate,
                 status,
                 this.winnerId,
-                this.rivalId
+                this.rivalId,
+                this.applicantId
         );
     }
 
@@ -60,7 +63,23 @@ public record Battle(
                 this.endDate,
                 BattleStatus.REJECTED,
                 this.winnerId,
-                this.rivalId
+                this.rivalId,
+                this.applicantId
+        );
+    }
+
+    public Battle cancel() {
+
+        return new Battle(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.startDate,
+                this.endDate,
+                BattleStatus.CANCELED,
+                this.winnerId,
+                this.rivalId,
+                this.applicantId
         );
     }
 
@@ -74,7 +93,8 @@ public record Battle(
                 this.endDate,
                 BattleStatus.DONE,
                 this.winnerId,
-                this.rivalId
+                this.rivalId,
+                this.applicantId
         );
     }
 }
