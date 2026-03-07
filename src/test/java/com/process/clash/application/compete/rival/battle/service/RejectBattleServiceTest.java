@@ -3,6 +3,7 @@ package com.process.clash.application.compete.rival.battle.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.battle.data.ModifyBattleData;
+import com.process.clash.application.compete.rival.battle.exception.exception.forbidden.RejectBattleForbiddenException;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
@@ -22,7 +23,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,31 +63,24 @@ class RejectBattleServiceTest {
         Actor actor = new Actor(1L);
         Long battleId = 20L;
         Long rivalId = 30L;
-        Long opponentId = 2L;
-        Battle battle = new Battle(
-            battleId,
-            Instant.now(),
-            Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(1),
-            BattleStatus.PENDING,
-            null,
-            rivalId,
-            opponentId
-        );
+        Long applicantId = 2L;
+        // applicantId = 2L(신청자), actor = 1L(수신자)
+        Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
+                LocalDate.now(), LocalDate.now().plusDays(1),
+                BattleStatus.PENDING, null, rivalId, applicantId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
         when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.reject());
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(applicantId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         rejectBattleService.execute(new ModifyBattleData.Command(actor, battleId));
 
-        verify(competeRefetchNotifier).notifyUserNoticeChanged(java.util.List.of(opponentId));
+        verify(competeRefetchNotifier).notifyUserNoticeChanged(java.util.List.of(applicantId));
 
         ArgumentCaptor<Collection<Long>> competeCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(competeRefetchNotifier).notifyCompeteChanged(competeCaptor.capture());
-        assertThat(competeCaptor.getValue()).containsExactlyInAnyOrder(opponentId, actor.id());
+        assertThat(competeCaptor.getValue()).containsExactlyInAnyOrder(applicantId, actor.id());
     }
 
     @Test
@@ -93,22 +89,14 @@ class RejectBattleServiceTest {
         Actor actor = new Actor(1L);
         Long battleId = 20L;
         Long rivalId = 30L;
-        Long opponentId = 2L;
-        Battle battle = new Battle(
-            battleId,
-            Instant.now(),
-            Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(1),
-            BattleStatus.PENDING,
-            null,
-            rivalId,
-            opponentId
-        );
+        Long applicantId = 2L;
+        Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
+                LocalDate.now(), LocalDate.now().plusDays(1),
+                BattleStatus.PENDING, null, rivalId, applicantId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
         when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.reject());
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(applicantId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         rejectBattleService.execute(new ModifyBattleData.Command(actor, battleId));
@@ -122,26 +110,38 @@ class RejectBattleServiceTest {
         Actor actor = new Actor(1L);
         Long battleId = 20L;
         Long rivalId = 30L;
-        Long opponentId = 2L;
-        Battle battle = new Battle(
-            battleId,
-            Instant.now(),
-            Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(1),
-            BattleStatus.PENDING,
-            null,
-            rivalId,
-            opponentId
-        );
+        Long applicantId = 2L;
+        Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
+                LocalDate.now(), LocalDate.now().plusDays(1),
+                BattleStatus.PENDING, null, rivalId, applicantId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
         when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.reject());
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(applicantId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         rejectBattleService.execute(new ModifyBattleData.Command(actor, battleId));
 
         verify(userNoticeRepositoryPort).deleteApplyBattleNoticeByBattleId(battleId);
+    }
+
+    @Test
+    @DisplayName("배틀 신청자가 거절을 시도하면 RejectBattleForbiddenException이 발생한다")
+    void execute_throwsWhenApplicantTriesToReject() {
+        Actor actor = new Actor(1L);
+        Long battleId = 20L;
+        Long rivalId = 30L;
+        // actor가 신청자(applicantId)인 경우
+        Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
+                LocalDate.now(), LocalDate.now().plusDays(1),
+                BattleStatus.PENDING, null, rivalId, actor.id());
+
+        when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
+
+        assertThatThrownBy(() -> rejectBattleService.execute(new ModifyBattleData.Command(actor, battleId)))
+                .isInstanceOf(RejectBattleForbiddenException.class);
+
+        verify(battleRepositoryPort, never()).save(any());
+        verify(userNoticeRepositoryPort, never()).save(any());
     }
 }

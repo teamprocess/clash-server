@@ -15,6 +15,7 @@ public enum RivalStatusCode implements StatusCode {
 
     // 403
     CANCEL_RIVAL_FORBIDDEN("CANCEL_RIVAL_FORBIDDEN", "라이벌 신청을 취소할 권한이 없습니다.", ErrorCategory.FORBIDDEN),
+    REJECT_RIVAL_FORBIDDEN("REJECT_RIVAL_FORBIDDEN", "라이벌 신청을 거절할 권한이 없습니다.", ErrorCategory.FORBIDDEN),
 
     // 404
     RIVAL_NOT_FOUND("RIVAL_NOT_FOUND", "라이벌이 존재하지 않습니다..", ErrorCategory.NOT_FOUND),

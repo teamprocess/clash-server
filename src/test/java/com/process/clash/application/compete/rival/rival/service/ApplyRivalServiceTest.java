@@ -99,6 +99,6 @@ class ApplyRivalServiceTest {
 
         applyRivalService.execute(command);
 
-        verify(userNoticeRepositoryPort).deleteCancelRivalNoticeBySenderAndReceiver(actor.id(), opponentId);
+        verify(userNoticeRepositoryPort).deleteCancelRivalNoticesBySenderAndReceivers(actor.id(), List.of(opponentId));
     }
 }

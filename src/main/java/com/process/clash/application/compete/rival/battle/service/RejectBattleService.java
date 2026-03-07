@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.battle.data.ModifyBattleData;
+import com.process.clash.application.compete.rival.battle.exception.exception.forbidden.RejectBattleForbiddenException;
 import com.process.clash.application.compete.rival.battle.exception.exception.notfound.BattleNotFoundException;
 import com.process.clash.application.compete.rival.battle.port.in.RejectBattleUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
@@ -31,6 +32,9 @@ public class RejectBattleService implements RejectBattleUseCase {
 
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
+
+        if (command.actor().id().equals(battle.applicantId()))
+            throw new RejectBattleForbiddenException();
 
         Battle updatedBattle = battle.reject();
 

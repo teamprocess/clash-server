@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
+import com.process.clash.application.compete.rival.rival.exception.exception.forbidden.RejectRivalForbiddenException;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.in.RejectRivalUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
@@ -28,6 +29,9 @@ public class RejectRivalService implements RejectRivalUseCase {
 
         Rival rival = rivalRepositoryPort.findById(command.id())
                 .orElseThrow(RivalNotFoundException::new);
+
+        if (!rival.secondUserId().equals(command.actor().id()))
+            throw new RejectRivalForbiddenException();
 
         Rival updatedRival = rival.reject();
 

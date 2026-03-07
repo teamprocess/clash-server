@@ -15,6 +15,7 @@ public enum BattleStatusCode implements StatusCode {
 
     // 403
     CANCEL_BATTLE_FORBIDDEN("CANCEL_BATTLE_FORBIDDEN", "배틀 신청자만 취소할 수 있습니다.", ErrorCategory.FORBIDDEN),
+    REJECT_BATTLE_FORBIDDEN("REJECT_BATTLE_FORBIDDEN", "배틀을 거절할 권한이 없습니다.", ErrorCategory.FORBIDDEN),
 
     // 404
     BATTLE_NOT_FOUND("BATTLE_NOT_FOUND", "배틀이 존재하지 않습니다.", ErrorCategory.NOT_FOUND),

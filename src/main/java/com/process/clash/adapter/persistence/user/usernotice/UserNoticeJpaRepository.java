@@ -37,6 +37,10 @@ public interface UserNoticeJpaRepository extends JpaRepository<UserNoticeJpaEnti
     void softDeleteCancelRivalNoticeBySenderAndReceiver(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
 
     @Modifying
+    @Query(value = "UPDATE user_notices SET deleted_at = now() WHERE fk_sender_id = :senderId AND fk_receiver_id IN (:receiverIds) AND notice_category = 'CANCEL_RIVAL' AND deleted_at IS NULL", nativeQuery = true)
+    void softDeleteCancelRivalNoticesBySenderAndReceivers(@Param("senderId") Long senderId, @Param("receiverIds") List<Long> receiverIds);
+
+    @Modifying
     @Query(value = "UPDATE user_notices SET deleted_at = now() WHERE fk_sender_id = :senderId AND fk_receiver_id = :receiverId AND notice_category = 'CANCEL_BATTLE' AND deleted_at IS NULL", nativeQuery = true)
     void softDeleteCancelBattleNoticeBySenderAndReceiver(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
 
