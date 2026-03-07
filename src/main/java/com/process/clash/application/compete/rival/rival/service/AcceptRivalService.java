@@ -45,17 +45,8 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
         userNoticeRepositoryPort.save(userNoticeForReceiver);
 
-        UserNotice userNoticeForSender = UserNotice
-                .createDefault(
-                        NoticeCategory.SHOW_ACCEPT_RIVAL,
-                        command.actor().id(),
-                        command.actor().id()
-                );
-
-        userNoticeRepositoryPort.save(userNoticeForSender);
-
         List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
+        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId));
         competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
     }
 }

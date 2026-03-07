@@ -70,4 +70,9 @@ public class UserNoticePersistenceAdapter implements UserNoticeRepositoryPort {
         return userNoticeJpaRepository.findByIdAndReceiver_Id(id, receiverId)
                 .map(userNoticeJpaMapper::toDomain);
     }
+
+    @Override
+    public void deleteApplyRivalNoticeByRivalId(Long rivalId) {
+        userNoticeJpaRepository.softDeleteApplyRivalNoticeByRivalId(rivalId);
+    }
 }
