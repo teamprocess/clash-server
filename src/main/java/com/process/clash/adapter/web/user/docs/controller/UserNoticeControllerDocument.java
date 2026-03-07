@@ -17,6 +17,63 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Tag(name = "알림 API", description = "사용자 알림 조회 및 읽음 처리")
 public interface UserNoticeControllerDocument {
 
+    @Operation(summary = "내 알림 전체 조회", description = "나에게 수신된 모든 알림(읽음/안읽음 포함)을 최신순으로 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = GetMyUserNoticesResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "전체 알림 목록을 성공적으로 조회했습니다.",
+                                      "data": {
+                                        "notices": [
+                                          {
+                                            "id": 2,
+                                            "category": "ACCEPT_RIVAL",
+                                            "message": "상대방이 라이벌을 수락했어요.",
+                                            "requiresAction": false,
+                                            "isRead": true,
+                                            "senderId": 42,
+                                            "senderName": "김철수",
+                                            "senderUsername": "chulsoo_kim",
+                                            "senderProfileImage": "https://example.com/profiles/sender.jpg",
+                                            "receiverId": 1,
+                                            "receiverName": "이영희",
+                                            "receiverUsername": "younghee_lee",
+                                            "receiverProfileImage": null,
+                                            "rivalId": 7,
+                                            "battleId": null,
+                                            "createdAt": "2026-02-20T09:00:00Z"
+                                          },
+                                          {
+                                            "id": 1,
+                                            "category": "APPLY_RIVAL",
+                                            "message": "상대방이 라이벌을 신청했어요.",
+                                            "requiresAction": true,
+                                            "isRead": false,
+                                            "senderId": 42,
+                                            "senderName": "김철수",
+                                            "senderUsername": "chulsoo_kim",
+                                            "senderProfileImage": "https://example.com/profiles/sender.jpg",
+                                            "receiverId": 1,
+                                            "receiverName": "이영희",
+                                            "receiverUsername": "younghee_lee",
+                                            "receiverProfileImage": null,
+                                            "rivalId": 7,
+                                            "battleId": null,
+                                            "createdAt": "2026-02-21T10:00:00Z"
+                                          }
+                                        ]
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyUserNoticesDto.Response> getAllMyNotices(
+            @Parameter(hidden = true) Actor actor
+    );
+
     @Operation(summary = "내 알림 목록 조회", description = "나에게 수신된 알림 목록을 최신순으로 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",

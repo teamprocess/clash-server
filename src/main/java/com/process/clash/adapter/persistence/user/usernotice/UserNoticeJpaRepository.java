@@ -21,5 +21,15 @@ public interface UserNoticeJpaRepository extends JpaRepository<UserNoticeJpaEnti
     """)
     List<UserNoticeJpaEntity> findAllByReceiver_IdOrderByCreatedAtDesc(@Param("receiverId") Long receiverId);
 
+    @Query("""
+        select un
+        from UserNoticeJpaEntity un
+        join fetch un.sender
+        join fetch un.receiver
+        where un.receiver.id = :receiverId
+        order by un.createdAt desc
+    """)
+    List<UserNoticeJpaEntity> findAllByReceiver_IdOrderByCreatedAtDescIncludingRead(@Param("receiverId") Long receiverId);
+
     Optional<UserNoticeJpaEntity> findByIdAndReceiver_Id(Long id, Long receiverId);
 }
