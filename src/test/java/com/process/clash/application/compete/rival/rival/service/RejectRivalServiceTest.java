@@ -3,6 +3,7 @@ package com.process.clash.application.compete.rival.rival.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
+import com.process.clash.application.compete.rival.rival.exception.exception.forbidden.RejectRivalForbiddenException;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
@@ -58,6 +59,7 @@ class RejectRivalServiceTest {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
+        // firstUserId = opponentId(신청자), secondUserId = actor.id(수신자)
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
 
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
@@ -108,6 +110,24 @@ class RejectRivalServiceTest {
         rejectRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
         verify(userNoticeRepositoryPort).deleteApplyRivalNoticeByRivalId(rivalId);
+    }
+
+    @Test
+    @DisplayName("라이벌 신청자가 거절을 시도하면 RejectRivalForbiddenException이 발생한다")
+    void execute_throwsWhenApplicantTriesToReject() {
+        Actor actor = new Actor(1L);
+        Long rivalId = 10L;
+        Long opponentId = 2L;
+        // actor가 firstUserId(신청자)인 경우
+        Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, actor.id(), opponentId);
+
+        when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
+
+        assertThatThrownBy(() -> rejectRivalService.execute(ModifyRivalData.Command.of(actor, rivalId)))
+                .isInstanceOf(RejectRivalForbiddenException.class);
+
+        verify(rivalRepositoryPort, never()).save(any());
+        verify(userNoticeRepositoryPort, never()).save(any());
     }
 
     @Test
