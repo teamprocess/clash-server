@@ -66,6 +66,14 @@ public class UserNoticePersistenceAdapter implements UserNoticeRepositoryPort {
     }
 
     @Override
+    public List<UserNotice> findAllByReceiverIdIncludingRead(Long receiverId) {
+        return userNoticeJpaRepository.findAllByReceiver_IdOrderByCreatedAtDescIncludingRead(receiverId)
+                .stream()
+                .map(userNoticeJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public Optional<UserNotice> findByIdAndReceiverId(Long id, Long receiverId) {
         return userNoticeJpaRepository.findByIdAndReceiver_Id(id, receiverId)
                 .map(userNoticeJpaMapper::toDomain);

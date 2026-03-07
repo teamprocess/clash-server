@@ -10,5 +10,6 @@ public interface UserNoticeRepositoryPort {
     UserNotice save(UserNotice userNotice);
     void saveAll(List<UserNotice> userNotices);
     List<UserNotice> findAllByReceiverId(Long receiverId);
+    List<UserNotice> findAllByReceiverIdIncludingRead(Long receiverId);
     Optional<UserNotice> findByIdAndReceiverId(Long id, Long receiverId);
 }
