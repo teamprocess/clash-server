@@ -60,8 +60,8 @@ class AcceptBattleServiceTest {
     }
 
     @Test
-    @DisplayName("배틀 수락 시 알림 변경과 경쟁 데이터 변경 소켓 이벤트를 전송한다")
-    void execute_notifiesNoticeAndCompeteChangeOnAccept() {
+    @DisplayName("배틀 수락 시 상대방에게만 알림 소켓 이벤트를 전송한다")
+    void execute_notifiesOnlyOpponentOnAccept() {
         Actor actor = new Actor(1L);
         Long battleId = 20L;
         Long rivalId = 30L;
@@ -74,7 +74,8 @@ class AcceptBattleServiceTest {
             LocalDate.now().plusDays(1),
             BattleStatus.PENDING,
             null,
-            rivalId
+            rivalId,
+            opponentId
         );
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -84,10 +85,68 @@ class AcceptBattleServiceTest {
 
         acceptBattleService.execute(new ModifyBattleData.Command(actor, battleId));
 
-        verify(userNoticeRepositoryPort, times(2)).save(any(UserNotice.class));
-        verify(competeRefetchNotifier).notifyUserNoticeChanged(java.util.List.of(opponentId, actor.id()));
+        verify(competeRefetchNotifier).notifyUserNoticeChanged(java.util.List.of(opponentId));
+
         ArgumentCaptor<Collection<Long>> competeCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(competeRefetchNotifier).notifyCompeteChanged(competeCaptor.capture());
         assertThat(competeCaptor.getValue()).containsExactlyInAnyOrder(opponentId, actor.id());
+    }
+
+    @Test
+    @DisplayName("배틀 수락 시 상대방에게만 알림 1개를 저장한다")
+    void execute_savesOneNoticeOnAccept() {
+        Actor actor = new Actor(1L);
+        Long battleId = 20L;
+        Long rivalId = 30L;
+        Long opponentId = 2L;
+        Battle battle = new Battle(
+            battleId,
+            Instant.now(),
+            Instant.now(),
+            LocalDate.now(),
+            LocalDate.now().plusDays(1),
+            BattleStatus.PENDING,
+            null,
+            rivalId,
+            opponentId
+        );
+
+        when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept());
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        acceptBattleService.execute(new ModifyBattleData.Command(actor, battleId));
+
+        verify(userNoticeRepositoryPort, times(1)).save(any(UserNotice.class));
+    }
+
+    @Test
+    @DisplayName("배틀 수락 시 기존 APPLY_BATTLE 알림을 soft delete한다")
+    void execute_softDeletesApplyBattleNoticeOnAccept() {
+        Actor actor = new Actor(1L);
+        Long battleId = 20L;
+        Long rivalId = 30L;
+        Long opponentId = 2L;
+        Battle battle = new Battle(
+            battleId,
+            Instant.now(),
+            Instant.now(),
+            LocalDate.now(),
+            LocalDate.now().plusDays(1),
+            BattleStatus.PENDING,
+            null,
+            rivalId,
+            opponentId
+        );
+
+        when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept());
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        acceptBattleService.execute(new ModifyBattleData.Command(actor, battleId));
+
+        verify(userNoticeRepositoryPort).deleteApplyBattleNoticeByBattleId(battleId);
     }
 }
