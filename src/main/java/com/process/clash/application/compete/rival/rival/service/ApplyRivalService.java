@@ -37,6 +37,10 @@ public class ApplyRivalService implements ApplyRivalUseCase {
 
         List<Rival> savedRivals = rivalRepositoryPort.saveAll(rivals);
 
+        savedRivals.forEach(rival ->
+                userNoticeRepositoryPort.deleteCancelRivalNoticeBySenderAndReceiver(rival.firstUserId(), rival.secondUserId())
+        );
+
         List<UserNotice> userNotices = savedRivals.stream()
                 .map(rival -> UserNotice.createForRival(
                         NoticeCategory.APPLY_RIVAL,

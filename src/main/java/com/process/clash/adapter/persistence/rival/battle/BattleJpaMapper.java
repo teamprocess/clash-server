@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BattleJpaMapper {
 
-    public BattleJpaEntity toJpaEntity(Battle battle, UserJpaEntity userJpaEntity, RivalJpaEntity rivalJpaEntity) {
+    public BattleJpaEntity toJpaEntity(Battle battle, UserJpaEntity winner, UserJpaEntity applicant, RivalJpaEntity rivalJpaEntity) {
 
         return new BattleJpaEntity(
                 battle.id(),
@@ -18,8 +18,9 @@ public class BattleJpaMapper {
                 battle.startDate(),
                 battle.endDate(),
                 battle.battleStatus(),
-                userJpaEntity,
-                rivalJpaEntity
+                winner,
+                rivalJpaEntity,
+                applicant
         );
     }
 
@@ -33,7 +34,8 @@ public class BattleJpaMapper {
                 battleJpaEntity.getEndDate(),
                 battleJpaEntity.getBattleStatus(),
                 battleJpaEntity.getWinner() != null ? battleJpaEntity.getWinner().getId() : null,
-                battleJpaEntity.getRival() != null ? battleJpaEntity.getRival().getId() : null
+                battleJpaEntity.getRival() != null ? battleJpaEntity.getRival().getId() : null,
+                battleJpaEntity.getApplicant() != null ? battleJpaEntity.getApplicant().getId() : null
         );
     }
 }
