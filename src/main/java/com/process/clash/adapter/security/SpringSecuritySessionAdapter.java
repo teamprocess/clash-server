@@ -69,6 +69,12 @@ public class SpringSecuritySessionAdapter implements SessionManager {
             throw new ServletContextUnavailableException();
         }
 
+        // 재로그인 시 이전 세션 만료
+        HttpSession existingSession = req.getSession(false);
+        if (existingSession != null) {
+            existingSession.invalidate();
+        }
+
         if (rememberMe) {
             HttpServletRequest wrappedRequest = new HttpServletRequestWrapper(req) {
                 @Override
