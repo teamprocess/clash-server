@@ -1,4 +1,4 @@
-package com.process.clash.adapter.web.auth.service;
+package com.process.clash.infrastructure.service;
 
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
