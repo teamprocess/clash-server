@@ -35,7 +35,7 @@ public interface UserNoticeJpaRepository extends JpaRepository<UserNoticeJpaEnti
     Optional<UserNoticeJpaEntity> findByIdAndReceiver_Id(Long id, Long receiverId);
 
     @Modifying
-    @Query(value = "UPDATE user_notices SET deleted_at = now() WHERE rival_id = :rivalId AND notice_category = 'APPLY_RIVAL' AND deleted_at IS NULL", nativeQuery = true)
+    @Query(value = "UPDATE user_notices SET deleted_at = now(), is_read = true WHERE rival_id = :rivalId AND notice_category = 'APPLY_RIVAL' AND deleted_at IS NULL", nativeQuery = true)
     void softDeleteApplyRivalNoticeByRivalId(@Param("rivalId") Long rivalId);
 
     @Modifying
@@ -55,6 +55,6 @@ public interface UserNoticeJpaRepository extends JpaRepository<UserNoticeJpaEnti
     void softDeleteCancelBattleNoticeBySenderAndReceiver(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
 
     @Modifying
-    @Query(value = "UPDATE user_notices SET deleted_at = now() WHERE battle_id = :battleId AND notice_category = 'APPLY_BATTLE' AND deleted_at IS NULL", nativeQuery = true)
+    @Query(value = "UPDATE user_notices SET deleted_at = now(), is_read = true WHERE battle_id = :battleId AND notice_category = 'APPLY_BATTLE' AND deleted_at IS NULL", nativeQuery = true)
     void softDeleteApplyBattleNoticeByBattleId(@Param("battleId") Long battleId);
 }
