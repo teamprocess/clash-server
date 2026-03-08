@@ -74,6 +74,7 @@ public interface RivalCompeteControllerDocument {
                                             "profileImage": "https://cdn.example.com/profile/2.png",
                                             "activeTime": 9000,
                                             "usingApp": "VSCODE",
+                                            "isStudying": true,
                                             "status": "ONLINE"
                                           }
                                         ]

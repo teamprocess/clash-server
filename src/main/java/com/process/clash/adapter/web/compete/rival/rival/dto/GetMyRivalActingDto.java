@@ -22,6 +22,7 @@ public class GetMyRivalActingDto {
                         data.profileImage(),
                         data.activeTime(),
                         data.usingApp(),
+                        data.isStudying(),
                         data.status()
                     ))
                 .toList()
@@ -37,6 +38,7 @@ public class GetMyRivalActingDto {
             String profileImage,
             Long activeTime,
             String usingApp,
+            Boolean isStudying,
             UserActivityStatus status
     ) {}
 }

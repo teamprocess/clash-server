@@ -43,6 +43,9 @@ public class GetMyRivalActingResponseDocument extends SuccessMessageResponseDocu
         @Schema(description = "사용 중인 앱 (활동 기록 중이 아니면 null)", example = "VSCODE")
         public String usingApp;
 
+        @Schema(description = "현재 공부 중 여부", example = "true")
+        public Boolean isStudying;
+
         @Schema(description = "현재 상태", example = "ONLINE")
         public String status;
     }
