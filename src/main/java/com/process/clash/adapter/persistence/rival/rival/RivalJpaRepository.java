@@ -43,6 +43,25 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     int countActiveByUserId(@Param("userId") Long userId);
 
     /**
+     * 여러 유저의 활성 라이벌 수 (ACCEPTED 전체 + PENDING 중 본인이 신청한 것) - 배치 조회
+     */
+    @Query(value = """
+        SELECT user_id, COUNT(*) AS count
+        FROM (
+            SELECT fk_first_user_id AS user_id FROM rivals
+            WHERE rival_linking_status = 'ACCEPTED' AND fk_first_user_id IN (:userIds)
+            UNION ALL
+            SELECT fk_second_user_id AS user_id FROM rivals
+            WHERE rival_linking_status = 'ACCEPTED' AND fk_second_user_id IN (:userIds)
+            UNION ALL
+            SELECT fk_first_user_id AS user_id FROM rivals
+            WHERE rival_linking_status = 'PENDING' AND fk_first_user_id IN (:userIds)
+        ) AS active_rivals
+        GROUP BY user_id
+    """, nativeQuery = true)
+    List<Map<String, Object>> countActiveByUserIdsGrouped(@Param("userIds") List<Long> userIds);
+
+    /**
      * 여러 유저의 라이벌 수 (group by)
      */
     @Query(value = """

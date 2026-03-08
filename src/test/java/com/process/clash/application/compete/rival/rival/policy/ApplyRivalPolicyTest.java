@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -147,7 +148,8 @@ class ApplyRivalPolicyTest {
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(false);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(4);
+        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId)))
+                .thenReturn(List.of(Map.of("user_id", opponentId, "count", 4L)));
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
                 .isInstanceOf(TooMuchRivalsException.class);
@@ -167,9 +169,12 @@ class ApplyRivalPolicyTest {
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId1)).thenReturn(false);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId2)).thenReturn(false);
-        // opponentId1은 여유 있음, opponentId2는 꽉 참
-        when(rivalRepositoryPort.countActiveByUserId(opponentId1)).thenReturn(2);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId2)).thenReturn(4);
+        // opponentId1은 여유 있음(2명), opponentId2는 꽉 참(4명) — 단일 쿼리로 배치 조회
+        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId1, opponentId2)))
+                .thenReturn(List.of(
+                        Map.of("user_id", opponentId1, "count", 2L),
+                        Map.of("user_id", opponentId2, "count", 4L)
+                ));
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
                 .isInstanceOf(TooMuchRivalsException.class);
@@ -189,7 +194,8 @@ class ApplyRivalPolicyTest {
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(3);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(false);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(3);
+        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId)))
+                .thenReturn(List.of(Map.of("user_id", opponentId, "count", 3L)));
 
         assertThatCode(() -> applyRivalPolicy.check(command)).doesNotThrowAnyException();
     }
@@ -206,7 +212,9 @@ class ApplyRivalPolicyTest {
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(false);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(0);
+        // 라이벌이 없으면 쿼리 결과에 포함되지 않음 (count = 0 → getOrDefault로 0 처리)
+        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId)))
+                .thenReturn(List.of());
 
         assertThatCode(() -> applyRivalPolicy.check(command)).doesNotThrowAnyException();
     }

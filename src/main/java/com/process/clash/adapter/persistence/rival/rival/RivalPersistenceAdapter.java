@@ -88,6 +88,12 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
+    public List<Map<String, Object>> countActiveByUserIdsGrouped(List<Long> userIds) {
+
+        return rivalJpaRepository.countActiveByUserIdsGrouped(userIds);
+    }
+
+    @Override
     public List<Map<String, Object>> countAllByOpponentIdsGrouped(List<Long> opponentIds) {
 
         return rivalJpaRepository.countAllByUserIdsGrouped(opponentIds);
