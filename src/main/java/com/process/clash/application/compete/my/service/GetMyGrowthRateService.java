@@ -104,12 +104,9 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
     }
 
     private double calculateGrowthRate(Double current, Double previous) {
-        if (previous == null || previous == 0.0) {
-            return current != null && current > 0 ? 100.0 : 0.0;
-        }
-        if (current == null) {
-            return -100.0;
-        }
-        return Math.round(((current - previous) / previous) * 100.0 * 100.0) / 100.0; // 소수점 깨지는 것 방지
+        if (current == null) current = 0.0;
+        if (previous == null) previous = 0.0;
+
+        return current - previous;
     }
 }
