@@ -140,7 +140,7 @@ public class AuthController implements AuthControllerDocument {
 	@GetMapping("/password-reset/validate")
 	public ApiResponse<Void> validatePasswordResetToken(@RequestParam String token) {
 		validatePasswordResetTokenUseCase.execute(token);
-		return ApiResponse.success("유효한 토큰입니다.");
+		return ApiResponse.success("유효한 비밀번호 초기화 토큰입니다.");
 	}
 
 	@PostMapping("/password-reset/confirm")
