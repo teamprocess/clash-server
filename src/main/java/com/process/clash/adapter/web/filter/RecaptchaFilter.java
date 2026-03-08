@@ -45,7 +45,9 @@ public class RecaptchaFilter extends GenericFilterBean {
             "/api/auth/electron/sign-in",
             "/api/auth/electron/sign-up",
             "/api/auth/electron/sign-up/username-check",
-            "/api/auth/electron/sign-up/verify-email"
+            "/api/auth/electron/sign-up/verify-email",
+            "/api/auth/password-reset/send",
+            "/api/auth/password-reset/confirm"
     );
 
     @Override
