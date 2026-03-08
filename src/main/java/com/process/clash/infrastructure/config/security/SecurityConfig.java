@@ -1,7 +1,7 @@
 package com.process.clash.infrastructure.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.process.clash.adapter.web.auth.service.CustomUserDetailsService;
+import com.process.clash.infrastructure.service.CustomUserDetailsService;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;

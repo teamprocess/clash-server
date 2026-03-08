@@ -41,11 +41,13 @@ public class ApplyBattleService implements ApplyBattleUseCase {
         // 상대방 사용자 ID 조회
         Long opponentUserId = rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalEntityId, userId);
 
+        userNoticeRepositoryPort.deleteCancelBattleNoticeBySenderAndReceiver(userId, opponentUserId);
+
         // 배틀 생성 (Rival 엔티티 ID 사용)
         LocalDate startDate = LocalDate.now(battleZoneId);
         LocalDate endDate = startDate.plusDays(command.duration());
 
-        Battle battle = Battle.createDefault(startDate, endDate, rivalEntityId);
+        Battle battle = Battle.createDefault(startDate, endDate, rivalEntityId, userId);
         Battle savedBattle = battleRepositoryPort.save(battle);
 
         // 상대방에게 알림 전송 (상대방 사용자 ID 사용)

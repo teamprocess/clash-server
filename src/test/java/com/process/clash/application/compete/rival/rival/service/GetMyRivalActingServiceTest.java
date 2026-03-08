@@ -125,6 +125,8 @@ class GetMyRivalActingServiceTest {
         assertThat(result.myRivals().get(1).status()).isEqualTo(UserActivityStatus.AWAY);
         assertThat(result.myRivals().get(0).usingApp()).isEqualTo("VSCODE");
         assertThat(result.myRivals().get(1).usingApp()).isNull();
+        assertThat(result.myRivals().get(0).isStudying()).isTrue();
+        assertThat(result.myRivals().get(1).isStudying()).isTrue();
     }
 
     private User createUser(Long id, String username, String name) {

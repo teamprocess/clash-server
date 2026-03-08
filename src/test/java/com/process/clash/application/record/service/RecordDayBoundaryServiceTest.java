@@ -104,9 +104,10 @@ class RecordDayBoundaryServiceTest {
     @Test
     @DisplayName("경계 시각이 지난 세션에 대해 학습시간 EXP 지급을 호출한다")
     void rollover_callsStudyTimeExpGrantForClosedSession() {
+        // 2일 전으로 설정하여 경계 시각(어제 06:00 KST)이 항상 과거가 되도록 함
         Instant startedAt = Instant.now()
             .atZone(ZONE)
-            .minusDays(1)
+            .minusDays(2)
             .withHour(10).withMinute(0).withSecond(0).withNano(0)
             .toInstant();
         User user = createUser(1L);
@@ -124,9 +125,10 @@ class RecordDayBoundaryServiceTest {
     @Test
     @DisplayName("EXP 지급 실패 시 다른 세션 처리는 계속된다")
     void rollover_continuesWhenExpGrantFails() {
+        // 2일 전으로 설정하여 경계 시각(어제 06:00 KST)이 항상 과거가 되도록 함
         Instant startedAt = Instant.now()
             .atZone(ZONE)
-            .minusDays(1)
+            .minusDays(2)
             .withHour(10).withMinute(0).withSecond(0).withNano(0)
             .toInstant();
         User user1 = createUser(1L);

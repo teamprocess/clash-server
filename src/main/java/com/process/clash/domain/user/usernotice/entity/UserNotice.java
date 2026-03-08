@@ -19,7 +19,8 @@ public record UserNotice(
         String receiverUsername,
         String receiverProfileImage,
         Long rivalId,
-        Long battleId
+        Long battleId,
+        Instant deletedAt
 ) {
 
     public static UserNotice createDefault(NoticeCategory noticeCategory, Long senderId, Long receiverId) {
@@ -28,7 +29,7 @@ public record UserNotice(
                 null, null, null, noticeCategory, false,
                 senderId, null, null, null,
                 receiverId, null, null, null,
-                null, null
+                null, null, null
         );
     }
 
@@ -38,7 +39,7 @@ public record UserNotice(
                 null, null, null, noticeCategory, false,
                 senderId, null, null, null,
                 receiverId, null, null, null,
-                rivalId, null
+                rivalId, null, null
         );
     }
 
@@ -48,11 +49,11 @@ public record UserNotice(
                 null, null, null, noticeCategory, false,
                 senderId, null, null, null,
                 receiverId, null, null, null,
-                null, battleId
+                null, battleId, null
         );
     }
 
     public UserNotice markAsRead() {
-        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, senderUsername, senderProfileImage, receiverId, receiverName, receiverUsername, receiverProfileImage, rivalId, battleId);
+        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, senderUsername, senderProfileImage, receiverId, receiverName, receiverUsername, receiverProfileImage, rivalId, battleId, deletedAt);
     }
 }

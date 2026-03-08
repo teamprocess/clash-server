@@ -36,6 +36,7 @@ public class GetMyRivalActingData {
             String profileImage,
             Long activeTime,
             String usingApp,
+            Boolean isStudying,
             UserActivityStatus status
     ) {
 
@@ -44,6 +45,7 @@ public class GetMyRivalActingData {
             User user,
             Long activeTime,
             String usingApp,
+            Boolean isStudying,
             UserActivityStatus status
         ) {
 
@@ -55,6 +57,7 @@ public class GetMyRivalActingData {
                     user.profileImage(),
                     activeTime,
                     usingApp,
+                    isStudying,
                     status
             );
         }

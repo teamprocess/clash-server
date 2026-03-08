@@ -109,13 +109,16 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                         opponentId,
                         UserActivityStatus.OFFLINE
                     );
-                    String usingApp = resolveUsingApp(activeSessionByUserId.get(opponentId));
+                    RecordSession activeSession = activeSessionByUserId.get(opponentId);
+                    String usingApp = resolveUsingApp(activeSession);
+                    boolean isStudying = activeSession != null;
 
                     return GetMyRivalActingData.MyRival.of(
                             rival.id(),
                             opponent,
                             activeTime,
                             usingApp,
+                            isStudying,
                             activityStatus
                     );
                 })

@@ -40,14 +40,14 @@ class GetMyUserNoticesServiceTest {
                 NoticeCategory.APPLY_RIVAL, false,
                 2L, "senderA", "sender_a", null,
                 1L, "receiverA", "receiver_a", null,
-                null, null
+                null, null, null
         );
         UserNotice notice2 = new UserNotice(
                 2L, Instant.now(), Instant.now(),
                 NoticeCategory.ACCEPT_RIVAL, true,
                 3L, "senderB", "sender_b", null,
                 1L, "receiverA", "receiver_a", null,
-                null, null
+                null, null, null
         );
 
         when(userNoticeRepositoryPort.findAllByReceiverId(actor.id())).thenReturn(List.of(notice1, notice2));

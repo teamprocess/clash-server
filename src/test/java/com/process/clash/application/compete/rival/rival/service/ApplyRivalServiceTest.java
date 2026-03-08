@@ -6,6 +6,7 @@ import com.process.clash.application.compete.rival.rival.data.ApplyRivalData;
 import com.process.clash.application.compete.rival.rival.policy.ApplyRivalPolicy;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.usernotice.port.out.UserNoticeRepositoryPort;
+import com.process.clash.domain.rival.rival.entity.Rival;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,9 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ApplyRivalServiceTest {
@@ -78,7 +81,24 @@ class ApplyRivalServiceTest {
 
         applyRivalService.execute(command);
 
-        verify(rivalRepositoryPort).saveAll(org.mockito.ArgumentMatchers.anyList());
-        verify(userNoticeRepositoryPort).saveAll(org.mockito.ArgumentMatchers.anyList());
+        verify(rivalRepositoryPort).saveAll(anyList());
+        verify(userNoticeRepositoryPort).saveAll(anyList());
+    }
+
+    @Test
+    @DisplayName("라이벌 재신청 시 이전 CANCEL_RIVAL 알림을 soft delete한다")
+    void execute_softDeletesCancelRivalNoticeOnReApply() {
+        Actor actor = new Actor(1L);
+        Long opponentId = 2L;
+        ApplyRivalData.Command command = new ApplyRivalData.Command(
+                actor,
+                List.of(new ApplyRivalData.Id(opponentId))
+        );
+        Rival savedRival = Rival.createDefault(actor.id(), opponentId);
+        when(rivalRepositoryPort.saveAll(anyList())).thenReturn(List.of(savedRival));
+
+        applyRivalService.execute(command);
+
+        verify(userNoticeRepositoryPort).deleteCancelRivalNoticesBySenderAndReceivers(actor.id(), List.of(opponentId));
     }
 }
