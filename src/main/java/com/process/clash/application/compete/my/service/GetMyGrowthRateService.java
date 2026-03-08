@@ -90,9 +90,9 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
             UserEarnedExp current = rawDataPoints.get(i);
             UserEarnedExp previous = rawDataPoints.get(i - 1);
 
-            double growthRate = calculateGrowthRate(
-                    current.avgEarnedExp(),
-                    previous.avgEarnedExp()
+            Long growthRate = calculateGrowthRate(
+                    current.sumEarnedExp(),
+                    previous.sumEarnedExp()
             );
 
             result.add(new DataPoint(current.date(), growthRate));
@@ -103,9 +103,9 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
                 .toList();
     }
 
-    private double calculateGrowthRate(Double current, Double previous) {
-        if (current == null) current = 0.0;
-        if (previous == null) previous = 0.0;
+    private Long calculateGrowthRate(Long current, Long previous) {
+        if (current == null) current = 0L;
+        if (previous == null) previous = 0L;
 
         return current - previous;
     }
