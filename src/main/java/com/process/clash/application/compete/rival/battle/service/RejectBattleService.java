@@ -54,7 +54,7 @@ public class RejectBattleService implements RejectBattleUseCase {
         userNoticeRepositoryPort.save(userNoticeForReceiver);
 
         List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId));
+        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
         competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
     }
 }

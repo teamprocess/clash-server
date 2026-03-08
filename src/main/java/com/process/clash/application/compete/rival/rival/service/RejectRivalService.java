@@ -10,10 +10,11 @@ import com.process.clash.application.user.usernotice.port.out.UserNoticeReposito
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class RejectRivalService implements RejectRivalUseCase {
         userNoticeRepositoryPort.save(userNoticeForReceiver);
 
         List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(List.of(opponentId));
+        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
         competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
     }
 }
