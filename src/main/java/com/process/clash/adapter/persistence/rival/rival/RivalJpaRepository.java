@@ -16,7 +16,7 @@ import java.util.Set;
 public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> {
 
     /**
-     * 내 현재 라이벌 수
+     * 내 현재 라이벌 수 (ACCEPTED만)
      */
     @Query(value = """
         SELECT COUNT(*)
@@ -25,6 +25,22 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
           AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     int countAllByUserId(@Param("userId") Long userId);
+
+    /**
+     * 내 활성 라이벌 수 (ACCEPTED 전체 + PENDING 중 내가 신청한 것)
+     */
+    @Query(value = """
+        SELECT COUNT(*)
+        FROM rivals r
+        WHERE (
+            (r.rival_linking_status = 'ACCEPTED'
+             AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId))
+            OR
+            (r.rival_linking_status = 'PENDING'
+             AND r.fk_first_user_id = :userId)
+        )
+    """, nativeQuery = true)
+    int countActiveByUserId(@Param("userId") Long userId);
 
     /**
      * 여러 유저의 라이벌 수 (group by)
