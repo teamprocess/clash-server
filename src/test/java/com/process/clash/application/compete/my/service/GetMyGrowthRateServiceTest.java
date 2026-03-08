@@ -62,6 +62,50 @@ public class GetMyGrowthRateServiceTest {
     }
 
     @Test
+    @DisplayName("WEEK 카테고리: 13개 데이터가 있으면 12개의 차이값 DataPoint를 반환한다")
+    void execute_week_returns12DataPoints() {
+        // given
+        Actor actor = new Actor(1L);
+        GetMyGrowthRateData.Command command = new GetMyGrowthRateData.Command(actor, "WEEK");
+
+        List<UserEarnedExp> rawData = createRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
+
+        when(userExpHistoryRepositoryPort.findUserWeeklyEarnedExpByUserIdAndPeriod(
+                eq(1L), any(), any(), any()
+        )).thenReturn(rawData);
+
+        // when
+        GetMyGrowthRateData.Result result = service.execute(command);
+
+        // then
+        assertThat(result.dataPoint()).hasSize(12);
+        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);
+        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L);
+    }
+
+    @Test
+    @DisplayName("MONTH 카테고리: 13개 데이터가 있으면 12개의 차이값 DataPoint를 반환한다")
+    void execute_month_returns12DataPoints() {
+        // given
+        Actor actor = new Actor(1L);
+        GetMyGrowthRateData.Command command = new GetMyGrowthRateData.Command(actor, "MONTH");
+
+        List<UserEarnedExp> rawData = createRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
+
+        when(userExpHistoryRepositoryPort.findUserMonthlyEarnedExpByUserIdAndPeriod(
+                eq(1L), any(), any(), any()
+        )).thenReturn(rawData);
+
+        // when
+        GetMyGrowthRateData.Result result = service.execute(command);
+
+        // then
+        assertThat(result.dataPoint()).hasSize(12);
+        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);
+        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L);
+    }
+
+    @Test
     @DisplayName("데이터가 1개이면 빈 리스트를 반환한다")
     void execute_returnsEmptyList_whenDataIsOne() {
         // given
