@@ -54,8 +54,8 @@ class RejectRivalServiceTest {
     }
 
     @Test
-    @DisplayName("라이벌 거절 시 상대방에게만 알림 소켓 이벤트를 전송한다")
-    void execute_notifiesOnlyOpponentOnReject() {
+    @DisplayName("라이벌 거절 시 양쪽 모두에게 알림 소켓 이벤트를 전송한다")
+    void execute_notifiesBothUsersOnReject() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
@@ -69,7 +69,9 @@ class RejectRivalServiceTest {
 
         rejectRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
-        verify(competeRefetchNotifier).notifyUserNoticeChanged(java.util.List.of(opponentId));
+        ArgumentCaptor<Collection<Long>> noticeCaptor = ArgumentCaptor.forClass(Collection.class);
+        verify(competeRefetchNotifier).notifyUserNoticeChanged(noticeCaptor.capture());
+        assertThat(noticeCaptor.getValue()).containsExactlyInAnyOrder(opponentId, actor.id());
 
         ArgumentCaptor<Collection<Long>> competeCaptor = ArgumentCaptor.forClass(Collection.class);
         verify(competeRefetchNotifier).notifyCompeteChanged(competeCaptor.capture());
