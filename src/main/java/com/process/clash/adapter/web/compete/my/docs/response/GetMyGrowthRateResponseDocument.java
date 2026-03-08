@@ -26,7 +26,7 @@ public class GetMyGrowthRateResponseDocument extends SuccessResponseDocument {
         @Schema(description = "날짜", example = "2025-01-01")
         public LocalDate date;
 
-        @Schema(description = "성장률", example = "15.5")
-        public Double rate;
+        @Schema(description = "성장도 증감량", example = "50")
+        public Long rate;
     }
 }
