@@ -12,6 +12,7 @@ import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -128,7 +129,8 @@ class WithdrawnUserQueryTest {
                 0,
                 Major.NONE,
                 UserStatus.ACTIVE,
-                Instant.now()   // deletedAt 설정 → 탈퇴 상태
+                Instant.now(),   // deletedAt 설정 → 탈퇴 상태
+                RankTier.NONE
         );
     }
 }

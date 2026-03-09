@@ -7,6 +7,7 @@ import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.JpaAuditingConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class ReSignUpAfterWithdrawIntegrationTest {
         UserJpaEntity newEntity = userJpaMapper.toJpaEntity(new User(
                 null, Instant.now(), Instant.now(),
                 "testuser", "test@example.com", "재가입유저",
-                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null
+                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE
         ));
         UserJpaEntity saved = userJpaRepository.save(newEntity);
         em.flush();
@@ -163,7 +164,7 @@ class ReSignUpAfterWithdrawIntegrationTest {
         UserJpaEntity newEntity = userJpaMapper.toJpaEntity(new User(
                 null, Instant.now(), Instant.now(),
                 "testuser", "test@example.com", "재가입유저",
-                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null
+                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE
         ));
         UserJpaEntity saved = userJpaRepository.save(newEntity);
         em.flush();
@@ -185,7 +186,7 @@ class ReSignUpAfterWithdrawIntegrationTest {
         User user = new User(
                 null, Instant.now(), Instant.now(),
                 username, email, "테스트유저",
-                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null
+                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE
         );
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);

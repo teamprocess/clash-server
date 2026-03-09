@@ -6,19 +6,20 @@ import com.process.clash.application.record.exception.exception.badrequest.Inval
 import com.process.clash.application.record.exception.exception.conflict.RecordSessionAlreadyStartedException;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.policy.TaskPolicy;
-import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.port.out.RecordSessionSegmentRepositoryPort;
 import com.process.clash.application.record.port.out.RecordTaskRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.entity.RecordSession;
+import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -154,7 +155,8 @@ class StartRecordServiceTest {
             0,
             Major.NONE,
             UserStatus.ACTIVE,
-            null
+            null,
+            RankTier.NONE
         );
     }
 

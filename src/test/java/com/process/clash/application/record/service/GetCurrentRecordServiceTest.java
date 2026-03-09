@@ -1,8 +1,5 @@
 package com.process.clash.application.record.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.data.GetCurrentRecordData;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
@@ -12,15 +9,20 @@ import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.Optional;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GetCurrentRecordServiceTest {
@@ -89,7 +91,8 @@ class GetCurrentRecordServiceTest {
             0,
             Major.NONE,
             UserStatus.ACTIVE,
-            null
+            null,
+            RankTier.NONE
         );
     }
 }

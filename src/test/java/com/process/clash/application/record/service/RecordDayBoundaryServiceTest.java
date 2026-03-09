@@ -5,16 +5,15 @@ import com.process.clash.application.record.port.out.RecordSessionRepositoryPort
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.RecordSession;
-import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,10 +21,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -152,6 +148,6 @@ class RecordDayBoundaryServiceTest {
 
     private User createUser(Long id) {
         return new User(id, Instant.now(), Instant.now(), "user" + id, "user@example.com",
-            "name", "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null);
+            "name", "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE);
     }
 }
