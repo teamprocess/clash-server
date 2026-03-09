@@ -324,8 +324,8 @@ class StartRecordV2ServiceTest {
     }
 
     @Test
-    @DisplayName("DEVELOP 세션 시작 시 유저 상태가 ONLINE이 아니면 예외가 발생한다")
-    void execute_throwsWhenDevelopStartAndStatusIsNotOnline() {
+    @DisplayName("DEVELOP 세션은 AWAY 상태에서 시작할 수 없다")
+    void execute_throwsWhenDevelopStartAndStatusIsAway() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
@@ -349,8 +349,58 @@ class StartRecordV2ServiceTest {
     }
 
     @Test
-    @DisplayName("TASK 세션 시작 시 유저 상태가 ONLINE이 아니면 예외가 발생한다")
-    void execute_throwsWhenTaskStartAndStatusIsNotOnline() {
+    @DisplayName("DEVELOP 세션은 OFFLINE 상태에서 시작할 수 없다")
+    void execute_throwsWhenDevelopStartAndStatusIsOffline() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.DEVELOP,
+            null,
+            null,
+            MonitoredApp.VSCODE,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(userPresencePort.getStatus(actor.id())).thenReturn(UserActivityStatus.OFFLINE);
+
+        assertThatThrownBy(() -> startRecordV2Service.execute(command))
+            .isInstanceOf(DevelopStartRequiresOnlineException.class);
+
+        verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
+        verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
+    }
+
+    @Test
+    @DisplayName("TASK 세션은 AWAY 상태에서 시작할 수 없다")
+    void execute_throwsWhenTaskStartAndStatusIsAway() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            10L,
+            null,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(userPresencePort.getStatus(actor.id())).thenReturn(UserActivityStatus.AWAY);
+
+        assertThatThrownBy(() -> startRecordV2Service.execute(command))
+            .isInstanceOf(TaskStartRequiresOnlineException.class);
+
+        verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any());
+        verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
+    }
+
+    @Test
+    @DisplayName("TASK 세션은 OFFLINE 상태에서 시작할 수 없다")
+    void execute_throwsWhenTaskStartAndStatusIsOffline() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(

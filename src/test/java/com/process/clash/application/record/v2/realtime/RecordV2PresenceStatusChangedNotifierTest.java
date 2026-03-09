@@ -100,8 +100,36 @@ class RecordV2PresenceStatusChangedNotifierTest {
     }
 
     @Test
-    @DisplayName("자리비움/오프라인 전환 시 TASK 세션도 자동 종료한다")
-    void notifyStatusChanged_stopsTaskSession() {
+    @DisplayName("자리비움 전환 시 TASK 세션은 유지한다")
+    void notifyStatusChanged_keepsTaskSessionWhenAway() {
+        Long userId = 1L;
+        RecordSessionV2 taskSession = new RecordSessionV2(
+            200L,
+            userId,
+            RecordSessionTypeV2.TASK,
+            10L,
+            "자료구조",
+            null,
+            null,
+            null,
+            Instant.now().minusSeconds(120),
+            null
+        );
+
+        when(recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(userId))
+            .thenReturn(Optional.of(taskSession));
+
+        notifier.notifyStatusChanged(userId, UserActivityStatus.ONLINE, UserActivityStatus.AWAY);
+
+        verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordDevelopSessionSegmentV2RepositoryPort, never()).findOpenSegmentBySessionIdForUpdate(any());
+        verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());
+        verify(studyTimeExpGrantService, never()).grant(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("오프라인 전환 시 TASK 세션은 자동 종료한다")
+    void notifyStatusChanged_stopsTaskSessionWhenOffline() {
         Long userId = 1L;
         RecordSessionV2 taskSession = new RecordSessionV2(
             200L,

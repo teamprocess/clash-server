@@ -35,15 +35,15 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
         if (userId == null || previousStatus == null || currentStatus == null) {
             return;
         }
-        if (!shouldStopActiveSession(previousStatus, currentStatus)) {
+        if (!isSessionStoppingTransition(previousStatus, currentStatus)) {
             return;
         }
 
         recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(userId)
-            .ifPresent(this::stopActiveSession);
+            .ifPresent(activeSession -> stopActiveSessionIfNeeded(activeSession, currentStatus));
     }
 
-    private boolean shouldStopActiveSession(
+    private boolean isSessionStoppingTransition(
         UserActivityStatus previousStatus,
         UserActivityStatus currentStatus
     ) {
@@ -51,11 +51,17 @@ public class RecordV2PresenceStatusChangedNotifier implements NotifyPresenceStat
             return false;
         }
 
-        // 자리비움/오프라인 전환 시 진행 중인 기록 세션은 유지되면 안 된다.
         return currentStatus == UserActivityStatus.AWAY || currentStatus == UserActivityStatus.OFFLINE;
     }
 
-    private void stopActiveSession(RecordSessionV2 activeSession) {
+    private void stopActiveSessionIfNeeded(
+        RecordSessionV2 activeSession,
+        UserActivityStatus currentStatus
+    ) {
+        if (currentStatus == UserActivityStatus.AWAY && activeSession.sessionType() == RecordSessionTypeV2.TASK) {
+            return;
+        }
+
         Instant endedAt = Instant.now();
         if (activeSession.sessionType() == RecordSessionTypeV2.DEVELOP) {
             recordDevelopSessionSegmentV2RepositoryPort.findOpenSegmentBySessionIdForUpdate(activeSession.id())
