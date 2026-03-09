@@ -17,9 +17,9 @@ public class DeleteUserNoticeService implements DeleteUserNoticeUseCase {
 
     @Override
     public void execute(DeleteUserNoticeData.Command command) {
-        userNoticeRepositoryPort.findByIdAndReceiverId(command.noticeId(), command.actor().id())
-                .orElseThrow(UserNoticeNotFoundException::new);
-
-        userNoticeRepositoryPort.deleteByIdAndReceiverId(command.noticeId(), command.actor().id());
+        int updatedRows = userNoticeRepositoryPort.deleteByIdAndReceiverId(command.noticeId(), command.actor().id());
+        if (updatedRows == 0) {
+            throw new UserNoticeNotFoundException();
+        }
     }
 }

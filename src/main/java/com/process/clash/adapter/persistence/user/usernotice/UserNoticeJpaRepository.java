@@ -68,5 +68,5 @@ public interface UserNoticeJpaRepository extends JpaRepository<UserNoticeJpaEnti
 
     @Modifying
     @Query(value = "UPDATE user_notices SET deleted_at = now() WHERE id = :id AND fk_receiver_id = :receiverId AND deleted_at IS NULL", nativeQuery = true)
-    void softDeleteByIdAndReceiverId(@Param("id") Long id, @Param("receiverId") Long receiverId);
+    int softDeleteByIdAndReceiverId(@Param("id") Long id, @Param("receiverId") Long receiverId);
 }

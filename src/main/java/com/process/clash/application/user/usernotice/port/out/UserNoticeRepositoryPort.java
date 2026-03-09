@@ -19,6 +19,6 @@ public interface UserNoticeRepositoryPort {
     void deleteCancelBattleNoticeBySenderAndReceiver(Long senderId, Long receiverId);
     void deleteApplyBattleNoticeByBattleId(Long battleId);
     void deactivateApplyBattleNoticeByBattleId(Long battleId);
-    void deleteByIdAndReceiverId(Long id, Long receiverId);
+    int deleteByIdAndReceiverId(Long id, Long receiverId);
     void deleteAllNotices();
 }

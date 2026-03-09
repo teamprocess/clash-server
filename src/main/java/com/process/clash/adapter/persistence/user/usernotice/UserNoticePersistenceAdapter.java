@@ -115,8 +115,8 @@ public class UserNoticePersistenceAdapter implements UserNoticeRepositoryPort {
     }
 
     @Override
-    public void deleteByIdAndReceiverId(Long id, Long receiverId) {
-        userNoticeJpaRepository.softDeleteByIdAndReceiverId(id, receiverId);
+    public int deleteByIdAndReceiverId(Long id, Long receiverId) {
+        return userNoticeJpaRepository.softDeleteByIdAndReceiverId(id, receiverId);
     }
 
     @Override
