@@ -3,6 +3,7 @@ package com.process.clash.domain.user.user.entity;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.time.Instant;
 
@@ -20,7 +21,8 @@ public record User(
         int totalCookie,
         Major major,
         UserStatus userStatus,
-        Instant deletedAt
+        Instant deletedAt,
+        RankTier currentRankTier
 ) {
     public boolean isDeleted() {
         return deletedAt != null;
@@ -41,7 +43,8 @@ public record User(
                 0,
                 Major.NONE,
                 UserStatus.PENDING,
-                null
+                null,
+                RankTier.NONE
         );
     }
 
@@ -60,7 +63,8 @@ public record User(
                 this.totalCookie,
                 major,
                 this.userStatus,
-                this.deletedAt
+                this.deletedAt,
+                this.currentRankTier
         );
     }
 
@@ -79,7 +83,8 @@ public record User(
                 this.totalCookie,
                 this.major,
                 UserStatus.ACTIVE,
-                this.deletedAt
+                this.deletedAt,
+                this.currentRankTier
         );
     }
 
@@ -102,7 +107,8 @@ public record User(
                 this.totalCookie,
                 this.major,
                 this.userStatus,
-                this.deletedAt
+                this.deletedAt,
+                this.currentRankTier
         );
     }
 
@@ -123,7 +129,8 @@ public record User(
                 nextTotalCookie,
                 this.major,
                 this.userStatus,
-                this.deletedAt
+                this.deletedAt,
+                this.currentRankTier
         );
     }
 
@@ -142,7 +149,8 @@ public record User(
                 this.totalCookie,
                 this.major,
                 this.userStatus,
-                this.deletedAt
+                this.deletedAt,
+                this.currentRankTier
         );
     }
 
@@ -161,7 +169,8 @@ public record User(
                 this.totalCookie,
                 this.major,
                 this.userStatus,
-                this.deletedAt
+                this.deletedAt,
+                this.currentRankTier
         );
     }
 
@@ -180,7 +189,28 @@ public record User(
                 this.totalCookie,
                 this.major,
                 this.userStatus,
-                this.deletedAt
+                this.deletedAt,
+                this.currentRankTier
+        );
+    }
+
+    public User withRankTier(RankTier rankTier) {
+        return new User(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                this.profileImage,
+                this.totalExp,
+                this.totalCookie,
+                this.major,
+                this.userStatus,
+                this.deletedAt,
+                rankTier
         );
     }
 }
