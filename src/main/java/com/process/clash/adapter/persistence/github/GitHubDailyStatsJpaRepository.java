@@ -57,7 +57,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             FROM github_daily_stats
             WHERE user_id IN (:userIds)
               AND study_date >= :startDate
-              AND study_date < :endDate
+              AND study_date <= :endDate
         ) subquery
         WHERE rn <= 10
         ORDER BY user_id, study_date ASC
@@ -110,7 +110,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             FROM github_daily_stats
             WHERE user_id IN (:userIds)
               AND study_date >= date_trunc('month', CAST(:startDate AS date))
-              AND study_date < :endDate
+              AND study_date <= :endDate
             GROUP BY user_id, date_trunc('month', study_date)
         ) subquery
         WHERE rn <= 10
