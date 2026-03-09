@@ -99,6 +99,9 @@ public class SpringSecuritySessionAdapter implements SessionManager {
         if (attrs != null) {
             HttpServletRequest req = attrs.getRequest();
             HttpServletResponse res = attrs.getResponse();
+            if (res == null) {
+                throw new ServletContextUnavailableException();
+            }
             HttpSession session = req.getSession(false);
             if (session != null) session.invalidate();
             ((LogoutHandler) rememberMeServices).logout(req, res, SecurityContextHolder.getContext().getAuthentication());
