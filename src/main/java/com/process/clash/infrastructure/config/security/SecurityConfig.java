@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import javax.sql.DataSource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -72,6 +75,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/electron/**").permitAll()
                         .requestMatchers("/api/auth/sign-in", "/api/auth/sign-up", "/api/auth/signin", "/api/auth/signup", "/api/auth/username-duplicate-check", "/api/auth/verify-email").permitAll()
+                        .requestMatchers("/api/auth/password-reset/**").permitAll()
                         .requestMatchers("/api/config/public").permitAll()
                         .requestMatchers("/auth-login.html", "/auth-signup.html").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -126,20 +130,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public RememberMeServices rememberMeServices(CustomUserDetailsService customUserDetailsService) {
-        TokenBasedRememberMeServices services = new TokenBasedRememberMeServices(rememberMeKey, customUserDetailsService) {
+    public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        return repo;
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices(PersistentTokenRepository persistentTokenRepository) {
+        PersistentTokenBasedRememberMeServices services = new PersistentTokenBasedRememberMeServices(
+                rememberMeKey, customUserDetailsService, persistentTokenRepository) {
             @Override
             protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
                 super.setCookie(tokens, maxAge, request, response);
-
                 String cookieHeader = response.getHeader(org.springframework.http.HttpHeaders.SET_COOKIE);
                 if (cookieHeader != null && cookieHeader.contains("remember-me")) {
-                    // SameSite=None과 Secure를 추가
                     response.setHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookieHeader + "; SameSite=None; Secure");
                 }
             }
         };
-
         services.setParameter("remember-me");
         services.setTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
         return services;

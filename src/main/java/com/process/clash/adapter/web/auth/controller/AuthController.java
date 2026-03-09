@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.auth.controller;
 
 import com.process.clash.adapter.web.auth.docs.controller.AuthControllerDocument;
 import com.process.clash.adapter.web.auth.dto.CheckDuplicateUsernameDto;
+import com.process.clash.adapter.web.auth.dto.ResetPasswordDto;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
@@ -12,6 +13,7 @@ import com.process.clash.application.user.user.data.CheckDuplicateUsernameData;
 import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.user.user.data.SignInData;
 import com.process.clash.application.user.user.port.in.*;
+import com.process.clash.application.user.user.data.ResetPasswordData;
 import com.process.clash.application.user.user.data.SignUpData;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -48,6 +50,9 @@ public class AuthController implements AuthControllerDocument {
 	private final SignOutUseCase signOutUseCase;
 	private final VerifyEmailUseCase verifyEmailUseCase;
 	private final CheckDuplicatedUsernameUseCase checkDuplicatedUsernameUseCase;
+	private final SendPasswordResetEmailUseCase sendPasswordResetEmailUseCase;
+	private final ValidatePasswordResetTokenUseCase validatePasswordResetTokenUseCase;
+	private final ResetPasswordUseCase resetPasswordUseCase;
 	private final AccessContextResolver accessContextResolver;
 
 	@PostMapping("/sign-up")
@@ -124,6 +129,24 @@ public class AuthController implements AuthControllerDocument {
 				.build();
 
 		return ApiResponse.success("이메일 인증을 성공했습니다.", deleteCookie);
+	}
+
+	@PostMapping("/password-reset/send")
+	public ApiResponse<Void> sendPasswordReset(@Valid @RequestBody ResetPasswordDto.SendRequest request) {
+		sendPasswordResetEmailUseCase.execute(request.toCommand());
+		return ApiResponse.success("비밀번호 재설정 이메일을 발송했습니다.");
+	}
+
+	@GetMapping("/password-reset/validate")
+	public ApiResponse<Void> validatePasswordResetToken(@RequestParam String token) {
+		validatePasswordResetTokenUseCase.execute(token);
+		return ApiResponse.success("유효한 비밀번호 초기화 토큰입니다.");
+	}
+
+	@PostMapping("/password-reset/confirm")
+	public ApiResponse<Void> resetPassword(@Valid @RequestBody ResetPasswordDto.ResetRequest request) {
+		resetPasswordUseCase.execute(request.toCommand());
+		return ApiResponse.success("비밀번호가 변경되었습니다.");
 	}
 
 	@PostMapping({"/{action:signin|signup|signout}"})

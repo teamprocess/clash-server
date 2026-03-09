@@ -4,6 +4,7 @@ import com.process.clash.adapter.web.auth.docs.request.SignInRequestDocument;
 import com.process.clash.adapter.web.auth.docs.response.SignInResponseDocument;
 import com.process.clash.adapter.web.auth.docs.response.SignOutResponseDocument;
 import com.process.clash.adapter.web.auth.docs.response.SignUpResponseDocument;
+import com.process.clash.adapter.web.auth.dto.ResetPasswordDto;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.adapter.web.auth.dto.VerifyEmailDto;
@@ -21,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "인증 API", description = "회원가입/로그인/로그아웃")
 public interface AuthControllerDocument {
@@ -104,6 +106,98 @@ public interface AuthControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<Void> signOut(
             @Parameter(hidden = true) HttpServletRequest httpRequest
+    );
+
+    @Operation(summary = "비밀번호 재설정 이메일 발송", description = "입력한 이메일로 비밀번호 재설정 링크를 발송합니다. 가입된 이메일이 아니어도 동일한 응답을 반환합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "발송 완료 (이메일 존재 여부 무관)",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "비밀번호 재설정 이메일을 발송했습니다."
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> sendPasswordReset(
+            @RequestBody(description = "비밀번호 재설정 이메일 발송 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = ResetPasswordDto.SendRequest.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "email": "gildong@example.com"
+                                    }
+                                    """)
+                    ))
+            @Valid ResetPasswordDto.SendRequest request
+    );
+
+    @Operation(summary = "비밀번호 재설정 토큰 유효성 검사", description = "재설정 링크의 토큰이 유효한지 확인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "유효한 토큰",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "유효한 비밀번호 초기화 토큰입니다."
+                                    }
+                                    """)
+                    )),
+            @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 토큰",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "INVALID_PASSWORD_RESET_TOKEN",
+                                        "message": "유효하지 않거나 만료된 비밀번호 재설정 링크입니다."
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> validatePasswordResetToken(
+            @Parameter(description = "재설정 토큰", required = true, example = "a1b2c3d4e5f6...")
+            @RequestParam String token
+    );
+
+    @Operation(summary = "비밀번호 변경", description = "토큰을 검증하고 새 비밀번호로 변경합니다. 토큰은 1회 사용 후 만료됩니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "비밀번호가 변경되었습니다."
+                                    }
+                                    """)
+                    )),
+            @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 토큰",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "INVALID_PASSWORD_RESET_TOKEN",
+                                        "message": "유효하지 않거나 만료된 비밀번호 재설정 링크입니다."
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> resetPassword(
+            @RequestBody(description = "비밀번호 변경 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = ResetPasswordDto.ResetRequest.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "token": "a1b2c3d4e5f6...",
+                                      "newPassword": "newPassword123"
+                                    }
+                                    """)
+                    ))
+            @Valid ResetPasswordDto.ResetRequest request
     );
 
     @Operation(summary = "이전 엔드포인트 리다이렉트", description = "기존 엔드포인트 요청을 신규 경로로 이동합니다.")

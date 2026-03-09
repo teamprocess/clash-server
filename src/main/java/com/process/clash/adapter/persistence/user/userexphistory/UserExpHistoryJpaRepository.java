@@ -43,7 +43,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             FROM user_exp_history
             WHERE fk_user_id IN (:userIds)
               AND date >= date_trunc('day', CAST(:startDate AS date))
-              AND date < :endDate
+              AND date <= :endDate
             GROUP BY fk_user_id, date_trunc('day', date)
         ) subquery
         WHERE rn <= 10
@@ -101,7 +101,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             FROM user_exp_history
             WHERE fk_user_id IN (:userIds)
               AND date >= date_trunc('month', CAST(:startDate AS date))
-              AND date < :endDate
+              AND date <= :endDate
             GROUP BY fk_user_id, date_trunc('month', date)
         ) subquery
         WHERE rn <= 10
@@ -188,7 +188,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     @Query("""
         select new com.process.clash.application.compete.my.data.UserEarnedExp(
                 ux.date,
-                avg(ux.earnExp)
+                sum(ux.earnExp) 
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :id
@@ -208,7 +208,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     @Query("""
         select new com.process.clash.application.compete.my.data.UserEarnedExp(
                 min(ux.date),
-                avg(ux.earnExp)
+                sum(ux.earnExp)
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :id
@@ -228,7 +228,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     @Query("""
         select new com.process.clash.application.compete.my.data.UserEarnedExp(
                 min(ux.date),
-                avg(ux.earnExp)
+                sum(ux.earnExp)
             )
         from UserExpHistoryJpaEntity ux
         where ux.user.id = :id

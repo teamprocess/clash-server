@@ -19,7 +19,7 @@ public class ApplyRivalPolicy {
     private static final int MAX_RIVAL_COUNT = 4;
 
     public void check(ApplyRivalData.Command command) {
-        int myRivalCount = rivalRepositoryPort.countAllByUserId(command.actor().id());
+        int myRivalCount = rivalRepositoryPort.countActiveByUserId(command.actor().id());
 
         if (myRivalCount + command.ids().size() > MAX_RIVAL_COUNT) {
             throw new TooMuchRivalsException();
@@ -36,17 +36,17 @@ public class ApplyRivalPolicy {
             throw new AlreadyAppliedRivalException();
         }
 
-        Map<Long, Integer> opponentRivalCounts =
-                rivalRepositoryPort.countAllByOpponentIdsGrouped(opponentIds).stream()
-                        .collect(Collectors.toMap(
-                                map -> (Long) map.get("opponentId"),
-                                map -> ((Long) map.get("count")).intValue()
-                        ));
+        Map<Long, Integer> opponentRivalCounts = rivalRepositoryPort.countActiveByUserIdsGrouped(opponentIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        map -> ((Number) map.get("user_id")).longValue(),
+                        map -> ((Number) map.get("count")).intValue()
+                ));
 
-        boolean hasOverLimitRival = opponentRivalCounts.values().stream()
-                .anyMatch(count -> count >= MAX_RIVAL_COUNT);
+        boolean hasOverLimitOpponent = opponentIds.stream()
+                .anyMatch(opponentId -> opponentRivalCounts.getOrDefault(opponentId, 0) >= MAX_RIVAL_COUNT);
 
-        if (hasOverLimitRival) {
+        if (hasOverLimitOpponent) {
             throw new TooMuchRivalsException();
         }
     }

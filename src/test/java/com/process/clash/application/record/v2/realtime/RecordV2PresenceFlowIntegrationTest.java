@@ -68,6 +68,30 @@ class RecordV2PresenceFlowIntegrationTest {
     }
 
     @Test
+    @DisplayName("presence:away 수신 시 진행 중인 TASK 세션은 유지된다")
+    void awayEvent_keepsTaskSession() {
+        User user = createActiveUser();
+        String connectionId = "conn-task-away-v2-" + UUID.randomUUID();
+        Actor actor = new Actor(user.id());
+        RecordSubjectV2 subject = createSubject(user.id(), "알고리즘");
+
+        reportUserPresenceUseCase.connected(connectionId, user.id());
+        startRecordV2UseCase.execute(new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            subject.id(),
+            null,
+            null,
+            actor
+        ));
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isPresent();
+
+        reportUserPresenceUseCase.markedAway(connectionId);
+
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isPresent();
+        reportUserPresenceUseCase.disconnected(connectionId);
+    }
+
+    @Test
     @DisplayName("소켓 연결 종료 시 진행 중인 DEVELOP 세션이 종료된다")
     void disconnect_stopsDevelopSession() {
         User user = createActiveUser();
@@ -113,8 +137,8 @@ class RecordV2PresenceFlowIntegrationTest {
     }
 
     @Test
-    @DisplayName("이미 자리비움/오프라인이면 DEVELOP 세션을 시작할 수 없다")
-    void cannotStartDevelopWhenNotOnline() {
+    @DisplayName("자리비움이면 DEVELOP 세션을 시작할 수 없다")
+    void cannotStartDevelopWhenAway() {
         User user = createActiveUser();
         String connectionId = "conn-start-while-away-v2-" + UUID.randomUUID();
         Actor actor = new Actor(user.id());
@@ -136,8 +160,45 @@ class RecordV2PresenceFlowIntegrationTest {
     }
 
     @Test
-    @DisplayName("이미 자리비움/오프라인이면 TASK 세션을 시작할 수 없다")
-    void cannotStartTaskWhenNotOnline() {
+    @DisplayName("오프라인이면 DEVELOP 세션을 시작할 수 없다")
+    void cannotStartDevelopWhenOffline() {
+        User user = createActiveUser();
+        Actor actor = new Actor(user.id());
+
+        assertThatThrownBy(() -> startRecordV2UseCase.execute(new StartRecordV2Data.Command(
+            RecordSessionTypeV2.DEVELOP,
+            null,
+            null,
+            MonitoredApp.VSCODE,
+            actor
+        )))
+            .isInstanceOf(DevelopStartRequiresOnlineException.class);
+
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("오프라인이면 TASK 세션을 시작할 수 없다")
+    void cannotStartTaskWhenOffline() {
+        User user = createActiveUser();
+        Actor actor = new Actor(user.id());
+        RecordSubjectV2 subject = createSubject(user.id(), "운영체제");
+
+        assertThatThrownBy(() -> startRecordV2UseCase.execute(new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            subject.id(),
+            null,
+            null,
+            actor
+        )))
+            .isInstanceOf(TaskStartRequiresOnlineException.class);
+
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("자리비움이면 TASK 세션을 시작할 수 없다")
+    void cannotStartTaskWhenAway() {
         User user = createActiveUser();
         String connectionId = "conn-task-start-while-away-v2-" + UUID.randomUUID();
         Actor actor = new Actor(user.id());

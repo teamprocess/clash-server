@@ -146,6 +146,25 @@ public record User(
         );
     }
 
+    public User withPassword(String encodedPassword) {
+        return new User(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                this.username,
+                this.email,
+                this.name,
+                encodedPassword,
+                this.role,
+                this.profileImage,
+                this.totalExp,
+                this.totalCookie,
+                this.major,
+                this.userStatus,
+                this.deletedAt
+        );
+    }
+
     public User addExp(int delta) {
         return new User(
                 this.id,
