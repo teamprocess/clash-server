@@ -7,6 +7,7 @@ import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
 import com.process.clash.adapter.web.filter.RateLimitFilter;
 import com.process.clash.adapter.web.filter.RecaptchaFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -138,7 +139,16 @@ public class SecurityConfig {
     @Bean
     public RememberMeServices rememberMeServices(PersistentTokenRepository persistentTokenRepository) {
         PersistentTokenBasedRememberMeServices services = new PersistentTokenBasedRememberMeServices(
-                rememberMeKey, customUserDetailsService, persistentTokenRepository);
+                rememberMeKey, customUserDetailsService, persistentTokenRepository) {
+            @Override
+            protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
+                super.setCookie(tokens, maxAge, request, response);
+                String cookieHeader = response.getHeader(org.springframework.http.HttpHeaders.SET_COOKIE);
+                if (cookieHeader != null && cookieHeader.contains("remember-me")) {
+                    response.setHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookieHeader + "; SameSite=None; Secure");
+                }
+            }
+        };
         services.setParameter("remember-me");
         services.setTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
         return services;
