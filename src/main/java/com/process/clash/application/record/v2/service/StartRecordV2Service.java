@@ -159,14 +159,17 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
             return;
         }
 
-        if (userPresencePort.getStatus(userId) == UserActivityStatus.ONLINE) {
+        UserActivityStatus activityStatus = userPresencePort.getStatus(userId);
+
+        if (sessionType == RecordSessionTypeV2.DEVELOP) {
+            if (activityStatus != UserActivityStatus.ONLINE) {
+                throw new DevelopStartRequiresOnlineException();
+            }
             return;
         }
 
-        if (sessionType == RecordSessionTypeV2.DEVELOP) {
-            throw new DevelopStartRequiresOnlineException();
+        if (activityStatus != UserActivityStatus.ONLINE) {
+            throw new TaskStartRequiresOnlineException();
         }
-
-        throw new TaskStartRequiresOnlineException();
     }
 }
