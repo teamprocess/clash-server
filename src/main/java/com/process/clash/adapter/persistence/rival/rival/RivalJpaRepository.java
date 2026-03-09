@@ -107,6 +107,7 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
             END
         FROM rivals r
         WHERE r.id = :id
+          AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
     """, nativeQuery = true)
     Long findOpponentIdByIdAndUserIdInRejectCase(
             @Param("id") Long id,
