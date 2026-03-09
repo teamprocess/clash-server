@@ -2,9 +2,11 @@ package com.process.clash.application.compete.rival.rival.policy;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.rival.exception.exception.badrequet.TooMuchRivalsException;
+import com.process.clash.application.compete.rival.rival.exception.exception.forbidden.AcceptRivalForbiddenException;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
+import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +22,23 @@ public class AcceptRivalPolicy {
         if (rivalRepositoryPort.countAllByUserId(actor.id()) >= MAX_RIVAL_COUNT)
             throw new TooMuchRivalsException();
 
-        Long rivalId = rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(id, actor.id());
+        Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(id, actor.id());
 
-        if (rivalRepositoryPort.countAllByUserId(rivalId) >= MAX_RIVAL_COUNT)
+        if (opponentId == null)
+            throw new RivalNotFoundException();
+
+        if (rivalRepositoryPort.countAllByUserId(opponentId) >= MAX_RIVAL_COUNT)
             throw new TooMuchRivalsException();
 
-        return rivalRepositoryPort.findById(id)
+        Rival rival = rivalRepositoryPort.findById(id)
                 .orElseThrow(RivalNotFoundException::new);
+
+        if (rival.rivalLinkingStatus() != RivalLinkingStatus.PENDING)
+            throw new RivalNotFoundException();
+
+        if (!rival.secondUserId().equals(actor.id()))
+            throw new AcceptRivalForbiddenException();
+
+        return rival;
     }
 }
