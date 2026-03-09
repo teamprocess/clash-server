@@ -4,6 +4,6 @@ import java.time.LocalDate;
 
 public record UserEarnedExp(
         LocalDate date,
-        Double avgEarnedExp
+        Long sumEarnedExp
 ) {
 }

@@ -173,15 +173,15 @@ public interface MyCompeteControllerDocument {
                                         "dataPoint": [
                                           {
                                             "date": "2025-01-01",
-                                            "rate": 15.5
+                                            "rate": 15
                                           },
                                           {
                                             "date": "2025-01-02",
-                                            "rate": 18.2
+                                            "rate": 18
                                           },
                                           {
                                             "date": "2025-01-03",
-                                            "rate": 20.1
+                                            "rate": 20
                                           }
                                         ]
                                       }

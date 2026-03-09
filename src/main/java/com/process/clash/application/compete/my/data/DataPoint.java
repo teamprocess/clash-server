@@ -4,6 +4,6 @@ import java.time.LocalDate;
 
 public record DataPoint(
         LocalDate date,
-        Double rate
+        Long rate
 ) {
 }

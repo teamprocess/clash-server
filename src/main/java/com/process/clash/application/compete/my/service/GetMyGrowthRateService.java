@@ -22,8 +22,8 @@ import java.util.List;
 public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-    private static final int MAX_DATA_POINTS = 10;
-    private static final int FETCH_COUNT = 11;
+    private static final int GROWTH_RATE_PERIOD = 12;           // 보여줄 구간 수
+    private static final int FETCH_COUNT = GROWTH_RATE_PERIOD + 1;  // DB 조회 수 (기준값 1개 포함)
 
     @Override
     public GetMyGrowthRateData.Result execute(GetMyGrowthRateData.Command command) {
@@ -48,7 +48,7 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
         return userExpHistoryRepositoryPort.findUserDailyEarnedExpByUserIdAndPeriod(
                 id,
-                now.minusDays(10),
+                now.minusDays(FETCH_COUNT),
                 now,
                 PageRequest.of(0, FETCH_COUNT)
         );
@@ -60,7 +60,7 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
         return userExpHistoryRepositoryPort.findUserWeeklyEarnedExpByUserIdAndPeriod(
                 id,
-                now.minusWeeks(10),
+                now.minusWeeks(FETCH_COUNT),
                 now,
                 PageRequest.of(0, FETCH_COUNT)
         );
@@ -72,7 +72,7 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
         return userExpHistoryRepositoryPort.findUserMonthlyEarnedExpByUserIdAndPeriod(
                 id,
-                now.minusMonths(10),
+                now.minusMonths(FETCH_COUNT),
                 now,
                 PageRequest.of(0, FETCH_COUNT)
         );
@@ -90,26 +90,23 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
             UserEarnedExp current = rawDataPoints.get(i);
             UserEarnedExp previous = rawDataPoints.get(i - 1);
 
-            double growthRate = calculateGrowthRate(
-                    current.avgEarnedExp(),
-                    previous.avgEarnedExp()
+            Long growthRate = calculateGrowthRate(
+                    current.sumEarnedExp(),
+                    previous.sumEarnedExp()
             );
 
             result.add(new DataPoint(current.date(), growthRate));
         }
 
         return result.stream()
-                .limit(MAX_DATA_POINTS)
+                .limit(GROWTH_RATE_PERIOD)
                 .toList();
     }
 
-    private double calculateGrowthRate(Double current, Double previous) {
-        if (previous == null || previous == 0.0) {
-            return current != null && current > 0 ? 100.0 : 0.0;
-        }
-        if (current == null) {
-            return -100.0;
-        }
-        return Math.round(((current - previous) / previous) * 100.0 * 100.0) / 100.0; // 소수점 깨지는 것 방지
+    private Long calculateGrowthRate(Long current, Long previous) {
+        if (current == null) current = 0L;
+        if (previous == null) previous = 0L;
+
+        return current - previous;
     }
 }
