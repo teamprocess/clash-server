@@ -153,10 +153,8 @@ public class SecurityConfig {
                 header.append("; Path=").append(cookiePath);
                 header.append("; Max-Age=").append(maxAge);
                 header.append("; HttpOnly");
-                if (request.isSecure()) {
-                    header.append("; Secure");
-                    header.append("; SameSite=None");
-                }
+                header.append("; Secure");
+                header.append("; SameSite=None");
 
                 response.addHeader(SET_COOKIE, header.toString());
             }
@@ -171,10 +169,8 @@ public class SecurityConfig {
                 header.append("; Path=").append(cookiePath);
                 header.append("; Max-Age=0");
                 header.append("; HttpOnly");
-                if (request.isSecure()) {
-                    header.append("; Secure");
-                    header.append("; SameSite=None");
-                }
+                header.append("; Secure");
+                header.append("; SameSite=None");
 
                 response.addHeader(SET_COOKIE, header.toString());
             }
