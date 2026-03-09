@@ -5,13 +5,16 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.adapter.web.user.docs.controller.UserNoticeControllerDocument;
 import com.process.clash.adapter.web.user.dto.GetMyUserNoticesDto;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.user.usernotice.data.DeleteUserNoticeData;
 import com.process.clash.application.user.usernotice.data.GetMyUserNoticesData;
 import com.process.clash.application.user.usernotice.data.ReadUserNoticeData;
+import com.process.clash.application.user.usernotice.port.in.DeleteUserNoticeUseCase;
 import com.process.clash.application.user.usernotice.port.in.GetAllMyUserNoticesUseCase;
 import com.process.clash.application.user.usernotice.port.in.GetMyUserNoticesUseCase;
 import com.process.clash.application.user.usernotice.port.in.GetNoticesUseCase;
 import com.process.clash.application.user.usernotice.port.in.ReadUserNoticeUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +29,7 @@ public class UserNoticeController implements UserNoticeControllerDocument {
     private final GetMyUserNoticesUseCase getMyUserNoticesUseCase;
     private final GetAllMyUserNoticesUseCase getAllMyUserNoticesUseCase;
     private final ReadUserNoticeUseCase readUserNoticeUseCase;
+    private final DeleteUserNoticeUseCase deleteUserNoticeUseCase;
 
     @GetMapping
     public ApiResponse<GetMyUserNoticesDto.Response> getMyNotices(
@@ -59,5 +63,16 @@ public class UserNoticeController implements UserNoticeControllerDocument {
         ReadUserNoticeData.Command command = ReadUserNoticeData.Command.of(actor, id);
         readUserNoticeUseCase.execute(command);
         return ApiResponse.success("알림을 읽음 처리했습니다.");
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteNotice(
+            @AuthenticatedActor Actor actor,
+            @PathVariable Long id
+    ) {
+
+        DeleteUserNoticeData.Command command = DeleteUserNoticeData.Command.of(actor, id);
+        deleteUserNoticeUseCase.execute(command);
+        return ApiResponse.success("알림을 삭제했습니다.");
     }
 }

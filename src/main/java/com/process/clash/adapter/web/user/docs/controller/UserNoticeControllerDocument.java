@@ -140,4 +140,32 @@ public interface UserNoticeControllerDocument {
             @Parameter(description = "읽음 처리할 알림 ID", example = "1", required = true)
             @PathVariable Long id
     );
+
+    @Operation(summary = "알림 삭제", description = "특정 알림을 삭제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = SuccessMessageResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "알림을 삭제했습니다."
+                                    }
+                                    """)
+                    )),
+            @ApiResponse(responseCode = "404", description = "알림을 찾을 수 없음",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "message": "알림을 찾을 수 없습니다."
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> deleteNotice(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "삭제할 알림 ID", example = "1", required = true)
+            @PathVariable Long id
+    );
 }
