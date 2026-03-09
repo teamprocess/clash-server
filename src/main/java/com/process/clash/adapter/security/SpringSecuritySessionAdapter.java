@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -97,8 +98,10 @@ public class SpringSecuritySessionAdapter implements SessionManager {
         ServletRequestAttributes attrs = currentRequestAttributes();
         if (attrs != null) {
             HttpServletRequest req = attrs.getRequest();
+            HttpServletResponse res = attrs.getResponse();
             HttpSession session = req.getSession(false);
             if (session != null) session.invalidate();
+            ((LogoutHandler) rememberMeServices).logout(req, res, SecurityContextHolder.getContext().getAuthentication());
         }
         SecurityContextHolder.clearContext();
     }
