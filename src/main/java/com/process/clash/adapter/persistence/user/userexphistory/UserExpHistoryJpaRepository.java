@@ -43,7 +43,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             FROM user_exp_history
             WHERE fk_user_id IN (:userIds)
               AND date >= date_trunc('day', CAST(:startDate AS date))
-              AND date < :endDate
+              AND date <= :endDate
             GROUP BY fk_user_id, date_trunc('day', date)
         ) subquery
         WHERE rn <= 10
