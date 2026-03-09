@@ -24,14 +24,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.CookieTheftException;
+import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -157,6 +166,36 @@ public class SecurityConfig {
                 header.append("; SameSite=None");
 
                 response.addHeader(SET_COOKIE, header.toString());
+            }
+
+            @Override
+            protected UserDetails processAutoLoginCookie(
+                    String[] cookieTokens, HttpServletRequest request, HttpServletResponse response) {
+                if (cookieTokens.length != 2) {
+                    throw new InvalidCookieException("Cookie token did not contain 2 tokens, but contained '"
+                            + Arrays.asList(cookieTokens) + "'");
+                }
+                String presentedSeries = cookieTokens[0];
+                String presentedToken  = cookieTokens[1];
+
+                PersistentRememberMeToken token = persistentTokenRepository.getTokenForSeries(presentedSeries);
+                if (token == null) {
+                    throw new RememberMeAuthenticationException(
+                            "No persistent token found for series id: " + presentedSeries);
+                }
+
+                if (!MessageDigest.isEqual(
+                        presentedToken.getBytes(StandardCharsets.UTF_8),
+                        token.getTokenValue().getBytes(StandardCharsets.UTF_8))) {
+                    persistentTokenRepository.removeUserTokens(token.getUsername());
+                    throw new CookieTheftException("Invalid remember-me token (Series/token mismatch)");
+                }
+
+                if (token.getDate().getTime() + (long) getTokenValiditySeconds() * 1000 < System.currentTimeMillis()) {
+                    throw new RememberMeAuthenticationException("Remember-me login has expired");
+                }
+
+                return getUserDetailsService().loadUserByUsername(token.getUsername());
             }
 
             @Override
