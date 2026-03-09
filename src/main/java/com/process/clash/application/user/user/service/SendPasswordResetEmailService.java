@@ -8,6 +8,7 @@ import com.process.clash.application.user.user.port.out.PasswordResetTokenPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,7 +18,9 @@ import java.util.Optional;
 public class SendPasswordResetEmailService implements SendPasswordResetEmailUseCase {
 
     private static final long EXPIRATION_MS = 30 * 60 * 1000L; // 30분
-    private static final String RESET_BASE_URL = "https://clash.kr/reset-password?token=";
+
+    @Value("${app.reset-password.base-url}")
+    private String resetBaseUrl;
 
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordResetTokenPort passwordResetTokenPort;
@@ -37,7 +40,7 @@ public class SendPasswordResetEmailService implements SendPasswordResetEmailUseC
         String token = tokenGenerator.generateCleanToken();
         passwordResetTokenPort.saveToken(token, user.id(), EXPIRATION_MS);
 
-        String resetLink = RESET_BASE_URL + token;
+        String resetLink = resetBaseUrl + token;
         sendPasswordResetEmailPort.execute(user.email(), resetLink);
     }
 }

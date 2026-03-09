@@ -70,7 +70,7 @@ class AcceptRivalPolicyTest {
         Long opponentId = 2L;
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(3);
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
         when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(4);
 
         assertThatThrownBy(() -> acceptRivalPolicy.check(actor, rivalId))
@@ -85,7 +85,7 @@ class AcceptRivalPolicyTest {
         Long opponentId = 2L;
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
         // 상대방의 ACCEPTED 3 + 신청한 PENDING 1 = 합산 4
         when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(4);
 
@@ -103,7 +103,7 @@ class AcceptRivalPolicyTest {
         Long opponentId = 2L;
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(2);
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
         when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(1);
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.empty());
 
@@ -122,7 +122,7 @@ class AcceptRivalPolicyTest {
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(3);
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
         when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(2);
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
 
@@ -140,7 +140,7 @@ class AcceptRivalPolicyTest {
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
 
         when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
         when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(0);
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
 

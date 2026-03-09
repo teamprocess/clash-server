@@ -125,3 +125,7 @@ electron:
 security:
   remember-me:
     key: ${REMEMBER_ME_KEY:UniqueKey}
+
+app:
+  reset-password:
+    base-url: ${RESET_PASSWORD_BASE_URL:https://clash.kr/reset-password?token=}
