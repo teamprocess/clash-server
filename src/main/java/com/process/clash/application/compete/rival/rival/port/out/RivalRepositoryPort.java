@@ -16,6 +16,8 @@ public interface RivalRepositoryPort {
     List<Rival> findAllByUserId(Long myId);
     List<Rival> findAllRivalsByUserId(Long userId);
     int countAllByUserId(Long myId);
+    int countActiveByUserId(Long userId);
+    List<Map<String, Object>> countActiveByUserIdsGrouped(List<Long> userIds);
     List<Map<String, Object>> countAllByOpponentIdsGrouped(List<Long> opponentIds);
     List<Long> findOpponentIdByUserId(Long myId);
     Long findOpponentIdByIdAndUserIdInRejectCase(Long id, Long userId);
