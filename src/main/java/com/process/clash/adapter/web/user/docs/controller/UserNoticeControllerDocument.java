@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@Tag(name = "알림 API", description = "사용자 알림 조회 및 읽음 처리")
+@Tag(name = "알림 API", description = "사용자 알림 조회, 읽음 처리 및 삭제")
 public interface UserNoticeControllerDocument {
 
     @Operation(summary = "내 알림 전체 조회", description = "나에게 수신된 모든 알림(읽음/안읽음 포함)을 최신순으로 조회합니다.")
