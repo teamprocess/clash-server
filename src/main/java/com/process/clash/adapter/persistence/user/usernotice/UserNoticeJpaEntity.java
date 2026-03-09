@@ -45,6 +45,9 @@ public class UserNoticeJpaEntity {
     @Column(nullable = false)
     private boolean isRead;
 
+    @Column(nullable = false)
+    private boolean requiresAction;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_sender_id", nullable = false)
     private UserJpaEntity sender;

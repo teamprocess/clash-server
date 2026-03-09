@@ -10,6 +10,7 @@ public record UserNotice(
         Instant updatedAt,
         NoticeCategory noticeCategory,
         boolean isRead,
+        boolean requiresAction,
         Long senderId,
         String senderName,
         String senderUsername,
@@ -26,7 +27,7 @@ public record UserNotice(
     public static UserNotice createDefault(NoticeCategory noticeCategory, Long senderId, Long receiverId) {
 
         return new UserNotice(
-                null, null, null, noticeCategory, false,
+                null, null, null, noticeCategory, false, noticeCategory.requiresAction(),
                 senderId, null, null, null,
                 receiverId, null, null, null,
                 null, null, null
@@ -36,7 +37,7 @@ public record UserNotice(
     public static UserNotice createForRival(NoticeCategory noticeCategory, Long senderId, Long receiverId, Long rivalId) {
 
         return new UserNotice(
-                null, null, null, noticeCategory, false,
+                null, null, null, noticeCategory, false, noticeCategory.requiresAction(),
                 senderId, null, null, null,
                 receiverId, null, null, null,
                 rivalId, null, null
@@ -46,7 +47,7 @@ public record UserNotice(
     public static UserNotice createForBattle(NoticeCategory noticeCategory, Long senderId, Long receiverId, Long battleId) {
 
         return new UserNotice(
-                null, null, null, noticeCategory, false,
+                null, null, null, noticeCategory, false, noticeCategory.requiresAction(),
                 senderId, null, null, null,
                 receiverId, null, null, null,
                 null, battleId, null
@@ -54,6 +55,6 @@ public record UserNotice(
     }
 
     public UserNotice markAsRead() {
-        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, senderId, senderName, senderUsername, senderProfileImage, receiverId, receiverName, receiverUsername, receiverProfileImage, rivalId, battleId, deletedAt);
+        return new UserNotice(id, createdAt, updatedAt, noticeCategory, true, requiresAction, senderId, senderName, senderUsername, senderProfileImage, receiverId, receiverName, receiverUsername, receiverProfileImage, rivalId, battleId, deletedAt);
     }
 }

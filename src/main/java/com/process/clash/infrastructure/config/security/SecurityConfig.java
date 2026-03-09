@@ -39,6 +39,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -142,11 +144,19 @@ public class SecurityConfig {
                 rememberMeKey, customUserDetailsService, persistentTokenRepository) {
             @Override
             protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
-                super.setCookie(tokens, maxAge, request, response);
-                String cookieHeader = response.getHeader(org.springframework.http.HttpHeaders.SET_COOKIE);
-                if (cookieHeader != null && cookieHeader.contains("remember-me")) {
-                    response.setHeader(org.springframework.http.HttpHeaders.SET_COOKIE, cookieHeader + "; SameSite=None; Secure");
-                }
+                String cookieValue = encodeCookie(tokens);
+                String contextPath = request.getContextPath();
+                String cookiePath = contextPath.isEmpty() ? "/" : contextPath;
+
+                StringBuilder header = new StringBuilder();
+                header.append(getCookieName()).append("=").append(cookieValue);
+                header.append("; Path=").append(cookiePath);
+                header.append("; Max-Age=").append(maxAge);
+                header.append("; HttpOnly");
+                header.append("; Secure");
+                header.append("; SameSite=None");
+
+                response.addHeader(SET_COOKIE, header.toString());
             }
         };
         services.setParameter("remember-me");
