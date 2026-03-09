@@ -151,6 +151,20 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+    /**
+     * 유저의 하루 총 exp
+     */
+    @Query(value = """
+    SELECT COALESCE(SUM(earn_exp), 0)
+    FROM user_exp_history
+    WHERE fk_user_id = :userId
+      AND date = :date
+      AND acting_category <> 'SEASON_RESET'
+    """, nativeQuery = true)
+    double findTotalExpByDate(
+            @Param("userId") Long userId,
+            @Param("date") LocalDate date
+    );
 
     @Query(value = """
         SELECT 
