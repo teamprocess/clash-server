@@ -54,6 +54,7 @@ class CompareMyActivityServiceTest {
         lenient().when(recordSessionRepositoryPort.getTotalStudyTimeInSeconds(any(), any(), any())).thenReturn(0L);
         lenient().when(gitHubDailyStatsQueryPort.findAverageContributionByUserIdAndPeriod(any(), any(), any())).thenReturn(0.0);
         lenient().when(gitHubDailyStatsQueryPort.findAvgDailyCommitCountByUserIdAndPeriod(any(), any(), any())).thenReturn(0.0);
+        lenient().when(userExpHistoryRepositoryPort.findTotalExpByDate(any(), any())).thenReturn(0.0);
     }
 
     private CompareMyActivityData.Command command(String category) {
@@ -70,19 +71,17 @@ class CompareMyActivityServiceTest {
     // ===== TODAY =====
 
     @Test
-    @DisplayName("TODAY: EXP 조회는 boundary 기준 오늘([boundaryToday, boundaryToday+1)) 날짜를 사용한다")
+    @DisplayName("TODAY: EXP 조회는 boundary 기준 오늘(boundaryToday) 날짜를 사용한다")
     void today_expUsesBoundaryDate() {
         LocalDate expectedBoundaryToday = boundaryToday();
 
         service.execute(command("TODAY"));
 
-        ArgumentCaptor<LocalDate> start = ArgumentCaptor.forClass(LocalDate.class);
-        ArgumentCaptor<LocalDate> end   = ArgumentCaptor.forClass(LocalDate.class);
+        ArgumentCaptor<LocalDate> date = ArgumentCaptor.forClass(LocalDate.class);
         verify(userExpHistoryRepositoryPort)
-            .findDailyAvgExpByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
+            .findTotalExpByDate(eq(USER_ID), date.capture());
 
-        assertThat(start.getValue()).isEqualTo(expectedBoundaryToday);
-        assertThat(end.getValue()).isEqualTo(expectedBoundaryToday.plusDays(1));
+        assertThat(date.getValue()).isEqualTo(expectedBoundaryToday);
     }
 
     @Test
