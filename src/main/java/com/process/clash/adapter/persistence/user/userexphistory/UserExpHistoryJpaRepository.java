@@ -130,7 +130,10 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("endDate") LocalDate endDate
     );
 
-
+    /**
+     * 기간 내 일평균 경험치 (일별 합산 후 평균)
+     * AVG(earn_exp) 대신 날짜별 SUM 후 AVG를 구해 정확한 일평균을 반환한다.
+     */
     @Query(value = """
     SELECT COALESCE(AVG(daily_sum), 0)
     FROM (
@@ -148,7 +151,6 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
-
 
     @Query(value = """
         SELECT 
