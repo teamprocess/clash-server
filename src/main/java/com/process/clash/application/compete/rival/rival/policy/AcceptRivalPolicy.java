@@ -20,7 +20,7 @@ public class AcceptRivalPolicy {
         if (rivalRepositoryPort.countAllByUserId(actor.id()) >= MAX_RIVAL_COUNT)
             throw new TooMuchRivalsException();
 
-        Long rivalId = rivalRepositoryPort.findOpponentIdByIdAndUserId(id, actor.id());
+        Long rivalId = rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(id, actor.id());
 
         if (rivalRepositoryPort.countAllByUserId(rivalId) >= MAX_RIVAL_COUNT)
             throw new TooMuchRivalsException();
