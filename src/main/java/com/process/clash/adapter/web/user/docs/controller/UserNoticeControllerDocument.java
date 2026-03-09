@@ -141,7 +141,7 @@ public interface UserNoticeControllerDocument {
             @PathVariable Long id
     );
 
-    @Operation(summary = "알림 삭제", description = "특정 알림을 삭제합니다.")
+    @Operation(summary = "알림 삭제", description = "특정 알림을 삭제합니다. (soft delete)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공",
                     content = @Content(

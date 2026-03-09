@@ -14,7 +14,6 @@ import com.process.clash.application.user.usernotice.port.in.GetMyUserNoticesUse
 import com.process.clash.application.user.usernotice.port.in.GetNoticesUseCase;
 import com.process.clash.application.user.usernotice.port.in.ReadUserNoticeUseCase;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +64,7 @@ public class UserNoticeController implements UserNoticeControllerDocument {
         return ApiResponse.success("알림을 읽음 처리했습니다.");
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/delete")
     public ApiResponse<Void> deleteNotice(
             @AuthenticatedActor Actor actor,
             @PathVariable Long id
