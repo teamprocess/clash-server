@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@Tag(name = "알림 API", description = "사용자 알림 조회 및 읽음 처리")
+@Tag(name = "알림 API", description = "사용자 알림 조회, 읽음 처리 및 삭제")
 public interface UserNoticeControllerDocument {
 
     @Operation(summary = "내 알림 전체 조회", description = "나에게 수신된 모든 알림(읽음/안읽음 포함)을 최신순으로 조회합니다.")
@@ -138,6 +138,34 @@ public interface UserNoticeControllerDocument {
     com.process.clash.adapter.web.common.ApiResponse<Void> readNotice(
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "읽음 처리할 알림 ID", example = "1", required = true)
+            @PathVariable Long id
+    );
+
+    @Operation(summary = "알림 삭제", description = "특정 알림을 삭제합니다. (soft delete)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = SuccessMessageResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "알림을 삭제했습니다."
+                                    }
+                                    """)
+                    )),
+            @ApiResponse(responseCode = "404", description = "알림을 찾을 수 없음",
+                    content = @Content(
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "message": "알림을 찾을 수 없습니다."
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> deleteNotice(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "삭제할 알림 ID", example = "1", required = true)
             @PathVariable Long id
     );
 }

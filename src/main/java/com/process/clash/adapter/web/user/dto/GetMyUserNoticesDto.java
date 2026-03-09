@@ -14,7 +14,7 @@ public class GetMyUserNoticesDto {
                             notice.id(),
                             notice.category().name(),
                             notice.category().getMessage(),
-                            notice.category().requiresAction(),
+                            notice.requiresAction(),
                             notice.isRead(),
                             notice.senderId(),
                             notice.senderName(),
