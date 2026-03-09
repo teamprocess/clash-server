@@ -153,8 +153,28 @@ public class SecurityConfig {
                 header.append("; Path=").append(cookiePath);
                 header.append("; Max-Age=").append(maxAge);
                 header.append("; HttpOnly");
-                header.append("; Secure");
-                header.append("; SameSite=None");
+                if (request.isSecure()) {
+                    header.append("; Secure");
+                    header.append("; SameSite=None");
+                }
+
+                response.addHeader(SET_COOKIE, header.toString());
+            }
+
+            @Override
+            protected void cancelCookie(HttpServletRequest request, HttpServletResponse response) {
+                String contextPath = request.getContextPath();
+                String cookiePath = contextPath.isEmpty() ? "/" : contextPath;
+
+                StringBuilder header = new StringBuilder();
+                header.append(getCookieName()).append("=");
+                header.append("; Path=").append(cookiePath);
+                header.append("; Max-Age=0");
+                header.append("; HttpOnly");
+                if (request.isSecure()) {
+                    header.append("; Secure");
+                    header.append("; SameSite=None");
+                }
 
                 response.addHeader(SET_COOKIE, header.toString());
             }
