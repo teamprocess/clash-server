@@ -207,7 +207,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
                 or (r.secondUser.id = ug.user.id and r.firstUser.id = :userId))
             and r.rivalLinkingStatus = 'ACCEPTED'
         group by ug.user.id, ug.user.name, ug.user.profileImage, ug.user.username, ug.gitHubId
-        order by sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount) desc
+        order by sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount) desc nulls last
     """)
     List<UserRanking> findGitHubRankingByUserIdAndPeriod(
             @Param("userId") Long userId,
