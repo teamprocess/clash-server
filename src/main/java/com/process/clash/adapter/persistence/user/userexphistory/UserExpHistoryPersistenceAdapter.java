@@ -69,6 +69,11 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     }
 
     @Override
+    public double findDailyAvgExpByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
+        return userExpHistoryJpaRepository.findDailyAvgExpByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    @Override
     public Map<Long, Double> findAverageExpForBattles(Long userId, List<Battle> battles) {
         if (battles.isEmpty()) {
             return new HashMap<>();
