@@ -25,6 +25,7 @@ public class BattleController implements BattleControllerDocument {
     private final FindDetailedBattleInfoUseCase findDetailedBattleInfoUseCase;
     private final FindAllBattleInfoUseCase findAllBattleInfoUseCase;
     private final AnalyzeBattleInfoUseCase analyzeBattleInfoUseCase;
+    private final FindApplyBattleListUseCase findApplyBattleListUseCase;
 
     // 라이벌과의 경쟁 - 배틀 신청
     @PostMapping("/apply")
@@ -96,6 +97,18 @@ public class BattleController implements BattleControllerDocument {
         FindDetailedBattleInfoData.Result result = findDetailedBattleInfoUseCase.execute(command);
         FindDetailedBattleInfoDto.Response response = FindDetailedBattleInfoDto.Response.from(result);
         return ApiResponse.success(response, "라이벌과의 배틀 상세 정보를 성공적으로 반환했습니다.");
+    }
+
+    // 라이벌과의 경쟁 - 배틀 신청 목록 조회
+    @GetMapping("/apply")
+    public ApiResponse<FindApplyBattleListDto.Response> findApplyBattleList(
+            @AuthenticatedActor Actor actor
+    ) {
+
+        FindApplyBattleListData.Command command = FindApplyBattleListData.Command.from(actor);
+        FindApplyBattleListData.Result result = findApplyBattleListUseCase.execute(command);
+        FindApplyBattleListDto.Response response = FindApplyBattleListDto.Response.from(result);
+        return ApiResponse.success(response, "배틀 신청 목록을 성공적으로 조회했습니다.");
     }
 
     // 라이벌과의 경쟁 - 배틀
