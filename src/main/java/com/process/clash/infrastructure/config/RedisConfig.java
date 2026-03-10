@@ -20,14 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.security.authentication.RememberMeAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.jackson2.SecurityJackson2Modules;
-import com.process.clash.infrastructure.principle.AuthUser;
 
 @Configuration
 public class RedisConfig {
@@ -73,23 +66,6 @@ public class RedisConfig {
 
         template.afterPropertiesSet();
         return template;
-    }
-
-    @Bean("springSessionDefaultRedisSerializer")
-    public RedisSerializer<Object> springSessionDefaultRedisSerializer() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModules(SecurityJackson2Modules.getModules(getClass().getClassLoader()));
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-                .allowIfSubType("org.springframework.security.")
-                .allowIfSubType("com.process.clash.")
-                .allowIfSubType("java.util.")
-                .build();
-        mapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-
-        return new GenericJackson2JsonRedisSerializer(mapper);
     }
 
     @Bean(destroyMethod = "shutdown")
