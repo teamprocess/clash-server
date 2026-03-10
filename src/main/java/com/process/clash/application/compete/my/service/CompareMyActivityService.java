@@ -4,7 +4,7 @@ import com.process.clash.application.compete.my.data.CompareMyActivityData;
 import com.process.clash.application.compete.my.exception.exception.badrequest.InvalidDayCategoryException;
 import com.process.clash.application.compete.my.port.in.CompareMyActivityUseCase;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.infrastructure.config.record.RecordProperties;
@@ -26,7 +26,7 @@ public class CompareMyActivityService implements CompareMyActivityUseCase {
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
 

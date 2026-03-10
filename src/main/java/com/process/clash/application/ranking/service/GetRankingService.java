@@ -6,7 +6,7 @@ import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.ranking.port.in.GetRankingUseCase;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.infrastructure.config.record.RecordProperties;
@@ -28,7 +28,7 @@ public class GetRankingService implements GetRankingUseCase {
 
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
     private final ZoneId recordZoneId;
     private final RecordProperties recordProperties;
     private final EquippedItemsAssembler equippedItemsAssembler;
