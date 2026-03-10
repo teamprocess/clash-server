@@ -8,10 +8,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.admin.data.CutUserRecordAdminData;
-import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;
+import com.process.clash.application.record.v2.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
