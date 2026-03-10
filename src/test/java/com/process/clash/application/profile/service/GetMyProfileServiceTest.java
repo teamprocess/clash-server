@@ -12,14 +12,17 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.usergithub.entity.UserGitHub;
-import java.time.Instant;
-import java.util.Optional;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -78,7 +81,43 @@ class GetMyProfileServiceTest {
         assertThat(result.equippedItems()).isEqualTo(EquippedItemsData.empty());
     }
 
+    @Test
+    @DisplayName("totalExp가 SILVER 범위(10000~29999)이면 expTier가 SILVER로 반환된다")
+    void execute_returnsCorrectExpTier() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L, 15_000, RankTier.NONE);
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(userGitHubRepositoryPort.findByUserId(user.id())).thenReturn(Optional.empty());
+        when(userPresencePort.getStatus(user.id())).thenReturn(UserActivityStatus.AWAY);
+        when(equippedItemsAssembler.loadByUserId(user.id())).thenReturn(EquippedItemsData.empty());
+
+        GetMyProfileData.Result result = getMyProfileService.execute(new GetMyProfileData.Command(actor));
+
+        assertThat(result.expTier()).isEqualTo(ExpTier.SILVER);
+    }
+
+    @Test
+    @DisplayName("currentRankTier가 MASTER이면 프로필에 MASTER로 반환된다")
+    void execute_returnsCurrentRankTier() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L, 80_000, RankTier.MASTER);
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(userGitHubRepositoryPort.findByUserId(user.id())).thenReturn(Optional.empty());
+        when(userPresencePort.getStatus(user.id())).thenReturn(UserActivityStatus.AWAY);
+        when(equippedItemsAssembler.loadByUserId(user.id())).thenReturn(EquippedItemsData.empty());
+
+        GetMyProfileData.Result result = getMyProfileService.execute(new GetMyProfileData.Command(actor));
+
+        assertThat(result.currentRankTier()).isEqualTo(RankTier.MASTER);
+    }
+
     private User createUser(Long id) {
+        return createUser(id, 0, RankTier.NONE);
+    }
+
+    private User createUser(Long id, int totalExp, RankTier currentRankTier) {
         return new User(
             id,
             Instant.now().minusSeconds(86_400),
@@ -89,11 +128,13 @@ class GetMyProfileServiceTest {
             "encoded-password",
             Role.USER,
             "",
-            0,
+            totalExp,
             0,
             Major.NONE,
             UserStatus.ACTIVE,
-            null
+            null,
+            currentRankTier,
+            ExpTier.fromExp(totalExp)
         );
     }
 }

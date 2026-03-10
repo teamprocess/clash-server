@@ -128,6 +128,38 @@ public interface BattleControllerDocument {
             ModifyBattleDto.Request request
     );
 
+    @Operation(summary = "배틀 신청 목록 조회", description = "PENDING 상태의 배틀 신청 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = FindApplyBattleListResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                  {
+                                    "success": true,
+                                    "message": "배틀 신청 목록을 성공적으로 조회했습니다.",
+                                    "data": {
+                                      "battles": [
+                                        {
+                                          "id": 1,
+                                          "enemy": {
+                                            "id": 3,
+                                            "name": "이몽룡",
+                                            "profileImage": "https://cdn.example.com/profile/2.png"
+                                          },
+                                          "startDate": "2026-01-22",
+                                          "endDate": "2026-01-29",
+                                          "isMine": true
+                                        }
+                                      ]
+                                    }
+                                  }
+                                  """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<FindApplyBattleListDto.Response> findApplyBattleList(
+            @Parameter(hidden = true) Actor actor
+    );
+
     @Operation(summary = "배틀 가능한 라이벌 조회", description = "배틀을 신청할 수 있는 라이벌 목록을 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",

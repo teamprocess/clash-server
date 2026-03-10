@@ -6,6 +6,9 @@ import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
+
 import java.time.Instant;
 
 public class GetMyProfileData {
@@ -30,7 +33,9 @@ public class GetMyProfileData {
         UserStatus userStatus,
         boolean githubLinked,
         UserActivityStatus activityStatus,
-        EquippedItemsData equippedItems
+        EquippedItemsData equippedItems,
+        ExpTier expTier,
+        RankTier currentRankTier
     ) {
         public static Result from(
             User user,
@@ -54,7 +59,9 @@ public class GetMyProfileData {
                 user.userStatus(),
                 githubLinked,
                 activityStatus,
-                equippedItems
+                equippedItems,
+                user.currentExpTier(),
+                user.currentRankTier()
             );
         }
     }

@@ -99,4 +99,16 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
           AND b.end_date < :today
     """, nativeQuery = true)
     List<BattleJpaEntity> findExpiredInProgressBattles(@Param("today") LocalDate today);
+
+    /**
+     * 유저 관련 PENDING 상태 배틀 신청 목록 조회
+     */
+    @Query(value = """
+        SELECT b.*
+        FROM battles b
+        LEFT JOIN rivals r ON b.fk_rival_id = r.id
+        WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
+            AND b.battle_status = 'PENDING'
+    """, nativeQuery = true)
+    List<BattleJpaEntity> findPendingBattlesByUserId(@Param("userId") Long userId);
 }

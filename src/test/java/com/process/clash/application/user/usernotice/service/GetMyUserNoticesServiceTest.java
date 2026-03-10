@@ -37,14 +37,14 @@ class GetMyUserNoticesServiceTest {
         Actor actor = new Actor(1L);
         UserNotice notice1 = new UserNotice(
                 1L, Instant.now(), Instant.now(),
-                NoticeCategory.APPLY_RIVAL, false,
+                NoticeCategory.APPLY_RIVAL, false, false,
                 2L, "senderA", "sender_a", null,
                 1L, "receiverA", "receiver_a", null,
                 null, null, null
         );
         UserNotice notice2 = new UserNotice(
                 2L, Instant.now(), Instant.now(),
-                NoticeCategory.ACCEPT_RIVAL, true,
+                NoticeCategory.ACCEPT_RIVAL, true, false,
                 3L, "senderB", "sender_b", null,
                 1L, "receiverA", "receiver_a", null,
                 null, null, null

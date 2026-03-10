@@ -65,6 +65,11 @@ public class GitHubDailyStatsQueryJpaAdapter implements GitHubDailyStatsQueryPor
     }
 
     @Override
+    public double findAvgDailyCommitCountByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
+        return repository.findAvgDailyCommitCountByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    @Override
     public double findAverageContributionByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return repository.findAverageContributionByUserIdAndPeriod(userId, startDate, endDate);

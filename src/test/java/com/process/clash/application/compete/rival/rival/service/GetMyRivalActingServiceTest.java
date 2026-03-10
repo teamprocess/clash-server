@@ -6,27 +6,30 @@ import com.process.clash.application.compete.rival.rival.port.out.RivalRepositor
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.enums.MonitoredApp;
-import com.process.clash.application.user.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.record.RecordProperties;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -144,7 +147,9 @@ class GetMyRivalActingServiceTest {
             0,
             Major.NONE,
             UserStatus.ACTIVE,
-            null
+            null,
+            RankTier.NONE,
+            ExpTier.UNRANKED
         );
     }
 }

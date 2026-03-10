@@ -34,7 +34,7 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
         rivalRepositoryPort.save(updatedRival);
 
-        userNoticeRepositoryPort.deactivateApplyRivalNoticeByRivalId(rival.id());
+        userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalId(rival.id());
 
         Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserId(rival.id(), command.actor().id());
 

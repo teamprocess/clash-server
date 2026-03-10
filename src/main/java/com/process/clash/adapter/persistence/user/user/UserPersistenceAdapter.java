@@ -3,6 +3,7 @@ package com.process.clash.adapter.persistence.user.user;
 import com.process.clash.application.compete.rival.rival.data.AbleRivalInfoForRival;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.user.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,14 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
         UserJpaEntity userJpaEntity = userJpaMapper.toJpaEntity(user);
         UserJpaEntity savedEntity = userJpaRepository.save(userJpaEntity);
         return userJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public void saveAll(List<User> users) {
+        List<UserJpaEntity> entities = users.stream()
+                .map(userJpaMapper::toJpaEntity)
+                .toList();
+        userJpaRepository.saveAll(entities);
     }
 
     @Override
@@ -96,5 +105,11 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
     @Override
     public Optional<User> findByIdIncludingDeleted(Long id) {
         return userJpaRepository.findByIdIncludingDeleted(id).map(userJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<User> findAllOrderByTotalExpDesc() {
+        return userJpaRepository.findAllByUserStatusOrderByTotalExpDesc(UserStatus.ACTIVE)
+                .stream().map(userJpaMapper::toDomain).toList();
     }
 }

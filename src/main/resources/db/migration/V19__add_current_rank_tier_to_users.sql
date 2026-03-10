@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN current_rank_tier VARCHAR(255) NOT NULL DEFAULT 'NONE';

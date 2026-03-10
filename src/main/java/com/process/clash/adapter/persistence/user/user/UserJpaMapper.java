@@ -21,7 +21,9 @@ public class UserJpaMapper {
                 user.totalCookie(),
                 user.major(),
                 user.userStatus(),
-                user.deletedAt()
+                user.deletedAt(),
+                user.currentRankTier(),
+                user.currentExpTier()
         );
     }
 
@@ -40,7 +42,9 @@ public class UserJpaMapper {
                 userJpaEntity.getTotalCookie(),
                 userJpaEntity.getMajor(),
                 userJpaEntity.getUserStatus(),
-                userJpaEntity.getDeletedAt()
+                userJpaEntity.getDeletedAt(),
+                userJpaEntity.getCurrentRankTier(),
+                userJpaEntity.getCurrentExpTier()
         );
     }
 }

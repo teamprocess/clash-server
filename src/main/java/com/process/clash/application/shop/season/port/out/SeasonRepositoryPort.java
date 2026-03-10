@@ -8,4 +8,5 @@ public interface SeasonRepositoryPort {
     Season save(Season season);
     Optional<Season> findById(Long seasonId);
     boolean existsByName(String name);
+    Optional<Season> findCurrentSeason();
 }
