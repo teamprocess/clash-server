@@ -1,6 +1,5 @@
 package com.process.clash.adapter.web.record.admin.docs;
 
-import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.record.admin.dto.CutUserRecordAdminDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,7 +56,7 @@ public interface AdminRecordControllerDocument {
                     """)
             ))
     })
-    ApiResponse<CutUserRecordAdminDto.Response> cutUserRecord(
+    com.process.clash.adapter.web.common.ApiResponse<CutUserRecordAdminDto.Response> cutUserRecord(
         @Parameter(description = "기록을 중단할 사용자 ID", example = "42", required = true)
         Long userId
     );
