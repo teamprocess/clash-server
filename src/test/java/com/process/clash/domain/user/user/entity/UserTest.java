@@ -3,6 +3,7 @@ package com.process.clash.domain.user.user.entity;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,8 @@ class UserTest {
                 Major.NONE,
                 UserStatus.ACTIVE,
                 null,
-                RankTier.NONE
+                RankTier.NONE,
+                ExpTier.UNRANKED
         );
     }
 
@@ -65,7 +67,8 @@ class UserTest {
                 Major.NONE,
                 UserStatus.ACTIVE,
                 Instant.now(),
-                RankTier.NONE
+                RankTier.NONE,
+                ExpTier.UNRANKED
         );
     }
 }

@@ -11,6 +11,7 @@ import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
 import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -280,6 +281,7 @@ class GithubExpGrantServiceTest {
 
     private User createUser(Long id, int totalExp) {
         return new User(id, Instant.now(), Instant.now(), "user" + id, "user@example.com",
-            "name", "pw", Role.USER, "", totalExp, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE);
+            "name", "pw", Role.USER, "", totalExp, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE,
+            ExpTier.fromExp(totalExp));
     }
 }

@@ -17,6 +17,7 @@ import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.JpaAuditingConfig;
 import org.assertj.core.api.Assertions;
@@ -87,12 +88,12 @@ class UserSectionProgressJpaRepositoryTest {
 
         // 4. User 저장
         User noSectionProgressUser = new User(null, now, now, "userA", "userA@gmail.com", "유저A", "password",
-                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, RankTier.NONE);
+                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, RankTier.NONE, ExpTier.UNRANKED);
         noSectionProgressUserJpaEntity = userJpaMapper.toJpaEntity(noSectionProgressUser);
         em.persist(noSectionProgressUserJpaEntity);
 
         User sectionProgressUser = new User(null, now, now, "userB", "userB@gmail.com", "유저B", "password",
-                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, RankTier.NONE);
+                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, RankTier.NONE, ExpTier.UNRANKED);
         sectionProgressUserJpaEntity = userJpaMapper.toJpaEntity(sectionProgressUser);
         em.persist(sectionProgressUserJpaEntity);
 

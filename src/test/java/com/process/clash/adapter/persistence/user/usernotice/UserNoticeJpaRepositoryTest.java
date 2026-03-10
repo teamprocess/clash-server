@@ -7,6 +7,7 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.JpaAuditingConfig;
 import org.junit.jupiter.api.BeforeEach;
@@ -110,7 +111,7 @@ class UserNoticeJpaRepositoryTest {
         User user = new User(
                 null, null, null,
                 name + counter, email, name,
-                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE
+                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE, ExpTier.UNRANKED
         );
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);

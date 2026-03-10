@@ -8,6 +8,7 @@ import com.process.clash.domain.record.entity.RecordSession;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import org.junit.jupiter.api.BeforeEach;
@@ -148,6 +149,6 @@ class RecordDayBoundaryServiceTest {
 
     private User createUser(Long id) {
         return new User(id, Instant.now(), Instant.now(), "user" + id, "user@example.com",
-            "name", "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE);
+            "name", "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE, ExpTier.UNRANKED);
     }
 }

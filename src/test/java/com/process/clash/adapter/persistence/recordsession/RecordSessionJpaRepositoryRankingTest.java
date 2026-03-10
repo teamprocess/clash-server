@@ -10,6 +10,7 @@ import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.JpaAuditingConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +57,7 @@ class RecordSessionJpaRepositoryRankingTest {
         User user = new User(
             null, Instant.now(), Instant.now(),
             "user_" + suffix, "user_" + suffix + "@test.com", "유저" + label,
-            "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, RankTier.NONE
+            "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, RankTier.NONE, ExpTier.UNRANKED
         );
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);

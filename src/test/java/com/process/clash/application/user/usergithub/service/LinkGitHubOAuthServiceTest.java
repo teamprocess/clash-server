@@ -12,6 +12,7 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.usergithub.entity.UserGitHub;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -146,7 +147,8 @@ class LinkGitHubOAuthServiceTest {
                 Major.NONE,
                 UserStatus.ACTIVE,
                 null,
-                RankTier.NONE
+                RankTier.NONE,
+                ExpTier.UNRANKED
         );
     }
 }
