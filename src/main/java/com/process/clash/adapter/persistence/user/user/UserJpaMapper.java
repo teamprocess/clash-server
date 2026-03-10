@@ -1,8 +1,6 @@
 package com.process.clash.adapter.persistence.user.user;
 
 import com.process.clash.domain.user.user.entity.User;
-import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
-import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,8 +22,8 @@ public class UserJpaMapper {
                 user.major(),
                 user.userStatus(),
                 user.deletedAt(),
-                user.currentRankTier() != null ? user.currentRankTier() : RankTier.NONE,
-                user.currentExpTier() != null ? user.currentExpTier() : ExpTier.UNRANKED
+                user.currentRankTier(),
+                user.currentExpTier()
         );
     }
 
@@ -45,8 +43,8 @@ public class UserJpaMapper {
                 userJpaEntity.getMajor(),
                 userJpaEntity.getUserStatus(),
                 userJpaEntity.getDeletedAt(),
-                userJpaEntity.getCurrentRankTier() != null ? userJpaEntity.getCurrentRankTier() : RankTier.NONE,
-                userJpaEntity.getCurrentExpTier() != null ? userJpaEntity.getCurrentExpTier() : ExpTier.UNRANKED
+                userJpaEntity.getCurrentRankTier(),
+                userJpaEntity.getCurrentExpTier()
         );
     }
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 public interface UserRepositoryPort {
     User save(User user);
+    void saveAll(List<User> users);
     void saveAndFlush(User user);
     Optional<User> findById(Long id);
     Optional<User> findByIdForUpdate(Long id);

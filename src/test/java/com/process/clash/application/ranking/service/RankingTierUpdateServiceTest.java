@@ -49,13 +49,13 @@ class RankingTierUpdateServiceTest {
     // ===== 티어 계산 =====
 
     @Test
-    @DisplayName("유저가 없으면 save와 saveAll을 호출하지 않는다")
+    @DisplayName("유저가 없으면 saveAll을 호출하지 않는다")
     void updateRankTiers_noUsers_doesNothing() {
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of());
 
         service.updateRankTiers();
 
-        verify(userRepositoryPort, never()).save(any());
+        verify(userRepositoryPort, never()).saveAll(any());
         verify(userRankHistoryRepositoryPort, never()).saveAll(any());
     }
 
@@ -68,9 +68,9 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepositoryPort).save(captor.capture());
-        assertThat(captor.getValue().currentRankTier()).isEqualTo(RankTier.AURA);
+        ArgumentCaptor<List<User>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue().get(0).currentRankTier()).isEqualTo(RankTier.AURA);
     }
 
     @Test
@@ -83,10 +83,11 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepositoryPort, times(2)).save(captor.capture());
-        assertThat(captor.getAllValues().get(0).currentRankTier()).isEqualTo(RankTier.AURA);
-        assertThat(captor.getAllValues().get(1).currentRankTier()).isEqualTo(RankTier.MASTER);
+        ArgumentCaptor<List<User>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue()).hasSize(2);
+        assertThat(captor.getValue().get(0).currentRankTier()).isEqualTo(RankTier.AURA);
+        assertThat(captor.getValue().get(1).currentRankTier()).isEqualTo(RankTier.MASTER);
     }
 
     @Test
@@ -100,9 +101,10 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepositoryPort, times(3)).save(captor.capture());
-        assertThat(captor.getAllValues().get(2).currentRankTier()).isEqualTo(RankTier.MASTER);
+        ArgumentCaptor<List<User>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue()).hasSize(3);
+        assertThat(captor.getValue().get(2).currentRankTier()).isEqualTo(RankTier.MASTER);
     }
 
     @Test
@@ -117,7 +119,7 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        verify(userRepositoryPort, never()).save(any());
+        verify(userRepositoryPort, never()).saveAll(any());
     }
 
     @Test
@@ -129,9 +131,9 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepositoryPort).save(captor.capture());
-        assertThat(captor.getValue().currentRankTier()).isEqualTo(RankTier.NONE);
+        ArgumentCaptor<List<User>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue().get(0).currentRankTier()).isEqualTo(RankTier.NONE);
     }
 
     @Test
@@ -143,9 +145,9 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepositoryPort).save(captor.capture());
-        assertThat(captor.getValue().currentRankTier()).isEqualTo(RankTier.MASTER);
+        ArgumentCaptor<List<User>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue().get(0).currentRankTier()).isEqualTo(RankTier.MASTER);
     }
 
     @Test
@@ -158,13 +160,14 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
-        verify(userRepositoryPort, times(1)).save(captor.capture());
-        assertThat(captor.getValue().currentRankTier()).isEqualTo(RankTier.AURA);
+        ArgumentCaptor<List<User>> captor = ArgumentCaptor.forClass(List.class);
+        verify(userRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue()).hasSize(1);
+        assertThat(captor.getValue().get(0).currentRankTier()).isEqualTo(RankTier.AURA);
     }
 
     @Test
-    @DisplayName("티어가 변경되지 않은 유저는 save를 호출하지 않는다")
+    @DisplayName("티어가 변경되지 않은 유저는 saveAll을 호출하지 않는다")
     void updateRankTiers_unchangedTier_doesNotSaveUser() {
         User user = createUser(1L, 100_000, RankTier.AURA);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
@@ -172,7 +175,7 @@ class RankingTierUpdateServiceTest {
 
         service.updateRankTiers();
 
-        verify(userRepositoryPort, never()).save(any());
+        verify(userRepositoryPort, never()).saveAll(any());
     }
 
     // ===== 히스토리 저장 =====

@@ -53,6 +53,7 @@ public class RankingTierUpdateService {
 
         LocalDate today = LocalDate.now();
         List<UserRankHistory> histories = new ArrayList<>();
+        List<User> usersToUpdate = new ArrayList<>();
 
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
@@ -60,7 +61,7 @@ public class RankingTierUpdateService {
             RankTier newRankTier = computeRankTier(user.totalExp(), rank);
 
             if (user.currentRankTier() != newRankTier) {
-                userRepositoryPort.save(user.withRankTier(newRankTier));
+                usersToUpdate.add(user.withRankTier(newRankTier));
                 log.debug("RankTier 변경. userId={}, rank={}, exp={}, {} -> {}",
                         user.id(), rank, user.totalExp(), user.currentRankTier(), newRankTier);
             }
@@ -72,6 +73,11 @@ public class RankingTierUpdateService {
                     user.id(),
                     season.id()
             )));
+        }
+
+        if (!usersToUpdate.isEmpty()) {
+            userRepositoryPort.saveAll(usersToUpdate);
+            log.info("RankTier 업데이트 저장 완료. 변경 유저 수={}", usersToUpdate.size());
         }
 
         if (!histories.isEmpty()) {
