@@ -30,11 +30,16 @@ public class CompareMyActivityData {
         public static Result from(List<Double> result) {
 
             return new Result(
-                    result.get(0), // earnedExp
-                    result.get(1), // studyTime
-                    result.get(2), // gitHubAttribution
-                    result.get(3)  // commitCount
+                    round(result.get(0)), // earnedExp
+                    round(result.get(1)), // studyTime
+                    round(result.get(2)), // gitHubAttribution
+                    round(result.get(3))  // commitCount
             );
+        }
+
+        private static double round(Double value) {
+            if (value == null) return 0.0;
+            return Math.round(value * 100.0) / 100.0;
         }
     }
 }

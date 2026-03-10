@@ -136,6 +136,20 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             @Param("endDate") LocalDate endDate
     );
 
+    // 기간 내 일평균 커밋 수
+    @Query(value = """
+        SELECT COALESCE(AVG(commit_count), 0)
+        FROM github_daily_stats
+        WHERE user_id = :userId
+          AND study_date >= :startDate
+          AND study_date < :endDate
+    """, nativeQuery = true)
+    double findAvgDailyCommitCountByUserIdAndPeriod(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
     // 기간 내 평균 기여도
     @Query(value = """
         SELECT COALESCE(AVG(commit_count + pr_count + review_count + issue_count), 0)
