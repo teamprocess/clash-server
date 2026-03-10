@@ -1,7 +1,7 @@
 package com.process.clash.application.record.v2.service;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.record.util.RecordDateCalculator;
+import com.process.clash.application.record.v2.util.RecordDateCalculator;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2DailyDateRequestException;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;

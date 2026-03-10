@@ -1,7 +1,7 @@
 package com.process.clash.application.record.v2.service;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
+import com.process.clash.application.record.v2.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;

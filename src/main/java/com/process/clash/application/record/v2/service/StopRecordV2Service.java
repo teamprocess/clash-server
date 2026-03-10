@@ -1,6 +1,6 @@
 package com.process.clash.application.record.v2.service;
 
-import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
+import com.process.clash.application.record.v2.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.StopRecordV2Data;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;
 import com.process.clash.application.record.v2.port.in.StopRecordV2UseCase;
