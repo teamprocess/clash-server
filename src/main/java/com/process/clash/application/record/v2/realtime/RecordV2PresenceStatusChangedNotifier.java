@@ -3,7 +3,7 @@ package com.process.clash.application.record.v2.realtime;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.NotifyPresenceStatusChangedPort;
-import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
+import com.process.clash.application.record.v2.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegmentV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;

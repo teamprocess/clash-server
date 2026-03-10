@@ -9,7 +9,7 @@ import static org.mockito.Mockito.verify;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.my.data.CompareMyActivityData;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
 import com.process.clash.infrastructure.config.record.RecordProperties;
@@ -35,7 +35,7 @@ class CompareMyActivityServiceTest {
     @Mock private GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     @Mock private UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     @Mock private UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-    @Mock private RecordSessionRepositoryPort recordSessionRepositoryPort;
+    @Mock private RecordSessionV2RepositoryPort recordSessionRepositoryPort;
 
     private CompareMyActivityService service;
 

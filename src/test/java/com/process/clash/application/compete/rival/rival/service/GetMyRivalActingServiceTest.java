@@ -5,12 +5,11 @@ import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingDa
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
-import com.process.clash.domain.record.entity.RecordSession;
-import com.process.clash.domain.record.entity.RecordTask;
 import com.process.clash.domain.record.enums.MonitoredApp;
+import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import com.process.clash.domain.user.user.entity.User;
@@ -43,7 +42,7 @@ class GetMyRivalActingServiceTest {
     private RivalRepositoryPort rivalRepositoryPort;
 
     @Mock
-    private RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private RecordSessionV2RepositoryPort recordSessionRepositoryPort;
 
     @Mock
     private UserRepositoryPort userRepositoryPort;
@@ -101,19 +100,18 @@ class GetMyRivalActingServiceTest {
         )).thenReturn(Map.of(2L, 1800L, 3L, 600L));
         when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList()))
             .thenReturn(List.of(
-                RecordSession.createActivity(
-                    200L,
-                    rivalUserA,
+                RecordSessionV2.createDevelop(
+                    2L,
                     MonitoredApp.VSCODE,
-                    Instant.now().minusSeconds(300),
-                    null
+                    Instant.now().minusSeconds(300)
                 ),
-                RecordSession.create(
-                    201L,
-                    rivalUserB,
-                    new RecordTask(301L, "Task B", 0L, Instant.now().minusSeconds(3_600), Instant.now(), rivalUserB),
-                    Instant.now().minusSeconds(600),
-                    null
+                RecordSessionV2.createTask(
+                    3L,
+                    null,
+                    null,
+                    null,
+                    "Task B",
+                    Instant.now().minusSeconds(600)
                 )
             ));
         when(userPresencePort.getStatuses(anyList()))

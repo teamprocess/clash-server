@@ -1,6 +1,6 @@
 package com.process.clash.application.record.v2.service;
 
-import com.process.clash.application.record.util.RecordDayWindow;
+import com.process.clash.application.record.v2.util.RecordDayWindow;
 import com.process.clash.application.record.v2.data.GetActivityStatisticsV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidActivityStatisticsDurationException;
 import com.process.clash.application.record.v2.port.in.GetActivityStatisticsV2UseCase;

@@ -88,6 +88,11 @@ public enum RecordV2StatusCode implements StatusCode {
         "INVALID_ACTIVITY_STATISTICS_DURATION",
         "조회 기간은 DAY, WEEK, MONTH만 허용됩니다.",
         ErrorCategory.BAD_REQUEST
+    ),
+    INVALID_MONITORED_APP(
+        "INVALID_MONITORED_APP",
+        "유효하지 않은 모니터링 앱입니다.",
+        ErrorCategory.BAD_REQUEST
     );
 
     private final String code;

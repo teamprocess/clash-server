@@ -1,6 +1,6 @@
 package com.process.clash.application.record.v2.service;
 
-import com.process.clash.application.record.policy.MonitoredAppPolicy;
+import com.process.clash.application.record.v2.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.v2.data.GetMonitoredAppsV2Data;
 import com.process.clash.application.record.v2.port.in.GetMonitoredAppsV2UseCase;
 import lombok.RequiredArgsConstructor;

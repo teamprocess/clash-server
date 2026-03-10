@@ -1,7 +1,7 @@
 package com.process.clash.application.record.v2.service;
 
-import com.process.clash.application.record.util.RecordDayWindow;
-import com.process.clash.application.record.util.RecordSessionWindowCalculator;
+import com.process.clash.application.record.v2.util.RecordDayWindow;
+import com.process.clash.application.record.v2.util.RecordSessionWindowCalculator;
 import com.process.clash.application.record.v2.data.GetAllSubjectsV2Data;
 import com.process.clash.application.record.v2.port.in.GetAllSubjectsV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;

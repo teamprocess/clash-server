@@ -3,7 +3,7 @@ package com.process.clash.application.record.v2.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.record.policy.MonitoredAppPolicy;
+import com.process.clash.application.record.v2.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.v2.data.GetMonitoredAppsV2Data;
 import com.process.clash.domain.record.enums.MonitoredApp;
 import org.junit.jupiter.api.DisplayName;
