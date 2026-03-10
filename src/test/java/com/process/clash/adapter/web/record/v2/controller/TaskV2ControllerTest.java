@@ -3,6 +3,7 @@ package com.process.clash.adapter.web.record.v2.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -12,10 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.record.v2.data.UpdateTaskV2Data;
 import com.process.clash.application.record.v2.data.GetAllTasksV2Data;
 import com.process.clash.application.record.v2.data.UpdateTaskCompletionV2Data;
 import com.process.clash.application.record.v2.port.in.CreateSubjectTaskV2UseCase;
+import com.process.clash.application.record.v2.port.in.DeleteTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetAllTasksV2UseCase;
+import com.process.clash.application.record.v2.port.in.UpdateTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateTaskCompletionV2UseCase;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import java.time.Instant;
@@ -44,6 +48,12 @@ class TaskV2ControllerTest {
     private CreateSubjectTaskV2UseCase createSubjectTaskV2UseCase;
 
     @Mock
+    private UpdateTaskV2UseCase updateTaskV2UseCase;
+
+    @Mock
+    private DeleteTaskV2UseCase deleteTaskV2UseCase;
+
+    @Mock
     private UpdateTaskCompletionV2UseCase updateTaskCompletionV2UseCase;
 
     private MockMvc mockMvc;
@@ -54,6 +64,8 @@ class TaskV2ControllerTest {
         TaskV2Controller controller = new TaskV2Controller(
             getAllTasksV2UseCase,
             createSubjectTaskV2UseCase,
+            updateTaskV2UseCase,
+            deleteTaskV2UseCase,
             updateTaskCompletionV2UseCase
         );
 
@@ -85,6 +97,40 @@ class TaskV2ControllerTest {
             .andExpect(jsonPath("$.message").value("새로운 세부 작업을 생성했습니다."));
 
         verify(createSubjectTaskV2UseCase).execute(any());
+    }
+
+    @Test
+    @DisplayName("PATCH /api/v2/record/tasks/{taskId} 는 부모 과목 변경과 이름 수정을 처리한다")
+    void updateTask_returnsUpdatedTask() throws Exception {
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링 정리", false, 0L, Instant.now(), Instant.now());
+        when(updateTaskV2UseCase.execute(any()))
+            .thenReturn(UpdateTaskV2Data.Result.from(task));
+
+        mockMvc.perform(patch("/api/v2/record/tasks/11")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "subjectId": null,
+                      "name": "리팩터링 정리"
+                    }
+                    """))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("세부 작업을 수정했습니다."))
+            .andExpect(jsonPath("$.data.id").value(11))
+            .andExpect(jsonPath("$.data.subjectId").value(org.hamcrest.Matchers.nullValue()))
+            .andExpect(jsonPath("$.data.name").value("리팩터링 정리"));
+
+        verify(updateTaskV2UseCase).execute(any(UpdateTaskV2Data.Command.class));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/v2/record/tasks/{taskId} 는 세부 작업 삭제 요청을 전달한다")
+    void deleteTask_returnsSuccessResponse() throws Exception {
+        mockMvc.perform(delete("/api/v2/record/tasks/11"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("세부 작업을 삭제했습니다."));
+
+        verify(deleteTaskV2UseCase).execute(any());
     }
 
     @Test
