@@ -9,11 +9,13 @@ import com.process.clash.application.roadmap.category.port.out.CategoryImageUplo
 import com.process.clash.application.roadmap.category.port.out.CategoryRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 import java.util.Map;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class IssueCategoryImageUploadUrlService implements IssueCategoryImageUploadUrlUseCase {
 

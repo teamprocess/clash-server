@@ -7,6 +7,7 @@ import com.process.clash.application.github.port.out.GithubDailyStatsStorePort;
 import com.process.clash.application.github.port.out.GithubStatsFetchPort;
 import com.process.clash.application.github.port.out.GithubSyncTargetPort;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class GithubDailyStatsSyncService implements SyncGithubDailyStatsUseCase {

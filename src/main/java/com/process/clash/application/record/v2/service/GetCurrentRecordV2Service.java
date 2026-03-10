@@ -5,8 +5,10 @@ import com.process.clash.application.record.v2.port.in.GetCurrentRecordV2UseCase
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetCurrentRecordV2Service implements GetCurrentRecordV2UseCase {
 
