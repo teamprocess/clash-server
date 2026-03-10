@@ -40,7 +40,7 @@ public class AcceptBattleService implements AcceptBattleUseCase {
 
         battleRepositoryPort.save(updatedBattle);
 
-        userNoticeRepositoryPort.deactivateApplyBattleNoticeByBattleId(command.id());
+        userNoticeRepositoryPort.deleteApplyBattleNoticeByBattleId(command.id());
 
         Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserId(updatedBattle.rivalId(), command.actor().id());
 

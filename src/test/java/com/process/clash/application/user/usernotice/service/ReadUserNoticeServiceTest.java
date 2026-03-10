@@ -42,7 +42,7 @@ class ReadUserNoticeServiceTest {
         Long noticeId = 10L;
         UserNotice unreadNotice = new UserNotice(
                 noticeId, Instant.now(), Instant.now(),
-                NoticeCategory.APPLY_RIVAL, false,
+                NoticeCategory.APPLY_RIVAL, false, false,
                 2L, "senderA", "sender_a", null,
                 1L, "receiverA", "receiver_a", null,
                 null, null, null
@@ -63,7 +63,7 @@ class ReadUserNoticeServiceTest {
         Long noticeId = 10L;
         UserNotice readNotice = new UserNotice(
                 noticeId, Instant.now(), Instant.now(),
-                NoticeCategory.APPLY_RIVAL, true,
+                NoticeCategory.APPLY_RIVAL, true, false,
                 2L, "senderA", "sender_a", null,
                 1L, "receiverA", "receiver_a", null,
                 null, null, null

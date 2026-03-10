@@ -81,7 +81,7 @@ class UserNoticeJpaRepositoryTest {
     void softDeleteApplyRivalNotice_alreadyRead_setsDeletedAt() {
         Long rivalId = 101L;
         UserNoticeJpaEntity notice = new UserNoticeJpaEntity(
-                null, null, null, NoticeCategory.APPLY_RIVAL, true,
+                null, null, null, NoticeCategory.APPLY_RIVAL, true, false,
                 sender, receiver, rivalId, null, null
         );
         em.persist(notice);
@@ -120,7 +120,7 @@ class UserNoticeJpaRepositoryTest {
 
     private UserNoticeJpaEntity persistNotice(NoticeCategory category, Long rivalId, Long battleId) {
         UserNoticeJpaEntity notice = new UserNoticeJpaEntity(
-                null, null, null, category, false,
+                null, null, null, category, false, false,
                 sender, receiver, rivalId, battleId, null
         );
         em.persist(notice);
