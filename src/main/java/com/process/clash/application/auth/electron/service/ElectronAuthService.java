@@ -14,7 +14,7 @@ import com.process.clash.application.user.user.port.out.PendingUserCachePort;
 import com.process.clash.application.user.user.port.out.SessionManager;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

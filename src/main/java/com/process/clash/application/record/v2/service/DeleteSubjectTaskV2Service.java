@@ -11,7 +11,7 @@ import com.process.clash.application.record.v2.port.out.RecordSubjectV2Repositor
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;

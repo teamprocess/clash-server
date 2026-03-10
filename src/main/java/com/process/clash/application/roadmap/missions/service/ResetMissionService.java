@@ -7,7 +7,7 @@ import com.process.clash.application.roadmap.missions.port.in.ResetMissionUseCas
 import com.process.clash.application.roadmap.port.out.MissionRepositoryPort;
 import com.process.clash.application.roadmap.port.out.UserMissionHistoryRepositoryPort;
 import com.process.clash.domain.roadmap.entity.UserMissionHistory;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

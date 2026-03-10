@@ -4,7 +4,7 @@ import com.process.clash.application.roadmap.section.data.DeleteSectionData;
 import com.process.clash.application.roadmap.section.port.in.DeleteSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.application.common.policy.CheckAdminPolicy;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
