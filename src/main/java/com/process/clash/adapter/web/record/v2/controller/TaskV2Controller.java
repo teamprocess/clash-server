@@ -4,17 +4,23 @@ import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.record.v2.docs.controller.TaskV2ControllerDocument;
 import com.process.clash.adapter.web.record.v2.dto.CreateSubjectTaskV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetAllTasksV2Dto;
+import com.process.clash.adapter.web.record.v2.dto.UpdateTaskV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.UpdateTaskCompletionV2Dto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.v2.data.CreateSubjectTaskV2Data;
+import com.process.clash.application.record.v2.data.DeleteTaskV2Data;
 import com.process.clash.application.record.v2.data.GetAllTasksV2Data;
+import com.process.clash.application.record.v2.data.UpdateTaskV2Data;
 import com.process.clash.application.record.v2.data.UpdateTaskCompletionV2Data;
 import com.process.clash.application.record.v2.port.in.CreateSubjectTaskV2UseCase;
+import com.process.clash.application.record.v2.port.in.DeleteTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetAllTasksV2UseCase;
+import com.process.clash.application.record.v2.port.in.UpdateTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateTaskCompletionV2UseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +36,8 @@ public class TaskV2Controller implements TaskV2ControllerDocument {
 
     private final GetAllTasksV2UseCase getAllTasksV2UseCase;
     private final CreateSubjectTaskV2UseCase createSubjectTaskV2UseCase;
+    private final UpdateTaskV2UseCase updateTaskV2UseCase;
+    private final DeleteTaskV2UseCase deleteTaskV2UseCase;
     private final UpdateTaskCompletionV2UseCase updateTaskCompletionV2UseCase;
 
     @GetMapping
@@ -54,6 +62,32 @@ public class TaskV2Controller implements TaskV2ControllerDocument {
         createSubjectTaskV2UseCase.execute(command);
 
         return ApiResponse.success("새로운 세부 작업을 생성했습니다.");
+    }
+
+    @PatchMapping("/{taskId}")
+    public ApiResponse<UpdateTaskV2Dto.Response> updateTask(
+        @AuthenticatedActor Actor actor,
+        @PathVariable Long taskId,
+        @Valid @RequestBody UpdateTaskV2Dto.Request request
+    ) {
+        UpdateTaskV2Data.Command command = request.toCommand(actor, taskId);
+        UpdateTaskV2Data.Result result = updateTaskV2UseCase.execute(command);
+
+        return ApiResponse.success(
+            UpdateTaskV2Dto.Response.from(result),
+            "세부 작업을 수정했습니다."
+        );
+    }
+
+    @DeleteMapping("/{taskId}")
+    public ApiResponse<Void> deleteTask(
+        @AuthenticatedActor Actor actor,
+        @PathVariable Long taskId
+    ) {
+        DeleteTaskV2Data.Command command = new DeleteTaskV2Data.Command(actor, taskId);
+        deleteTaskV2UseCase.execute(command);
+
+        return ApiResponse.success("세부 작업을 삭제했습니다.");
     }
 
     @PatchMapping("/{taskId}/completion")

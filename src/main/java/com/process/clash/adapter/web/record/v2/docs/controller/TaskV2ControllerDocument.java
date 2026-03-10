@@ -1,12 +1,16 @@
 package com.process.clash.adapter.web.record.v2.docs.controller;
 
 import com.process.clash.adapter.web.record.v2.docs.request.CreateSubjectTaskV2RequestDocument;
+import com.process.clash.adapter.web.record.v2.docs.request.UpdateTaskV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.request.UpdateTaskCompletionV2RequestDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.CreateTaskV2ResponseDocument;
+import com.process.clash.adapter.web.record.v2.docs.response.DeleteTaskV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.GetAllTasksV2ResponseDocument;
+import com.process.clash.adapter.web.record.v2.docs.response.UpdateTaskV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.docs.response.UpdateTaskCompletionV2ResponseDocument;
 import com.process.clash.adapter.web.record.v2.dto.CreateSubjectTaskV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.GetAllTasksV2Dto;
+import com.process.clash.adapter.web.record.v2.dto.UpdateTaskV2Dto;
 import com.process.clash.adapter.web.record.v2.dto.UpdateTaskCompletionV2Dto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,6 +90,60 @@ public interface TaskV2ControllerDocument {
                     """)
             ))
         CreateSubjectTaskV2Dto.Request request
+    );
+
+    @Operation(summary = "세부 작업 수정", description = "세부 작업의 이름과 부모 과목을 수정합니다. subjectId를 null로 보내면 부모 없는 작업으로 변경됩니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "수정 성공",
+            content = @Content(
+                schema = @Schema(implementation = UpdateTaskV2ResponseDocument.class),
+                examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "message": "세부 작업을 수정했습니다.",
+                      "data": {
+                        "id": 31,
+                        "subjectId": null,
+                        "name": "리팩터링 정리",
+                        "completed": false,
+                        "studyTime": 1800
+                      }
+                    }
+                    """)
+            ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<UpdateTaskV2Dto.Response> updateTask(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "세부 작업 ID", example = "31") @PathVariable Long taskId,
+        @RequestBody(description = "V2 세부 작업 수정 요청", required = true,
+            content = @Content(
+                schema = @Schema(implementation = UpdateTaskV2RequestDocument.class),
+                examples = @ExampleObject(value = """
+                    {
+                      "subjectId": 12,
+                      "name": "ERD 검토"
+                    }
+                    """)
+            ))
+        UpdateTaskV2Dto.Request request
+    );
+
+    @Operation(summary = "세부 작업 삭제", description = "세부 작업을 삭제합니다. 부모 과목 유무와 관계없이 삭제할 수 있습니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "삭제 성공",
+            content = @Content(
+                schema = @Schema(implementation = DeleteTaskV2ResponseDocument.class),
+                examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "message": "세부 작업을 삭제했습니다."
+                    }
+                    """)
+            ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<Void> deleteTask(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "세부 작업 ID", example = "31") @PathVariable Long taskId
     );
 
     @Operation(summary = "세부 작업 완료 상태 변경", description = "세부 작업의 완료/완료 취소 상태를 변경합니다.")
