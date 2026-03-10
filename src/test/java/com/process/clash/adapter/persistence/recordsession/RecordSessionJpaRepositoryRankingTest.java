@@ -1,7 +1,5 @@
 package com.process.clash.adapter.persistence.recordsession;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.process.clash.adapter.persistence.rival.rival.RivalJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
@@ -12,9 +10,9 @@ import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.JpaAuditingConfig;
-import java.time.Instant;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+
+import java.time.Instant;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * RecordSessionJpaRepository.findStudyTimeRankingByUserIdAndPeriod 쿼리 검증 테스트.
@@ -54,7 +57,7 @@ class RecordSessionJpaRepositoryRankingTest {
         User user = new User(
             null, Instant.now(), Instant.now(),
             "user_" + suffix, "user_" + suffix + "@test.com", "유저" + label,
-            "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null
+            "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, RankTier.NONE, ExpTier.UNRANKED
         );
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);

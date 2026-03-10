@@ -9,6 +9,8 @@ import com.process.clash.domain.user.userrankhistory.entity.UserRankHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class UserRankHistoryPersistenceAdapter implements UserRankHistoryRepositoryPort {
@@ -20,10 +22,21 @@ public class UserRankHistoryPersistenceAdapter implements UserRankHistoryReposit
 
     @Override
     public UserRankHistory save(UserRankHistory userRankHistory) {
-
         UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(userRankHistory.userId());
         SeasonJpaEntity seasonJpaEntity = seasonJpaRepository.getReferenceById(userRankHistory.seasonId());
         UserRankHistoryJpaEntity savedEntity = userRankHistoryJpaRepository.save(userRankHistoryJpaMapper.toJpaEntity(userRankHistory, userJpaEntity, seasonJpaEntity));
         return userRankHistoryJpaMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public void saveAll(List<UserRankHistory> histories) {
+        List<UserRankHistoryJpaEntity> entities = histories.stream()
+                .map(h -> {
+                    UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(h.userId());
+                    SeasonJpaEntity seasonJpaEntity = seasonJpaRepository.getReferenceById(h.seasonId());
+                    return userRankHistoryJpaMapper.toJpaEntity(h, userJpaEntity, seasonJpaEntity);
+                })
+                .toList();
+        userRankHistoryJpaRepository.saveAll(entities);
     }
 }

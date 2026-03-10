@@ -7,6 +7,8 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.JpaAuditingConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +82,7 @@ class UserNoticeJpaRepositoryTest {
     void softDeleteApplyRivalNotice_alreadyRead_setsDeletedAt() {
         Long rivalId = 101L;
         UserNoticeJpaEntity notice = new UserNoticeJpaEntity(
-                null, null, null, NoticeCategory.APPLY_RIVAL, true,
+                null, null, null, NoticeCategory.APPLY_RIVAL, true, false,
                 sender, receiver, rivalId, null, null
         );
         em.persist(notice);
@@ -109,7 +111,7 @@ class UserNoticeJpaRepositoryTest {
         User user = new User(
                 null, null, null,
                 name + counter, email, name,
-                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null
+                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE, ExpTier.UNRANKED
         );
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);
@@ -119,7 +121,7 @@ class UserNoticeJpaRepositoryTest {
 
     private UserNoticeJpaEntity persistNotice(NoticeCategory category, Long rivalId, Long battleId) {
         UserNoticeJpaEntity notice = new UserNoticeJpaEntity(
-                null, null, null, category, false,
+                null, null, null, category, false, false,
                 sender, receiver, rivalId, battleId, null
         );
         em.persist(notice);

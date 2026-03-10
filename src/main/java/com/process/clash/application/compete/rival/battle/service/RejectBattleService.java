@@ -40,7 +40,7 @@ public class RejectBattleService implements RejectBattleUseCase {
 
         Battle savedBattle = battleRepositoryPort.save(updatedBattle);
 
-        userNoticeRepositoryPort.deactivateApplyBattleNoticeByBattleId(savedBattle.id());
+        userNoticeRepositoryPort.deleteApplyBattleNoticeByBattleId(savedBattle.id());
 
         Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserId(savedBattle.rivalId(), command.actor().id());
 

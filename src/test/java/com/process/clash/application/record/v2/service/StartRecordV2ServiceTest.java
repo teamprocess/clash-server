@@ -1,15 +1,8 @@
 package com.process.clash.application.record.v2.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.realtime.data.UserActivityStatus;
+import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.policy.MonitoredAppPolicy;
 import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.StartRecordV2Data;
@@ -22,8 +15,6 @@ import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegm
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
-import com.process.clash.application.realtime.data.UserActivityStatus;
-import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.enums.MonitoredApp;
@@ -34,14 +25,23 @@ import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import java.time.Instant;
-import java.util.Optional;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StartRecordV2ServiceTest {
@@ -453,7 +453,9 @@ class StartRecordV2ServiceTest {
             0,
             Major.NONE,
             UserStatus.ACTIVE,
-            null
+            null,
+            RankTier.NONE,
+            ExpTier.UNRANKED
         );
     }
 }

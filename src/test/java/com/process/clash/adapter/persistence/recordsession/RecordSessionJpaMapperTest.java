@@ -1,8 +1,5 @@
 package com.process.clash.adapter.persistence.recordsession;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 import com.process.clash.adapter.persistence.recordtask.RecordTaskJpaMapper;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaMapper;
@@ -13,9 +10,15 @@ import com.process.clash.domain.record.enums.RecordType;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import java.time.Instant;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.time.Instant;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 class RecordSessionJpaMapperTest {
 
@@ -89,7 +92,9 @@ class RecordSessionJpaMapperTest {
             0,
             Major.NONE,
             UserStatus.ACTIVE,
-            null
+            null,
+            RankTier.NONE,
+            ExpTier.UNRANKED
         );
     }
 }
