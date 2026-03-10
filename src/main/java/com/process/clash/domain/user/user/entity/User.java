@@ -3,6 +3,7 @@ package com.process.clash.domain.user.user.entity;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.time.Instant;
@@ -22,7 +23,8 @@ public record User(
         Major major,
         UserStatus userStatus,
         Instant deletedAt,
-        RankTier currentRankTier
+        RankTier currentRankTier,
+        ExpTier currentExpTier
 ) {
     public boolean isDeleted() {
         return deletedAt != null;
@@ -44,7 +46,8 @@ public record User(
                 Major.NONE,
                 UserStatus.PENDING,
                 null,
-                RankTier.NONE
+                RankTier.NONE,
+                ExpTier.UNRANKED
         );
     }
 
@@ -64,7 +67,8 @@ public record User(
                 major,
                 this.userStatus,
                 this.deletedAt,
-                this.currentRankTier
+                this.currentRankTier,
+                this.currentExpTier
         );
     }
 
@@ -84,7 +88,8 @@ public record User(
                 this.major,
                 UserStatus.ACTIVE,
                 this.deletedAt,
-                this.currentRankTier
+                this.currentRankTier,
+                this.currentExpTier
         );
     }
 
@@ -108,7 +113,8 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
-                this.currentRankTier
+                this.currentRankTier,
+                this.currentExpTier
         );
     }
 
@@ -130,7 +136,8 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
-                this.currentRankTier
+                this.currentRankTier,
+                this.currentExpTier
         );
     }
 
@@ -150,7 +157,8 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
-                this.currentRankTier
+                this.currentRankTier,
+                this.currentExpTier
         );
     }
 
@@ -170,11 +178,13 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
-                this.currentRankTier
+                this.currentRankTier,
+                this.currentExpTier
         );
     }
 
     public User addExp(int delta) {
+        int newTotalExp = Math.max(0, this.totalExp + delta);
         return new User(
                 this.id,
                 this.createdAt,
@@ -185,12 +195,13 @@ public record User(
                 this.password,
                 this.role,
                 this.profileImage,
-                Math.max(0, this.totalExp + delta),
+                newTotalExp,
                 this.totalCookie,
                 this.major,
                 this.userStatus,
                 this.deletedAt,
-                this.currentRankTier
+                this.currentRankTier,
+                ExpTier.fromExp(newTotalExp)
         );
     }
 
@@ -210,7 +221,8 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
-                rankTier
+                rankTier,
+                this.currentExpTier
         );
     }
 }
