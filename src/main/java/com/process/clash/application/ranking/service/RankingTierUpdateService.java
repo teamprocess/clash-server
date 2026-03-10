@@ -6,7 +6,6 @@ import com.process.clash.application.user.userrankhistory.port.out.UserRankHisto
 import com.process.clash.domain.shop.season.entity.Season;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.userrankhistory.entity.UserRankHistory;
-import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +67,7 @@ public class RankingTierUpdateService {
 
             currentSeason.ifPresent(season -> histories.add(new UserRankHistory(
                     null, null, today, rank,
-                    ExpTier.fromExp(user.totalExp()),
+                    user.currentExpTier(),
                     newRankTier,
                     user.id(),
                     season.id()
