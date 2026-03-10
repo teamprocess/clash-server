@@ -6,4 +6,5 @@ public interface SessionManager {
     void createSession(AuthPrincipal principal, boolean rememberMe);
     void invalidateSession();
     String getCurrentUsername();
+    void forceLogoutUser(String username);
 }
