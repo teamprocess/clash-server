@@ -1,7 +1,7 @@
 package com.process.clash.application.record.v2.service;
 
-import com.process.clash.application.record.policy.MonitoredAppPolicy;
-import com.process.clash.application.record.port.out.RecordActivityNotifierPort;
+import com.process.clash.application.record.v2.policy.MonitoredAppPolicy;
+import com.process.clash.application.record.v2.port.out.RecordActivityNotifierPort;
 import com.process.clash.application.record.v2.data.SwitchDevelopAppV2Data;
 import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidDevelopAppSwitchRequestException;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;

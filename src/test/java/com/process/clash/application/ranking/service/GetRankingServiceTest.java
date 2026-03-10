@@ -12,7 +12,7 @@ import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.data.UserRanking;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
@@ -41,7 +41,7 @@ class GetRankingServiceTest {
 
     @Mock private UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     @Mock private GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
-    @Mock private RecordSessionRepositoryPort recordSessionRepositoryPort;
+    @Mock private RecordSessionV2RepositoryPort recordSessionRepositoryPort;
     @Mock private EquippedItemsAssembler equippedItemsAssembler;
 
     private GetRankingService service;

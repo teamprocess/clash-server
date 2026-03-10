@@ -5,12 +5,12 @@ import com.process.clash.application.compete.rival.rival.port.in.GetMyRivalActin
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
-import com.process.clash.domain.record.entity.RecordSession;
-import com.process.clash.domain.record.enums.RecordType;
+import com.process.clash.domain.record.v2.entity.RecordSessionV2;
+import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.infrastructure.config.record.RecordProperties;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
     private final RivalRepositoryPort rivalRepositoryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final UserPresencePort userPresencePort;
     private final RecordProperties recordProperties;
@@ -76,11 +76,11 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         Map<Long, Long> studyTimeMap = recordSessionRepositoryPort
                 .getTotalStudyTimeInSecondsByUserIds(opponentIds, startOfDay, endOfDay);
 
-        Map<Long, RecordSession> activeSessionByUserId = recordSessionRepositoryPort
+        Map<Long, RecordSessionV2> activeSessionByUserId = recordSessionRepositoryPort
                 .findAllActiveSessionsByUserIds(opponentIds)
                 .stream()
                 .collect(Collectors.toMap(
-                        session -> session.user().id(),
+                        RecordSessionV2::userId,
                         session -> session,
                         (first, second) -> first
                 ));
@@ -109,7 +109,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                         opponentId,
                         UserActivityStatus.OFFLINE
                     );
-                    RecordSession activeSession = activeSessionByUserId.get(opponentId);
+                    RecordSessionV2 activeSession = activeSessionByUserId.get(opponentId);
                     String usingApp = resolveUsingApp(activeSession);
                     boolean isStudying = activeSession != null;
 
@@ -128,11 +128,11 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         return GetMyRivalActingData.Result.from(myRivals);
     }
 
-    private String resolveUsingApp(RecordSession activeSession) {
+    private String resolveUsingApp(RecordSessionV2 activeSession) {
         if (activeSession == null) {
             return null;
         }
-        if (activeSession.recordType() != RecordType.ACTIVITY) {
+        if (activeSession.sessionType() != RecordSessionTypeV2.DEVELOP) {
             return null;
         }
         if (activeSession.appId() == null) {

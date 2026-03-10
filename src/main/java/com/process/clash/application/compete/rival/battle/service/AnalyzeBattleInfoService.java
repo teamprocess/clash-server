@@ -6,7 +6,7 @@ import com.process.clash.application.compete.rival.battle.port.in.AnalyzeBattleI
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
-import com.process.clash.application.record.port.out.RecordSessionRepositoryPort;
+import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.TargetCategory;
 import com.process.clash.domain.rival.battle.entity.Battle;
@@ -26,7 +26,7 @@ import java.time.temporal.ChronoUnit;
 public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
 
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-    private final RecordSessionRepositoryPort recordSessionRepositoryPort;
+    private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
     private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final GetBattleInfoPolicy getBattleInfoPolicy;

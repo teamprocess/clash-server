@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.record.util.RecordDateCalculator;
+import com.process.clash.application.record.v2.util.RecordDateCalculator;
 import com.process.clash.application.record.v2.data.GetAllSubjectsV2Data;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;

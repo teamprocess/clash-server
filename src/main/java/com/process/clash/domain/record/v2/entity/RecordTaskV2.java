@@ -40,6 +40,19 @@ public record RecordTaskV2(
         );
     }
 
+    public RecordTaskV2 changeDetails(String name, Long subjectId) {
+        return new RecordTaskV2(
+            this.id,
+            this.userId,
+            subjectId,
+            name,
+            this.completed,
+            this.studyTime,
+            this.createdAt,
+            Instant.now()
+        );
+    }
+
     public RecordTaskV2 changeCompleted(boolean completed) {
         return new RecordTaskV2(
             this.id,

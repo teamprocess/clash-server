@@ -1,11 +1,13 @@
 package com.process.clash.adapter.persistence.record.v2.session;
 
+import com.process.clash.adapter.persistence.record.v2.session.RecordActiveSessionV2JpaRepository.UserStudyTimeProjection;
 import com.process.clash.adapter.persistence.record.v2.subject.RecordSubjectV2JpaEntity;
 import com.process.clash.adapter.persistence.record.v2.subject.RecordSubjectV2JpaRepository;
 import com.process.clash.adapter.persistence.record.v2.task.RecordTaskV2JpaEntity;
 import com.process.clash.adapter.persistence.record.v2.task.RecordTaskV2JpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
+import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.record.v2.exception.exception.notfound.ActiveSessionV2NotFoundException;
 import com.process.clash.application.record.v2.exception.exception.notfound.RecordDevelopSessionV2NotFoundException;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
@@ -15,7 +17,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,6 +142,81 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
         }
 
         return recordSessionV2JpaMapper.toDomain(activeEntity);
+    }
+
+    @Override
+    public Long getTotalStudyTimeInSeconds(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository.getTotalStudyTimeInSeconds(
+            userId,
+            toInstant(startOfDay),
+            toInstant(endOfDay),
+            now
+        );
+    }
+
+    @Override
+    public Map<Long, Long> getTotalStudyTimeInSecondsByUserIds(
+        List<Long> userIds,
+        LocalDateTime startTime,
+        LocalDateTime endTime
+    ) {
+        if (userIds.isEmpty()) {
+            return Map.of();
+        }
+
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository
+            .getTotalStudyTimeInSecondsByUserIds(userIds, toInstant(startTime), toInstant(endTime), now)
+            .stream()
+            .collect(Collectors.toMap(
+                UserStudyTimeProjection::getUserId,
+                UserStudyTimeProjection::getTotalSeconds
+            ));
+    }
+
+    @Override
+    public List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
+        Instant now = Instant.now();
+        return recordActiveSessionV2JpaRepository.findStudyTimeRankingByUserIdAndPeriod(
+            userId,
+            toInstant(startDate),
+            toInstant(endDate),
+            now
+        );
+    }
+
+    @Override
+    public List<Object[]> findDailyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate, Instant now) {
+        return recordActiveSessionV2JpaRepository.findDailyStudyTimeByUserIds(userIds, startDate, endDate, now);
+    }
+
+    @Override
+    public List<Object[]> findWeeklyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate, Instant now) {
+        return recordActiveSessionV2JpaRepository.findWeeklyStudyTimeByUserIds(userIds, startDate, endDate, now);
+    }
+
+    @Override
+    public List<Object[]> findMonthlyStudyTimeByUserIds(List<Long> userIds, Instant startDate, Instant endDate, Instant now) {
+        return recordActiveSessionV2JpaRepository.findMonthlyStudyTimeByUserIds(userIds, startDate, endDate, now);
+    }
+
+    @Override
+    public List<RecordSessionV2> findAllActiveSessionsByUserIds(List<Long> userIds) {
+        if (userIds == null || userIds.isEmpty()) {
+            return List.of();
+        }
+
+        return recordActiveSessionV2JpaRepository.findAllActiveByUserIds(userIds).stream()
+            .map(recordSessionV2JpaMapper::toDomain)
+            .toList();
+    }
+
+    @Override
+    public List<RecordSessionV2> findAllActiveSessions() {
+        return recordActiveSessionV2JpaRepository.findAllActive().stream()
+            .map(recordSessionV2JpaMapper::toDomain)
+            .toList();
     }
 
     private Instant toInstant(LocalDateTime localDateTime) {
