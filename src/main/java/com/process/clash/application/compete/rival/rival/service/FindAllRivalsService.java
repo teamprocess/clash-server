@@ -50,7 +50,7 @@ public class FindAllRivalsService implements FindAllRivalsUseCase {
                     return FindAllRivalsData.RivalInfo.of(rival.id(), opponent, rival.rivalLinkingStatus());
                 })
                 .sorted(Comparator.comparing(info ->
-                        info.rivalLinkingStatus() != RivalLinkingStatus.ACCEPTED))
+                        info.rivalLinkingStatus() != RivalLinkingStatus.PENDING))
                 .toList();
 
         return FindAllRivalsData.Result.from(rivalInfos);
