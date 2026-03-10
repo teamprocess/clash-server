@@ -43,6 +43,9 @@ spring:
           starttls:
             enable: true
 
+  session:
+    timeout: 3d
+
   data:
     redis:
       host: ${REDIS_HOST:localhost}
