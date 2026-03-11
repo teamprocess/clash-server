@@ -19,7 +19,9 @@ import com.process.clash.application.record.v2.port.in.GetAllTasksV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateTaskCompletionV2UseCase;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,9 +45,10 @@ public class TaskV2Controller implements TaskV2ControllerDocument {
 
     @GetMapping
     public ApiResponse<GetAllTasksV2Dto.Response> getAllTasks(
-        @AuthenticatedActor Actor actor
+        @AuthenticatedActor Actor actor,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        GetAllTasksV2Data.Command command = new GetAllTasksV2Data.Command(actor);
+        GetAllTasksV2Data.Command command = new GetAllTasksV2Data.Command(actor, date);
         GetAllTasksV2Data.Result result = getAllTasksV2UseCase.execute(command);
 
         return ApiResponse.success(

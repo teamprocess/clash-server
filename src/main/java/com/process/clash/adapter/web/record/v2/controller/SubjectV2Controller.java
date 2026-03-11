@@ -21,7 +21,9 @@ import com.process.clash.application.record.v2.port.in.GetAllSubjectsV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateSubjectTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateSubjectV2UseCase;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,9 +48,10 @@ public class SubjectV2Controller implements SubjectV2ControllerDocument {
 
     @GetMapping
     public ApiResponse<GetAllSubjectsV2Dto.Response> getAllSubjects(
-        @AuthenticatedActor Actor actor
+        @AuthenticatedActor Actor actor,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        GetAllSubjectsV2Data.Command command = new GetAllSubjectsV2Data.Command(actor);
+        GetAllSubjectsV2Data.Command command = new GetAllSubjectsV2Data.Command(actor, date);
         GetAllSubjectsV2Data.Result result = getAllSubjectsV2UseCase.execute(command);
 
         return ApiResponse.success(

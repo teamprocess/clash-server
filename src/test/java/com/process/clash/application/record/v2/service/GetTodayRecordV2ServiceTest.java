@@ -3,7 +3,6 @@ package com.process.clash.application.record.v2.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.v2.util.RecordDateCalculator;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
-import com.process.clash.application.record.v2.exception.exception.badrequest.InvalidRecordV2DailyDateRequestException;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -125,19 +123,28 @@ class GetTodayRecordV2ServiceTest {
     }
 
     @Test
-    @DisplayName("미래 날짜 조회 요청은 예외가 발생한다")
-    void execute_throwsWhenRequestedDateIsFuture() {
+    @DisplayName("미래 날짜를 조회하면 해당 날짜 기준 빈 기록을 반환한다")
+    void execute_returnsEmptyResultForFutureDate() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
         LocalDate todayRecordDate = RecordDateCalculator.recordDate(ZonedDateTime.now(ZoneId.of("UTC")), 6);
         LocalDate futureDate = todayRecordDate.plusDays(1);
+        LocalDateTime dayStart = futureDate.atTime(6, 0);
+        LocalDateTime dayEnd = dayStart.plusDays(1);
 
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd))
+            .thenReturn(List.of());
 
-        assertThatThrownBy(() -> getTodayRecordV2Service.execute(
+        GetTodayRecordV2Data.Result result = getTodayRecordV2Service.execute(
             new GetTodayRecordV2Data.Command(actor, futureDate)
-        )).isInstanceOf(InvalidRecordV2DailyDateRequestException.class);
-        verify(recordSessionV2RepositoryPort, never()).findAllByUserIdAndTimeRange(any(), any(), any());
+        );
+
+        assertThat(result.date()).isEqualTo(futureDate.toString());
+        assertThat(result.totalStudyTime()).isEqualTo(0L);
+        assertThat(result.studyStoppedAt()).isNull();
+        assertThat(result.sessions()).isEmpty();
+        verify(recordSessionV2RepositoryPort).findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd);
     }
 
     @Test

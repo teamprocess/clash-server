@@ -13,6 +13,7 @@ import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -77,7 +78,7 @@ class GetAllTasksV2ServiceTest {
         when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(1L, dayStart, dayEnd))
             .thenReturn(List.of(noSubjectSession));
 
-        GetAllTasksV2Data.Result result = getAllTasksV2Service.execute(new GetAllTasksV2Data.Command(actor));
+        GetAllTasksV2Data.Result result = getAllTasksV2Service.execute(new GetAllTasksV2Data.Command(actor, null));
 
         assertThat(result.tasks()).hasSize(2);
         assertThat(result.tasks().get(0).subjectId()).isNull();
@@ -87,5 +88,26 @@ class GetAllTasksV2ServiceTest {
         assertThat(result.tasks().get(1).subjectId()).isEqualTo(5L);
         assertThat(result.tasks().get(1).completed()).isFalse();
         assertThat(result.tasks().get(1).studyTime()).isEqualTo(0L);
+    }
+
+    @Test
+    @DisplayName("미래 기록일로 task 목록을 조회하면 task는 유지하고 학습시간은 0으로 반환한다")
+    void execute_returnsZeroStudyTimeForFutureDate() {
+        Actor actor = new Actor(1L);
+        LocalDate tomorrow = RecordDateCalculator.recordDate(ZonedDateTime.now(ZoneId.of("UTC")), 6).plusDays(1);
+        RecordTaskV2 task = new RecordTaskV2(10L, 1L, null, "무주제 작업", false, 0L, Instant.now(), Instant.now());
+        LocalDateTime dayStart = tomorrow.atTime(6, 0);
+        LocalDateTime dayEnd = dayStart.plusDays(1);
+
+        when(recordTaskV2RepositoryPort.findAllByUserIdOrderBySubjectIdDescNullsFirst(actor.id()))
+            .thenReturn(List.of(task));
+        when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd))
+            .thenReturn(List.of());
+
+        GetAllTasksV2Data.Result result =
+            getAllTasksV2Service.execute(new GetAllTasksV2Data.Command(actor, tomorrow));
+
+        assertThat(result.tasks()).hasSize(1);
+        assertThat(result.tasks().get(0).studyTime()).isEqualTo(0L);
     }
 }
