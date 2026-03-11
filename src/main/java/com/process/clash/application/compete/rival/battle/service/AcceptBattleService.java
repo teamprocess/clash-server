@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -27,6 +29,7 @@ public class AcceptBattleService implements AcceptBattleUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
     private final CompeteRefetchNotifier competeRefetchNotifier;
+    private final ZoneId battleZoneId;
 
     @Override
     public void execute(ModifyBattleData.Command command) {
@@ -36,7 +39,7 @@ public class AcceptBattleService implements AcceptBattleUseCase {
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
 
-        Battle updatedBattle = battle.accept();
+        Battle updatedBattle = battle.accept(LocalDate.now(battleZoneId));
 
         battleRepositoryPort.save(updatedBattle);
 

@@ -12,6 +12,7 @@ import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +56,8 @@ class AcceptBattleServiceTest {
             modifyBattlePolicy,
             rivalRepositoryPort,
             userNoticeRepositoryPort,
-            competeRefetchNotifier
+            competeRefetchNotifier,
+            ZoneId.of("Asia/Seoul")
         );
     }
 
@@ -66,20 +68,10 @@ class AcceptBattleServiceTest {
         Long battleId = 20L;
         Long rivalId = 30L;
         Long opponentId = 2L;
-        Battle battle = new Battle(
-            battleId,
-            Instant.now(),
-            Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(1),
-            BattleStatus.PENDING,
-            null,
-            rivalId,
-            opponentId
-        );
+        Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept());
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(LocalDate.now()));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -101,20 +93,10 @@ class AcceptBattleServiceTest {
         Long battleId = 20L;
         Long rivalId = 30L;
         Long opponentId = 2L;
-        Battle battle = new Battle(
-            battleId,
-            Instant.now(),
-            Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(1),
-            BattleStatus.PENDING,
-            null,
-            rivalId,
-            opponentId
-        );
+        Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept());
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(LocalDate.now()));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -130,7 +112,20 @@ class AcceptBattleServiceTest {
         Long battleId = 20L;
         Long rivalId = 30L;
         Long opponentId = 2L;
-        Battle battle = new Battle(
+        Battle battle = pendingBattle(battleId, rivalId, opponentId);
+
+        when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(LocalDate.now()));
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
+        when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        acceptBattleService.execute(new ModifyBattleData.Command(actor, battleId));
+
+        verify(userNoticeRepositoryPort).deleteApplyBattleNoticeByBattleId(battleId);
+    }
+
+    private Battle pendingBattle(Long battleId, Long rivalId, Long opponentId) {
+        return new Battle(
             battleId,
             Instant.now(),
             Instant.now(),
@@ -141,14 +136,5 @@ class AcceptBattleServiceTest {
             rivalId,
             opponentId
         );
-
-        when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept());
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
-        when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        acceptBattleService.execute(new ModifyBattleData.Command(actor, battleId));
-
-        verify(userNoticeRepositoryPort).deleteApplyBattleNoticeByBattleId(battleId);
     }
 }

@@ -91,33 +91,8 @@ class ApplyBattleServiceTest {
     }
 
     @Test
-    @DisplayName("배틀 신청 시 startDate가 내일로 설정된다")
-    void execute_setsStartDateToTomorrow() {
-        Actor actor = new Actor(1L);
-        Long rivalId = 10L;
-        Long opponentId = 2L;
-        ApplyBattleData.Command command = new ApplyBattleData.Command(actor, rivalId, 7);
-        LocalDate tomorrow = LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1);
-        Battle savedBattle = new Battle(
-            100L, Instant.now(), Instant.now(),
-            tomorrow, tomorrow.plusDays(7),
-            BattleStatus.PENDING, null, rivalId, actor.id()
-        );
-
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(savedBattle);
-        when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        applyBattleService.execute(command);
-
-        ArgumentCaptor<Battle> battleCaptor = ArgumentCaptor.forClass(Battle.class);
-        verify(battleRepositoryPort).save(battleCaptor.capture());
-        assertThat(battleCaptor.getValue().startDate()).isEqualTo(tomorrow);
-    }
-
-    @Test
-    @DisplayName("배틀 신청 시 endDate가 startDate로부터 duration일 후로 설정된다")
-    void execute_setsEndDateFromStartDate() {
+    @DisplayName("배틀 신청 시 startDate는 내일, endDate는 startDate로부터 duration일 후로 설정된다")
+    void execute_setsStartAndEndDatesCorrectly() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
@@ -138,6 +113,7 @@ class ApplyBattleServiceTest {
 
         ArgumentCaptor<Battle> battleCaptor = ArgumentCaptor.forClass(Battle.class);
         verify(battleRepositoryPort).save(battleCaptor.capture());
+        assertThat(battleCaptor.getValue().startDate()).isEqualTo(tomorrow);
         assertThat(battleCaptor.getValue().endDate()).isEqualTo(tomorrow.plusDays(duration));
     }
 
