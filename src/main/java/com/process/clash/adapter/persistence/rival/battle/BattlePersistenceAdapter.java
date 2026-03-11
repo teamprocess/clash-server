@@ -104,6 +104,14 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     }
 
     @Override
+    public List<Battle> findNotStartedBattlesToStart(LocalDate today) {
+        return battleJpaRepository.findNotStartedBattlesToStart(today)
+                .stream()
+                .map(battleJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public List<Battle> findPendingBattlesByUserId(Long userId) {
         return battleJpaRepository.findPendingBattlesByUserId(userId)
                 .stream()

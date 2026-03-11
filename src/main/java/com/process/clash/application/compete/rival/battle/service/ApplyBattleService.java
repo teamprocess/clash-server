@@ -43,8 +43,8 @@ public class ApplyBattleService implements ApplyBattleUseCase {
 
         userNoticeRepositoryPort.deleteCancelBattleNoticeBySenderAndReceiver(userId, opponentUserId);
 
-        // 배틀 생성 (Rival 엔티티 ID 사용)
-        LocalDate startDate = LocalDate.now(battleZoneId);
+        // 배틀 생성 (Rival 엔티티 ID 사용) - 다음날 KST 06시부터 시작
+        LocalDate startDate = LocalDate.now(battleZoneId).plusDays(1);
         LocalDate endDate = startDate.plusDays(command.duration());
 
         Battle battle = Battle.createDefault(startDate, endDate, rivalEntityId, userId);
