@@ -36,7 +36,8 @@ public interface AdminChapterV2ControllerDocument {
                                         "sectionId": 10,
                                         "title": "자바 기초",
                                         "description": "자바의 기본 문법을 학습합니다.",
-                                        "orderIndex": 0
+                                        "orderIndex": 0,
+                                        "studyMaterialUrl": "https://example.com/material"
                                       }
                                     }
                                     """)
@@ -52,7 +53,8 @@ public interface AdminChapterV2ControllerDocument {
                                       "sectionId": 10,
                                       "title": "자바 기초",
                                       "description": "자바의 기본 문법을 학습합니다.",
-                                      "orderIndex": 0
+                                      "orderIndex": 0,
+                                      "studyMaterialUrl": "https://example.com/material"
                                     }
                                     """)
                     ))
@@ -72,7 +74,8 @@ public interface AdminChapterV2ControllerDocument {
                                         "chapterId": 1,
                                         "title": "자바 심화",
                                         "description": "자바의 고급 문법을 학습합니다.",
-                                        "orderIndex": 1
+                                        "orderIndex": 1,
+                                        "studyMaterialUrl": "https://example.com/material"
                                       }
                                     }
                                     """)
@@ -88,7 +91,8 @@ public interface AdminChapterV2ControllerDocument {
                                     {
                                       "title": "자바 심화",
                                       "description": "자바의 고급 문법을 학습합니다.",
-                                      "orderIndex": 1
+                                      "orderIndex": 1,
+                                      "studyMaterialUrl": "https://example.com/material"
                                     }
                                     """)
                     ))

@@ -35,7 +35,8 @@ public interface AdminChoiceV2ControllerDocument {
                                         "choiceId": 1,
                                         "questionId": 1,
                                         "content": "객체지향",
-                                        "isCorrect": true
+                                        "isCorrect": true,
+                                        "orderIndex": 1
                                       }
                                     }
                                     """)
@@ -50,7 +51,8 @@ public interface AdminChoiceV2ControllerDocument {
                                     {
                                       "questionId": 1,
                                       "content": "객체지향",
-                                      "isCorrect": true
+                                      "isCorrect": true,
+                                      "orderIndex": 1
                                     }
                                     """)
                     ))
@@ -69,7 +71,8 @@ public interface AdminChoiceV2ControllerDocument {
                                       "data": {
                                         "choiceId": 1,
                                         "content": "객체지향 프로그래밍",
-                                        "isCorrect": true
+                                        "isCorrect": true,
+                                        "orderIndex": 1
                                       }
                                     }
                                     """)
@@ -84,7 +87,8 @@ public interface AdminChoiceV2ControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "content": "객체지향 프로그래밍",
-                                      "isCorrect": true
+                                      "isCorrect": true,
+                                      "orderIndex": 1
                                     }
                                     """)
                     ))

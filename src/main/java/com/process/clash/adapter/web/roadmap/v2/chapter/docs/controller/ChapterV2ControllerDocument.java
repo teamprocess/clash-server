@@ -30,6 +30,7 @@ public interface ChapterV2ControllerDocument {
                                         "title": "자바 기초",
                                         "description": "자바의 기본 문법을 학습합니다.",
                                         "orderIndex": 0,
+                                        "studyMaterialUrl": "https://example.com/material",
                                         "questions": [
                                           {
                                             "questionId": 1,
