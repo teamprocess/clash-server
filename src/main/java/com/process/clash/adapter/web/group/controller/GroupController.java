@@ -148,7 +148,7 @@ public class GroupController implements GroupControllerDocument {
         @PathVariable Long groupId,
         @ModelAttribute GetGroupActivityDto.Request request
     ) {
-        GetGroupActivityData.Command command = GetGroupActivityData.Command.of(actor, groupId, request.page());
+        GetGroupActivityData.Command command = request.toCommand(actor, groupId);
         GetGroupActivityData.Result result = getGroupActivityUseCase.execute(command);
         GetGroupActivityDto.Response response = GetGroupActivityDto.Response.from(result);
         return ApiResponse.success(response, "그룹 활동 조회를 성공했습니다.");

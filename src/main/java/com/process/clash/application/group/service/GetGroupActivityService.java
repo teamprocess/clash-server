@@ -7,6 +7,7 @@ import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.GetGroupActivityUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.group.vo.GroupMemberVo;
+import com.process.clash.application.record.v2.util.RecordDayWindow;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.user.user.entity.User;
@@ -16,7 +17,6 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,8 +53,16 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
             .map(User::id)
             .toList();
 
-        Map<Long, Long> studyTimes = fetchTodayStudyTimes(memberIds);
-        Set<Long> activeUserIds = fetchActiveUserIds();
+        RecordDayWindow todayWindow = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour());
+        LocalDate recordDate = command.date() == null ? todayWindow.recordDate() : command.date();
+        RecordDayWindow dayWindow = recordDate.equals(todayWindow.recordDate())
+            ? todayWindow
+            : RecordDayWindow.of(recordDate, recordZoneId, recordProperties.dayBoundaryHour());
+
+        Map<Long, Long> studyTimes = fetchStudyTimes(memberIds, dayWindow);
+        Set<Long> activeUserIds = dayWindow.todayRecordDate()
+            ? fetchActiveUserIds(memberIds)
+            : Set.of();
 
         List<GroupMemberVo> memberVos = members.stream()
             .map(member -> GroupMemberVo.of(
@@ -71,26 +79,27 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
         return new GetGroupActivityData.Result(memberVos, pagination);
     }
 
-    private Map<Long, Long> fetchTodayStudyTimes(List<Long> memberIds) {
+    private Map<Long, Long> fetchStudyTimes(List<Long> memberIds, RecordDayWindow dayWindow) {
         if (memberIds.isEmpty()) {
             return Map.of();
         }
 
-        // Day starts at the configured boundary hour (e.g., 6 AM) in the record timezone.
-        int boundaryHour = recordProperties.dayBoundaryHour();
-        ZonedDateTime nowZoned = ZonedDateTime.now(recordZoneId);
-        LocalDate recordDate = nowZoned.toLocalDate();
-        if (nowZoned.getHour() < boundaryHour) {
-            recordDate = recordDate.minusDays(1);
-        }
-        LocalDateTime startOfDay = recordDate.atTime(boundaryHour, 0);
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
+        LocalDateTime startOfDay = dayWindow.dayStart();
+        LocalDateTime endOfDay = dayWindow.dayEnd();
 
-        return recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(memberIds, startOfDay, endOfDay);
+        return recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(
+            memberIds,
+            startOfDay,
+            endOfDay
+        );
     }
 
-    private Set<Long> fetchActiveUserIds() {
-        List<RecordSessionV2> activeSessions = recordSessionRepositoryPort.findAllActiveSessions();
+    private Set<Long> fetchActiveUserIds(List<Long> memberIds) {
+        if (memberIds.isEmpty()) {
+            return Set.of();
+        }
+
+        List<RecordSessionV2> activeSessions = recordSessionRepositoryPort.findAllActiveSessionsByUserIds(memberIds);
         return activeSessions.stream()
             .map(RecordSessionV2::userId)
             .collect(Collectors.toSet());
