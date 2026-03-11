@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,23 +43,21 @@ public class GetMyGrowthRateServiceTest {
     void execute_day_returns12DataPoints() {
         // given
         Actor actor = new Actor(1L);
-        GetMyGrowthRateData.Command command = new GetMyGrowthRateData.Command(actor,"DAY");
+        GetMyGrowthRateData.Command command = new GetMyGrowthRateData.Command(actor, "DAY");
 
-        // 13개의 UserEarnedExp 데이터 준비
-        List<UserEarnedExp> rawData = createRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
+        List<UserEarnedExp> rawData = createDayRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
 
         when(userExpHistoryRepositoryPort.findUserDailyEarnedExpByUserIdAndPeriod(
                 eq(1L), any(), any(), any()
         )).thenReturn(rawData);
 
-        //when
+        // when
         GetMyGrowthRateData.Result result = service.execute(command);
 
         // then
         assertThat(result.dataPoint()).hasSize(12);
-        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);
-        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L);
-
+        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);  // 120 - 100
+        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L); // 110 - 120
     }
 
     @Test
@@ -68,7 +67,7 @@ public class GetMyGrowthRateServiceTest {
         Actor actor = new Actor(1L);
         GetMyGrowthRateData.Command command = new GetMyGrowthRateData.Command(actor, "WEEK");
 
-        List<UserEarnedExp> rawData = createRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
+        List<UserEarnedExp> rawData = createWeekRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
 
         when(userExpHistoryRepositoryPort.findUserWeeklyEarnedExpByUserIdAndPeriod(
                 eq(1L), any(), any(), any()
@@ -79,8 +78,8 @@ public class GetMyGrowthRateServiceTest {
 
         // then
         assertThat(result.dataPoint()).hasSize(12);
-        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);
-        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L);
+        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);  // 120 - 100
+        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L); // 110 - 120
     }
 
     @Test
@@ -90,7 +89,7 @@ public class GetMyGrowthRateServiceTest {
         Actor actor = new Actor(1L);
         GetMyGrowthRateData.Command command = new GetMyGrowthRateData.Command(actor, "MONTH");
 
-        List<UserEarnedExp> rawData = createRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
+        List<UserEarnedExp> rawData = createMonthRawData(100, 120, 110, 110, 110, 160, 170, 110, 500, 320, 160, 10, 160);
 
         when(userExpHistoryRepositoryPort.findUserMonthlyEarnedExpByUserIdAndPeriod(
                 eq(1L), any(), any(), any()
@@ -101,26 +100,28 @@ public class GetMyGrowthRateServiceTest {
 
         // then
         assertThat(result.dataPoint()).hasSize(12);
-        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);
-        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L);
+        assertThat(result.dataPoint().get(0).rate()).isEqualTo(20L);  // 120 - 100
+        assertThat(result.dataPoint().get(1).rate()).isEqualTo(-10L); // 110 - 120
     }
 
     @Test
-    @DisplayName("데이터가 1개이면 빈 리스트를 반환한다")
-    void execute_returnsEmptyList_whenDataIsOne() {
+    @DisplayName("DB 데이터가 없는 날짜는 0으로 채워 항상 12개 DataPoint를 반환한다")
+    void execute_returns12DataPoints_withMissingDatesFilledAsZero() {
         // given
         Actor actor = new Actor(1L);
         GetMyGrowthRateData.Command command = new GetMyGrowthRateData.Command(actor, "DAY");
 
         when(userExpHistoryRepositoryPort.findUserDailyEarnedExpByUserIdAndPeriod(
                 any(), any(), any(), any()
-        )).thenReturn(createRawData(100));  // 1개
+        )).thenReturn(createDayRawData(100));  // 오늘 날짜 1개만
 
         // when
         GetMyGrowthRateData.Result result = service.execute(command);
 
-        // then
-        assertThat(result.dataPoint()).isEmpty();
+        // then - 빈 날짜는 0으로 채워서 항상 12개 반환
+        assertThat(result.dataPoint()).hasSize(12);
+        assertThat(result.dataPoint().get(0).rate()).isEqualTo(0L);    // 0 - 0
+        assertThat(result.dataPoint().get(11).rate()).isEqualTo(100L); // 100 - 0
     }
 
     @Test
@@ -157,15 +158,35 @@ public class GetMyGrowthRateServiceTest {
                 .findUserDailyEarnedExpByUserIdAndPeriod(any(), any(), any(), any());
     }
 
+    // ─── helpers ─────────────────────────────────────────────────────────────
 
-
-
-    private List<UserEarnedExp> createRawData(long... expValues) {
+    private List<UserEarnedExp> createDayRawData(long... expValues) {
+        LocalDate now = LocalDate.now();
+        int n = expValues.length;
         List<UserEarnedExp> list = new ArrayList<>();
-        for (int i = 0; i < expValues.length; i++) {
-            list.add(new UserEarnedExp(LocalDate.of(2026, 3, i + 1), expValues[i]));
+        for (int i = 0; i < n; i++) {
+            list.add(new UserEarnedExp(now.minusDays(n - 1 - i), expValues[i]));
         }
         return list;
     }
 
+    private List<UserEarnedExp> createWeekRawData(long... expValues) {
+        LocalDate now = LocalDate.now();
+        int n = expValues.length;
+        List<UserEarnedExp> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            list.add(new UserEarnedExp(now.minusWeeks(n - 1 - i).with(DayOfWeek.MONDAY), expValues[i]));
+        }
+        return list;
+    }
+
+    private List<UserEarnedExp> createMonthRawData(long... expValues) {
+        LocalDate now = LocalDate.now();
+        int n = expValues.length;
+        List<UserEarnedExp> list = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            list.add(new UserEarnedExp(now.minusMonths(n - 1 - i).withDayOfMonth(1), expValues[i]));
+        }
+        return list;
+    }
 }
