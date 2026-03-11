@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +26,8 @@ import java.util.stream.IntStream;
 public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-    private static final int GROWTH_RATE_PERIOD = 12;           // 보여줄 구간 수
-    private static final int FETCH_COUNT = GROWTH_RATE_PERIOD + 1;  // DB 조회 수 (기준값 1개 포함)
+    private static final int GROWTH_RATE_PERIOD = 12;  // 보여줄 구간 수
+    private static final int FETCH_COUNT = GROWTH_RATE_PERIOD + 1;  // DB 페이지 사이즈
 
     @Override
     public GetMyGrowthRateData.Result execute(GetMyGrowthRateData.Command command) {
@@ -52,13 +52,13 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
         List<UserEarnedExp> rawData = userExpHistoryRepositoryPort.findUserDailyEarnedExpByUserIdAndPeriod(
                 id,
-                now.minusDays(FETCH_COUNT),
+                now.minusDays(GROWTH_RATE_PERIOD),
                 now,
                 PageRequest.of(0, FETCH_COUNT)
         );
 
-        List<LocalDate> allDates = IntStream.rangeClosed(0, GROWTH_RATE_PERIOD)
-                .mapToObj(i -> now.minusDays(GROWTH_RATE_PERIOD - i))
+        List<LocalDate> allDates = Stream.iterate(now.minusDays(GROWTH_RATE_PERIOD), date -> date.plusDays(1))
+                .limit(GROWTH_RATE_PERIOD + 1)
                 .toList();
 
         return fillMissingDates(rawData, allDates);
@@ -70,13 +70,13 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
         List<UserEarnedExp> rawData = userExpHistoryRepositoryPort.findUserWeeklyEarnedExpByUserIdAndPeriod(
                 id,
-                now.minusWeeks(FETCH_COUNT),
+                now.minusWeeks(GROWTH_RATE_PERIOD),
                 now,
                 PageRequest.of(0, FETCH_COUNT)
         );
 
-        List<LocalDate> allDates = IntStream.rangeClosed(0, GROWTH_RATE_PERIOD)
-                .mapToObj(i -> now.minusWeeks(GROWTH_RATE_PERIOD - i).with(DayOfWeek.MONDAY))
+        List<LocalDate> allDates = Stream.iterate(now.minusWeeks(GROWTH_RATE_PERIOD).with(DayOfWeek.MONDAY), date -> date.plusWeeks(1))
+                .limit(GROWTH_RATE_PERIOD + 1)
                 .toList();
 
         return fillMissingDates(rawData, allDates);
@@ -88,13 +88,13 @@ public class GetMyGrowthRateService implements GetMyGrowthRateUseCase {
 
         List<UserEarnedExp> rawData = userExpHistoryRepositoryPort.findUserMonthlyEarnedExpByUserIdAndPeriod(
                 id,
-                now.minusMonths(FETCH_COUNT),
+                now.minusMonths(GROWTH_RATE_PERIOD),
                 now,
                 PageRequest.of(0, FETCH_COUNT)
         );
 
-        List<LocalDate> allDates = IntStream.rangeClosed(0, GROWTH_RATE_PERIOD)
-                .mapToObj(i -> now.minusMonths(GROWTH_RATE_PERIOD - i).withDayOfMonth(1))
+        List<LocalDate> allDates = Stream.iterate(now.minusMonths(GROWTH_RATE_PERIOD).withDayOfMonth(1), date -> date.plusMonths(1))
+                .limit(GROWTH_RATE_PERIOD + 1)
                 .toList();
 
         return fillMissingDates(rawData, allDates);
