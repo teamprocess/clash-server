@@ -7,8 +7,10 @@ import com.process.clash.application.roadmap.section.port.out.SectionRepositoryP
 import com.process.clash.domain.roadmap.entity.Section;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetSectionPreviewService implements GetSectionPreviewUseCase {
 

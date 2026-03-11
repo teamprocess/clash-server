@@ -5,8 +5,10 @@ import com.process.clash.application.user.user.port.in.ValidatePasswordResetToke
 import com.process.clash.application.user.user.port.out.PasswordResetTokenPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ValidatePasswordResetTokenService implements ValidatePasswordResetTokenUseCase {
 
