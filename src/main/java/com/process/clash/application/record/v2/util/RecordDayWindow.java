@@ -25,7 +25,11 @@ public record RecordDayWindow(
     }
 
     public static RecordDayWindow of(LocalDate recordDate, ZoneId zoneId, int boundaryHour) {
-        return from(ZonedDateTime.now(zoneId), recordDate, boundaryHour);
+        return of(recordDate, zoneId, boundaryHour, Clock.system(zoneId));
+    }
+
+    public static RecordDayWindow of(LocalDate recordDate, ZoneId zoneId, int boundaryHour, Clock clock) {
+        return from(ZonedDateTime.now(clock.withZone(zoneId)), recordDate, boundaryHour);
     }
 
     private static RecordDayWindow from(ZonedDateTime now, LocalDate recordDate, int boundaryHour) {
