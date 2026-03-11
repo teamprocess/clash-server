@@ -77,6 +77,7 @@ public interface AdminCategoryControllerDocument {
                                           {
                                             "id": 10,
                                             "name": "백엔드",
+                                            "imageUrl": "https://example.com/image.png",
                                             "createdAt": "2025-01-01T12:00:00Z",
                                             "updatedAt": "2025-01-01T12:00:00Z"
                                           }

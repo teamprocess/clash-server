@@ -36,14 +36,17 @@ public interface SectionControllerDocument {
                                           {
                                             "id": 1,
                                             "title": "스프링 입문",
-                                            "category": "백엔드",
+                                            "categoryId": 10,
+                                            "categoryImageUrl": "https://example.com/image.png",
                                             "completed": false,
                                             "locked": false
                                           }
                                         ],
                                         "categories": [
-                                          "백엔드"
-                                        ]
+                                          10
+                                        ],
+                                        "completedSections": 1,
+                                        "totalSections": 5
                                       }
                                     }
                                     """)

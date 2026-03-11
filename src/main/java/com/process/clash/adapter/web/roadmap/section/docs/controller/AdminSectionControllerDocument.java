@@ -35,7 +35,7 @@ public interface AdminSectionControllerDocument {
                                         "sectionId": 1,
                                         "major": "SERVER",
                                         "title": "스프링 입문",
-                                        "category": "백엔드",
+                                        "categoryId": 10,
                                         "description": "스프링 핵심 개념을 학습합니다.",
                                         "keyPoints": [
                                           "DI",
@@ -80,7 +80,7 @@ public interface AdminSectionControllerDocument {
                                       "data": {
                                         "sectionId": 1,
                                         "title": "스프링 심화",
-                                        "category": "백엔드",
+                                        "categoryId": 10,
                                         "description": "스프링 심화 개념을 학습합니다.",
                                         "keyPoints": [
                                           "DI",
