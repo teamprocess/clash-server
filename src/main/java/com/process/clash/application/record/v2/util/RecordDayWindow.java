@@ -34,9 +34,7 @@ public record RecordDayWindow(
         LocalDateTime dayEnd = dayStart.plusDays(1);
         LocalDateTime nowLocal = now.toLocalDateTime();
         boolean isTodayRecordDate = recordDate.equals(todayRecordDate);
-        LocalDateTime endLimit = isTodayRecordDate && nowLocal.isBefore(dayEnd)
-            ? nowLocal
-            : dayEnd;
+        LocalDateTime endLimit = nowLocal.isBefore(dayEnd) ? nowLocal : dayEnd;
         return new RecordDayWindow(recordDate, dayStart, dayEnd, endLimit, isTodayRecordDate);
     }
 }

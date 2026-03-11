@@ -78,25 +78,29 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
                 .orElse(null)
             : null;
 
+        // endLimit이 윈도우 시작보다 이전이면 미래 날짜이므로 세션 목록을 비운다.
+        boolean isFutureDate = endLimit.isBefore(startOfDay);
         return GetTodayRecordV2Data.Result.from(
             date,
             totalStudyTime,
             studyStoppedAt,
-            todaySessions.stream()
-                .map(session -> {
-                    LocalDateTime sessionStartLocal = toLocalDateTime(session.startedAt());
-                    // 화면에 노출하는 세션 시작 시각도 기록일 경계(startOfDay) 밖이면 경계로 보정한다.
-                    LocalDateTime sessionStart = sessionStartLocal.isAfter(startOfDay)
-                        ? sessionStartLocal
-                        : startOfDay;
-                    LocalDateTime sessionEndLocal = session.endedAt() == null ? null : toLocalDateTime(session.endedAt());
-                    // 오늘/과거 여부에 따라 종료 시각 표현 규칙(진행중 null vs endLimit 보정)을 맞춘다.
-                    LocalDateTime sessionEnd = projectedSessionEnd(sessionEndLocal, endLimit, isTodayRecordDate);
-                    Instant sessionStartInstant = sessionStart.atZone(recordZoneId).toInstant();
-                    Instant sessionEndInstant = sessionEnd == null ? null : sessionEnd.atZone(recordZoneId).toInstant();
-                    return RecordSessionV2Mapper.toSession(session, sessionStartInstant, sessionEndInstant);
-                })
-                .toList()
+            isFutureDate
+                ? List.of()
+                : todaySessions.stream()
+                    .map(session -> {
+                        LocalDateTime sessionStartLocal = toLocalDateTime(session.startedAt());
+                        // 화면에 노출하는 세션 시작 시각도 기록일 경계(startOfDay) 밖이면 경계로 보정한다.
+                        LocalDateTime sessionStart = sessionStartLocal.isAfter(startOfDay)
+                            ? sessionStartLocal
+                            : startOfDay;
+                        LocalDateTime sessionEndLocal = session.endedAt() == null ? null : toLocalDateTime(session.endedAt());
+                        // 오늘/과거 여부에 따라 종료 시각 표현 규칙(진행중 null vs endLimit 보정)을 맞춘다.
+                        LocalDateTime sessionEnd = projectedSessionEnd(sessionEndLocal, endLimit, isTodayRecordDate);
+                        Instant sessionStartInstant = sessionStart.atZone(recordZoneId).toInstant();
+                        Instant sessionEndInstant = sessionEnd == null ? null : sessionEnd.atZone(recordZoneId).toInstant();
+                        return RecordSessionV2Mapper.toSession(session, sessionStartInstant, sessionEndInstant);
+                    })
+                    .toList()
         );
     }
 
