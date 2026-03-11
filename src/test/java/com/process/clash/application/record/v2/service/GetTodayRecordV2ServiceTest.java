@@ -148,6 +148,43 @@ class GetTodayRecordV2ServiceTest {
     }
 
     @Test
+    @DisplayName("미래 날짜 조회 시 진행중인 세션이 있어도 학습시간 0과 빈 세션 목록을 반환한다")
+    void execute_returnsZeroStudyTimeAndEmptySessionsForFutureDateWithOngoingSession() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        LocalDate todayRecordDate = RecordDateCalculator.recordDate(ZonedDateTime.now(ZoneId.of("UTC")), 6);
+        LocalDate futureDate = todayRecordDate.plusDays(1);
+        LocalDateTime dayStart = futureDate.atTime(6, 0);
+        LocalDateTime dayEnd = dayStart.plusDays(1);
+
+        RecordSessionV2 ongoingSession = new RecordSessionV2(
+            100L,
+            actor.id(),
+            RecordSessionTypeV2.TASK,
+            10L,
+            "자료구조",
+            11L,
+            "해시테이블",
+            null,
+            dayStart.minusHours(2).atZone(ZoneId.of("UTC")).toInstant(),
+            null
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd))
+            .thenReturn(List.of(ongoingSession));
+
+        GetTodayRecordV2Data.Result result = getTodayRecordV2Service.execute(
+            new GetTodayRecordV2Data.Command(actor, futureDate)
+        );
+
+        assertThat(result.date()).isEqualTo(futureDate.toString());
+        assertThat(result.totalStudyTime()).isEqualTo(0L);
+        assertThat(result.studyStoppedAt()).isNull();
+        assertThat(result.sessions()).isEmpty();
+    }
+
+    @Test
     @DisplayName("과거 날짜 조회에서 진행중인 세션은 날짜 경계 시각으로 종료 시각이 보정된다")
     void execute_capsOpenSessionEndAtDayBoundaryForPastDate() {
         Actor actor = new Actor(1L);

@@ -25,7 +25,11 @@ public record RecordDayWindow(
     }
 
     public static RecordDayWindow of(LocalDate recordDate, ZoneId zoneId, int boundaryHour) {
-        return from(ZonedDateTime.now(zoneId), recordDate, boundaryHour);
+        return of(recordDate, zoneId, boundaryHour, Clock.system(zoneId));
+    }
+
+    public static RecordDayWindow of(LocalDate recordDate, ZoneId zoneId, int boundaryHour, Clock clock) {
+        return from(ZonedDateTime.now(clock.withZone(zoneId)), recordDate, boundaryHour);
     }
 
     private static RecordDayWindow from(ZonedDateTime now, LocalDate recordDate, int boundaryHour) {
@@ -34,9 +38,7 @@ public record RecordDayWindow(
         LocalDateTime dayEnd = dayStart.plusDays(1);
         LocalDateTime nowLocal = now.toLocalDateTime();
         boolean isTodayRecordDate = recordDate.equals(todayRecordDate);
-        LocalDateTime endLimit = isTodayRecordDate && nowLocal.isBefore(dayEnd)
-            ? nowLocal
-            : dayEnd;
+        LocalDateTime endLimit = nowLocal.isBefore(dayEnd) ? nowLocal : dayEnd;
         return new RecordDayWindow(recordDate, dayStart, dayEnd, endLimit, isTodayRecordDate);
     }
 }
