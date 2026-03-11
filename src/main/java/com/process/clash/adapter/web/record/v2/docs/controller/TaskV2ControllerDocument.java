@@ -22,12 +22,13 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDate;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "세부 작업 API V2", description = "V2 세부 작업 관리")
 public interface TaskV2ControllerDocument {
 
-    @Operation(summary = "세부 작업 목록 조회", description = "세부 작업 목록을 조회합니다. subjectId가 없는 작업이 먼저 오고, 이후 subjectId 내림차순으로 정렬됩니다.")
+    @Operation(summary = "세부 작업 목록 조회", description = "세부 작업 목록을 조회합니다. date를 주면 해당 기록일 기준으로 조회합니다. subjectId가 없는 작업이 먼저 오고, 이후 subjectId 내림차순으로 정렬됩니다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(
@@ -61,7 +62,8 @@ public interface TaskV2ControllerDocument {
             ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetAllTasksV2Dto.Response> getAllTasks(
-        @Parameter(hidden = true) Actor actor
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "조회할 기록일", example = "2026-03-10") LocalDate date
     );
 
     @Operation(summary = "세부 작업 생성", description = "새로운 V2 세부 작업을 생성합니다. subjectId 없이도 생성할 수 있습니다.")

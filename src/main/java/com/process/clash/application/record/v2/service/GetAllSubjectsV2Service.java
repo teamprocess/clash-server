@@ -12,6 +12,7 @@ import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.infrastructure.config.record.RecordProperties;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collections;
@@ -34,6 +35,11 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
 
     @Override
     public GetAllSubjectsV2Data.Result execute(GetAllSubjectsV2Data.Command command) {
+        int boundaryHour = recordProperties.dayBoundaryHour();
+        RecordDayWindow todayWindow = RecordDayWindow.today(recordZoneId, boundaryHour);
+        LocalDate todayRecordDate = todayWindow.recordDate();
+        LocalDate recordDate = command.date() == null ? todayRecordDate : command.date();
+
         List<RecordSubjectV2> subjects = recordSubjectV2RepositoryPort.findAllByUserId(command.actor().id());
         if (subjects.isEmpty()) {
             return GetAllSubjectsV2Data.Result.from(List.of());
@@ -42,7 +48,9 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
         List<Long> subjectIds = subjects.stream().map(RecordSubjectV2::id).toList();
         List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllBySubjectIds(subjectIds);
 
-        RecordDayWindow dayWindow = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour());
+        RecordDayWindow dayWindow = recordDate.equals(todayRecordDate)
+            ? todayWindow
+            : RecordDayWindow.of(recordDate, recordZoneId, boundaryHour);
         LocalDateTime dayStart = dayWindow.dayStart();
         LocalDateTime dayEnd = dayWindow.dayEnd();
         LocalDateTime endLimit = dayWindow.endLimit();

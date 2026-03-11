@@ -19,6 +19,7 @@ import com.process.clash.application.record.v2.port.in.DeleteSubjectV2UseCase;
 import com.process.clash.application.record.v2.port.in.GetAllSubjectsV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateSubjectTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateSubjectV2UseCase;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,6 +87,22 @@ class SubjectV2ControllerTest {
             .andExpect(jsonPath("$.message").value("과목 그룹 목록을 조회했습니다."));
 
         verify(getAllSubjectsV2UseCase).execute(any(GetAllSubjectsV2Data.Command.class));
+    }
+
+    @Test
+    @DisplayName("GET /api/v2/record/subjects 는 date 쿼리를 커맨드로 전달한다")
+    void getAllSubjects_passesDateToCommand() throws Exception {
+        when(getAllSubjectsV2UseCase.execute(any()))
+            .thenReturn(GetAllSubjectsV2Data.Result.from(List.of()));
+
+        mockMvc.perform(get("/api/v2/record/subjects").param("date", "2026-03-10"))
+            .andExpect(status().isOk());
+
+        ArgumentCaptor<GetAllSubjectsV2Data.Command> captor =
+            ArgumentCaptor.forClass(GetAllSubjectsV2Data.Command.class);
+        verify(getAllSubjectsV2UseCase).execute(captor.capture());
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().date())
+            .isEqualTo(LocalDate.of(2026, 3, 10));
     }
 
     @Test

@@ -16,6 +16,7 @@ import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -59,7 +60,7 @@ class GetAllSubjectsV2ServiceTest {
         Actor actor = new Actor(1L);
         when(recordSubjectV2RepositoryPort.findAllByUserId(actor.id())).thenReturn(List.of());
 
-        GetAllSubjectsV2Data.Result result = getAllSubjectsV2Service.execute(new GetAllSubjectsV2Data.Command(actor));
+        GetAllSubjectsV2Data.Result result = getAllSubjectsV2Service.execute(new GetAllSubjectsV2Data.Command(actor, null));
 
         assertThat(result.subjects()).isEmpty();
     }
@@ -122,7 +123,7 @@ class GetAllSubjectsV2ServiceTest {
         when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd))
             .thenReturn(List.of(subject1TaskSession, subject1OnlySession, developSession));
 
-        GetAllSubjectsV2Data.Result result = getAllSubjectsV2Service.execute(new GetAllSubjectsV2Data.Command(actor));
+        GetAllSubjectsV2Data.Result result = getAllSubjectsV2Service.execute(new GetAllSubjectsV2Data.Command(actor, null));
 
         assertThat(result.subjects()).hasSize(2);
 
@@ -157,5 +158,29 @@ class GetAllSubjectsV2ServiceTest {
         assertThat(api.completed()).isTrue();
         assertThat(dp.studyTime()).isEqualTo(0L);
         assertThat(dp.completed()).isFalse();
+    }
+
+    @Test
+    @DisplayName("미래 기록일로 과목 그룹 목록을 조회하면 과목은 유지하고 학습시간은 0으로 반환한다")
+    void execute_returnsZeroStudyTimeForFutureDate() {
+        Actor actor = new Actor(1L);
+        LocalDate tomorrow = RecordDateCalculator.recordDate(ZonedDateTime.now(ZoneId.of("UTC")), 6).plusDays(1);
+        RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "백엔드", 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "ERD", false, 0L, Instant.now(), Instant.now());
+        LocalDateTime dayStart = tomorrow.atTime(6, 0);
+        LocalDateTime dayEnd = dayStart.plusDays(1);
+
+        when(recordSubjectV2RepositoryPort.findAllByUserId(actor.id())).thenReturn(List.of(subject));
+        when(recordTaskV2RepositoryPort.findAllBySubjectIds(List.of(10L))).thenReturn(List.of(task));
+        when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd))
+            .thenReturn(List.of());
+
+        GetAllSubjectsV2Data.Result result =
+            getAllSubjectsV2Service.execute(new GetAllSubjectsV2Data.Command(actor, tomorrow));
+
+        assertThat(result.subjects()).hasSize(1);
+        assertThat(result.subjects().get(0).studyTime()).isEqualTo(0L);
+        assertThat(result.subjects().get(0).tasks()).hasSize(1);
+        assertThat(result.subjects().get(0).tasks().get(0).studyTime()).isEqualTo(0L);
     }
 }

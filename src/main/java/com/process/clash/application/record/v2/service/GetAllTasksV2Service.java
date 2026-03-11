@@ -9,6 +9,7 @@ import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPo
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.infrastructure.config.record.RecordProperties;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -27,6 +28,11 @@ public class GetAllTasksV2Service implements GetAllTasksV2UseCase {
 
     @Override
     public GetAllTasksV2Data.Result execute(GetAllTasksV2Data.Command command) {
+        int boundaryHour = recordProperties.dayBoundaryHour();
+        RecordDayWindow todayWindow = RecordDayWindow.today(recordZoneId, boundaryHour);
+        LocalDate todayRecordDate = todayWindow.recordDate();
+        LocalDate recordDate = command.date() == null ? todayRecordDate : command.date();
+
         List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllByUserIdOrderBySubjectIdDescNullsFirst(
             command.actor().id()
         );
@@ -34,7 +40,9 @@ public class GetAllTasksV2Service implements GetAllTasksV2UseCase {
             return GetAllTasksV2Data.Result.from(List.of());
         }
 
-        RecordDayWindow dayWindow = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour());
+        RecordDayWindow dayWindow = recordDate.equals(todayRecordDate)
+            ? todayWindow
+            : RecordDayWindow.of(recordDate, recordZoneId, boundaryHour);
         LocalDateTime dayStart = dayWindow.dayStart();
         LocalDateTime dayEnd = dayWindow.dayEnd();
         LocalDateTime endLimit = dayWindow.endLimit();

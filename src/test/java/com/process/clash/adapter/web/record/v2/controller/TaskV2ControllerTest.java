@@ -23,11 +23,13 @@ import com.process.clash.application.record.v2.port.in.UpdateTaskV2UseCase;
 import com.process.clash.application.record.v2.port.in.UpdateTaskCompletionV2UseCase;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
@@ -85,6 +87,22 @@ class TaskV2ControllerTest {
             .andExpect(jsonPath("$.message").value("세부 작업 목록을 조회했습니다."));
 
         verify(getAllTasksV2UseCase).execute(any(GetAllTasksV2Data.Command.class));
+    }
+
+    @Test
+    @DisplayName("GET /api/v2/record/tasks 는 date 쿼리를 커맨드로 전달한다")
+    void getAllTasks_passesDateToCommand() throws Exception {
+        when(getAllTasksV2UseCase.execute(any()))
+            .thenReturn(GetAllTasksV2Data.Result.from(List.of()));
+
+        mockMvc.perform(get("/api/v2/record/tasks").param("date", "2026-03-10"))
+            .andExpect(status().isOk());
+
+        ArgumentCaptor<GetAllTasksV2Data.Command> captor =
+            ArgumentCaptor.forClass(GetAllTasksV2Data.Command.class);
+        verify(getAllTasksV2UseCase).execute(captor.capture());
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().date())
+            .isEqualTo(LocalDate.of(2026, 3, 10));
     }
 
     @Test
