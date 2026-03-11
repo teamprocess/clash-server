@@ -32,9 +32,8 @@ public record Battle(
         );
     }
 
-    public Battle accept() {
+    public Battle accept(LocalDate today) {
 
-        LocalDate today = LocalDate.now();
         BattleStatus status;
 
         if (today.isAfter(this.endDate)) {

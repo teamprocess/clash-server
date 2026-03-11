@@ -13,18 +13,20 @@ import java.time.ZoneId;
 @Slf4j
 public class BattleStartScheduler {
 
+    private static final String BATTLE_TIMEZONE = "${battle.timezone:Asia/Seoul}";
+
     private final BattleStartService battleStartService;
     private final ZoneId battleZoneId;
 
     public BattleStartScheduler(
             BattleStartService battleStartService,
-            @Value("${battle.timezone:Asia/Seoul}") String battleTimezone
+            @Value(BATTLE_TIMEZONE) String battleTimezone
     ) {
         this.battleStartService = battleStartService;
         this.battleZoneId = ZoneId.of(battleTimezone);
     }
 
-    @Scheduled(cron = "0 0 6 * * *", zone = "${battle.timezone:Asia/Seoul}")
+    @Scheduled(cron = "0 0 6 * * *", zone = BATTLE_TIMEZONE)
     public void startScheduledBattles() {
         safeStart("scheduled");
     }

@@ -14,9 +14,10 @@ class BattleTest {
     @Test
     @DisplayName("수락 시 startDate 이전이면 NOT_STARTED 상태가 된다")
     void accept_returnsNotStarted_whenBeforeStartDate() {
-        Battle battle = pendingBattle(LocalDate.now().plusDays(1), LocalDate.now().plusDays(8));
+        LocalDate today = LocalDate.now();
+        Battle battle = pendingBattle(today.plusDays(1), today.plusDays(8));
 
-        Battle result = battle.accept();
+        Battle result = battle.accept(today);
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.NOT_STARTED);
     }
@@ -24,9 +25,10 @@ class BattleTest {
     @Test
     @DisplayName("수락 시 startDate 당일이면 IN_PROGRESS 상태가 된다")
     void accept_returnsInProgress_whenOnStartDate() {
-        Battle battle = pendingBattle(LocalDate.now(), LocalDate.now().plusDays(7));
+        LocalDate today = LocalDate.now();
+        Battle battle = pendingBattle(today, today.plusDays(7));
 
-        Battle result = battle.accept();
+        Battle result = battle.accept(today);
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
     }
@@ -34,9 +36,10 @@ class BattleTest {
     @Test
     @DisplayName("수락 시 startDate 이후 endDate 이전이면 IN_PROGRESS 상태가 된다")
     void accept_returnsInProgress_whenAfterStartDateBeforeEndDate() {
-        Battle battle = pendingBattle(LocalDate.now().minusDays(1), LocalDate.now().plusDays(6));
+        LocalDate today = LocalDate.now();
+        Battle battle = pendingBattle(today.minusDays(1), today.plusDays(6));
 
-        Battle result = battle.accept();
+        Battle result = battle.accept(today);
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
     }
@@ -44,9 +47,10 @@ class BattleTest {
     @Test
     @DisplayName("수락 시 endDate 이후이면 DONE 상태가 된다")
     void accept_returnsDone_whenAfterEndDate() {
-        Battle battle = pendingBattle(LocalDate.now().minusDays(8), LocalDate.now().minusDays(1));
+        LocalDate today = LocalDate.now();
+        Battle battle = pendingBattle(today.minusDays(8), today.minusDays(1));
 
-        Battle result = battle.accept();
+        Battle result = battle.accept(today);
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.DONE);
     }
@@ -54,7 +58,8 @@ class BattleTest {
     @Test
     @DisplayName("start() 호출 시 IN_PROGRESS 상태가 된다")
     void start_returnsInProgress() {
-        Battle battle = notStartedBattle(LocalDate.now(), LocalDate.now().plusDays(7));
+        LocalDate today = LocalDate.now();
+        Battle battle = notStartedBattle(today, today.plusDays(7));
 
         Battle result = battle.start();
 

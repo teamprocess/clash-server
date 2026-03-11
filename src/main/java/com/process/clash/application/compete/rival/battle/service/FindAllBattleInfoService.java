@@ -208,7 +208,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
             return RESULT_CANCELED;
         }
 
-        return RESULT_PENDING;
+        throw new IllegalStateException("Unexpected battle status: " + status);
     }
 
     private Long getEnemyId(Rival rival, Long currentUserId) {
