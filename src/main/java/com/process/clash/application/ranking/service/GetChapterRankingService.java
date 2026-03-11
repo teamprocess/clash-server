@@ -5,10 +5,12 @@ import com.process.clash.application.ranking.port.in.GetChapterRankingUseCase;
 import com.process.clash.application.ranking.port.out.LoadChapterRankingPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetChapterRankingService implements GetChapterRankingUseCase {
 

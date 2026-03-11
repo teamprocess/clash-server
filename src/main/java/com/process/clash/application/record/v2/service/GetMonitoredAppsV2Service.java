@@ -5,8 +5,10 @@ import com.process.clash.application.record.v2.data.GetMonitoredAppsV2Data;
 import com.process.clash.application.record.v2.port.in.GetMonitoredAppsV2UseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class GetMonitoredAppsV2Service implements GetMonitoredAppsV2UseCase {
 
