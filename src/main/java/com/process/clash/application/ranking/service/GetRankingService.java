@@ -126,6 +126,8 @@ public class GetRankingService implements GetRankingUseCase {
                         ranking.isRival(),
                         ranking.linkedId(),
                         ranking.point(),
+                        ranking.rankTier(),
+                        ranking.expTier(),
                         equippedItemsByUserId.getOrDefault(ranking.userId(), EquippedItemsData.empty())
                 ))
                 .toList();
