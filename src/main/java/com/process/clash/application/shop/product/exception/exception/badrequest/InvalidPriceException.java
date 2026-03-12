@@ -7,8 +7,4 @@ public class InvalidPriceException extends BadRequestException {
     public InvalidPriceException() {
         super(ProductStatusCode.INVALID_PRICE);
     }
-
-    public InvalidPriceException(Throwable cause) {
-        super(ProductStatusCode.INVALID_PRICE, cause);
-    }
 }

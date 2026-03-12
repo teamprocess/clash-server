@@ -7,8 +7,4 @@ public class GroupMemberLimitReachedException extends ConflictException {
     public GroupMemberLimitReachedException() {
         super(GroupStatusCode.GROUP_MEMBER_LIMIT_REACHED);
     }
-
-    public GroupMemberLimitReachedException(Throwable cause) {
-        super(GroupStatusCode.GROUP_MEMBER_LIMIT_REACHED, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class GroupMemberLimitTooSmallException extends BadRequestException {
     public GroupMemberLimitTooSmallException() {
         super(GroupStatusCode.GROUP_MEMBER_LIMIT_TOO_SMALL);
     }
-
-    public GroupMemberLimitTooSmallException(Throwable cause) {
-        super(GroupStatusCode.GROUP_MEMBER_LIMIT_TOO_SMALL, cause);
-    }
 }

@@ -8,8 +8,4 @@ public class SectionCircularDependencyException extends UnprocessableEntityExcep
     public SectionCircularDependencyException() {
         super(SectionStatusCode.SECTION_CIRCULAR_DEPENDENCY);
     }
-
-    protected SectionCircularDependencyException(Throwable cause) {
-        super(SectionStatusCode.SECTION_CIRCULAR_DEPENDENCY, cause);
-    }
 }

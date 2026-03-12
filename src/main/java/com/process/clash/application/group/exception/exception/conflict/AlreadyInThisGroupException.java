@@ -7,8 +7,4 @@ public class AlreadyInThisGroupException extends ConflictException {
     public AlreadyInThisGroupException() {
         super(GroupStatusCode.ALREADY_IN_THIS_GROUP);
     }
-
-    public AlreadyInThisGroupException(Throwable cause) {
-        super(GroupStatusCode.ALREADY_IN_THIS_GROUP, cause);
-    }
 }

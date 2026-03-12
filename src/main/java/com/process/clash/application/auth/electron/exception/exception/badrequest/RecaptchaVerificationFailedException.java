@@ -7,8 +7,4 @@ public class RecaptchaVerificationFailedException extends BadRequestException {
     public RecaptchaVerificationFailedException() {
         super(ElectronAuthStatusCode.RECAPTCHA_VERIFICATION_FAILED);
     }
-
-    public RecaptchaVerificationFailedException(Throwable cause) {
-        super(ElectronAuthStatusCode.RECAPTCHA_VERIFICATION_FAILED, cause);
-    }
 }

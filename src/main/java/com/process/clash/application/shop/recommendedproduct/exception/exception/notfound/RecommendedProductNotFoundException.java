@@ -7,8 +7,4 @@ public class RecommendedProductNotFoundException extends NotFoundException {
     public RecommendedProductNotFoundException() {
         super(RecommendedProductStatusCode.RECOMMENDATION_NOT_FOUND);
     }
-
-    public RecommendedProductNotFoundException(Throwable cause) {
-        super(RecommendedProductStatusCode.RECOMMENDATION_NOT_FOUND, cause);
-    }
 }

@@ -8,8 +8,4 @@ public class TaskV2AccessDeniedException extends ForbiddenException {
     public TaskV2AccessDeniedException() {
         super(RecordV2StatusCode.TASK_V2_ACCESS_DENIED);
     }
-
-    public TaskV2AccessDeniedException(Throwable cause) {
-        super(RecordV2StatusCode.TASK_V2_ACCESS_DENIED, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class GithubDailyStatsNotFoundException extends NotFoundException {
     public GithubDailyStatsNotFoundException() {
         super(GithubDailyStatsStatusCode.GITHUB_DAILY_STATS_NOT_FOUND);
     }
-
-    public GithubDailyStatsNotFoundException(Throwable cause) {
-        super(GithubDailyStatsStatusCode.GITHUB_DAILY_STATS_NOT_FOUND, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class UnverifiedEmailException extends UnAuthorizedException {
     public UnverifiedEmailException() {
         super(UserStatusCode.UNVERIFIED_EMAIL);
     }
-
-    public UnverifiedEmailException(Throwable cause) {
-        super(UserStatusCode.UNVERIFIED_EMAIL, cause);
-    }
 }

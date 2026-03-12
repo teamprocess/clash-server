@@ -8,8 +8,4 @@ public class GithubAlreadyLinkedException extends ConflictException {
     public GithubAlreadyLinkedException() {
         super(UserGitHubStatusCode.GITHUB_ALREADY_LINKED);
     }
-
-    public GithubAlreadyLinkedException(Throwable cause) {
-        super(UserGitHubStatusCode.GITHUB_ALREADY_LINKED, cause);
-    }
 }

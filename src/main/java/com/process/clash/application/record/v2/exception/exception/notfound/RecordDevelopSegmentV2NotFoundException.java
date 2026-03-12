@@ -8,8 +8,4 @@ public class RecordDevelopSegmentV2NotFoundException extends NotFoundException {
     public RecordDevelopSegmentV2NotFoundException() {
         super(RecordV2StatusCode.RECORD_DEVELOP_SEGMENT_V2_NOT_FOUND);
     }
-
-    public RecordDevelopSegmentV2NotFoundException(Throwable cause) {
-        super(RecordV2StatusCode.RECORD_DEVELOP_SEGMENT_V2_NOT_FOUND, cause);
-    }
 }

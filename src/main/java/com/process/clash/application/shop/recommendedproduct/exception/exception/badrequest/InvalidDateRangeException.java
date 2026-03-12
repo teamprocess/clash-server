@@ -7,8 +7,4 @@ public class InvalidDateRangeException extends BadRequestException {
     public InvalidDateRangeException() {
         super(RecommendedProductStatusCode.INVALID_DATE_RANGE);
     }
-
-    public InvalidDateRangeException(Throwable cause) {
-        super(RecommendedProductStatusCode.INVALID_DATE_RANGE, cause);
-    }
 }

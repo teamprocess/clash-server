@@ -7,8 +7,4 @@ public class SectionNotFoundException extends NotFoundException {
     public SectionNotFoundException() {
         super(SectionStatusCode.SECTION_NOT_FOUND);
     }
-
-    public SectionNotFoundException(Throwable cause) {
-        super(SectionStatusCode.SECTION_NOT_FOUND, cause);
-    }
 }

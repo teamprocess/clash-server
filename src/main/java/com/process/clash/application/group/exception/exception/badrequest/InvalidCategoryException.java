@@ -16,11 +16,6 @@ public class InvalidCategoryException extends BadRequestException {
         this.customMessage = customMessage;
     }
 
-    public InvalidCategoryException(Throwable cause) {
-        super(GroupStatusCode.INVALID_CATEGORY, cause);
-        this.customMessage = null;
-    }
-
     @Override
     public String getMessage() {
         return customMessage != null ? customMessage : super.getMessage();

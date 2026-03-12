@@ -7,8 +7,4 @@ public class InvalidDayCategoryException extends BadRequestException {
     public InvalidDayCategoryException() {
         super(MyCompeteStatusCode.INVALID_DAY_CATEGORY);
     }
-
-    public InvalidDayCategoryException(Throwable cause) {
-        super(MyCompeteStatusCode.INVALID_DAY_CATEGORY, cause);
-    }
 }

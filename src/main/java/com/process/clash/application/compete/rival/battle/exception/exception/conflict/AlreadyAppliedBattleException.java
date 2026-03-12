@@ -7,8 +7,4 @@ public class AlreadyAppliedBattleException extends ConflictException {
     public AlreadyAppliedBattleException() {
         super(BattleStatusCode.ALREADY_APPLIED_BATTLE);
     }
-
-    public AlreadyAppliedBattleException(Throwable cause) {
-        super(BattleStatusCode.ALREADY_APPLIED_BATTLE, cause);
-    }
 }

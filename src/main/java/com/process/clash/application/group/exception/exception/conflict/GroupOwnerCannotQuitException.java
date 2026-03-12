@@ -7,8 +7,4 @@ public class GroupOwnerCannotQuitException extends ConflictException {
     public GroupOwnerCannotQuitException() {
         super(GroupStatusCode.GROUP_OWNER_CANNOT_QUIT);
     }
-
-    public GroupOwnerCannotQuitException(Throwable cause) {
-        super(GroupStatusCode.GROUP_OWNER_CANNOT_QUIT, cause);
-    }
 }

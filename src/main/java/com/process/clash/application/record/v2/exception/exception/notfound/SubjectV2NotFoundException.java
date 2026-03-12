@@ -8,8 +8,4 @@ public class SubjectV2NotFoundException extends NotFoundException {
     public SubjectV2NotFoundException() {
         super(RecordV2StatusCode.SUBJECT_V2_NOT_FOUND);
     }
-
-    public SubjectV2NotFoundException(Throwable cause) {
-        super(RecordV2StatusCode.SUBJECT_V2_NOT_FOUND, cause);
-    }
 }

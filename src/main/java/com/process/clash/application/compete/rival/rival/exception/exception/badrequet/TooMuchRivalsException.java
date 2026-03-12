@@ -7,8 +7,4 @@ public class TooMuchRivalsException extends BadRequestException {
     public TooMuchRivalsException() {
         super(RivalStatusCode.TOO_MUCH_RIVALS);
     }
-
-    public TooMuchRivalsException(Throwable cause) {
-        super(RivalStatusCode.TOO_MUCH_RIVALS, cause);
-    }
 }

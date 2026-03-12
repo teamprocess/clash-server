@@ -7,8 +7,4 @@ public class VerificationCodeMismatchException extends BadRequestException {
     public VerificationCodeMismatchException() {
         super(UserStatusCode.VERIFICATION_CODE_MISMATCH);
     }
-
-    public VerificationCodeMismatchException(Throwable cause) {
-        super(UserStatusCode.VERIFICATION_CODE_MISMATCH, cause);
-    }
 }

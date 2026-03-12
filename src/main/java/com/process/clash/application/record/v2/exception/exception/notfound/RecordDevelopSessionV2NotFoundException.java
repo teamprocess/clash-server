@@ -8,8 +8,4 @@ public class RecordDevelopSessionV2NotFoundException extends NotFoundException {
     public RecordDevelopSessionV2NotFoundException() {
         super(RecordV2StatusCode.RECORD_DEVELOP_SESSION_V2_NOT_FOUND);
     }
-
-    public RecordDevelopSessionV2NotFoundException(Throwable cause) {
-        super(RecordV2StatusCode.RECORD_DEVELOP_SESSION_V2_NOT_FOUND, cause);
-    }
 }
