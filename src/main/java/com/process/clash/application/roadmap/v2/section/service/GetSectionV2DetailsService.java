@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,6 +34,8 @@ public class GetSectionV2DetailsService implements GetSectionV2DetailsUseCase {
                 .orElseThrow(SectionNotFoundException::new);
 
         List<ChapterV2> chapters = chapterV2RepositoryPort.findAllBySectionId(command.sectionId());
+        Map<Long, ChapterV2> chapterMap = chapters.stream()
+                .collect(Collectors.toMap(ChapterV2::getId, Function.identity()));
 
         Optional<UserSectionProgress> progressOpt = userSectionProgressRepository
                 .findByUserIdAndSectionId(command.actor().id(), command.sectionId());
@@ -38,10 +43,8 @@ public class GetSectionV2DetailsService implements GetSectionV2DetailsUseCase {
         Long currentChapterId = progressOpt.map(UserSectionProgress::getCurrentChapterId).orElse(null);
         Integer currentOrderIndex = progressOpt
                 .map(UserSectionProgress::getCurrentChapterId)
-                .flatMap(chapterId -> chapters.stream()
-                        .filter(c -> c.getId().equals(chapterId))
-                        .findFirst()
-                        .map(ChapterV2::getOrderIndex))
+                .map(chapterMap::get)
+                .map(ChapterV2::getOrderIndex)
                 .orElse(null);
 
         return GetSectionV2DetailsData.Result.from(section, currentChapterId, currentOrderIndex, chapters);
