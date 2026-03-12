@@ -288,7 +288,9 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
                 ux.user.profileImage,
                 case when count(r) > 0 then true else false end,
                 ux.user.username,
-                cast(sum(ux.earnExp) as long)
+                cast(sum(ux.earnExp) as long),
+                ux.user.currentRankTier,
+                ux.user.currentExpTier
             )
         from UserExpHistoryJpaEntity ux
         left join RivalJpaEntity r on
@@ -297,7 +299,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             and r.rivalLinkingStatus = 'ACCEPTED'
         where ux.actingCategory <> 'SEASON_RESET'
             and ux.date between :startDate and :endDate
-        group by ux.user.id, ux.user.name, ux.user.profileImage, ux.user.username
+        group by ux.user.id, ux.user.name, ux.user.profileImage, ux.user.username, ux.user.currentRankTier, ux.user.currentExpTier
         order by sum(ux.earnExp) desc
     """)
     List<UserRanking> findExpRankingByUserIdAndPeriod(

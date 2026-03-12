@@ -210,7 +210,9 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
                     coalesce(
                         sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount), 0
                     ) as long
-                )
+                ),
+                ug.user.currentRankTier,
+                ug.user.currentExpTier
             )
         from UserGitHubJpaEntity ug
         left join GitHubDailyStatsJpaEntity g on
@@ -220,7 +222,7 @@ public interface GitHubDailyStatsJpaRepository extends JpaRepository<GitHubDaily
             ((r.firstUser.id = ug.user.id and r.secondUser.id = :userId)
                 or (r.secondUser.id = ug.user.id and r.firstUser.id = :userId))
             and r.rivalLinkingStatus = 'ACCEPTED'
-        group by ug.user.id, ug.user.name, ug.user.profileImage, ug.user.username, ug.gitHubId
+        group by ug.user.id, ug.user.name, ug.user.profileImage, ug.user.username, ug.gitHubId, ug.user.currentRankTier, ug.user.currentExpTier
         order by sum(g.commitCount + g.issueCount + g.prCount + g.reviewCount) desc nulls last
     """)
     List<UserRanking> findGitHubRankingByUserIdAndPeriod(
