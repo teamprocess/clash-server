@@ -8,8 +8,4 @@ public class ActiveSessionV2NotFoundException extends NotFoundException {
     public ActiveSessionV2NotFoundException() {
         super(RecordV2StatusCode.ACTIVE_RECORD_SESSION_V2_NOT_FOUND);
     }
-
-    public ActiveSessionV2NotFoundException(Throwable cause) {
-        super(RecordV2StatusCode.ACTIVE_RECORD_SESSION_V2_NOT_FOUND, cause);
-    }
 }

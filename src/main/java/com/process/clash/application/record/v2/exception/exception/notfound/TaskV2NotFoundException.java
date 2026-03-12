@@ -8,8 +8,4 @@ public class TaskV2NotFoundException extends NotFoundException {
     public TaskV2NotFoundException() {
         super(RecordV2StatusCode.TASK_V2_NOT_FOUND);
     }
-
-    public TaskV2NotFoundException(Throwable cause) {
-        super(RecordV2StatusCode.TASK_V2_NOT_FOUND, cause);
-    }
 }

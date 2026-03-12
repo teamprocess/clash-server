@@ -7,8 +7,4 @@ public class MajorQuestionNotFoundException extends NotFoundException {
     public MajorQuestionNotFoundException() {
         super(MajorStatusCode.MAJOR_QUESTION_NOT_FOUND);
     }
-
-    public MajorQuestionNotFoundException(Throwable cause) {
-        super(MajorStatusCode.MAJOR_QUESTION_NOT_FOUND, cause);
-    }
 }

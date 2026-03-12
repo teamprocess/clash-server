@@ -8,8 +8,4 @@ public class InvalidProfileImageUploadRequestException extends BadRequestExcepti
     public InvalidProfileImageUploadRequestException() {
         super(UserStatusCode.INVALID_PROFILE_IMAGE_UPLOAD_REQUEST);
     }
-
-    public InvalidProfileImageUploadRequestException(Throwable cause) {
-        super(UserStatusCode.INVALID_PROFILE_IMAGE_UPLOAD_REQUEST, cause);
-    }
 }

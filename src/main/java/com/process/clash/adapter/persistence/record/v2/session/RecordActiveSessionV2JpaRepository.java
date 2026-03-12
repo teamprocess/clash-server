@@ -180,7 +180,9 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
                         ))
                     ), 0
                 ) as bigint
-            ) as point
+            ) as point,
+            u.current_rank_tier as rankTier,
+            u.current_exp_tier as expTier
         from record_active_sessions_v2 ss
         inner join users u on u.id = ss.fk_user_id
         left join rivals r on
@@ -189,7 +191,7 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
             and r.rival_linking_status = 'ACCEPTED'
         where ss.started_at < :endDate
             and coalesce(ss.ended_at, :now) >= :startDate
-        group by u.id, u.name, u.profile_image, u.username
+        group by u.id, u.name, u.profile_image, u.username, u.current_rank_tier, u.current_exp_tier
         order by point desc
     """, nativeQuery = true)
     List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(

@@ -7,8 +7,4 @@ public class EntityRefreshFailedException extends InternalServerException {
     public EntityRefreshFailedException() {
         super(CommonStatusCode.ENTITY_REFRESH_FAILED);
     }
-
-    public EntityRefreshFailedException(Throwable cause) {
-        super(CommonStatusCode.ENTITY_REFRESH_FAILED, cause);
-    }
 }

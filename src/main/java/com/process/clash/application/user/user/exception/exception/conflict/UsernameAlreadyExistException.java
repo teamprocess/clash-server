@@ -7,8 +7,4 @@ public class UsernameAlreadyExistException extends ConflictException {
     public UsernameAlreadyExistException() {
         super(UserStatusCode.USERNAME_ALREADY_EXIST);
     }
-
-    public UsernameAlreadyExistException(Throwable cause) {
-        super(UserStatusCode.USERNAME_ALREADY_EXIST, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class GroupAccessDeniedException extends ForbiddenException {
     public GroupAccessDeniedException() {
         super(CommonStatusCode.PERMISSION_DENIED);
     }
-
-    public GroupAccessDeniedException(Throwable cause) {
-        super(CommonStatusCode.PERMISSION_DENIED, cause);
-    }
 }

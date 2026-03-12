@@ -7,8 +7,4 @@ public class GroupPasswordMismatchException extends BadRequestException {
     public GroupPasswordMismatchException() {
         super(GroupStatusCode.GROUP_PASSWORD_MISMATCH);
     }
-
-    public GroupPasswordMismatchException(Throwable cause) {
-        super(GroupStatusCode.GROUP_PASSWORD_MISMATCH, cause);
-    }
 }

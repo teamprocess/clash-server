@@ -7,8 +7,4 @@ public class RequiredUserRoleException extends ForbiddenException {
     public RequiredUserRoleException() {
         super(UserStatusCode.REQUIRED_USER_ROLE);
     }
-
-    public RequiredUserRoleException(Throwable cause) {
-        super(UserStatusCode.REQUIRED_USER_ROLE, cause);
-    }
 }

@@ -8,8 +8,4 @@ public class InvalidActivityStatisticsDurationException extends BadRequestExcept
     public InvalidActivityStatisticsDurationException() {
         super(RecordV2StatusCode.INVALID_ACTIVITY_STATISTICS_DURATION);
     }
-
-    public InvalidActivityStatisticsDurationException(Throwable cause) {
-        super(RecordV2StatusCode.INVALID_ACTIVITY_STATISTICS_DURATION, cause);
-    }
 }

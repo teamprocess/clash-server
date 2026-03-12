@@ -7,8 +7,4 @@ public class GroupNotFoundException extends NotFoundException {
     public GroupNotFoundException() {
         super(GroupStatusCode.GROUP_NOT_FOUND);
     }
-
-    public GroupNotFoundException(Throwable cause) {
-        super(GroupStatusCode.GROUP_NOT_FOUND, cause);
-    }
 }

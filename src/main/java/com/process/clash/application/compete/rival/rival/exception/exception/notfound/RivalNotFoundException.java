@@ -7,8 +7,4 @@ public class RivalNotFoundException extends NotFoundException {
     public RivalNotFoundException() {
         super(RivalStatusCode.RIVAL_NOT_FOUND);
     }
-
-    public RivalNotFoundException(Throwable cause) {
-        super(RivalStatusCode.RIVAL_NOT_FOUND, cause);
-    }
 }

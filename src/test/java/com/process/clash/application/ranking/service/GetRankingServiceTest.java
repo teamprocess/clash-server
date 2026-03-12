@@ -16,6 +16,8 @@ import com.process.clash.application.record.v2.port.out.RecordSessionV2Repositor
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -171,11 +173,11 @@ class GetRankingServiceTest {
     }
 
     @Test
-    @DisplayName("ACTIVE_TIME 카테고리는 저장소에서 받은 랭킹 결과를 그대로 반환한다")
+    @DisplayName("ACTIVE_TIME 카테고리는 저장소에서 받은 랭킹 결과(티어 포함)를 그대로 반환한다")
     void activeTime_returnsRankingsFromRepository() {
         List<UserRanking> expected = List.of(
-            new UserRanking(2L, "유저B", "", false, "userB", 7200L),
-            new UserRanking(3L, "유저C", "", true,  "userC", 3600L)
+            new UserRanking(2L, "유저B", "", false, "userB", 7200L, RankTier.AURA,   ExpTier.DIAMOND),
+            new UserRanking(3L, "유저C", "", true,  "userC", 3600L, RankTier.MASTER, ExpTier.GOLD)
         );
         when(recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(expected);

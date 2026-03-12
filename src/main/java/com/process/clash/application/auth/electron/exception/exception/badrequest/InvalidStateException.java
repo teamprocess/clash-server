@@ -7,8 +7,4 @@ public class InvalidStateException extends BadRequestException {
     public InvalidStateException() {
         super(ElectronAuthStatusCode.INVALID_STATE);
     }
-
-    public InvalidStateException(Throwable cause) {
-        super(ElectronAuthStatusCode.INVALID_STATE, cause);
-    }
 }

@@ -8,8 +8,4 @@ public class InvalidRecordV2DailyDateRequestException extends BadRequestExceptio
     public InvalidRecordV2DailyDateRequestException() {
         super(RecordV2StatusCode.INVALID_RECORD_V2_DAILY_DATE_REQUEST);
     }
-
-    public InvalidRecordV2DailyDateRequestException(Throwable cause) {
-        super(RecordV2StatusCode.INVALID_RECORD_V2_DAILY_DATE_REQUEST, cause);
-    }
 }

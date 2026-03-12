@@ -7,8 +7,4 @@ public class InvalidUserNoticeException extends BadRequestException {
     public InvalidUserNoticeException() {
         super(UserNoticeStatusCode.INVALID_USER_NOTICE);
     }
-
-    protected InvalidUserNoticeException(Throwable cause) {
-        super(UserNoticeStatusCode.INVALID_USER_NOTICE, cause);
-    }
 }

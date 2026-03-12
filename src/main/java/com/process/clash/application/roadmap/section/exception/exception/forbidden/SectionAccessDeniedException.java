@@ -7,8 +7,4 @@ public class SectionAccessDeniedException extends ForbiddenException {
     public SectionAccessDeniedException() {
         super(SectionStatusCode.SECTION_PREREQUISITE_NOT_COMPLETED);
     }
-
-    public SectionAccessDeniedException(Throwable cause) {
-        super(SectionStatusCode.SECTION_PREREQUISITE_NOT_COMPLETED, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class InvalidDiscountException extends BadRequestException {
     public InvalidDiscountException() {
         super(ProductStatusCode.INVALID_DISCOUNT);
     }
-
-    public InvalidDiscountException(Throwable cause) {
-        super(ProductStatusCode.INVALID_DISCOUNT, cause);
-    }
 }

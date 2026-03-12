@@ -7,8 +7,4 @@ public class GroupNotMemberException extends BadRequestException {
     public GroupNotMemberException() {
         super(GroupStatusCode.GROUP_NOT_MEMBER);
     }
-
-    public GroupNotMemberException(Throwable cause) {
-        super(GroupStatusCode.GROUP_NOT_MEMBER, cause);
-    }
 }

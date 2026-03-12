@@ -8,8 +8,4 @@ public class InvalidDevelopAppSwitchRequestException extends BadRequestException
     public InvalidDevelopAppSwitchRequestException() {
         super(RecordV2StatusCode.INVALID_DEVELOP_APP_SWITCH_REQUEST);
     }
-
-    public InvalidDevelopAppSwitchRequestException(Throwable cause) {
-        super(RecordV2StatusCode.INVALID_DEVELOP_APP_SWITCH_REQUEST, cause);
-    }
 }

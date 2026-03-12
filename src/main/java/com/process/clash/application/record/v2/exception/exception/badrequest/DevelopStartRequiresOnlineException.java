@@ -8,8 +8,4 @@ public class DevelopStartRequiresOnlineException extends BadRequestException {
     public DevelopStartRequiresOnlineException() {
         super(RecordV2StatusCode.DEVELOP_START_REQUIRES_ONLINE);
     }
-
-    public DevelopStartRequiresOnlineException(Throwable cause) {
-        super(RecordV2StatusCode.DEVELOP_START_REQUIRES_ONLINE, cause);
-    }
 }

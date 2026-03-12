@@ -7,8 +7,4 @@ public class StateMismatchException extends BadRequestException {
     public StateMismatchException() {
         super(ElectronAuthStatusCode.STATE_MISMATCH);
     }
-
-    public StateMismatchException(Throwable cause) {
-        super(ElectronAuthStatusCode.STATE_MISMATCH, cause);
-    }
 }

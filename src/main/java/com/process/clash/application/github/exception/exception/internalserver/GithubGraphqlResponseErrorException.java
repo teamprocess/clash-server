@@ -7,8 +7,4 @@ public class GithubGraphqlResponseErrorException extends InternalServerException
     public GithubGraphqlResponseErrorException() {
         super(GithubGraphqlStatusCode.GITHUB_GRAPHQL_RESPONSE_ERROR);
     }
-
-    public GithubGraphqlResponseErrorException(Throwable cause) {
-        super(GithubGraphqlStatusCode.GITHUB_GRAPHQL_RESPONSE_ERROR, cause);
-    }
 }
