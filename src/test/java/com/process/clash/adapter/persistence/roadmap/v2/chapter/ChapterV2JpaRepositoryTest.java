@@ -74,16 +74,16 @@ class ChapterV2JpaRepositoryTest {
     }
 
     @Test
-    void findByIdWithQuestionsAndChoices_MultipleBagFetchException가_발생하지_않는다() {
+    void findByIdWithQuestions_MultipleBagFetchException가_발생하지_않는다() {
         // questions(Bag) + choices(Bag) 동시 JOIN 시 MultipleBagFetchException 발생
         // @EntityGraph를 questions만으로 제한하고 choices는 batch fetch로 위임하여 해결
         assertThatNoException()
-                .isThrownBy(() -> chapterV2JpaRepository.findByIdWithQuestionsAndChoices(chapterId));
+                .isThrownBy(() -> chapterV2JpaRepository.findByIdWithQuestions(chapterId));
     }
 
     @Test
-    void findByIdWithQuestionsAndChoices_질문과_선택지_모두_조회된다() {
-        Optional<ChapterV2JpaEntity> result = chapterV2JpaRepository.findByIdWithQuestionsAndChoices(chapterId);
+    void findByIdWithQuestions_질문과_선택지_모두_조회된다() {
+        Optional<ChapterV2JpaEntity> result = chapterV2JpaRepository.findByIdWithQuestions(chapterId);
 
         assertThat(result).isPresent();
         ChapterV2JpaEntity chapter = result.get();
@@ -93,14 +93,14 @@ class ChapterV2JpaRepositoryTest {
     }
 
     @Test
-    void findByIdWithQuestionsAndChoices_존재하지_않는_id는_empty를_반환한다() {
-        Optional<ChapterV2JpaEntity> result = chapterV2JpaRepository.findByIdWithQuestionsAndChoices(999L);
+    void findByIdWithQuestions_존재하지_않는_id는_empty를_반환한다() {
+        Optional<ChapterV2JpaEntity> result = chapterV2JpaRepository.findByIdWithQuestions(999L);
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    void findByIdWithQuestionsAndChoices_질문이_없는_챕터는_빈_리스트를_반환한다() {
+    void findByIdWithQuestions_질문이_없는_챕터는_빈_리스트를_반환한다() {
         CategoryJpaEntity category = new CategoryJpaEntity(null, "프론트엔드", null, null, null);
         em.persist(category);
 
@@ -117,7 +117,7 @@ class ChapterV2JpaRepositoryTest {
         em.flush();
         em.clear();
 
-        Optional<ChapterV2JpaEntity> result = chapterV2JpaRepository.findByIdWithQuestionsAndChoices(emptyChapter.getId());
+        Optional<ChapterV2JpaEntity> result = chapterV2JpaRepository.findByIdWithQuestions(emptyChapter.getId());
 
         assertThat(result).isPresent();
         assertThat(result.get().getQuestions()).isEmpty();

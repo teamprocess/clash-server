@@ -15,10 +15,10 @@ public interface ChapterV2RepositoryPort {
     Optional<ChapterV2> findById(Long id);
     
     /**
-     * 챕터의 모든 질문과 선택지를 함께 조회합니다. (Eager Loading)
+     * 챕터의 질문을 eager-fetch하여 조회합니다. 선택지(choices)는 batch fetch로 지연 로딩됩니다.
      * 챕터 상세 조회 시에만 사용하세요.
      */
-    Optional<ChapterV2> findByIdWithQuestionsAndChoices(Long id);
+    Optional<ChapterV2> findByIdWithQuestions(Long id);
     
     List<ChapterV2> findAll();
     List<ChapterV2> findAllBySectionId(Long sectionId);
