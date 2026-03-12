@@ -61,7 +61,7 @@ class GetGroupActivityServiceTest {
     void execute_returnsDateBasedStudyTimesWithoutRealtimeStatus() {
         Long groupId = 10L;
         Actor actor = new Actor(1L);
-        LocalDate requestedDate = LocalDate.of(2026, 3, 12);
+        LocalDate requestedDate = RecordDayWindow.today(ZoneId.of("UTC"), 6).recordDate().minusDays(1);
         LocalDateTime dayStart = requestedDate.atTime(6, 0);
         LocalDateTime dayEnd = dayStart.plusDays(1);
         User member = createUser(2L, "조상철");
