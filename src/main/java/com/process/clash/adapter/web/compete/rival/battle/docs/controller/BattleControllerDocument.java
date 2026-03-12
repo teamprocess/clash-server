@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Tag(name = "배틀 API", description = "라이벌과의 배틀 신청/관리 및 조회")
 public interface BattleControllerDocument {
 
-    @Operation(summary = "배틀 신청", description = "라이벌에게 배틀을 신청합니다.")
+    @Operation(summary = "배틀 신청", description = "라이벌에게 배틀을 신청합니다. 배틀은 다음날 KST 06시에 시작되며, duration일 동안 진행됩니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "신청 성공",
                     content = @Content(
@@ -47,7 +47,7 @@ public interface BattleControllerDocument {
             ApplyBattleDto.Request request
     );
 
-    @Operation(summary = "배틀 승인", description = "신청받은 배틀을 승인합니다.")
+    @Operation(summary = "배틀 승인", description = "신청받은 배틀을 승인합니다. 승인 후 배틀은 NOT_STARTED 상태가 되며, 시작일 KST 06시에 자동으로 IN_PROGRESS로 전환됩니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "승인 성공",
                     content = @Content(

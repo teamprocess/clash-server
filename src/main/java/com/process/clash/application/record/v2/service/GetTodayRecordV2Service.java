@@ -3,6 +3,7 @@ package com.process.clash.application.record.v2.service;
 import com.process.clash.application.record.v2.util.RecordDayWindow;
 import com.process.clash.application.record.v2.util.RecordSessionWindowCalculator;
 import com.process.clash.application.record.v2.data.GetTodayRecordV2Data;
+import com.process.clash.application.record.v2.data.RecordSessionV2Data;
 import com.process.clash.application.record.v2.port.in.GetTodayRecordV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
@@ -78,11 +79,12 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
                 .orElse(null)
             : null;
 
-        return GetTodayRecordV2Data.Result.from(
-            date,
-            totalStudyTime,
-            studyStoppedAt,
-            todaySessions.stream()
+        List<RecordSessionV2Data.Session> sessions;
+        if (endLimit.isBefore(startOfDay)) {
+            // 미래 날짜: 유효한 학습 구간이 없으므로 세션 목록을 비운다
+            sessions = List.of();
+        } else {
+            sessions = todaySessions.stream()
                 .map(session -> {
                     LocalDateTime sessionStartLocal = toLocalDateTime(session.startedAt());
                     // 화면에 노출하는 세션 시작 시각도 기록일 경계(startOfDay) 밖이면 경계로 보정한다.
@@ -96,8 +98,9 @@ public class GetTodayRecordV2Service implements GetTodayRecordV2UseCase {
                     Instant sessionEndInstant = sessionEnd == null ? null : sessionEnd.atZone(recordZoneId).toInstant();
                     return RecordSessionV2Mapper.toSession(session, sessionStartInstant, sessionEndInstant);
                 })
-                .toList()
-        );
+                .toList();
+        }
+        return GetTodayRecordV2Data.Result.from(date, totalStudyTime, studyStoppedAt, sessions);
     }
 
     private LocalDateTime projectedSessionEnd(

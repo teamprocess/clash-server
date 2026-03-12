@@ -30,9 +30,12 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
 
     private static final String RESULT_WON = "WON";
     private static final String RESULT_LOST = "LOST";
-    private static final String RESULT_DRAW = "DRAW";
+    private static final String RESULT_DRAWN = "DRAWN";
     private static final String RESULT_WINNING = "WINNING";
     private static final String RESULT_LOSING = "LOSING";
+    private static final String RESULT_DRAWING = "DRAWING";
+    private static final String RESULT_NOT_STARTED = "NOT_STARTED";
+    private static final String RESULT_CANCELED = "CANCELED";
     private static final String RESULT_PENDING = "PENDING";
 
     private final BattleRepositoryPort battleRepositoryPort;
@@ -176,7 +179,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
         if (status == BattleStatus.DONE) {
             Long winnerId = battle.winnerId();
             if (winnerId == null) {
-                return RESULT_DRAW;
+                return RESULT_DRAWN;
             }
             return winnerId.equals(currentUserId) ? RESULT_WON : RESULT_LOST;
         }
@@ -191,11 +194,21 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
             } else if (currentUserAvgExp < enemyAvgExp) {
                 return RESULT_LOSING;
             } else {
-                return RESULT_DRAW;
+                return RESULT_DRAWING;
             }
         }
 
-        return RESULT_PENDING;
+        // 시작 전 배틀
+        if (status == BattleStatus.NOT_STARTED) {
+            return RESULT_NOT_STARTED;
+        }
+
+        // 취소된 배틀
+        if (status == BattleStatus.CANCELED) {
+            return RESULT_CANCELED;
+        }
+
+        throw new IllegalStateException("Unexpected battle status: " + status);
     }
 
     private Long getEnemyId(Rival rival, Long currentUserId) {

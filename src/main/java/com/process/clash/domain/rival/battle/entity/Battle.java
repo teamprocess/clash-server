@@ -32,12 +32,16 @@ public record Battle(
         );
     }
 
-    public Battle accept() {
+    public Battle accept(LocalDate today) {
 
-        BattleStatus status = BattleStatus.IN_PROGRESS;
+        BattleStatus status;
 
-        if (LocalDate.now().isAfter(this.endDate)) {
+        if (today.isAfter(this.endDate)) {
             status = BattleStatus.DONE;
+        } else if (!today.isBefore(this.startDate)) {
+            status = BattleStatus.IN_PROGRESS;
+        } else {
+            status = BattleStatus.NOT_STARTED;
         }
 
         return new Battle(
@@ -47,6 +51,21 @@ public record Battle(
                 this.startDate,
                 this.endDate,
                 status,
+                this.winnerId,
+                this.rivalId,
+                this.applicantId
+        );
+    }
+
+    public Battle start() {
+
+        return new Battle(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.startDate,
+                this.endDate,
+                BattleStatus.IN_PROGRESS,
                 this.winnerId,
                 this.rivalId,
                 this.applicantId

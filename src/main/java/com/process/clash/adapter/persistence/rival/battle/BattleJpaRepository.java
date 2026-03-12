@@ -101,6 +101,17 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     List<BattleJpaEntity> findExpiredInProgressBattles(@Param("today") LocalDate today);
 
     /**
+     * 시작일이 도래했으나 아직 NOT_STARTED 상태인 배틀 조회 (스케줄러용)
+     */
+    @Query(value = """
+        SELECT b.*
+        FROM battles b
+        WHERE b.battle_status = 'NOT_STARTED'
+          AND b.start_date <= :today
+    """, nativeQuery = true)
+    List<BattleJpaEntity> findNotStartedBattlesToStart(@Param("today") LocalDate today);
+
+    /**
      * 유저 관련 PENDING 상태 배틀 신청 목록 조회
      */
     @Query(value = """

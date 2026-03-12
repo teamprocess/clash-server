@@ -48,8 +48,8 @@ public class ChapterV2PersistenceAdapter implements ChapterV2RepositoryPort {
     }
 
     @Override
-    public Optional<ChapterV2> findByIdWithQuestionsAndChoices(Long id) {
-        return chapterV2JpaRepository.findByIdWithQuestionsAndChoices(id).map(chapterV2JpaMapper::toDomain);
+    public Optional<ChapterV2> findByIdWithQuestions(Long id) {
+        return chapterV2JpaRepository.findByIdWithQuestions(id).map(chapterV2JpaMapper::toDomain);
     }
 
     @Override
