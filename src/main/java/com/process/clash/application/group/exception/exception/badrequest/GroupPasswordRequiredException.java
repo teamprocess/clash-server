@@ -7,8 +7,4 @@ public class GroupPasswordRequiredException extends BadRequestException {
     public GroupPasswordRequiredException() {
         super(GroupStatusCode.GROUP_PASSWORD_REQUIRED);
     }
-
-    public GroupPasswordRequiredException(Throwable cause) {
-        super(GroupStatusCode.GROUP_PASSWORD_REQUIRED, cause);
-    }
 }

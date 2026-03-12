@@ -8,8 +8,4 @@ public class InvalidRecordV2StartRequestException extends BadRequestException {
     public InvalidRecordV2StartRequestException() {
         super(RecordV2StatusCode.INVALID_RECORD_V2_START_REQUEST);
     }
-
-    public InvalidRecordV2StartRequestException(Throwable cause) {
-        super(RecordV2StatusCode.INVALID_RECORD_V2_START_REQUEST, cause);
-    }
 }

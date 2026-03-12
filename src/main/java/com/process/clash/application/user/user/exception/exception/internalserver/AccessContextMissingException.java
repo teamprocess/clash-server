@@ -7,8 +7,4 @@ public class AccessContextMissingException extends InternalServerException {
     public AccessContextMissingException() {
         super(CommonStatusCode.SERVLET_CONTEXT_UNAVAILABLE);
     }
-
-    public AccessContextMissingException(Throwable cause) {
-        super(CommonStatusCode.SERVLET_CONTEXT_UNAVAILABLE, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class BattleNotFoundException extends NotFoundException {
     public BattleNotFoundException() {
         super(BattleStatusCode.BATTLE_NOT_FOUND);
     }
-
-    public BattleNotFoundException(Throwable cause) {
-        super(BattleStatusCode.BATTLE_NOT_FOUND, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class InvalidDisplayOrderException extends BadRequestException {
     public InvalidDisplayOrderException() {
         super(RecommendedProductStatusCode.INVALID_DISPLAY_ORDER);
     }
-
-    public InvalidDisplayOrderException(Throwable cause) {
-        super(RecommendedProductStatusCode.INVALID_DISPLAY_ORDER, cause);
-    }
 }

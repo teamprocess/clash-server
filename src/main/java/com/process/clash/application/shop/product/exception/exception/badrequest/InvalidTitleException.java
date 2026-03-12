@@ -7,8 +7,4 @@ public class InvalidTitleException extends BadRequestException {
     public InvalidTitleException() {
         super(ProductStatusCode.INVALID_TITLE);
     }
-
-    public InvalidTitleException(Throwable cause) {
-        super(ProductStatusCode.INVALID_TITLE, cause);
-    }
 }

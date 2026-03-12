@@ -7,8 +7,4 @@ public class InsufficientGoodsException extends BadRequestException {
     public InsufficientGoodsException() {
         super(PurchaseStatusCode.INSUFFICIENT_GOODS);
     }
-
-    public InsufficientGoodsException(Throwable cause) {
-        super(PurchaseStatusCode.INSUFFICIENT_GOODS, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class InvalidProductIdException extends BadRequestException {
     public InvalidProductIdException() {
         super(RecommendedProductStatusCode.INVALID_PRODUCT_ID);
     }
-
-    public InvalidProductIdException(Throwable cause) {
-        super(RecommendedProductStatusCode.INVALID_PRODUCT_ID, cause);
-    }
 }

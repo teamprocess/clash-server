@@ -7,8 +7,4 @@ public class NotAcceptedBattleException extends BadRequestException {
     public NotAcceptedBattleException() {
         super(BattleStatusCode.NOT_ACCEPTED_BATTLE);
     }
-
-    public NotAcceptedBattleException(Throwable cause) {
-        super(BattleStatusCode.NOT_ACCEPTED_BATTLE, cause);
-    }
 }

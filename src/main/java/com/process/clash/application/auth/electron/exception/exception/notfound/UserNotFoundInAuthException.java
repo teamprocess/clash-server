@@ -7,8 +7,4 @@ public class UserNotFoundInAuthException extends NotFoundException {
     public UserNotFoundInAuthException() {
         super(ElectronAuthStatusCode.USER_NOT_FOUND_IN_AUTH);
     }
-
-    public UserNotFoundInAuthException(Throwable cause) {
-        super(ElectronAuthStatusCode.USER_NOT_FOUND_IN_AUTH, cause);
-    }
 }

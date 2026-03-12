@@ -7,8 +7,4 @@ public class ProductNotFoundException extends NotFoundException {
     public ProductNotFoundException() {
         super(ProductStatusCode.PRODUCT_NOT_FOUND);
     }
-
-    public ProductNotFoundException(Throwable cause) {
-        super(ProductStatusCode.PRODUCT_NOT_FOUND, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class ServletContextUnavailableException extends InternalServerException 
     public ServletContextUnavailableException() {
         super(CommonStatusCode.SERVLET_CONTEXT_UNAVAILABLE);
     }
-
-    public ServletContextUnavailableException(Throwable cause) {
-        super(CommonStatusCode.SERVLET_CONTEXT_UNAVAILABLE, cause);
-    }
 }

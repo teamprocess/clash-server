@@ -7,8 +7,4 @@ public class InvalidAuthCodeException extends BadRequestException {
     public InvalidAuthCodeException() {
         super(ElectronAuthStatusCode.INVALID_AUTH_CODE);
     }
-
-    public InvalidAuthCodeException(Throwable cause) {
-        super(ElectronAuthStatusCode.INVALID_AUTH_CODE, cause);
-    }
 }

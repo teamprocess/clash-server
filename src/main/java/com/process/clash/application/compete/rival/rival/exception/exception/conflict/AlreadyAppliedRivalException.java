@@ -7,8 +7,4 @@ public class AlreadyAppliedRivalException extends ConflictException {
     public AlreadyAppliedRivalException() {
         super(RivalStatusCode.ALREADY_APPLIED_RIVAL);
     }
-
-    public AlreadyAppliedRivalException(Throwable cause) {
-        super(RivalStatusCode.ALREADY_APPLIED_RIVAL, cause);
-    }
 }

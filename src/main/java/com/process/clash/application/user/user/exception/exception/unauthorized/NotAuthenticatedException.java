@@ -7,8 +7,4 @@ public class NotAuthenticatedException extends UnAuthorizedException {
     public NotAuthenticatedException() {
         super(UserStatusCode.NOT_AUTHENTICATED);
     }
-
-    public NotAuthenticatedException(Throwable cause) {
-        super(UserStatusCode.NOT_AUTHENTICATED, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class VerificationCodeExpiredOrWrongEmailException extends BadRequestExce
     public VerificationCodeExpiredOrWrongEmailException() {
         super(UserStatusCode.VERIFICATION_CODE_EXPIRED_OR_WRONG_EMAIL);
     }
-
-    public VerificationCodeExpiredOrWrongEmailException(Throwable cause) {
-        super(UserStatusCode.VERIFICATION_CODE_EXPIRED_OR_WRONG_EMAIL, cause);
-    }
 }

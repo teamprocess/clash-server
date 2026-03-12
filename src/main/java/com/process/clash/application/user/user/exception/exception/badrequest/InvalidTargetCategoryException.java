@@ -7,8 +7,4 @@ public class InvalidTargetCategoryException extends BadRequestException {
     public InvalidTargetCategoryException() {
         super(UserStatusCode.INVALID_TARGET_CATEGORY);
     }
-
-    public InvalidTargetCategoryException(Throwable cause) {
-        super(UserStatusCode.INVALID_TARGET_CATEGORY, cause);
-    }
 }

@@ -7,8 +7,4 @@ public class InvalidCredentialsException extends UnAuthorizedException {
     public InvalidCredentialsException() {
         super(UserStatusCode.INVALID_CREDENTIALS);
     }
-
-    public InvalidCredentialsException(Throwable cause) {
-        super(UserStatusCode.INVALID_CREDENTIALS, cause);
-    }
 }
