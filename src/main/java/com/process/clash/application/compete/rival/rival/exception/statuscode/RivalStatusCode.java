@@ -1,10 +1,9 @@
 package com.process.clash.application.compete.rival.rival.exception.statuscode;
 
-
 import com.process.clash.application.common.exception.statuscode.StatusCode;
-import org.springframework.http.HttpStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,7 +14,9 @@ public enum RivalStatusCode implements StatusCode {
     CANCEL_RIVAL_INVALID_STATUS("CANCEL_RIVAL_INVALID_STATUS", "대기 중인 라이벌 신청만 취소할 수 있습니다.", HttpStatus.BAD_REQUEST),
 
     // 403
+    ACCEPT_RIVAL_FORBIDDEN("ACCEPT_RIVAL_FORBIDDEN", "라이벌 신청을 수락할 권한이 없습니다.", HttpStatus.FORBIDDEN),
     CANCEL_RIVAL_FORBIDDEN("CANCEL_RIVAL_FORBIDDEN", "라이벌 신청을 취소할 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    REJECT_RIVAL_FORBIDDEN("REJECT_RIVAL_FORBIDDEN", "라이벌 신청을 거절할 권한이 없습니다.", HttpStatus.FORBIDDEN),
 
     // 404
     RIVAL_NOT_FOUND("RIVAL_NOT_FOUND", "라이벌이 존재하지 않습니다..", HttpStatus.NOT_FOUND),

@@ -18,6 +18,7 @@ public enum UserStatusCode implements StatusCode {
     INVALID_PROFILE_IMAGE_UPLOAD_REQUEST("INVALID_PROFILE_IMAGE_UPLOAD_REQUEST", "프로필 이미지 업로드 요청이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
     VERIFICATION_CODE_EXPIRED_OR_WRONG_EMAIL("VERIFICATION_CODE_EXPIRED_OR_WRONG_EMAIL", "인증 코드가 만료되었거나 잘못된 이메일입니다.", HttpStatus.BAD_REQUEST),
     VERIFICATION_CODE_MISMATCH("VERIFICATION_CODE_MISMATCH", "인증 코드가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD_RESET_TOKEN("INVALID_PASSWORD_RESET_TOKEN", "유효하지 않거나 만료된 비밀번호 재설정 링크입니다.", HttpStatus.BAD_REQUEST),
 
     // 401
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "아이디 또는 비밀번호가 올바르지 않습니다.", HttpStatus.UNAUTHORIZED),
