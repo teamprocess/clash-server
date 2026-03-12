@@ -185,10 +185,6 @@ class GetRankingServiceTest {
         GetRankingData.Result result = service.execute(activeTimeCommand(PeriodCategory.DAY));
 
         assertThat(result.rankings()).isEqualTo(expected);
-        assertThat(result.rankings().get(0).rankTier()).isEqualTo(RankTier.AURA);
-        assertThat(result.rankings().get(0).expTier()).isEqualTo(ExpTier.DIAMOND);
-        assertThat(result.rankings().get(1).rankTier()).isEqualTo(RankTier.MASTER);
-        assertThat(result.rankings().get(1).expTier()).isEqualTo(ExpTier.GOLD);
     }
 
     // ===== EXP =====

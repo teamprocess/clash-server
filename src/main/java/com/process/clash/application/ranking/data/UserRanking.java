@@ -36,6 +36,6 @@ public record UserRanking(
             String linkedId,
             Long point
     ) {
-        this(userId, name, profileImage, isRival, linkedId, point, RankTier.NONE, ExpTier.UNRANKED, EquippedItemsData.empty());
+        this(userId, name, profileImage, isRival, linkedId, point, RankTier.NONE, ExpTier.UNRANKED);
     }
 }
