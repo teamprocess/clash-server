@@ -42,8 +42,8 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         QuestionV2 question = questionV2RepositoryPort.findById(command.questionId())
                 .orElseThrow(QuestionV2NotFoundException::new);
 
-        // 2. 챕터 조회 (questions와 choices 필요)
-        ChapterV2 chapter = chapterV2RepositoryPort.findByIdWithQuestionsAndChoices(question.getChapterId())
+        // 2. 챕터 조회 (questions eager-fetch, choices는 batch fetch로 지연 로딩)
+        ChapterV2 chapter = chapterV2RepositoryPort.findByIdWithQuestions(question.getChapterId())
                 .orElseThrow(ChapterV2NotFoundException::new);
 
         // 3. 사용자 섹션 진행도 조회 (한 번만 조회하여 재사용)

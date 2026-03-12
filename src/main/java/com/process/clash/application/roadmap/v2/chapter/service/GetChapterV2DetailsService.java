@@ -26,8 +26,8 @@ public class GetChapterV2DetailsService implements GetChapterV2DetailsUseCase {
     public GetChapterV2DetailsData.Result execute(GetChapterV2DetailsData.Command command) {
         Actor actor = command.actor();
 
-        // 챕터 조회 (questions와 choices 함께 fetch)
-        ChapterV2 chapter = chapterV2RepositoryPort.findByIdWithQuestionsAndChoices(command.chapterId())
+        // 챕터 조회 (questions eager-fetch, choices는 batch fetch로 지연 로딩)
+        ChapterV2 chapter = chapterV2RepositoryPort.findByIdWithQuestions(command.chapterId())
                 .orElseThrow(ChapterV2NotFoundException::new);
 
         // 사용자 히스토리 조회
