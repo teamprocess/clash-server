@@ -3,12 +3,10 @@ package com.process.clash.application.roadmap.v2.section.service;
 import com.process.clash.application.roadmap.port.out.UserSectionProgressRepositoryPort;
 import com.process.clash.application.roadmap.section.common.SectionLockedBooleanClassifier;
 import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
-import com.process.clash.application.roadmap.v2.port.out.ChapterV2RepositoryPort;
 import com.process.clash.application.roadmap.v2.section.data.GetSectionV2ListData;
 import com.process.clash.application.roadmap.v2.section.port.in.GetSectionV2ListUseCase;
 import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.UserSectionProgress;
-import com.process.clash.domain.roadmap.v2.entity.ChapterV2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,6 @@ import java.util.stream.Collectors;
 public class GetSectionV2ListService implements GetSectionV2ListUseCase {
 
     private final SectionRepositoryPort sectionRepository;
-    private final ChapterV2RepositoryPort chapterV2RepositoryPort;
     private final SectionLockedBooleanClassifier sectionLockedBooleanClassifier;
     private final UserSectionProgressRepositoryPort userSectionProgressRepository;
 
@@ -51,8 +48,7 @@ public class GetSectionV2ListService implements GetSectionV2ListUseCase {
                     boolean locked = sectionLockedBooleanClassifier.checkWithProgressMap(section, progressMap);
                     UserSectionProgress progress = progressMap.get(section.getId());
                     boolean completed = progress != null && progress.getIsCompleted();
-                    List<ChapterV2> chapters = chapterV2RepositoryPort.findAllBySectionId(section.getId());
-                    return GetSectionV2ListData.Result.SectionVo.from(section, completed, locked, chapters);
+                    return GetSectionV2ListData.Result.SectionVo.from(section, completed, locked);
                 })
                 .toList();
 

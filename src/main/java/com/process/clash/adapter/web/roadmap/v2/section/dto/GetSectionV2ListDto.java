@@ -30,37 +30,10 @@ public class GetSectionV2ListDto {
             Long categoryId,
             String categoryImageUrl,
             Boolean completed,
-            Boolean locked,
-            List<ChapterVo> chapters
+            Boolean locked
     ) {
         public static SectionVo from(GetSectionV2ListData.Result.SectionVo vo) {
-            return new SectionVo(
-                    vo.id(),
-                    vo.title(),
-                    vo.categoryId(),
-                    vo.categoryImageUrl(),
-                    vo.completed(),
-                    vo.locked(),
-                    vo.chapters().stream().map(ChapterVo::from).toList()
-            );
-        }
-    }
-
-    public record ChapterVo(
-            Long chapterId,
-            String title,
-            String description,
-            Integer orderIndex,
-            String studyMaterialUrl
-    ) {
-        public static ChapterVo from(GetSectionV2ListData.Result.ChapterVo vo) {
-            return new ChapterVo(
-                    vo.chapterId(),
-                    vo.title(),
-                    vo.description(),
-                    vo.orderIndex(),
-                    vo.studyMaterialUrl()
-            );
+            return new SectionVo(vo.id(), vo.title(), vo.categoryId(), vo.categoryImageUrl(), vo.completed(), vo.locked());
         }
     }
 }
