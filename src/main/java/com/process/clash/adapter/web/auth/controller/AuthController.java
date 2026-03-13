@@ -55,19 +55,19 @@ public class AuthController implements AuthControllerDocument {
 	private final ResetPasswordUseCase resetPasswordUseCase;
 	private final AccessContextResolver accessContextResolver;
 
-	@PostMapping("/sign-up")
-	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
-		SignUpData.Command command = request.toCommand();
-		String token = signUpUseCase.execute(command);
-		ResponseCookie cookie = ResponseCookie.from("signup_token", token)
-				.httpOnly(true)
-				.secure(true)
-				.path("/")
-				.maxAge(VERIFICATION_CODE_EXPIRATION_MS)
-				.sameSite("None") // TODO: Lax로 변경
-				.build();
-		return ApiResponse.success("회원가입 요청 / 이메일 인증 코드 발송이 완료되었습니다.", cookie);
-	}
+//	@PostMapping("/sign-up")
+//	public ApiResponse<Void> signUp(@Valid @RequestBody SignUpDto.Request request) {
+//		SignUpData.Command command = request.toCommand();
+//		String token = signUpUseCase.execute(command);
+//		ResponseCookie cookie = ResponseCookie.from("signup_token", token)
+//				.httpOnly(true)
+//				.secure(true)
+//				.path("/")
+//				.maxAge(VERIFICATION_CODE_EXPIRATION_MS)
+//				.sameSite("None") // TODO: Lax로 변경
+//				.build();
+//		return ApiResponse.success("회원가입 요청 / 이메일 인증 코드 발송이 완료되었습니다.", cookie);
+//	}
 
 	@PostMapping("/sign-in")
 	public ApiResponse<SignInDto.Response> signIn(
