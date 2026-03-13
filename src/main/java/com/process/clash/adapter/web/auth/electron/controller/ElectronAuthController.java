@@ -64,39 +64,39 @@ public class ElectronAuthController {
 	}
 
 	// ========== 회원가입 관련 엔드포인트 ==========
-//
-//	@PostMapping("/sign-up/start")
-//	public ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup() {
-//		ElectronAuthService.StartSignupResult result = electronAuthService.startSignup();
-//		return ApiResponse.success(new ElectronAuthDto.StartSignupResponse(result.signupUrl(), result.state()));
-//	}
-//
-//	@PostMapping("/sign-up")
-//	public ApiResponse<Void> signup(@Valid @RequestBody ElectronAuthDto.SignupRequest req) {
-//		electronAuthService.signupAndSendEmail(
-//				req.username(), req.email(), req.name(), req.password(), req.state(), req.redirectUri());
-//		return ApiResponse.success("회원가입 요청이 완료되었습니다. 이메일 인증을 진행해주세요.");
-//	}
-//
-//	@PostMapping("/sign-up/verify-email")
-//	public ApiResponse<Map<String, String>> verifyEmail(@Valid @RequestBody ElectronAuthDto.VerifyEmailRequest req) {
-//		String redirectUrl = electronAuthService.verifyEmailAndRedirect(
-//				req.verificationCode(), req.state(), req.redirectUri());
-//		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
-//	}
-//
-//	@GetMapping("/sign-up/username-check")
-//	public ApiResponse<Map<String, Boolean>> checkUsername(
-//			@RequestParam
-//			@NotBlank(message = "유저네임은 필수 입력값입니다.")
-//			@Size(min = 3, max = 20, message = "유저네임은 3~20자여야 합니다.")
-//			@Pattern(
-//					regexp = "^[a-zA-Z0-9_-]+$",
-//					message = "유저네임은 영문, 숫자, _, -만 사용 가능합니다."
-//			)
-//			String username
-//	) {
-//		boolean isDuplicate = electronAuthService.checkUsernameDuplicate(username);
-//		return ApiResponse.success(Map.of("isDuplicate", isDuplicate));
-//	}
+
+	@PostMapping("/sign-up/start")
+	public ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup() {
+		ElectronAuthService.StartSignupResult result = electronAuthService.startSignup();
+		return ApiResponse.success(new ElectronAuthDto.StartSignupResponse(result.signupUrl(), result.state()));
+	}
+
+	@PostMapping("/sign-up")
+	public ApiResponse<Void> signup(@Valid @RequestBody ElectronAuthDto.SignupRequest req) {
+		electronAuthService.signupAndSendEmail(
+				req.username(), req.email(), req.name(), req.password(), req.state(), req.redirectUri());
+		return ApiResponse.success("회원가입 요청이 완료되었습니다. 이메일 인증을 진행해주세요.");
+	}
+
+	@PostMapping("/sign-up/verify-email")
+	public ApiResponse<Map<String, String>> verifyEmail(@Valid @RequestBody ElectronAuthDto.VerifyEmailRequest req) {
+		String redirectUrl = electronAuthService.verifyEmailAndRedirect(
+				req.verificationCode(), req.state(), req.redirectUri());
+		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
+	}
+
+	@GetMapping("/sign-up/username-check")
+	public ApiResponse<Map<String, Boolean>> checkUsername(
+			@RequestParam
+			@NotBlank(message = "유저네임은 필수 입력값입니다.")
+			@Size(min = 3, max = 20, message = "유저네임은 3~20자여야 합니다.")
+			@Pattern(
+					regexp = "^[a-zA-Z0-9_-]+$",
+					message = "유저네임은 영문, 숫자, _, -만 사용 가능합니다."
+			)
+			String username
+	) {
+		boolean isDuplicate = electronAuthService.checkUsernameDuplicate(username);
+		return ApiResponse.success(Map.of("isDuplicate", isDuplicate));
+	}
 }
