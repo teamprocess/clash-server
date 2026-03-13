@@ -16,8 +16,9 @@ public class ForceLogoutService implements ForceLogoutUseCase {
 
     @Override
     public void execute(String username) {
-        userRepositoryPort.findByUsername(username)
-                .orElseThrow(UserNotFoundException::new);
+        if (!userRepositoryPort.existsByUsername(username)) {
+            throw new UserNotFoundException();
+        }
         sessionManager.forceLogoutUser(username);
     }
 }

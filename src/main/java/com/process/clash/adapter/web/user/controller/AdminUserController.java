@@ -18,6 +18,6 @@ public class AdminUserController {
     @DeleteMapping("/{username}/sessions")
     public ApiResponse<Void> forceLogout(@PathVariable String username) {
         forceLogoutUseCase.execute(username);
-        return ApiResponse.success(username +"의 세션 및 자동 로그인 정보가 만료되었습니다.");
+        return ApiResponse.success(String.format("%s의 세션 및 자동 로그인 정보가 만료되었습니다.", username));
     }
 }
