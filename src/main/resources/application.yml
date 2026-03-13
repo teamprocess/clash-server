@@ -45,6 +45,8 @@ spring:
 
   session:
     timeout: 3d
+    redis:
+      repository-type: indexed
 
   data:
     redis:

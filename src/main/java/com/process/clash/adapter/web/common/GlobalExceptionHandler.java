@@ -4,7 +4,6 @@ import com.process.clash.application.common.exception.statuscode.CommonStatusCod
 import com.process.clash.application.common.exception.statuscode.StatusCode;
 import com.process.clash.application.common.exception.exception.ApplicationException;
 import com.process.clash.application.common.exception.exception.EndpointMovedException;
-import com.process.clash.application.common.exception.mapper.HttpStatusMapper;
 import lombok.extern.slf4j.Slf4j;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +32,7 @@ public class GlobalExceptionHandler {
             EndpointMovedException ex
     ) {
         StatusCode statusCode = ex.getStatusCode();
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+        HttpStatus httpStatus = statusCode.getHttpStatus();
 
         Map<String, String> newEndpointInfo = new HashMap<>();
         newEndpointInfo.put("newEndpoint", ex.getNewEndpoint());
@@ -50,7 +49,7 @@ public class GlobalExceptionHandler {
     ) {
         Map<String, String> errors = createErrorMap(ex.getMessage());
         StatusCode statusCode = ex.getStatusCode();
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+        HttpStatus httpStatus = statusCode.getHttpStatus();
 
         return ApiResponse.error(
                 ErrorResponse.of(statusCode, errors),
@@ -64,7 +63,7 @@ public class GlobalExceptionHandler {
             NoResourceFoundException ex) {
         log.warn("Endpoint not found", ex);
         StatusCode statusCode = CommonStatusCode.ENDPOINT_NOT_FOUND;
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+        HttpStatus httpStatus = statusCode.getHttpStatus();
 
         return ApiResponse.error(
                 ErrorResponse.of(statusCode), httpStatus
@@ -80,7 +79,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errorMethod = new HashMap<>();
         errorMethod.put("method", ex.getMethod());
         StatusCode statusCode = CommonStatusCode.METHOD_NOT_ALLOWED;
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+        HttpStatus httpStatus = statusCode.getHttpStatus();
 
         return ApiResponse.error(
                 ErrorResponse.of(statusCode, errorMethod), httpStatus
@@ -102,7 +101,7 @@ public class GlobalExceptionHandler {
                         (existing, replacement) -> existing + " / " +replacement
                 ));
         StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+        HttpStatus httpStatus = statusCode.getHttpStatus();
 
         return ApiResponse.error(
                 ErrorResponse.of(statusCode, errors), httpStatus
@@ -120,7 +119,7 @@ public class GlobalExceptionHandler {
         log.warn("Invalid argument exception: {}", ex.getMessage());
         Map<String, String> errors = createErrorMap(ex.getMessage());
         StatusCode statusCode = CommonStatusCode.INVALID_ARGUMENT;
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+        HttpStatus httpStatus = statusCode.getHttpStatus();
 
         return ApiResponse.error(
                 ErrorResponse.of(statusCode, errors),
@@ -138,7 +137,7 @@ public class GlobalExceptionHandler {
 
         Map<String, String> errors = createErrorMap(ex.getMessage());
         StatusCode statusCode = CommonStatusCode.INTERNAL_SERVER_ERROR;
-        HttpStatus httpStatus = HttpStatusMapper.toHttpStatus(statusCode);
+        HttpStatus httpStatus = statusCode.getHttpStatus();
 
         return ApiResponse.error(
                 ErrorResponse.of(statusCode, errors),

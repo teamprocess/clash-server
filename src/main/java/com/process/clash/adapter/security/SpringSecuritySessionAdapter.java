@@ -18,7 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -31,6 +34,8 @@ public class SpringSecuritySessionAdapter implements SessionManager {
     private final SecurityContextRepository securityContextRepository;
     private final RememberMeServices rememberMeServices;
     private final UserDetailsService userDetailsService;
+    private final FindByIndexNameSessionRepository<? extends Session> sessionRepository;
+    private final PersistentTokenRepository persistentTokenRepository;
 
     private ServletRequestAttributes currentRequestAttributes() {
         RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
@@ -107,6 +112,13 @@ public class SpringSecuritySessionAdapter implements SessionManager {
             ((LogoutHandler) rememberMeServices).logout(req, res, SecurityContextHolder.getContext().getAuthentication());
         }
         SecurityContextHolder.clearContext();
+    }
+
+    @Override
+    public void forceLogoutUser(String username) {
+        sessionRepository.findByPrincipalName(username)
+                .forEach((id, session) -> sessionRepository.deleteById(id));
+        persistentTokenRepository.removeUserTokens(username);
     }
 
     @Override
