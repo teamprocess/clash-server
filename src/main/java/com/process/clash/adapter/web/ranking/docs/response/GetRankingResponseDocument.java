@@ -47,11 +47,8 @@ public class GetRankingResponseDocument {
         @Schema(description = "포인트", example = "1200")
         private Long point;
 
-        @Schema(description = "랭크 티어 (NONE, MASTER, AURA)", example = "MASTER")
-        private String rankTier;
-
-        @Schema(description = "경험치 티어 (UNRANKED, BRONZE, SILVER, GOLD, DIAMOND)", example = "GOLD")
-        private String expTier;
+        @Schema(description = "티어 (UNRANKED / BRONZE / SILVER / GOLD / DIAMOND / MASTER / AURA)", example = "GOLD")
+        private String tier;
 
         @Schema(description = "장착 아이템")
         private EquippedItemsDoc equippedItems;

@@ -40,11 +40,10 @@ public class FindAllBattleInfoData {
             Long id,
             String name,
             String profileImage,
-            RankTier rankTier,
-            ExpTier expTier
+            String tier
     ) {
         public static Enemy of(Long id, String name, String profileImage, RankTier rankTier, ExpTier expTier) {
-            return new Enemy(id, name, profileImage, rankTier, expTier);
+            return new Enemy(id, name, profileImage, RankTier.resolveTier(rankTier, expTier));
         }
     }
 }

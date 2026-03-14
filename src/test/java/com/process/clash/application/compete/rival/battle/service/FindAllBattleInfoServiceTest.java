@@ -74,8 +74,7 @@ class FindAllBattleInfoServiceTest {
         FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
 
         assertThat(result.battles().get(0).result()).isEqualTo("WON");
-        assertThat(result.battles().get(0).enemy().rankTier()).isEqualTo(RankTier.NONE);
-        assertThat(result.battles().get(0).enemy().expTier()).isEqualTo(ExpTier.UNRANKED);
+        assertThat(result.battles().get(0).enemy().tier()).isEqualTo("UNRANKED");
     }
 
     @Test
@@ -160,6 +159,28 @@ class FindAllBattleInfoServiceTest {
         assertThat(result.battles().get(0).result()).isEqualTo("CANCELED");
     }
 
+    @Test
+    @DisplayName("상대방 rankTier가 NONE이면 expTier를 tier로 반환한다")
+    void execute_returnsEnemyTierAsExpTier_whenRankTierIsNone() {
+        stubCommonDependenciesWithEnemy(RankTier.NONE, ExpTier.GOLD,
+                List.of(battle(BattleStatus.DONE, CURRENT_USER_ID)));
+
+        FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
+
+        assertThat(result.battles().get(0).enemy().tier()).isEqualTo("GOLD");
+    }
+
+    @Test
+    @DisplayName("상대방 rankTier가 NONE이 아니면 rankTier를 tier로 반환한다")
+    void execute_returnsEnemyTierAsRankTier_whenRankTierIsNotNone() {
+        stubCommonDependenciesWithEnemy(RankTier.MASTER, ExpTier.DIAMOND,
+                List.of(battle(BattleStatus.DONE, CURRENT_USER_ID)));
+
+        FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
+
+        assertThat(result.battles().get(0).enemy().tier()).isEqualTo("MASTER");
+    }
+
     // ── fixtures ──────────────────────────────────────────────────────────────
 
     private FindAllBattleInfoData.Command command() {
@@ -177,12 +198,16 @@ class FindAllBattleInfoServiceTest {
     }
 
     private void stubCommonDependencies(List<Battle> battles) {
+        stubCommonDependenciesWithEnemy(RankTier.NONE, ExpTier.UNRANKED, battles);
+    }
+
+    private void stubCommonDependenciesWithEnemy(RankTier rankTier, ExpTier expTier, List<Battle> battles) {
         Rival rival = new Rival(RIVAL_ID, Instant.now(), Instant.now(),
                 RivalLinkingStatus.ACCEPTED, CURRENT_USER_ID, ENEMY_USER_ID);
         User enemyUser = new User(ENEMY_USER_ID, Instant.now(), Instant.now(),
                 "enemy", "enemy@example.com", "Enemy", "",
                 Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null,
-                RankTier.NONE, ExpTier.UNRANKED);
+                rankTier, expTier);
 
         when(battleRepositoryPort.findByUserIdWithOutRejected(CURRENT_USER_ID)).thenReturn(battles);
         when(rivalRepositoryPort.findByIdIn(Set.of(RIVAL_ID))).thenReturn(List.of(rival));

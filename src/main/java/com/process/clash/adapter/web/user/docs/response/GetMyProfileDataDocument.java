@@ -53,6 +53,9 @@ public class GetMyProfileDataDocument {
     @Schema(description = "현재 장착 아이템")
     public EquippedItemsDocument equippedItems;
 
+    @Schema(description = "티어 (UNRANKED / BRONZE / SILVER / GOLD / DIAMOND / MASTER / AURA)", example = "GOLD")
+    public String tier;
+
     @Schema(description = "장착 아이템")
     public static class EquippedItemsDocument {
         @Schema(description = "인시그니아")

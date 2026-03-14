@@ -2,8 +2,6 @@ package com.process.clash.adapter.web.compete.rival.rival.dto;
 
 import com.process.clash.application.compete.rival.rival.data.FindAllRivalsData;
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
-import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
-import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -21,8 +19,7 @@ public class FindAllRivalsDto {
                                     info.name(),
                                     info.profileImage(),
                                     info.rivalLinkingStatus(),
-                                    info.rankTier(),
-                                    info.expTier()
+                                    info.tier()
                             ))
                             .toList()
             );
@@ -35,7 +32,6 @@ public class FindAllRivalsDto {
             String name,
             String profileImage,
             RivalLinkingStatus rivalLinkingStatus,
-            RankTier rankTier,
-            ExpTier expTier
+            String tier
     ) {}
 }

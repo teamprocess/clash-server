@@ -61,8 +61,7 @@ class FindAllRivalsServiceTest {
 
         assertThat(result.rivals().get(0).rivalLinkingStatus()).isEqualTo(RivalLinkingStatus.PENDING);
         assertThat(result.rivals().get(1).rivalLinkingStatus()).isEqualTo(RivalLinkingStatus.ACCEPTED);
-        assertThat(result.rivals().get(0).rankTier()).isEqualTo(RankTier.NONE);
-        assertThat(result.rivals().get(0).expTier()).isEqualTo(ExpTier.UNRANKED);
+        assertThat(result.rivals().get(0).tier()).isEqualTo("UNRANKED");
     }
 
     @Test
@@ -111,13 +110,53 @@ class FindAllRivalsServiceTest {
         assertThat(result.rivals().get(2).rivalLinkingStatus()).isEqualTo(RivalLinkingStatus.ACCEPTED);
     }
 
+    @Test
+    @DisplayName("rankTier가 NONE이면 expTier를 tier로 반환한다")
+    void execute_returnsTierAsExpTier_whenRankTierIsNone() {
+        Long myId = 1L;
+        Actor actor = new Actor(myId);
+
+        Rival rival = new Rival(10L, Instant.now(), Instant.now(), RivalLinkingStatus.ACCEPTED, myId, 2L);
+
+        when(rivalRepositoryPort.findAllRivalsByUserId(myId)).thenReturn(List.of(rival));
+        when(userRepositoryPort.findAllByIds(anyList())).thenReturn(List.of(
+                createUser(2L, "이몽룡", RankTier.NONE, ExpTier.GOLD)
+        ));
+
+        FindAllRivalsData.Result result = findAllRivalsService.execute(FindAllRivalsData.Command.from(actor));
+
+        assertThat(result.rivals().get(0).tier()).isEqualTo("GOLD");
+    }
+
+    @Test
+    @DisplayName("rankTier가 NONE이 아니면 rankTier를 tier로 반환한다")
+    void execute_returnsTierAsRankTier_whenRankTierIsNotNone() {
+        Long myId = 1L;
+        Actor actor = new Actor(myId);
+
+        Rival rival = new Rival(10L, Instant.now(), Instant.now(), RivalLinkingStatus.ACCEPTED, myId, 2L);
+
+        when(rivalRepositoryPort.findAllRivalsByUserId(myId)).thenReturn(List.of(rival));
+        when(userRepositoryPort.findAllByIds(anyList())).thenReturn(List.of(
+                createUser(2L, "이몽룡", RankTier.MASTER, ExpTier.DIAMOND)
+        ));
+
+        FindAllRivalsData.Result result = findAllRivalsService.execute(FindAllRivalsData.Command.from(actor));
+
+        assertThat(result.rivals().get(0).tier()).isEqualTo("MASTER");
+    }
+
     private User createUser(Long id, String name) {
+        return createUser(id, name, RankTier.NONE, ExpTier.UNRANKED);
+    }
+
+    private User createUser(Long id, String name, RankTier rankTier, ExpTier expTier) {
         return new User(
                 id, Instant.now(), Instant.now(),
                 name, name + "@test.com", name,
                 "password", Role.USER, "",
                 0, 0, Major.NONE, UserStatus.ACTIVE,
-                null, RankTier.NONE, ExpTier.UNRANKED
+                null, rankTier, expTier
         );
     }
 }

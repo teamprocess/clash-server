@@ -2,8 +2,6 @@ package com.process.clash.adapter.web.compete.rival.rival.dto;
 
 import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingData;
 import com.process.clash.application.realtime.data.UserActivityStatus;
-import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
-import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -26,8 +24,7 @@ public class GetMyRivalActingDto {
                         data.usingApp(),
                         data.isStudying(),
                         data.status(),
-                        data.rankTier(),
-                        data.expTier()
+                        data.tier()
                     ))
                 .toList()
             );
@@ -44,7 +41,6 @@ public class GetMyRivalActingDto {
             String usingApp,
             Boolean isStudying,
             UserActivityStatus status,
-            RankTier rankTier,
-            ExpTier expTier
+            String tier
     ) {}
 }
