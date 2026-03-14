@@ -1,6 +1,8 @@
 package com.process.clash.application.ranking.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -24,7 +26,9 @@ public class GetChapterRankingData {
             Integer completedChaptersCount,
             Long id,
             String name,
-            String profileImage
+            String profileImage,
+            RankTier rankTier,
+            ExpTier expTier
     ) {}
 
     public record RankersVo(
@@ -32,6 +36,8 @@ public class GetChapterRankingData {
             Integer completedChaptersCount,
             Long id,
             String name,
-            String profileImage
+            String profileImage,
+            RankTier rankTier,
+            ExpTier expTier
     ) {}
 }

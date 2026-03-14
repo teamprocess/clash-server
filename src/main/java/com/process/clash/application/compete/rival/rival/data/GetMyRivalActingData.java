@@ -3,6 +3,8 @@ package com.process.clash.application.compete.rival.rival.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -37,7 +39,9 @@ public class GetMyRivalActingData {
             Long activeTime,
             String usingApp,
             Boolean isStudying,
-            UserActivityStatus status
+            UserActivityStatus status,
+            RankTier rankTier,
+            ExpTier expTier
     ) {
 
         public static MyRival of(
@@ -58,7 +62,9 @@ public class GetMyRivalActingData {
                     activeTime,
                     usingApp,
                     isStudying,
-                    status
+                    status,
+                    user.currentRankTier(),
+                    user.currentExpTier()
             );
         }
     }

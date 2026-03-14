@@ -15,14 +15,16 @@ public interface UserSectionProgressJpaRepository extends JpaRepository<UserSect
     List<UserSectionProgressJpaEntity> findAllByUserIdAndSectionIdIn(Long userId, List<Long> sectionIds);
 
     @Query(value = """
-    SELECT userId, userName, profileImage, totalCompleted, userRank
+    SELECT userId, userName, profileImage, totalCompleted, userRank, currentRankTier, currentExpTier
     FROM (
         SELECT
             u.id as userId,
             u.name as userName,
             u.profile_image as profileImage,
             COALESCE(SUM(usp.completed_chapters), 0) as totalCompleted,
-            RANK() OVER (ORDER BY COALESCE(SUM(usp.completed_chapters), 0) DESC) as userRank
+            RANK() OVER (ORDER BY COALESCE(SUM(usp.completed_chapters), 0) DESC) as userRank,
+            u.current_rank_tier as currentRankTier,
+            u.current_exp_tier as currentExpTier
         FROM users u
         LEFT JOIN user_section_progress usp ON u.id = usp.fk_user_id
         GROUP BY u.id

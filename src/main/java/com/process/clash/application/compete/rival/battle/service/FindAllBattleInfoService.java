@@ -146,7 +146,9 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
         Enemy enemy = Enemy.of(
                 enemyUser.id(),
                 enemyUser.name(),
-                enemyUser.profileImage()
+                enemyUser.profileImage(),
+                enemyUser.currentRankTier(),
+                enemyUser.currentExpTier()
         );
 
         // 결과 판단

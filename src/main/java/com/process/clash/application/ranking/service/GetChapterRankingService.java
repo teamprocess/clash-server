@@ -3,6 +3,8 @@ package com.process.clash.application.ranking.service;
 import com.process.clash.application.ranking.data.GetChapterRankingData;
 import com.process.clash.application.ranking.port.in.GetChapterRankingUseCase;
 import com.process.clash.application.ranking.port.out.LoadChapterRankingPort;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,8 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
             String profileImage = (String) record[2];
             Integer totalCompleted = ((Number) record[3]).intValue();
             Integer userRank = ((Number) record[4]).intValue();
+            RankTier rankTier = RankTier.valueOf((String) record[5]);
+            ExpTier expTier = ExpTier.valueOf((String) record[6]);
 
             // 현재 사용자의 랭킹 정보 저장
             if (userId.equals(command.actor().id())) {
@@ -37,7 +41,9 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
                         totalCompleted,
                         userId,
                         userName,
-                        profileImage
+                        profileImage,
+                        rankTier,
+                        expTier
                 );
             }
 
@@ -48,7 +54,9 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
                         totalCompleted,
                         userId,
                         userName,
-                        profileImage
+                        profileImage,
+                        rankTier,
+                        expTier
                 ));
             }
         }
