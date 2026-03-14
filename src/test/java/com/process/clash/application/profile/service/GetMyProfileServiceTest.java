@@ -82,8 +82,8 @@ class GetMyProfileServiceTest {
     }
 
     @Test
-    @DisplayName("totalExp가 SILVER 범위(10000~29999)이면 expTier가 SILVER로 반환된다")
-    void execute_returnsCorrectExpTier() {
+    @DisplayName("totalExp가 SILVER 범위(10000~29999)이면 tier가 SILVER로 반환된다")
+    void execute_returnsCorrectTierFromExp() {
         Actor actor = new Actor(1L);
         User user = createUser(1L, 15_000, RankTier.NONE);
 
@@ -94,12 +94,12 @@ class GetMyProfileServiceTest {
 
         GetMyProfileData.Result result = getMyProfileService.execute(new GetMyProfileData.Command(actor));
 
-        assertThat(result.expTier()).isEqualTo(ExpTier.SILVER);
+        assertThat(result.tier()).isEqualTo("SILVER");
     }
 
     @Test
-    @DisplayName("currentRankTier가 MASTER이면 프로필에 MASTER로 반환된다")
-    void execute_returnsCurrentRankTier() {
+    @DisplayName("currentRankTier가 MASTER이면 프로필 tier가 MASTER로 반환된다")
+    void execute_returnsRankTierWhenNotNone() {
         Actor actor = new Actor(1L);
         User user = createUser(1L, 80_000, RankTier.MASTER);
 
@@ -110,7 +110,7 @@ class GetMyProfileServiceTest {
 
         GetMyProfileData.Result result = getMyProfileService.execute(new GetMyProfileData.Command(actor));
 
-        assertThat(result.currentRankTier()).isEqualTo(RankTier.MASTER);
+        assertThat(result.tier()).isEqualTo("MASTER");
     }
 
     private User createUser(Long id) {

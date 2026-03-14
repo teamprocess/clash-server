@@ -47,10 +47,7 @@ public class FindAllBattleInfoResponseDocument extends SuccessMessageResponseDoc
         @Schema(description = "프로필 이미지 URL", example = "https://cdn.example.com/profile/2.png")
         public String profileImage;
 
-        @Schema(description = "랭크 티어 (NONE / MASTER / AURA)", example = "NONE")
-        public String rankTier;
-
-        @Schema(description = "경험치 티어 (UNRANKED / BRONZE / SILVER / GOLD / DIAMOND)", example = "GOLD")
-        public String expTier;
+        @Schema(description = "티어 (UNRANKED / BRONZE / SILVER / GOLD / DIAMOND / MASTER / AURA)", example = "GOLD")
+        public String tier;
     }
 }

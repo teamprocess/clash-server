@@ -128,11 +128,60 @@ class GetMyRivalActingServiceTest {
         assertThat(result.myRivals().get(1).usingApp()).isNull();
         assertThat(result.myRivals().get(0).isStudying()).isTrue();
         assertThat(result.myRivals().get(1).isStudying()).isTrue();
-        assertThat(result.myRivals().get(0).rankTier()).isEqualTo(RankTier.NONE);
-        assertThat(result.myRivals().get(0).expTier()).isEqualTo(ExpTier.UNRANKED);
+        assertThat(result.myRivals().get(0).tier()).isEqualTo("UNRANKED");
+    }
+
+    @Test
+    @DisplayName("rankTier가 NONE이면 expTier를 tier로 반환한다")
+    void execute_returnsTierAsExpTier_whenRankTierIsNone() {
+        Actor actor = new Actor(1L);
+        Rival rival = new Rival(100L, Instant.now().minusSeconds(86_400), Instant.now(),
+                RivalLinkingStatus.ACCEPTED, 1L, 2L);
+
+        User rivalUser = createUser(2L, "rivalA", "Rival A", RankTier.NONE, ExpTier.GOLD);
+
+        when(rivalRepositoryPort.findAllByUserId(actor.id())).thenReturn(List.of(rival));
+        when(userRepositoryPort.findAllByIds(anyList()))
+                .thenReturn(List.of(rivalUser, createUser(1L, "me", "Me")));
+        when(recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(anyList(), any(), any()))
+                .thenReturn(Map.of());
+        when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList())).thenReturn(List.of());
+        when(userPresencePort.getStatuses(anyList())).thenReturn(Map.of(2L, UserActivityStatus.OFFLINE));
+
+        GetMyRivalActingData.Result result = getMyRivalActingService.execute(
+                new GetMyRivalActingData.Command(actor));
+
+        assertThat(result.myRivals().get(0).tier()).isEqualTo("GOLD");
+    }
+
+    @Test
+    @DisplayName("rankTier가 NONE이 아니면 rankTier를 tier로 반환한다")
+    void execute_returnsTierAsRankTier_whenRankTierIsNotNone() {
+        Actor actor = new Actor(1L);
+        Rival rival = new Rival(100L, Instant.now().minusSeconds(86_400), Instant.now(),
+                RivalLinkingStatus.ACCEPTED, 1L, 2L);
+
+        User rivalUser = createUser(2L, "rivalA", "Rival A", RankTier.MASTER, ExpTier.DIAMOND);
+
+        when(rivalRepositoryPort.findAllByUserId(actor.id())).thenReturn(List.of(rival));
+        when(userRepositoryPort.findAllByIds(anyList()))
+                .thenReturn(List.of(rivalUser, createUser(1L, "me", "Me")));
+        when(recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(anyList(), any(), any()))
+                .thenReturn(Map.of());
+        when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList())).thenReturn(List.of());
+        when(userPresencePort.getStatuses(anyList())).thenReturn(Map.of(2L, UserActivityStatus.OFFLINE));
+
+        GetMyRivalActingData.Result result = getMyRivalActingService.execute(
+                new GetMyRivalActingData.Command(actor));
+
+        assertThat(result.myRivals().get(0).tier()).isEqualTo("MASTER");
     }
 
     private User createUser(Long id, String username, String name) {
+        return createUser(id, username, name, RankTier.NONE, ExpTier.UNRANKED);
+    }
+
+    private User createUser(Long id, String username, String name, RankTier rankTier, ExpTier expTier) {
         return new User(
             id,
             Instant.now().minusSeconds(86_400),
@@ -148,8 +197,8 @@ class GetMyRivalActingServiceTest {
             Major.NONE,
             UserStatus.ACTIVE,
             null,
-            RankTier.NONE,
-            ExpTier.UNRANKED
+            rankTier,
+            expTier
         );
     }
 }

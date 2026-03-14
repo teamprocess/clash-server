@@ -1,8 +1,6 @@
 package com.process.clash.adapter.web.ranking.dto;
 
 import com.process.clash.application.ranking.data.GetChapterRankingData;
-import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
-import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -31,8 +29,7 @@ public class GetChapterRankingDto {
             Long id,
             String name,
             String profileImage,
-            RankTier rankTier,
-            ExpTier expTier
+            String tier
     ) {
         public static MyRankingVo from(GetChapterRankingData.MyRankingVo vo) {
             return new MyRankingVo(
@@ -41,8 +38,7 @@ public class GetChapterRankingDto {
                     vo.id(),
                     vo.name(),
                     vo.profileImage(),
-                    vo.rankTier(),
-                    vo.expTier()
+                    vo.tier()
             );
         }
     }
@@ -53,8 +49,7 @@ public class GetChapterRankingDto {
             Long id,
             String name,
             String profileImage,
-            RankTier rankTier,
-            ExpTier expTier
+            String tier
     ) {
         public static RankersVo from(GetChapterRankingData.RankersVo vo) {
             return new RankersVo(
@@ -63,8 +58,7 @@ public class GetChapterRankingDto {
                     vo.id(),
                     vo.name(),
                     vo.profileImage(),
-                    vo.rankTier(),
-                    vo.expTier()
+                    vo.tier()
             );
         }
     }
