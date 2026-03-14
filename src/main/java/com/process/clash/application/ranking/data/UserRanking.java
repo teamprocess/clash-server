@@ -19,7 +19,7 @@ public record UserRanking(
 ) {
     @JsonProperty("tier")
     public String tier() {
-        return rankTier == RankTier.NONE ? expTier.name() : rankTier.name();
+        return RankTier.resolveTier(rankTier, expTier);
     }
 
     public UserRanking(

@@ -3,7 +3,6 @@ package com.process.clash.application.compete.rival.rival.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.domain.user.user.entity.User;
-import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -50,10 +49,6 @@ public class GetMyRivalActingData {
             Boolean isStudying,
             UserActivityStatus status
         ) {
-            String tier = user.currentRankTier() == RankTier.NONE
-                    ? user.currentExpTier().name()
-                    : user.currentRankTier().name();
-
             return new MyRival(
                     rivalId,
                     user.id(),
@@ -64,7 +59,7 @@ public class GetMyRivalActingData {
                     usingApp,
                     isStudying,
                     status,
-                    tier
+                    user.tier()
             );
         }
     }

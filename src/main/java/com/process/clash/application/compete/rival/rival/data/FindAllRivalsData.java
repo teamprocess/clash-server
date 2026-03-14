@@ -3,7 +3,6 @@ package com.process.clash.application.compete.rival.rival.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import com.process.clash.domain.user.user.entity.User;
-import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -34,16 +33,13 @@ public class FindAllRivalsData {
             String tier
     ) {
         public static RivalInfo of(Long rivalId, User user, RivalLinkingStatus rivalLinkingStatus) {
-            String tier = user.currentRankTier() == RankTier.NONE
-                    ? user.currentExpTier().name()
-                    : user.currentRankTier().name();
             return new RivalInfo(
                     rivalId,
                     user.username(),
                     user.name(),
                     user.profileImage(),
                     rivalLinkingStatus,
-                    tier
+                    user.tier()
             );
         }
     }

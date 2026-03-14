@@ -30,6 +30,10 @@ public record User(
         return deletedAt != null;
     }
 
+    public String tier() {
+        return RankTier.resolveTier(currentRankTier, currentExpTier);
+    }
+
     public static User createDefault(String username, String email, String name, String password) {
         return new User(
                 null,

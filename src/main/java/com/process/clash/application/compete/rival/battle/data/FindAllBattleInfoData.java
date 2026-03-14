@@ -43,8 +43,7 @@ public class FindAllBattleInfoData {
             String tier
     ) {
         public static Enemy of(Long id, String name, String profileImage, RankTier rankTier, ExpTier expTier) {
-            String tier = rankTier == RankTier.NONE ? expTier.name() : rankTier.name();
-            return new Enemy(id, name, profileImage, tier);
+            return new Enemy(id, name, profileImage, RankTier.resolveTier(rankTier, expTier));
         }
     }
 }

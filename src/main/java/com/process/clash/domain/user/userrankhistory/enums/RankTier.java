@@ -1,5 +1,7 @@
 package com.process.clash.domain.user.userrankhistory.enums;
 
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+
 public enum RankTier {
     NONE,
     MASTER,
@@ -12,5 +14,9 @@ public enum RankTier {
         } catch (IllegalArgumentException e) {
             return NONE;
         }
+    }
+
+    public static String resolveTier(RankTier rankTier, ExpTier expTier) {
+        return rankTier == NONE ? expTier.name() : rankTier.name();
     }
 }
