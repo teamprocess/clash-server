@@ -1,11 +1,11 @@
 #!/bin/sh
 
-COMMIT_MSG=$(cat "$1")
+COMMIT_MSG_SUBJECT=$(grep -v '^#' "$1" | head -n1)
 
 # 팀 커밋 타입 패턴
 PATTERN="^(feat|fix|refactor|hotfix|docs|style|remove|delete|test|chore|comment): .{1,72}"
 
-if ! echo "$COMMIT_MSG" | grep -qE "$PATTERN"; then
+if ! echo "$COMMIT_MSG_SUBJECT" | grep -qE "$PATTERN"; then
 echo ""
 echo "❌ 잘못된 커밋 메시지 형식입니다."
 echo ""
