@@ -1,0 +1,41 @@
+#!/bin/sh
+
+COMMIT_MSG_SUBJECT=$(grep -v '^#' "$1" | head -n1)
+
+# 팀 커밋 타입 패턴
+PATTERN="^(feat|fix|refactor|hotfix|docs|style|remove|delete|test|chore|comment): .{1,72}"
+
+if ! echo "$COMMIT_MSG_SUBJECT" | grep -qE "$PATTERN"; then
+echo ""
+echo "❌ 잘못된 커밋 메시지 형식입니다."
+echo ""
+echo "✅ 올바른 형식: <타입>: <내용>"
+echo ""
+echo "📌 사용 가능한 타입:"
+echo "   feat     기능 추가"
+echo "            ex) feat: 라이벌 부분 CASCADE 제약 조건 추가"
+echo "   fix      동작하지 않는 기능 수정"
+echo "            ex) fix: 라이벌 신청 부분 이중 승인 문제 해결"
+echo "   refactor 동작하지만 기능 개선"
+echo "            ex) refactor: 랭킹 조회 부분 query 복잡도 개선"
+echo "   hotfix   배포 후 긴급 수정"
+echo "            ex) hotfix: Native Query로 변경하여 SQLException 해결"
+echo "   docs     README, 스웨거 등 문서 수정"
+echo "            ex) docs: 라이벌 전체 조회 로직 스웨거 업데이트"
+echo "   style    코드 스타일 변경 (camelCase 등)"
+echo "            ex) style: RecordDayBoundaryService 부분 camelCase로 변경"
+echo "   remove   파일, 폴더 제거"
+echo "            ex) remove: 불필요한 http 파일 제거"
+echo "   delete   코드 삭제"
+echo "            ex) delete: 로드맵 v1 로직 삭제"
+echo "   test     테스트 코드 추가 및 수정"
+echo "            ex) test: 라이벌 삭제 로직 테스트 코드 추가"
+echo "   chore    gradle, yml 등 설정 변경"
+echo "            ex) chore: Web Socket 의존성 추가"
+echo "   comment  주석 추가 및 수정"
+echo "            ex) comment: auth 부분 전반적인 주석 보강"
+echo ""
+exit 1
+fi
+
+echo "커밋 메시지 검사 통과!"
