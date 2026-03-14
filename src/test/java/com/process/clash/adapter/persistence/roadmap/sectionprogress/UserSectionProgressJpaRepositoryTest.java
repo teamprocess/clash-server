@@ -116,5 +116,10 @@ class UserSectionProgressJpaRepositoryTest {
     void findRankingsWithMyRank() {
         List<Object[]> rankingsWithMyRank = userSectionProgressJpaRepository.findRankingsWithMyRank(noSectionProgressUserJpaEntity.getId());
         Assertions.assertThat(rankingsWithMyRank).hasSize(2);
+
+        Object[] firstRecord = rankingsWithMyRank.get(0);
+        Assertions.assertThat(firstRecord).hasSize(7);
+        Assertions.assertThat(firstRecord[5]).isEqualTo(RankTier.NONE.name());
+        Assertions.assertThat(firstRecord[6]).isEqualTo(ExpTier.UNRANKED.name());
     }
 }

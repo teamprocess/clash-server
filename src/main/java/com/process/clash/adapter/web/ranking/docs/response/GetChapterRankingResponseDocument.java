@@ -43,6 +43,12 @@ public class GetChapterRankingResponseDocument {
 
         @Schema(description = "프로필 이미지 URL", example = "https://cdn.example.com/profile/me.png")
         private String profileImage;
+
+        @Schema(description = "랭크 티어 (NONE / MASTER / AURA)", example = "NONE")
+        private String rankTier;
+
+        @Schema(description = "경험치 티어 (UNRANKED / BRONZE / SILVER / GOLD / DIAMOND)", example = "GOLD")
+        private String expTier;
     }
 
     @Schema(name = "Rankers", description = "랭커 정보")
@@ -62,5 +68,11 @@ public class GetChapterRankingResponseDocument {
 
         @Schema(description = "프로필 이미지 URL", example = "https://cdn.example.com/profile/1.png")
         private String profileImage;
+
+        @Schema(description = "랭크 티어 (NONE / MASTER / AURA)", example = "NONE")
+        private String rankTier;
+
+        @Schema(description = "경험치 티어 (UNRANKED / BRONZE / SILVER / GOLD / DIAMOND)", example = "GOLD")
+        private String expTier;
     }
 }

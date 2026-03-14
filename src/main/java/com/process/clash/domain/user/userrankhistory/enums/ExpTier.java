@@ -14,4 +14,13 @@ public enum ExpTier {
         if (exp >= 1_000)  return BRONZE;
         return UNRANKED;
     }
+
+    public static ExpTier fromString(String value) {
+        if (value == null) return UNRANKED;
+        try {
+            return ExpTier.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            return UNRANKED;
+        }
+    }
 }

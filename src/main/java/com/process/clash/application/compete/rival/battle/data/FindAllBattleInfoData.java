@@ -1,6 +1,8 @@
 package com.process.clash.application.compete.rival.battle.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,10 +39,12 @@ public class FindAllBattleInfoData {
     public record Enemy(
             Long id,
             String name,
-            String profileImage
+            String profileImage,
+            RankTier rankTier,
+            ExpTier expTier
     ) {
-        public static Enemy of(Long id, String name, String profileImage) {
-            return new Enemy(id, name, profileImage);
+        public static Enemy of(Long id, String name, String profileImage, RankTier rankTier, ExpTier expTier) {
+            return new Enemy(id, name, profileImage, rankTier, expTier);
         }
     }
 }

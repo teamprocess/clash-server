@@ -61,6 +61,8 @@ class FindAllRivalsServiceTest {
 
         assertThat(result.rivals().get(0).rivalLinkingStatus()).isEqualTo(RivalLinkingStatus.PENDING);
         assertThat(result.rivals().get(1).rivalLinkingStatus()).isEqualTo(RivalLinkingStatus.ACCEPTED);
+        assertThat(result.rivals().get(0).rankTier()).isEqualTo(RankTier.NONE);
+        assertThat(result.rivals().get(0).expTier()).isEqualTo(ExpTier.UNRANKED);
     }
 
     @Test

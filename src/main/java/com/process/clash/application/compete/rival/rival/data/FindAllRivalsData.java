@@ -3,6 +3,8 @@ package com.process.clash.application.compete.rival.rival.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 
 import java.util.List;
 
@@ -29,7 +31,9 @@ public class FindAllRivalsData {
             String githubId,
             String name,
             String profileImage,
-            RivalLinkingStatus rivalLinkingStatus
+            RivalLinkingStatus rivalLinkingStatus,
+            RankTier rankTier,
+            ExpTier expTier
     ) {
         public static RivalInfo of(Long rivalId, User user, RivalLinkingStatus rivalLinkingStatus) {
             return new RivalInfo(
@@ -37,7 +41,9 @@ public class FindAllRivalsData {
                     user.username(),
                     user.name(),
                     user.profileImage(),
-                    rivalLinkingStatus
+                    rivalLinkingStatus,
+                    user.currentRankTier(),
+                    user.currentExpTier()
             );
         }
     }
