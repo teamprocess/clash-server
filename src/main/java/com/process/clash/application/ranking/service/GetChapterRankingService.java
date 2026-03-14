@@ -33,6 +33,7 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
             Integer userRank = ((Number) record[4]).intValue();
             RankTier rankTier = RankTier.fromString((String) record[5]);
             ExpTier expTier = ExpTier.fromString((String) record[6]);
+            String tier = rankTier == RankTier.NONE ? expTier.name() : rankTier.name();
 
             // 현재 사용자의 랭킹 정보 저장
             if (userId.equals(command.actor().id())) {
@@ -42,8 +43,7 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
                         userId,
                         userName,
                         profileImage,
-                        rankTier,
-                        expTier
+                        tier
                 );
             }
 
@@ -55,8 +55,7 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
                         userId,
                         userName,
                         profileImage,
-                        rankTier,
-                        expTier
+                        tier
                 ));
             }
         }

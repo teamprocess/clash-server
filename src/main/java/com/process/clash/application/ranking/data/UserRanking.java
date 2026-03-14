@@ -1,5 +1,7 @@
 package com.process.clash.application.ranking.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.process.clash.application.profile.data.EquippedItemsData;
 import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
@@ -11,10 +13,15 @@ public record UserRanking(
         Boolean isRival,
         String linkedId,
         Long point,
-        RankTier rankTier,
-        ExpTier expTier,
+        @JsonIgnore RankTier rankTier,
+        @JsonIgnore ExpTier expTier,
         EquippedItemsData equippedItems
 ) {
+    @JsonProperty("tier")
+    public String tier() {
+        return rankTier == RankTier.NONE ? expTier.name() : rankTier.name();
+    }
+
     public UserRanking(
             Long userId,
             String name,

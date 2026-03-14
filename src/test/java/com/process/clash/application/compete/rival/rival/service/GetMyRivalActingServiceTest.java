@@ -128,8 +128,7 @@ class GetMyRivalActingServiceTest {
         assertThat(result.myRivals().get(1).usingApp()).isNull();
         assertThat(result.myRivals().get(0).isStudying()).isTrue();
         assertThat(result.myRivals().get(1).isStudying()).isTrue();
-        assertThat(result.myRivals().get(0).rankTier()).isEqualTo(RankTier.NONE);
-        assertThat(result.myRivals().get(0).expTier()).isEqualTo(ExpTier.UNRANKED);
+        assertThat(result.myRivals().get(0).tier()).isEqualTo("UNRANKED");
     }
 
     private User createUser(Long id, String username, String name) {

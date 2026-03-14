@@ -5,8 +5,6 @@ import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
-import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
-import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import java.time.Instant;
 
 public class GetMyProfileDto {
@@ -28,8 +26,7 @@ public class GetMyProfileDto {
         boolean githubLinked,
         UserActivityStatus activityStatus,
         EquippedItemsDto.Response equippedItems,
-        ExpTier expTier,
-        RankTier currentRankTier
+        String tier
     ) {
         public static GetMyProfileDto.Response from(GetMyProfileData.Result result) {
             return new Response(
@@ -49,8 +46,7 @@ public class GetMyProfileDto {
               result.githubLinked(),
               result.activityStatus(),
               EquippedItemsDto.Response.from(result.equippedItems()),
-              result.expTier(),
-              result.currentRankTier()
+              result.tier()
             );
         }
     }
