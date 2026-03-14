@@ -48,5 +48,11 @@ public class GetMyRivalActingResponseDocument extends SuccessMessageResponseDocu
 
         @Schema(description = "현재 상태", example = "ONLINE")
         public String status;
+
+        @Schema(description = "랭크 티어 (NONE / MASTER / AURA)", example = "NONE")
+        public String rankTier;
+
+        @Schema(description = "경험치 티어 (UNRANKED / BRONZE / SILVER / GOLD / DIAMOND)", example = "GOLD")
+        public String expTier;
     }
 }
