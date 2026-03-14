@@ -1,0 +1,35 @@
+# .github/workflows/commitlint.yml
+name: Commit Message Lint
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit messages
+        run: |
+          PATTERN="^(feat|fix|refactor|hotfix|docs|style|remove|delete|test|chore|comment): .{1,72}"
+
+          FAILED=0
+          git log origin/${{ github.base_ref }}..HEAD --format="%s" | while read MSG; do
+            echo "검사 중: $MSG"
+            if ! echo "$MSG" | grep -qE "$PATTERN"; then
+              echo "❌ 잘못된 커밋 메시지: \"$MSG\""
+              FAILED=1
+            fi
+          done
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo ""
+            echo "허용된 타입: feat | fix | refactor | hotfix | docs | style | remove | delete | test | chore | comment"
+            exit 1
+          fi
+
+          echo "모든 커밋 메시지 검사 통과!"
