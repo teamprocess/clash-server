@@ -28,7 +28,7 @@ jobs:
 
           if [ "$FAILED" -eq 1 ]; then
             echo ""
-            echo "허용된 타입: feat | fix | refactor | hotfix | docs | style | remove | delete | test | chore | comment"
+            echo "허용된 타입: feat | fix | refactor | hotfix | docs | style | remove | delete | test | chore | comment | revert"
             exit 1
           fi
 
