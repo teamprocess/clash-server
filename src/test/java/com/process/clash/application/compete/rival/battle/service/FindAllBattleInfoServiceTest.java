@@ -74,6 +74,8 @@ class FindAllBattleInfoServiceTest {
         FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
 
         assertThat(result.battles().get(0).result()).isEqualTo("WON");
+        assertThat(result.battles().get(0).enemy().rankTier()).isEqualTo(RankTier.NONE);
+        assertThat(result.battles().get(0).enemy().expTier()).isEqualTo(ExpTier.UNRANKED);
     }
 
     @Test
