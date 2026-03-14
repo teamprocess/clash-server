@@ -28,7 +28,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     @Query(value = """
         SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
         FROM battles b
-        WHERE b.battle_status NOT IN ('DONE', 'REJECTED')
+        WHERE b.battle_status NOT IN ('DONE', 'REJECTED', 'CANCELED')
           AND (b.fk_rival_id = :rivalId)
             AND b.id NOT IN (
                     SELECT ba.id
