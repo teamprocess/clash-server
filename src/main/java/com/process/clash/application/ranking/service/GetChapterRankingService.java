@@ -31,8 +31,8 @@ public class GetChapterRankingService implements GetChapterRankingUseCase {
             String profileImage = (String) record[2];
             Integer totalCompleted = ((Number) record[3]).intValue();
             Integer userRank = ((Number) record[4]).intValue();
-            RankTier rankTier = RankTier.valueOf((String) record[5]);
-            ExpTier expTier = ExpTier.valueOf((String) record[6]);
+            RankTier rankTier = RankTier.fromString((String) record[5]);
+            ExpTier expTier = ExpTier.fromString((String) record[6]);
 
             // 현재 사용자의 랭킹 정보 저장
             if (userId.equals(command.actor().id())) {
