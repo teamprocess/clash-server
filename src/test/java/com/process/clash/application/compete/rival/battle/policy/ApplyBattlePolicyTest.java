@@ -49,20 +49,8 @@ class ApplyBattlePolicyTest {
     }
 
     @Test
-    @DisplayName("배틀을 취소한 후 재신청 시 예외가 발생하지 않는다")
-    void check_doesNotThrow_whenOnlyCanceledBattleExists() {
-        Long rivalId = 1L;
-        // 취소된 배틀은 PENDING도 아니고 활성 배틀도 아니므로 둘 다 false
-        when(battleRepositoryPort.existsPendingBattleByRivalId(rivalId)).thenReturn(false);
-        when(battleRepositoryPort.existsActiveBattleByRivalId(rivalId)).thenReturn(false);
-
-        assertThatCode(() -> applyBattlePolicy.check(rivalId))
-            .doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("신청 이력이 없으면 예외가 발생하지 않는다")
-    void check_doesNotThrow_whenNoBattleExists() {
+    @DisplayName("활성 또는 PENDING 상태의 배틀이 없으면 예외가 발생하지 않는다")
+    void check_doesNotThrow_whenNoActiveOrPendingBattleExists() {
         Long rivalId = 1L;
         when(battleRepositoryPort.existsPendingBattleByRivalId(rivalId)).thenReturn(false);
         when(battleRepositoryPort.existsActiveBattleByRivalId(rivalId)).thenReturn(false);
