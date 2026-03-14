@@ -52,7 +52,7 @@ jobs:
           script_stop: true
           script: |
             set -eu
-            cd /home/ubuntu/app
+            cd ~/app
 
             echo "DOCKER_IMAGE=${{ secrets.DEVELOP_DOCKER_IMAGE }}" > .deploy.env
             echo "IMAGE_TAG=${{ github.sha }}" >> .deploy.env
