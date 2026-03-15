@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "과목 그룹 API V2", description = "V2 과목 그룹/세부 작업 관리")
 public interface SubjectV2ControllerDocument {
@@ -62,7 +63,8 @@ public interface SubjectV2ControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<GetAllSubjectsV2Dto.Response> getAllSubjects(
         @Parameter(hidden = true) Actor actor,
-        @Parameter(description = "조회할 기록일", example = "2026-03-10") LocalDate date
+        @Parameter(description = "조회할 기록일 (yyyy-MM-dd)", example = "2026-03-10")
+        @RequestParam(required = false) LocalDate date
     );
 
     @Operation(summary = "과목 그룹 생성", description = "새로운 V2 과목 그룹을 생성합니다.")

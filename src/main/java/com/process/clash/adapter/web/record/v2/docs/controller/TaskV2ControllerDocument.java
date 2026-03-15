@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "세부 작업 API V2", description = "V2 세부 작업 관리")
 public interface TaskV2ControllerDocument {
@@ -63,7 +64,8 @@ public interface TaskV2ControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<GetAllTasksV2Dto.Response> getAllTasks(
         @Parameter(hidden = true) Actor actor,
-        @Parameter(description = "조회할 기록일", example = "2026-03-10") LocalDate date
+        @Parameter(description = "조회할 기록일 (yyyy-MM-dd)", example = "2026-03-10")
+        @RequestParam(required = false) LocalDate date
     );
 
     @Operation(summary = "세부 작업 생성", description = "새로운 V2 세부 작업을 생성합니다. subjectId 없이도 생성할 수 있습니다.")
