@@ -1,7 +1,5 @@
 package com.process.clash.domain.user.userrankhistory.enums;
 
-import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
-
 public enum RankTier {
     NONE,
     MASTER,
