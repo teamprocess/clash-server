@@ -13,6 +13,8 @@ import com.process.clash.application.record.v2.exception.exception.notfound.Reco
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
+import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
+import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -179,11 +181,22 @@ public class RecordSessionV2PersistenceAdapter implements RecordSessionV2Reposit
     public List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
         Instant now = Instant.now();
         return recordActiveSessionV2JpaRepository.findStudyTimeRankingByUserIdAndPeriod(
-            userId,
-            toInstant(startDate),
-            toInstant(endDate),
-            now
-        );
+                userId,
+                toInstant(startDate),
+                toInstant(endDate),
+                now
+            ).stream()
+            .map(row -> new UserRanking(
+                row.getUserId(),
+                row.getName(),
+                row.getProfileImage(),
+                row.getIsRival(),
+                row.getLinkedId(),
+                row.getPoint(),
+                RankTier.fromString(row.getRankTier()),
+                ExpTier.fromString(row.getExpTier())
+            ))
+            .toList();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.process.clash.adapter.persistence.record.v2.session;
 
-import com.process.clash.application.ranking.data.UserRanking;
 import jakarta.persistence.LockModeType;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import java.time.Instant;
@@ -164,6 +163,17 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
         Long getTotalSeconds();
     }
 
+    interface StudyTimeRankingRow {
+        Long getUserId();
+        String getName();
+        String getProfileImage();
+        Boolean getIsRival();
+        String getLinkedId();
+        Long getPoint();
+        String getRankTier();
+        String getExpTier();
+    }
+
     @Query(value = """
         select
             u.id as userId,
@@ -194,7 +204,7 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
         group by u.id, u.name, u.profile_image, u.username, u.current_rank_tier, u.current_exp_tier
         order by point desc
     """, nativeQuery = true)
-    List<UserRanking> findStudyTimeRankingByUserIdAndPeriod(
+    List<StudyTimeRankingRow> findStudyTimeRankingByUserIdAndPeriod(
         @Param("userId") Long userId,
         @Param("startDate") Instant startDate,
         @Param("endDate") Instant endDate,
