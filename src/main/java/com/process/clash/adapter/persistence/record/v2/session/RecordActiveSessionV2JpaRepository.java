@@ -184,23 +184,26 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
             cast(
                 coalesce(
                     sum(
-                        extract(epoch from (
-                            least(coalesce(ss.ended_at, :now), :endDate)
-                            - greatest(ss.started_at, :startDate)
-                        ))
+                        case when ss.started_at is not null then
+                            extract(epoch from (
+                                least(coalesce(ss.ended_at, :now), :endDate)
+                                - greatest(ss.started_at, :startDate)
+                            ))
+                        end
                     ), 0
                 ) as bigint
             ) as point,
             u.current_rank_tier as rankTier,
             u.current_exp_tier as expTier
-        from record_active_sessions_v2 ss
-        inner join users u on u.id = ss.fk_user_id
+        from users u
+        left join record_active_sessions_v2 ss
+            on ss.fk_user_id = u.id
+            and ss.started_at < :endDate
+            and coalesce(ss.ended_at, :now) >= :startDate
         left join rivals r on
             ((r.fk_first_user_id = u.id and r.fk_second_user_id = :userId)
                 or (r.fk_second_user_id = u.id and r.fk_first_user_id = :userId))
             and r.rival_linking_status = 'ACCEPTED'
-        where ss.started_at < :endDate
-            and coalesce(ss.ended_at, :now) >= :startDate
         group by u.id, u.name, u.profile_image, u.username, u.current_rank_tier, u.current_exp_tier
         order by point desc
     """, nativeQuery = true)
