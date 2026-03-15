@@ -39,8 +39,7 @@ public interface RankingControllerDocument {
                                             "isRival": true,
                                             "linkedId": "github",
                                             "point": 1200,
-                                            "rankTier": "AURA",
-                                            "expTier": "DIAMOND",
+                                            "tier": "AURA",
                                             "equippedItems": {
                                               "insigma": {
                                                 "id": 1,
@@ -57,8 +56,7 @@ public interface RankingControllerDocument {
                                             "isRival": false,
                                             "linkedId": "gitlab",
                                             "point": 980,
-                                            "rankTier": "NONE",
-                                            "expTier": "GOLD",
+                                            "tier": "GOLD",
                                             "equippedItems": {
                                               "insigma": null,
                                               "nameplate": null,
