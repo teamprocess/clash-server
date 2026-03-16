@@ -118,9 +118,39 @@ class TaskV2ControllerTest {
     }
 
     @Test
+    @DisplayName("POST /api/v2/record/tasks 는 date 필드를 커맨드로 전달한다")
+    void createTask_passesDateToCommand() throws Exception {
+        mockMvc.perform(post("/api/v2/record/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "name": "리팩터링",
+                      "date": "2026-03-20"
+                    }
+                    """))
+            .andExpect(status().isOk());
+
+        ArgumentCaptor<com.process.clash.application.record.v2.data.CreateSubjectTaskV2Data.Command> captor =
+            ArgumentCaptor.forClass(com.process.clash.application.record.v2.data.CreateSubjectTaskV2Data.Command.class);
+        verify(createSubjectTaskV2UseCase).execute(captor.capture());
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().date())
+            .isEqualTo(LocalDate.of(2026, 3, 20));
+    }
+
+    @Test
     @DisplayName("PATCH /api/v2/record/tasks/{taskId} 는 부모 과목 변경과 이름 수정을 처리한다")
     void updateTask_returnsUpdatedTask() throws Exception {
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링 정리", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(
+            11L,
+            1L,
+            null,
+            "리팩터링 정리",
+            false,
+            0L,
+            LocalDate.of(2026, 3, 16),
+            Instant.now(),
+            Instant.now()
+        );
         when(updateTaskV2UseCase.execute(any()))
             .thenReturn(UpdateTaskV2Data.Result.from(task));
 
@@ -154,7 +184,17 @@ class TaskV2ControllerTest {
     @Test
     @DisplayName("PATCH /api/v2/record/tasks/{taskId}/completion 은 완료 상태를 변경한다")
     void updateTaskCompletion_returnsUpdatedTask() throws Exception {
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", true, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(
+            11L,
+            1L,
+            null,
+            "리팩터링",
+            true,
+            0L,
+            LocalDate.of(2026, 3, 16),
+            Instant.now(),
+            Instant.now()
+        );
         when(updateTaskCompletionV2UseCase.execute(any()))
             .thenReturn(UpdateTaskCompletionV2Data.Result.from(task));
 

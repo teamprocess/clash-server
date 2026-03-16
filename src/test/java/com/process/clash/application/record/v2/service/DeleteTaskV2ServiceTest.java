@@ -13,6 +13,7 @@ import com.process.clash.application.record.v2.port.out.RecordSessionV2Repositor
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,7 @@ class DeleteTaskV2ServiceTest {
     @DisplayName("부모 없는 세부 작업도 진행중인 세션이 없으면 삭제할 수 있다")
     void execute_deletesUngroupedTaskWhenNoActiveSession() {
         Actor actor = new Actor(1L);
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, LocalDate.of(2026, 3, 16), Instant.now(), Instant.now());
         DeleteTaskV2Data.Command command = new DeleteTaskV2Data.Command(actor, 11L);
 
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
@@ -60,7 +61,7 @@ class DeleteTaskV2ServiceTest {
     @DisplayName("진행중인 세션이 있으면 삭제할 수 없다")
     void execute_throwsWhenActiveSessionExists() {
         Actor actor = new Actor(1L);
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, LocalDate.of(2026, 3, 16), Instant.now(), Instant.now());
         DeleteTaskV2Data.Command command = new DeleteTaskV2Data.Command(actor, 11L);
 
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
@@ -87,7 +88,7 @@ class DeleteTaskV2ServiceTest {
     @DisplayName("삭제 시 FK 무결성 예외가 발생하면 도메인 예외로 변환한다")
     void execute_throwsDomainConflictWhenDeleteFailsByIntegrity() {
         Actor actor = new Actor(1L);
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, LocalDate.of(2026, 3, 16), Instant.now(), Instant.now());
         DeleteTaskV2Data.Command command = new DeleteTaskV2Data.Command(actor, 11L);
 
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));

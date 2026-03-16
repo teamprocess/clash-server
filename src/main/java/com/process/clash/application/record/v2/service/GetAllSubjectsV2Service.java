@@ -47,12 +47,11 @@ public class GetAllSubjectsV2Service implements GetAllSubjectsV2UseCase {
             return GetAllSubjectsV2Data.Result.from(List.of());
         }
 
-        List<Long> subjectIds = subjects.stream().map(RecordSubjectV2::id).toList();
-        List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllBySubjectIds(subjectIds);
-
         RecordDayWindow dayWindow = recordDate.equals(todayRecordDate)
             ? todayWindow
             : RecordDayWindow.of(recordDate, recordZoneId, boundaryHour);
+        List<Long> subjectIds = subjects.stream().map(RecordSubjectV2::id).toList();
+        List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllBySubjectIdsAndRecordDate(subjectIds, recordDate);
         LocalDateTime dayStart = dayWindow.dayStart();
         LocalDateTime dayEnd = dayWindow.dayEnd();
         LocalDateTime endLimit = dayWindow.endLimit();

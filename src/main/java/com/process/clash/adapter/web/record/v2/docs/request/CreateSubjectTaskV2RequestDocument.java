@@ -10,4 +10,7 @@ public class CreateSubjectTaskV2RequestDocument {
 
     @Schema(description = "세부 작업 이름", example = "ERD 설계")
     public String name;
+
+    @Schema(description = "세부 작업을 귀속시킬 기록일, 없으면 현재 기록일", example = "2026-03-16")
+    public String date;
 }

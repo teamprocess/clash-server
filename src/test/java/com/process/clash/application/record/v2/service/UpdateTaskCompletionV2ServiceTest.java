@@ -12,6 +12,7 @@ import com.process.clash.application.record.v2.exception.exception.notfound.Task
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +38,7 @@ class UpdateTaskCompletionV2ServiceTest {
     @DisplayName("본인 task의 완료 상태를 변경한다")
     void execute_updatesCompletion() {
         Actor actor = new Actor(1L);
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, LocalDate.of(2026, 3, 16), Instant.now(), Instant.now());
         UpdateTaskCompletionV2Data.Command command = new UpdateTaskCompletionV2Data.Command(actor, 11L, true);
 
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));

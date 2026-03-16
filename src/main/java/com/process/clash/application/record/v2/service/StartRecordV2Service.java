@@ -19,14 +19,18 @@ import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.application.record.v2.util.RecordDayWindow;
 import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.v2.entity.RecordDevelopSessionSegmentV2;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -46,6 +50,8 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     private final MonitoredAppPolicy monitoredAppPolicy;
     private final RecordActivityNotifierPort recordActivityNotifierPort;
     private final UserPresencePort userPresencePort;
+    private final RecordProperties recordProperties;
+    private final ZoneId recordZoneId;
 
     @Override
     public StartRecordV2Data.Result execute(StartRecordV2Data.Command command) {
@@ -106,6 +112,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
             if (command.taskId() != null) {
                 task = recordTaskV2RepositoryPort.findByIdAndUserId(command.taskId(), command.actor().id())
                     .orElseThrow(TaskV2NotFoundException::new);
+                validateTaskRecordDate(task);
             }
 
             if (subject == null && task != null && task.subjectId() != null) {
@@ -144,6 +151,13 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
 
     private void validateTaskStartRequest(StartRecordV2Data.Command command) {
         if ((command.subjectId() == null && command.taskId() == null) || command.appId() != null) {
+            throw new InvalidRecordV2StartRequestException();
+        }
+    }
+
+    private void validateTaskRecordDate(RecordTaskV2 task) {
+        LocalDate todayRecordDate = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour()).recordDate();
+        if (!task.belongsToRecordDate(todayRecordDate)) {
             throw new InvalidRecordV2StartRequestException();
         }
     }
