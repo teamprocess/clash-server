@@ -1,6 +1,7 @@
 package com.process.clash.domain.record.v2.entity;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 public record RecordTaskV2(
     Long id,
@@ -9,11 +10,12 @@ public record RecordTaskV2(
     String name,
     boolean completed,
     Long studyTime,
+    LocalDate recordDate,
     Instant createdAt,
     Instant updatedAt
 ) {
 
-    public static RecordTaskV2 create(String name, Long userId, Long subjectId) {
+    public static RecordTaskV2 create(String name, Long userId, Long subjectId, LocalDate recordDate) {
         Instant now = Instant.now();
         return new RecordTaskV2(
             null,
@@ -22,6 +24,7 @@ public record RecordTaskV2(
             name,
             false,
             0L,
+            recordDate,
             now,
             now
         );
@@ -35,6 +38,7 @@ public record RecordTaskV2(
             name,
             this.completed,
             this.studyTime,
+            this.recordDate,
             this.createdAt,
             Instant.now()
         );
@@ -48,6 +52,7 @@ public record RecordTaskV2(
             name,
             this.completed,
             this.studyTime,
+            this.recordDate,
             this.createdAt,
             Instant.now()
         );
@@ -61,6 +66,7 @@ public record RecordTaskV2(
             this.name,
             completed,
             this.studyTime,
+            this.recordDate,
             this.createdAt,
             Instant.now()
         );
@@ -74,8 +80,13 @@ public record RecordTaskV2(
             this.name,
             this.completed,
             studyTime,
+            this.recordDate,
             this.createdAt,
             this.updatedAt
         );
+    }
+
+    public boolean belongsToRecordDate(LocalDate date) {
+        return this.recordDate.equals(date);
     }
 }

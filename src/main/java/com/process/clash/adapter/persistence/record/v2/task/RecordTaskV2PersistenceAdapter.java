@@ -7,6 +7,7 @@ import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.record.v2.exception.exception.notfound.TaskV2NotFoundException;
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class RecordTaskV2PersistenceAdapter implements RecordTaskV2RepositoryPor
             RecordTaskV2JpaEntity entity = RecordTaskV2JpaEntity.create(
                 task.name(),
                 task.completed(),
+                task.recordDate(),
                 subject,
                 user
             );
@@ -74,18 +76,18 @@ public class RecordTaskV2PersistenceAdapter implements RecordTaskV2RepositoryPor
     }
 
     @Override
-    public List<RecordTaskV2> findAllByUserIdOrderBySubjectIdDescNullsFirst(Long userId) {
-        return recordTaskV2JpaRepository.findAllByUserIdOrderBySubjectIdDescNullsFirst(userId).stream()
+    public List<RecordTaskV2> findAllByUserIdAndRecordDateOrderBySubjectIdDescNullsFirst(Long userId, LocalDate recordDate) {
+        return recordTaskV2JpaRepository.findAllByUserIdAndRecordDateOrderBySubjectIdDescNullsFirst(userId, recordDate).stream()
             .map(recordTaskV2JpaMapper::toDomain)
             .toList();
     }
 
     @Override
-    public List<RecordTaskV2> findAllBySubjectIds(Collection<Long> subjectIds) {
+    public List<RecordTaskV2> findAllBySubjectIdsAndRecordDate(Collection<Long> subjectIds, LocalDate recordDate) {
         if (subjectIds.isEmpty()) {
             return List.of();
         }
-        return recordTaskV2JpaRepository.findAllBySubjectIdInOrderByCreatedAtAsc(subjectIds).stream()
+        return recordTaskV2JpaRepository.findAllBySubjectIdInAndRecordDateOrderByCreatedAtAsc(subjectIds, recordDate).stream()
             .map(recordTaskV2JpaMapper::toDomain)
             .toList();
     }

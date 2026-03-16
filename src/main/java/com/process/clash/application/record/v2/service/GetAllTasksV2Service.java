@@ -35,16 +35,17 @@ public class GetAllTasksV2Service implements GetAllTasksV2UseCase {
         LocalDate todayRecordDate = todayWindow.recordDate();
         LocalDate recordDate = command.date() == null ? todayRecordDate : command.date();
 
-        List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllByUserIdOrderBySubjectIdDescNullsFirst(
-            command.actor().id()
+        RecordDayWindow dayWindow = recordDate.equals(todayRecordDate)
+            ? todayWindow
+            : RecordDayWindow.of(recordDate, recordZoneId, boundaryHour);
+        List<RecordTaskV2> tasks = recordTaskV2RepositoryPort.findAllByUserIdAndRecordDateOrderBySubjectIdDescNullsFirst(
+            command.actor().id(),
+            recordDate
         );
         if (tasks.isEmpty()) {
             return GetAllTasksV2Data.Result.from(List.of());
         }
 
-        RecordDayWindow dayWindow = recordDate.equals(todayRecordDate)
-            ? todayWindow
-            : RecordDayWindow.of(recordDate, recordZoneId, boundaryHour);
         LocalDateTime dayStart = dayWindow.dayStart();
         LocalDateTime dayEnd = dayWindow.dayEnd();
         LocalDateTime endLimit = dayWindow.endLimit();

@@ -14,9 +14,13 @@ import com.process.clash.application.record.v2.exception.exception.notfound.Subj
 import com.process.clash.application.record.v2.policy.SubjectV2Policy;
 import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
+import com.process.clash.application.record.v2.util.RecordDayWindow;
 import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +45,9 @@ class CreateSubjectTaskV2ServiceTest {
         createSubjectTaskV2Service = new CreateSubjectTaskV2Service(
             recordSubjectV2RepositoryPort,
             recordTaskV2RepositoryPort,
-            new SubjectV2Policy()
+            new SubjectV2Policy(),
+            new RecordProperties("UTC", 6),
+            ZoneId.of("UTC")
         );
     }
 
@@ -50,7 +56,12 @@ class CreateSubjectTaskV2ServiceTest {
     void execute_createsTask() {
         Actor actor = new Actor(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "백엔드", 0L, Instant.now(), Instant.now());
-        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, 10L, "ERD 설계");
+        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(
+            actor,
+            10L,
+            "ERD 설계",
+            LocalDate.of(2026, 3, 16)
+        );
 
         when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
         when(recordTaskV2RepositoryPort.save(any(RecordTaskV2.class)))
@@ -65,7 +76,8 @@ class CreateSubjectTaskV2ServiceTest {
     @DisplayName("subject 없이도 세부 작업을 생성한다")
     void execute_createsTaskWithoutSubject() {
         Actor actor = new Actor(1L);
-        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, null, "리팩터링");
+        LocalDate expectedRecordDate = RecordDayWindow.today(ZoneId.of("UTC"), 6).recordDate();
+        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, null, "리팩터링", null);
 
         when(recordTaskV2RepositoryPort.save(any(RecordTaskV2.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
@@ -77,6 +89,7 @@ class CreateSubjectTaskV2ServiceTest {
             task.subjectId() == null
                 && task.userId().equals(1L)
                 && task.name().equals("리팩터링")
+                && task.recordDate().equals(expectedRecordDate)
         ));
     }
 
@@ -84,7 +97,7 @@ class CreateSubjectTaskV2ServiceTest {
     @DisplayName("과목 그룹이 없으면 예외가 발생한다")
     void execute_throwsWhenSubjectNotFound() {
         Actor actor = new Actor(1L);
-        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, 10L, "ERD 설계");
+        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, 10L, "ERD 설계", null);
         when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> createSubjectTaskV2Service.execute(command))
@@ -96,7 +109,7 @@ class CreateSubjectTaskV2ServiceTest {
     void execute_throwsWhenNotOwner() {
         Actor actor = new Actor(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 2L, "백엔드", 0L, Instant.now(), Instant.now());
-        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, 10L, "ERD 설계");
+        CreateSubjectTaskV2Data.Command command = new CreateSubjectTaskV2Data.Command(actor, 10L, "ERD 설계", null);
         when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
 
         assertThatThrownBy(() -> createSubjectTaskV2Service.execute(command))

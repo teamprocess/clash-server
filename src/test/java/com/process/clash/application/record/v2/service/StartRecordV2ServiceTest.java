@@ -15,6 +15,7 @@ import com.process.clash.application.record.v2.port.out.RecordDevelopSessionSegm
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;
 import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPort;
+import com.process.clash.application.record.v2.util.RecordDayWindow;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.record.enums.MonitoredApp;
@@ -27,6 +28,7 @@ import com.process.clash.domain.user.user.enums.Role;
 import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
+import com.process.clash.infrastructure.config.record.RecordProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,7 +84,9 @@ class StartRecordV2ServiceTest {
             new SubjectV2Policy(),
             new MonitoredAppPolicy(),
             recordActivityNotifierPort,
-            userPresencePort
+            userPresencePort,
+            new RecordProperties("UTC", 6),
+            ZoneId.of("UTC")
         );
         lenient().when(userPresencePort.getStatus(anyLong())).thenReturn(UserActivityStatus.ONLINE);
     }
@@ -91,7 +97,7 @@ class StartRecordV2ServiceTest {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "해시테이블", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "해시테이블", false, 0L, currentRecordDate(), Instant.now(), Instant.now());
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
             RecordSessionTypeV2.TASK,
             10L,
@@ -190,7 +196,7 @@ class StartRecordV2ServiceTest {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "해시테이블", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 10L, "해시테이블", false, 0L, currentRecordDate(), Instant.now(), Instant.now());
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
             RecordSessionTypeV2.TASK,
             null,
@@ -219,7 +225,7 @@ class StartRecordV2ServiceTest {
     void execute_startsTaskSessionWithOnlyTaskAndNoSubject() {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "해시테이블", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "해시테이블", false, 0L, currentRecordDate(), Instant.now(), Instant.now());
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
             RecordSessionTypeV2.TASK,
             null,
@@ -274,7 +280,7 @@ class StartRecordV2ServiceTest {
         Actor actor = new Actor(1L);
         User user = createUser(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "자료구조", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 20L, "해시테이블", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, 20L, "해시테이블", false, 0L, currentRecordDate(), Instant.now(), Instant.now());
         StartRecordV2Data.Command command = new StartRecordV2Data.Command(
             RecordSessionTypeV2.TASK,
             10L,
@@ -286,6 +292,38 @@ class StartRecordV2ServiceTest {
         when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
         when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
         when(recordSubjectV2RepositoryPort.findById(10L)).thenReturn(Optional.of(subject));
+        when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
+
+        assertThatThrownBy(() -> startRecordV2Service.execute(command))
+            .isInstanceOf(InvalidRecordV2StartRequestException.class);
+    }
+
+    @Test
+    @DisplayName("오늘 기록일에 속하지 않은 task로는 TASK 세션을 시작할 수 없다")
+    void execute_throwsWhenTaskBelongsToAnotherRecordDate() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        RecordTaskV2 task = new RecordTaskV2(
+            11L,
+            1L,
+            null,
+            "해시테이블",
+            false,
+            0L,
+            currentRecordDate().minusDays(1),
+            Instant.now(),
+            Instant.now()
+        );
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            null,
+            11L,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
 
         assertThatThrownBy(() -> startRecordV2Service.execute(command))
@@ -436,6 +474,10 @@ class StartRecordV2ServiceTest {
             session.startedAt(),
             session.endedAt()
         );
+    }
+
+    private LocalDate currentRecordDate() {
+        return RecordDayWindow.today(ZoneId.of("UTC"), 6).recordDate();
     }
 
     private User createUser(Long id) {

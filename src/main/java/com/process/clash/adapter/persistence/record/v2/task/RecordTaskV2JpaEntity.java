@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,6 +48,9 @@ public class RecordTaskV2JpaEntity {
     @Column(nullable = false)
     private boolean completed;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDate recordDate;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "fk_record_subject_id", nullable = true)
     private RecordSubjectV2JpaEntity subject;
@@ -58,6 +62,7 @@ public class RecordTaskV2JpaEntity {
     public static RecordTaskV2JpaEntity create(
         String name,
         boolean completed,
+        LocalDate recordDate,
         RecordSubjectV2JpaEntity subject,
         UserJpaEntity user
     ) {
@@ -67,6 +72,7 @@ public class RecordTaskV2JpaEntity {
             null,
             name,
             completed,
+            recordDate,
             subject,
             user
         );

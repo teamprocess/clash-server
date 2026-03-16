@@ -51,8 +51,9 @@ class GetAllTasksV2ServiceTest {
     @DisplayName("task 목록을 subjectId 오름차순(null 먼저)으로 조회하고 학습시간/완료상태를 반환한다")
     void execute_returnsSortedTasksWithStudyTimeAndCompletion() {
         Actor actor = new Actor(1L);
-        RecordTaskV2 noSubjectTask = new RecordTaskV2(10L, 1L, null, "무주제 작업", true, 0L, Instant.now(), Instant.now());
-        RecordTaskV2 subjectTask = new RecordTaskV2(11L, 1L, 5L, "주제 작업", false, 0L, Instant.now(), Instant.now());
+        LocalDate recordDate = RecordDateCalculator.recordDate(ZonedDateTime.now(ZoneId.of("UTC")), 6);
+        RecordTaskV2 noSubjectTask = new RecordTaskV2(10L, 1L, null, "무주제 작업", true, 0L, recordDate, Instant.now(), Instant.now());
+        RecordTaskV2 subjectTask = new RecordTaskV2(11L, 1L, 5L, "주제 작업", false, 0L, recordDate, Instant.now(), Instant.now());
 
         ZonedDateTime nowZoned = ZonedDateTime.now(ZoneId.of("UTC"));
         LocalDateTime dayStart = RecordDateCalculator.startOfRecordDay(nowZoned, 6);
@@ -73,7 +74,7 @@ class GetAllTasksV2ServiceTest {
             endLimit.plusHours(1).atZone(ZoneId.of("UTC")).toInstant()
         );
 
-        when(recordTaskV2RepositoryPort.findAllByUserIdOrderBySubjectIdDescNullsFirst(1L))
+        when(recordTaskV2RepositoryPort.findAllByUserIdAndRecordDateOrderBySubjectIdDescNullsFirst(1L, recordDate))
             .thenReturn(List.of(noSubjectTask, subjectTask));
         when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(1L, dayStart, dayEnd))
             .thenReturn(List.of(noSubjectSession));
@@ -95,11 +96,11 @@ class GetAllTasksV2ServiceTest {
     void execute_returnsZeroStudyTimeForFutureDate() {
         Actor actor = new Actor(1L);
         LocalDate tomorrow = RecordDateCalculator.recordDate(ZonedDateTime.now(ZoneId.of("UTC")), 6).plusDays(1);
-        RecordTaskV2 task = new RecordTaskV2(10L, 1L, null, "무주제 작업", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(10L, 1L, null, "무주제 작업", false, 0L, tomorrow, Instant.now(), Instant.now());
         LocalDateTime dayStart = tomorrow.atTime(6, 0);
         LocalDateTime dayEnd = dayStart.plusDays(1);
 
-        when(recordTaskV2RepositoryPort.findAllByUserIdOrderBySubjectIdDescNullsFirst(actor.id()))
+        when(recordTaskV2RepositoryPort.findAllByUserIdAndRecordDateOrderBySubjectIdDescNullsFirst(actor.id(), tomorrow))
             .thenReturn(List.of(task));
         when(recordSessionV2RepositoryPort.findAllByUserIdAndTimeRange(actor.id(), dayStart, dayEnd))
             .thenReturn(List.of());
