@@ -1,7 +1,7 @@
 package com.process.clash.adapter.persistence.roadmap.sectionprogress;
 
-import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
+import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class UserSectionProgressJpaMapper {
             UserSectionProgress progress,
             UserJpaEntity userEntity,
             SectionJpaEntity sectionEntity,
-            ChapterJpaEntity currentChapterEntity) {
+            ChapterV2JpaEntity currentChapterEntity) {
         return new UserSectionProgressJpaEntity(
                 progress.getId(),
                 userEntity,

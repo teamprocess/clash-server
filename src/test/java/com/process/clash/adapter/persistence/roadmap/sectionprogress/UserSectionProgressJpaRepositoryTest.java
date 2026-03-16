@@ -2,8 +2,8 @@ package com.process.clash.adapter.persistence.roadmap.sectionprogress;
 
 import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaMapper;
-import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
-import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
+import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaEntity;
+import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaMapper;
 import com.process.clash.adapter.persistence.roadmap.choice.ChoiceJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaMapper;
@@ -45,7 +45,7 @@ import java.util.List;
         ChoiceJpaMapper.class,
         MissionQuestionJpaMapper.class,
         MissionJpaMapper.class,
-        ChapterJpaMapper.class,
+        ChapterV2JpaMapper.class,
         SectionJpaMapper.class
 })
 class UserSectionProgressJpaRepositoryTest {
@@ -81,8 +81,8 @@ class UserSectionProgressJpaRepositoryTest {
         em.persist(sectionJpaEntity);
 
         // 3. Chapter 저장 (Section 참조)
-        ChapterJpaEntity chapterJpaEntity = new ChapterJpaEntity(
-                null, sectionJpaEntity, "테스트 챕터", "테스트 챕터 설명", 1, new ArrayList<>(), now, now
+        ChapterV2JpaEntity chapterJpaEntity = new ChapterV2JpaEntity(
+                null, sectionJpaEntity, "테스트 챕터", "테스트 챕터 설명", 1, null, new ArrayList<>(), now, now
         );
         em.persist(chapterJpaEntity);
 

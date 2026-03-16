@@ -1,9 +1,9 @@
 package com.process.clash.adapter.persistence.roadmap.sectionprogress;
 
-import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
-import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaRepository;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaRepository;
+import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaEntity;
+import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaRepository;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.ranking.port.out.LoadChapterRankingPort;
@@ -23,14 +23,14 @@ public class UserSectionProgressPersistenceAdapter implements UserSectionProgres
     private final UserSectionProgressJpaMapper userSectionProgressJpaMapper;
     private final UserJpaRepository userJpaRepository;
     private final SectionJpaRepository sectionJpaRepository;
-    private final ChapterJpaRepository chapterJpaRepository;
+    private final ChapterV2JpaRepository chapterV2JpaRepository;
 
     @Override
     public void save(UserSectionProgress progress) {
         UserJpaEntity userEntity = userJpaRepository.getReferenceById(progress.getUserId());
         SectionJpaEntity sectionEntity = sectionJpaRepository.getReferenceById(progress.getSectionId());
-        ChapterJpaEntity currentChapterEntity = progress.getCurrentChapterId() != null
-                ? chapterJpaRepository.getReferenceById(progress.getCurrentChapterId())
+        ChapterV2JpaEntity currentChapterEntity = progress.getCurrentChapterId() != null
+                ? chapterV2JpaRepository.getReferenceById(progress.getCurrentChapterId())
                 : null;
         userSectionProgressJpaRepository.save(
                 userSectionProgressJpaMapper.toJpaEntity(progress, userEntity, sectionEntity, currentChapterEntity)
