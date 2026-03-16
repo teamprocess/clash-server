@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.roadmap.sectionprogress;
 
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.section.SectionJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
@@ -41,7 +42,7 @@ public class UserSectionProgressJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_current_chapter_id")
-    private ChapterV2JpaEntity currentChapter;
+    private ChapterJpaEntity currentChapter;
 
     @Column(nullable = false)
     private Integer completedChapters;
