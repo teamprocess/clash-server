@@ -17,6 +17,7 @@ import com.process.clash.application.record.v2.port.out.RecordTaskV2RepositoryPo
 import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +51,7 @@ class UpdateTaskV2ServiceTest {
     void execute_updatesUngroupedTaskAndMovesSubject() {
         Actor actor = new Actor(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 1L, "백엔드", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, LocalDate.of(2026, 3, 16), Instant.now(), Instant.now());
         UpdateTaskV2Data.Command command = new UpdateTaskV2Data.Command(actor, 11L, 10L, "리팩터링 정리");
 
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
@@ -81,7 +82,7 @@ class UpdateTaskV2ServiceTest {
     @DisplayName("이동할 과목이 없으면 예외가 발생한다")
     void execute_throwsWhenSubjectNotFound() {
         Actor actor = new Actor(1L);
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, LocalDate.of(2026, 3, 16), Instant.now(), Instant.now());
         UpdateTaskV2Data.Command command = new UpdateTaskV2Data.Command(actor, 11L, 10L, "리팩터링 정리");
 
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
@@ -96,7 +97,7 @@ class UpdateTaskV2ServiceTest {
     void execute_throwsWhenTargetSubjectIsNotOwned() {
         Actor actor = new Actor(1L);
         RecordSubjectV2 subject = new RecordSubjectV2(10L, 2L, "백엔드", 0L, Instant.now(), Instant.now());
-        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, Instant.now(), Instant.now());
+        RecordTaskV2 task = new RecordTaskV2(11L, 1L, null, "리팩터링", false, 0L, LocalDate.of(2026, 3, 16), Instant.now(), Instant.now());
         UpdateTaskV2Data.Command command = new UpdateTaskV2Data.Command(actor, 11L, 10L, "리팩터링 정리");
 
         when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));

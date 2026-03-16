@@ -1,5 +1,6 @@
 package com.process.clash.adapter.persistence.record.v2.task;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Repository;
 public interface RecordTaskV2JpaRepository extends JpaRepository<RecordTaskV2JpaEntity, Long> {
 
     @EntityGraph(attributePaths = {"subject", "user"})
-    List<RecordTaskV2JpaEntity> findAllBySubjectIdInOrderByCreatedAtAsc(Collection<Long> subjectIds);
+    List<RecordTaskV2JpaEntity> findAllBySubjectIdInAndRecordDateOrderByCreatedAtAsc(
+        Collection<Long> subjectIds,
+        LocalDate recordDate
+    );
 
     @EntityGraph(attributePaths = {"subject", "user"})
     Optional<RecordTaskV2JpaEntity> findByIdAndSubjectId(Long id, Long subjectId);
@@ -30,7 +34,11 @@ public interface RecordTaskV2JpaRepository extends JpaRepository<RecordTaskV2Jpa
         from RecordTaskV2JpaEntity t
         left join t.subject s
         where t.user.id = :userId
+          and t.recordDate = :recordDate
         order by case when s.id is null then 0 else 1 end asc, s.id desc, t.createdAt asc
     """)
-    List<RecordTaskV2JpaEntity> findAllByUserIdOrderBySubjectIdDescNullsFirst(@Param("userId") Long userId);
+    List<RecordTaskV2JpaEntity> findAllByUserIdAndRecordDateOrderBySubjectIdDescNullsFirst(
+        @Param("userId") Long userId,
+        @Param("recordDate") LocalDate recordDate
+    );
 }

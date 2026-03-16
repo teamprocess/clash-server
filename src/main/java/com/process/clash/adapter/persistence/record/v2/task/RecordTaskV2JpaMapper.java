@@ -14,6 +14,7 @@ public class RecordTaskV2JpaMapper {
             entity.getName(),
             entity.isCompleted(),
             0L,
+            entity.getRecordDate(),
             entity.getCreatedAt(),
             entity.getUpdatedAt()
         );

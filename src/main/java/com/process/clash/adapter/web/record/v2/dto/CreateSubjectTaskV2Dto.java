@@ -4,6 +4,7 @@ import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.record.v2.data.CreateSubjectTaskV2Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 public class CreateSubjectTaskV2Dto {
 
@@ -11,10 +12,11 @@ public class CreateSubjectTaskV2Dto {
     public record Request(
         Long subjectId,
         @NotBlank(message = "name은 필수 입력값입니다.")
-        String name
+        String name,
+        LocalDate date
     ) {
         public CreateSubjectTaskV2Data.Command toCommand(Actor actor) {
-            return new CreateSubjectTaskV2Data.Command(actor, subjectId, name);
+            return new CreateSubjectTaskV2Data.Command(actor, subjectId, name, date);
         }
     }
 }
