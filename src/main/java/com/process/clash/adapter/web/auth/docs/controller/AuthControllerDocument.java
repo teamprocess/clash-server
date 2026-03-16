@@ -20,6 +20,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -159,7 +162,14 @@ public interface AuthControllerDocument {
     })
     com.process.clash.adapter.web.common.ApiResponse<CheckDuplicateUsernameDto.Response> checkUsername(
             @Parameter(description = "확인할 아이디 (영문, 숫자, _, - 가능, 3~20자)", required = true, example = "gildong123")
-            @RequestParam String username
+            @RequestParam
+            @NotBlank(message = "유저네임은 필수 입력값입니다.")
+            @Size(min = 3, max = 20, message = "유저네임은 3~20자여야 합니다.")
+            @Pattern(
+                    regexp = "^[a-zA-Z0-9_-]+$",
+                    message = "유저네임은 영문, 숫자, _, -만 사용 가능합니다."
+            )
+            String username
     );
 
     @Operation(summary = "비밀번호 재설정 이메일 발송", description = "입력한 이메일로 비밀번호 재설정 링크를 발송합니다. 가입된 이메일이 아니어도 동일한 응답을 반환합니다.")
