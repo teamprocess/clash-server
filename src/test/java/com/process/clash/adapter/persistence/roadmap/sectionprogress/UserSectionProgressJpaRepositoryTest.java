@@ -123,3 +123,4 @@ class UserSectionProgressJpaRepositoryTest {
         Assertions.assertThat(firstRecord[6]).isEqualTo(ExpTier.UNRANKED.name());
     }
 }
+
