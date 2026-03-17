@@ -3,7 +3,10 @@ package com.process.clash.adapter.persistence.roadmap.sectionprogress;
 import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaEntity;
 import com.process.clash.adapter.persistence.roadmap.category.CategoryJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaEntity;
+import com.process.clash.adapter.persistence.roadmap.chapter.ChapterJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.v2.chapter.ChapterV2JpaMapper;
+import com.process.clash.adapter.persistence.roadmap.v2.choice.ChoiceV2JpaMapper;
+import com.process.clash.adapter.persistence.roadmap.v2.question.QuestionV2JpaMapper;
 import com.process.clash.adapter.persistence.roadmap.choice.ChoiceJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.keypoint.SectionKeyPointJpaMapper;
 import com.process.clash.adapter.persistence.roadmap.mission.MissionJpaMapper;
@@ -45,7 +48,10 @@ import java.util.List;
         ChoiceJpaMapper.class,
         MissionQuestionJpaMapper.class,
         MissionJpaMapper.class,
+        ChapterJpaMapper.class,
         ChapterV2JpaMapper.class,
+        QuestionV2JpaMapper.class,
+        ChoiceV2JpaMapper.class,
         SectionJpaMapper.class
 })
 class UserSectionProgressJpaRepositoryTest {
@@ -123,4 +129,3 @@ class UserSectionProgressJpaRepositoryTest {
         Assertions.assertThat(firstRecord[6]).isEqualTo(ExpTier.UNRANKED.name());
     }
 }
-

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJpaEntity, Long> {
@@ -172,4 +173,11 @@ public interface UserStudyTimeJpaRepository extends JpaRepository<UserStudyTimeJ
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query(value = """
+        SELECT DISTINCT fk_user_id
+        FROM user_study_times
+        WHERE date = :date
+    """, nativeQuery = true)
+    Set<Long> findUserIdsWithStudyTimeByDate(@Param("date") LocalDate date);
 }
