@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -131,5 +132,25 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     public List<UserRanking> findExpRankingByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return userExpHistoryJpaRepository.findExpRankingByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    @Override
+    public Set<Long> findUserIdsWithExpByDate(LocalDate date) {
+        return userExpHistoryJpaRepository.findUserIdsWithExpByDate(date);
+    }
+
+    @Override
+    public List<Long> findUserIdsWithoutExpOnDate(LocalDate date) {
+        return userExpHistoryJpaRepository.findUserIdsWithoutExpOnDate(date);
+    }
+
+    @Override
+    public void saveAll(List<UserExpHistory> userExpHistories) {
+        List<UserExpHistoryJpaEntity> entities = userExpHistories.stream()
+                .map(history -> userExpHistoryJpaMapper.toJpaEntity(
+                        history, userJpaRepository.getReferenceById(history.userId())
+                ))
+                .toList();
+        userExpHistoryJpaRepository.saveAll(entities);
     }
 }

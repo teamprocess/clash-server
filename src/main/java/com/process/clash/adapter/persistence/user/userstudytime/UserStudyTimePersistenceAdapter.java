@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -78,5 +79,25 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
     public List<Variation> findVariationByUserId(Long userId, LocalDate startDate, LocalDate endDate) {
 
         return userStudyTimeJpaRepository.findVariationByUserId(userId, startDate, endDate);
+    }
+
+    @Override
+    public Set<Long> findUserIdsWithStudyTimeByDate(LocalDate date) {
+        return userStudyTimeJpaRepository.findUserIdsWithStudyTimeByDate(date);
+    }
+
+    @Override
+    public List<Long> findUserIdsWithoutStudyTimeOnDate(LocalDate date) {
+        return userStudyTimeJpaRepository.findUserIdsWithoutStudyTimeOnDate(date);
+    }
+
+    @Override
+    public void saveAll(List<UserStudyTime> userStudyTimes) {
+        List<UserStudyTimeJpaEntity> entities = userStudyTimes.stream()
+                .map(studyTime -> userStudyTimeJpaMapper.toJpaEntity(
+                        studyTime, userJpaRepository.getReferenceById(studyTime.userId())
+                ))
+                .toList();
+        userStudyTimeJpaRepository.saveAll(entities);
     }
 }
