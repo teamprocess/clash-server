@@ -34,5 +34,7 @@ public interface UserExpHistoryRepositoryPort {
 
     Set<Long> findUserIdsWithExpByDate(LocalDate date);
 
+    List<Long> findUserIdsWithoutExpOnDate(LocalDate date);
+
     void saveAll(List<UserExpHistory> userExpHistories);
 }

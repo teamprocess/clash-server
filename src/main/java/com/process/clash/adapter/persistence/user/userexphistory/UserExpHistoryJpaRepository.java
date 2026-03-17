@@ -316,4 +316,18 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
           AND acting_category <> 'SEASON_RESET'
     """, nativeQuery = true)
     Set<Long> findUserIdsWithExpByDate(@Param("date") LocalDate date);
+
+    @Query(value = """
+        SELECT u.id
+        FROM users u
+        WHERE u.user_status = 'ACTIVE'
+          AND u.deleted_at IS NULL
+          AND NOT EXISTS (
+              SELECT 1 FROM user_exp_history ueh
+              WHERE ueh.fk_user_id = u.id
+                AND ueh.date = :date
+                AND ueh.acting_category <> 'SEASON_RESET'
+          )
+    """, nativeQuery = true)
+    List<Long> findUserIdsWithoutExpOnDate(@Param("date") LocalDate date);
 }

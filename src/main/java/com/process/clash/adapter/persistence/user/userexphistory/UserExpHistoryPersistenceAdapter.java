@@ -140,6 +140,11 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
     }
 
     @Override
+    public List<Long> findUserIdsWithoutExpOnDate(LocalDate date) {
+        return userExpHistoryJpaRepository.findUserIdsWithoutExpOnDate(date);
+    }
+
+    @Override
     public void saveAll(List<UserExpHistory> userExpHistories) {
         List<UserExpHistoryJpaEntity> entities = userExpHistories.stream()
                 .map(history -> userExpHistoryJpaMapper.toJpaEntity(

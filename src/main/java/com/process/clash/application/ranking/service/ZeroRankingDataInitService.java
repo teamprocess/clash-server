@@ -1,10 +1,8 @@
 package com.process.clash.application.ranking.service;
 
 import com.process.clash.application.github.service.StudyDateCalculator;
-import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.application.user.userstudytime.port.out.UserStudyTimeRepositoryPort;
-import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
 import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import com.process.clash.domain.user.userstudytime.entity.UserStudyTime;
@@ -16,14 +14,12 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ZeroRankingDataInitService {
 
-    private final UserRepositoryPort userRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserStudyTimeRepositoryPort userStudyTimeRepositoryPort;
     private final StudyDateCalculator studyDateCalculator;
@@ -34,12 +30,10 @@ public class ZeroRankingDataInitService {
     @Transactional
     public void initZeroExpForToday() {
         LocalDate studyDate = studyDateCalculator.toStudyDate(Instant.now());
-        List<User> allUsers = userRepositoryPort.findAllOrderByTotalExpDesc();
-        Set<Long> userIdsWithExp = userExpHistoryRepositoryPort.findUserIdsWithExpByDate(studyDate);
+        List<Long> userIdsWithoutExp = userExpHistoryRepositoryPort.findUserIdsWithoutExpOnDate(studyDate);
 
-        List<UserExpHistory> zeroRecords = allUsers.stream()
-                .filter(user -> !userIdsWithExp.contains(user.id()))
-                .map(user -> new UserExpHistory(null, Instant.now(), studyDate, 0, ExpActingCategory.STUDY_TIME, user.id()))
+        List<UserExpHistory> zeroRecords = userIdsWithoutExp.stream()
+                .map(userId -> new UserExpHistory(null, Instant.now(), studyDate, 0, ExpActingCategory.STUDY_TIME, userId))
                 .toList();
 
         if (!zeroRecords.isEmpty()) {
@@ -54,12 +48,10 @@ public class ZeroRankingDataInitService {
     @Transactional
     public void initZeroStudyTimeForToday() {
         LocalDate studyDate = studyDateCalculator.toStudyDate(Instant.now());
-        List<User> allUsers = userRepositoryPort.findAllOrderByTotalExpDesc();
-        Set<Long> userIdsWithStudyTime = userStudyTimeRepositoryPort.findUserIdsWithStudyTimeByDate(studyDate);
+        List<Long> userIdsWithoutStudyTime = userStudyTimeRepositoryPort.findUserIdsWithoutStudyTimeOnDate(studyDate);
 
-        List<UserStudyTime> zeroRecords = allUsers.stream()
-                .filter(user -> !userIdsWithStudyTime.contains(user.id()))
-                .map(user -> new UserStudyTime(null, studyDate, 0L, user.id()))
+        List<UserStudyTime> zeroRecords = userIdsWithoutStudyTime.stream()
+                .map(userId -> new UserStudyTime(null, studyDate, 0L, userId))
                 .toList();
 
         if (!zeroRecords.isEmpty()) {

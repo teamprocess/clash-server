@@ -87,6 +87,11 @@ public class UserStudyTimePersistenceAdapter implements UserStudyTimeRepositoryP
     }
 
     @Override
+    public List<Long> findUserIdsWithoutStudyTimeOnDate(LocalDate date) {
+        return userStudyTimeJpaRepository.findUserIdsWithoutStudyTimeOnDate(date);
+    }
+
+    @Override
     public void saveAll(List<UserStudyTime> userStudyTimes) {
         List<UserStudyTimeJpaEntity> entities = userStudyTimes.stream()
                 .map(studyTime -> userStudyTimeJpaMapper.toJpaEntity(

@@ -28,5 +28,7 @@ public interface UserStudyTimeRepositoryPort {
 
     Set<Long> findUserIdsWithStudyTimeByDate(LocalDate date);
 
+    List<Long> findUserIdsWithoutStudyTimeOnDate(LocalDate date);
+
     void saveAll(List<UserStudyTime> userStudyTimes);
 }
