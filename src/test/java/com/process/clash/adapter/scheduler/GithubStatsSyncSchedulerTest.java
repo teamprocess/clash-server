@@ -1,6 +1,7 @@
 package com.process.clash.adapter.scheduler;
 
 import com.process.clash.application.github.service.GithubDailyStatsSyncService;
+import com.process.clash.application.ranking.service.ZeroRankingDataInitService;
 import com.process.clash.application.user.exp.service.GithubExpGrantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,11 +22,14 @@ class GithubStatsSyncSchedulerTest {
     @Mock
     private GithubExpGrantService githubExpGrantService;
 
+    @Mock
+    private ZeroRankingDataInitService zeroRankingDataInitService;
+
     private GithubStatsSyncScheduler scheduler;
 
     @BeforeEach
     void setUp() {
-        scheduler = new GithubStatsSyncScheduler(syncService, githubExpGrantService);
+        scheduler = new GithubStatsSyncScheduler(syncService, githubExpGrantService, zeroRankingDataInitService);
     }
 
     @Test
@@ -45,6 +49,14 @@ class GithubStatsSyncSchedulerTest {
     }
 
     @Test
+    @DisplayName("30일 스케줄러는 0 EXP 초기화를 호출하지 않는다")
+    void runHourly30DaysSyncExceptMorningSix_doesNotCallZeroExpInit() {
+        scheduler.runHourly30DaysSyncExceptMorningSix();
+
+        verify(zeroRankingDataInitService, times(0)).initZeroExpForToday();
+    }
+
+    @Test
     @DisplayName("6시 스케줄러는 365일 동기화를 호출한다")
     void runDaily365DaysSyncAtMorningSix_callsThreeHundredSixtyFiveDaysSync() {
         scheduler.runDaily365DaysSyncAtMorningSix();
@@ -58,5 +70,13 @@ class GithubStatsSyncSchedulerTest {
         scheduler.runDaily365DaysSyncAtMorningSix();
 
         verify(githubExpGrantService, times(1)).grantForToday();
+    }
+
+    @Test
+    @DisplayName("6시 스케줄러는 0 EXP 초기화를 호출한다")
+    void runDaily365DaysSyncAtMorningSix_callsZeroExpInit() {
+        scheduler.runDaily365DaysSyncAtMorningSix();
+
+        verify(zeroRankingDataInitService, times(1)).initZeroExpForToday();
     }
 }
