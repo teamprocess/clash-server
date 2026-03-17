@@ -8,7 +8,4 @@ public class GroupActivityDataDocument {
 
     @Schema(description = "멤버 목록")
     public List<GroupActivityMemberDocument> members;
-
-    @Schema(description = "페이지네이션")
-    public GroupPaginationDocument pagination;
 }

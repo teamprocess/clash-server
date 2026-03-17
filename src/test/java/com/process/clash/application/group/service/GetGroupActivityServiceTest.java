@@ -68,13 +68,13 @@ class GetGroupActivityServiceTest {
 
         when(groupRepositoryPort.existsById(groupId)).thenReturn(true);
         when(groupRepositoryPort.existsMember(groupId, actor.id())).thenReturn(true);
-        when(groupRepositoryPort.findMembersByGroupId(groupId, 1, 10))
-            .thenReturn(new GroupRepositoryPort.MemberPageResult(List.of(member), 1));
+        when(groupRepositoryPort.findMembersByGroupId(groupId))
+            .thenReturn(List.of(member));
         when(recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(List.of(2L), dayStart, dayEnd))
             .thenReturn(Map.of(2L, 3600L));
 
         GetGroupActivityData.Result result = getGroupActivityService.execute(
-            GetGroupActivityData.Command.of(actor, groupId, 1, requestedDate)
+            GetGroupActivityData.Command.of(actor, groupId, requestedDate)
         );
 
         assertThat(result.members()).hasSize(1);
@@ -95,15 +95,15 @@ class GetGroupActivityServiceTest {
 
         when(groupRepositoryPort.existsById(groupId)).thenReturn(true);
         when(groupRepositoryPort.existsMember(groupId, actor.id())).thenReturn(true);
-        when(groupRepositoryPort.findMembersByGroupId(groupId, 1, 10))
-            .thenReturn(new GroupRepositoryPort.MemberPageResult(List.of(member), 1));
+        when(groupRepositoryPort.findMembersByGroupId(groupId))
+            .thenReturn(List.of(member));
         when(recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(List.of(2L), dayStart, dayEnd))
             .thenReturn(Map.of(2L, 1200L));
         when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(List.of(2L)))
             .thenReturn(List.of(createActiveTaskSession(2L)));
 
         GetGroupActivityData.Result result = getGroupActivityService.execute(
-            GetGroupActivityData.Command.of(actor, groupId, 1, todayRecordDate)
+            GetGroupActivityData.Command.of(actor, groupId, todayRecordDate)
         );
 
         assertThat(result.members()).hasSize(1);

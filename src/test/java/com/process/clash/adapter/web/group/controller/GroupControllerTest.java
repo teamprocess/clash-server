@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
-import com.process.clash.application.common.pagination.Pagination;
 import com.process.clash.application.group.data.GetAllGroupsData;
 import com.process.clash.application.group.data.GetGroupActivityData;
 import com.process.clash.application.group.data.GetGroupDetailData;
@@ -93,7 +92,7 @@ class GroupControllerTest {
     @DisplayName("GET /api/groups/{groupId}/activity 는 date 쿼리를 커맨드로 전달한다")
     void getGroupActivity_passesDateToCommand() throws Exception {
         when(getGroupActivityUseCase.execute(any()))
-            .thenReturn(new GetGroupActivityData.Result(List.of(), Pagination.from(1, 10, 0L)));
+            .thenReturn(new GetGroupActivityData.Result(List.of()));
 
         mockMvc.perform(get("/api/groups/10/activity").param("date", "2026-03-10"))
             .andExpect(status().isOk());

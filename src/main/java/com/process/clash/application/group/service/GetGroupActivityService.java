@@ -1,6 +1,5 @@
 package com.process.clash.application.group.service;
 
-import com.process.clash.application.common.pagination.Pagination;
 import com.process.clash.application.group.data.GetGroupActivityData;
 import com.process.clash.application.group.exception.exception.notfound.GroupNotFoundException;
 import com.process.clash.application.group.policy.GroupPolicy;
@@ -29,8 +28,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GetGroupActivityService implements GetGroupActivityUseCase {
 
-    private static final int PAGE_SIZE = 10;
-
     private final GroupRepositoryPort groupRepositoryPort;
     private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
     private final GroupPolicy groupPolicy;
@@ -46,9 +43,7 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
         boolean isMember = groupRepositoryPort.existsMember(command.groupId(), command.actor().id());
         groupPolicy.validateMembership(isMember);
 
-        GroupRepositoryPort.MemberPageResult memberPage =
-            groupRepositoryPort.findMembersByGroupId(command.groupId(), command.page(), PAGE_SIZE);
-        List<User> members = memberPage.members();
+        List<User> members = groupRepositoryPort.findMembersByGroupId(command.groupId());
         List<Long> memberIds = members.stream()
             .map(User::id)
             .toList();
@@ -73,10 +68,7 @@ public class GetGroupActivityService implements GetGroupActivityUseCase {
             ))
             .toList();
 
-        Pagination pagination =
-            Pagination.from(command.page(), PAGE_SIZE, memberPage.totalCount());
-
-        return new GetGroupActivityData.Result(memberVos, pagination);
+        return new GetGroupActivityData.Result(memberVos);
     }
 
     private Map<Long, Long> fetchStudyTimes(List<Long> memberIds, RecordDayWindow dayWindow) {

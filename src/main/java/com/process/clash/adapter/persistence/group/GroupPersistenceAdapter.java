@@ -7,6 +7,7 @@ import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.group.enums.GroupCategory;
 import com.process.clash.domain.user.user.entity.User;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -129,13 +130,11 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     }
 
     @Override
-    public MemberPageResult findMembersByGroupId(Long groupId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "id"));
-        Page<GroupMemberJpaEntity> pageResult = groupMemberJpaRepository.findAllByGroupId(groupId, pageable);
-        List<User> members = pageResult.getContent().stream()
+    public List<User> findMembersByGroupId(Long groupId) {
+        return groupMemberJpaRepository.findAllByGroupId(groupId).stream()
+            .sorted(Comparator.comparing(member -> member.getUser().getId()))
             .map(member -> userJpaMapper.toDomain(member.getUser()))
             .toList();
-        return new MemberPageResult(members, pageResult.getTotalElements());
     }
 
     @Override
