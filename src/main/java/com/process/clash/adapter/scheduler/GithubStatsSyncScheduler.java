@@ -1,6 +1,7 @@
 package com.process.clash.adapter.scheduler;
 
 import com.process.clash.application.github.service.GithubDailyStatsSyncService;
+import com.process.clash.application.ranking.service.ZeroRankingDataInitService;
 import com.process.clash.application.user.exp.service.GithubExpGrantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ public class GithubStatsSyncScheduler {
 
     private final GithubDailyStatsSyncService syncService;
     private final GithubExpGrantService githubExpGrantService;
+    private final ZeroRankingDataInitService zeroRankingDataInitService;
 
     // 6시에는 365일 동기화가 작동하기에 30일 동기화는 6시를 제외한 매 시간에 작동하도록 설정했습니다.
     @Scheduled(cron = "0 0 0-5,7-23 * * *", zone = "${github.sync.timezone:Asia/Seoul}")
@@ -27,6 +29,7 @@ public class GithubStatsSyncScheduler {
     public void runDaily365DaysSyncAtMorningSix() {
         log.info("GitHub 365일 동기화 스케줄러 시작.");
         syncAndGrant(syncService::syncRecent365Days);
+        zeroRankingDataInitService.initZeroExpForToday();
     }
 
     private void syncAndGrant(Runnable syncAction) {

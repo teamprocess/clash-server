@@ -1,5 +1,6 @@
 package com.process.clash.adapter.scheduler;
 
+import com.process.clash.application.ranking.service.ZeroRankingDataInitService;
 import com.process.clash.application.record.v2.service.RecordV2TaskSessionTimeoutService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class RecordV2TaskSessionTimeoutScheduler {
 
     private final RecordV2TaskSessionTimeoutService recordV2TaskSessionTimeoutService;
+    private final ZeroRankingDataInitService zeroRankingDataInitService;
 
     @Scheduled(cron = "0 * * * * *", zone = "${record.timezone:Asia/Seoul}")
     public void stopExpiredTaskSessions() {
@@ -23,6 +25,15 @@ public class RecordV2TaskSessionTimeoutScheduler {
     @EventListener(ApplicationReadyEvent.class)
     public void stopExpiredTaskSessionsOnStartup() {
         safeStopExpiredTaskSessions("startup");
+    }
+
+    @Scheduled(cron = "0 0 6 * * *", zone = "${record.timezone:Asia/Seoul}")
+    public void initZeroStudyTimeForToday() {
+        try {
+            zeroRankingDataInitService.initZeroStudyTimeForToday();
+        } catch (Exception exception) {
+            log.error("0 학습시간 초기화 실패.", exception);
+        }
     }
 
     private void safeStopExpiredTaskSessions(String trigger) {
