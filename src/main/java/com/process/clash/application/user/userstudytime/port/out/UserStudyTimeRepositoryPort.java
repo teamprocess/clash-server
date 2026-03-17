@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserStudyTimeRepositoryPort {
 
@@ -24,4 +25,8 @@ public interface UserStudyTimeRepositoryPort {
     double findAverageStudyTimeByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
     List<Streak> findStreakByUserId(Long userId, LocalDate startDate, LocalDate endDate);
     List<Variation> findVariationByUserId(Long userId, LocalDate startDate, LocalDate endDate);
+
+    Set<Long> findUserIdsWithStudyTimeByDate(LocalDate date);
+
+    void saveAll(List<UserStudyTime> userStudyTimes);
 }

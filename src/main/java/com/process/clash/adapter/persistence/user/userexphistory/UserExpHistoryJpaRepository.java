@@ -16,6 +16,7 @@ import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistoryJpaEntity, Long> {
@@ -307,4 +308,12 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query(value = """
+        SELECT DISTINCT fk_user_id
+        FROM user_exp_history
+        WHERE date = :date
+          AND acting_category <> 'SEASON_RESET'
+    """, nativeQuery = true)
+    Set<Long> findUserIdsWithExpByDate(@Param("date") LocalDate date);
 }

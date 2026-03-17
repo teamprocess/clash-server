@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserExpHistoryRepositoryPort {
     UserExpHistory save(UserExpHistory userExpHistory);
@@ -30,4 +31,8 @@ public interface UserExpHistoryRepositoryPort {
     List<UserEarnedExp> findUserWeeklyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
     List<UserEarnedExp> findUserMonthlyEarnedExpByUserIdAndPeriod(Long id, LocalDate startDate, LocalDate endDate, PageRequest pageRequest);
     List<UserRanking> findExpRankingByUserIdAndPeriod(Long userId, LocalDate startDate, LocalDate endDate);
+
+    Set<Long> findUserIdsWithExpByDate(LocalDate date);
+
+    void saveAll(List<UserExpHistory> userExpHistories);
 }

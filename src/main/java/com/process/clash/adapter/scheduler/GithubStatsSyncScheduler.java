@@ -29,7 +29,11 @@ public class GithubStatsSyncScheduler {
     public void runDaily365DaysSyncAtMorningSix() {
         log.info("GitHub 365일 동기화 스케줄러 시작.");
         syncAndGrant(syncService::syncRecent365Days);
-        zeroRankingDataInitService.initZeroExpForToday();
+        try {
+            zeroRankingDataInitService.initZeroExpForToday();
+        } catch (Exception e) {
+            log.error("0 EXP 초기화 실패.", e);
+        }
     }
 
     private void syncAndGrant(Runnable syncAction) {

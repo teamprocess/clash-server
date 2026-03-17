@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -34,21 +35,17 @@ public class ZeroRankingDataInitService {
     public void initZeroExpForToday() {
         LocalDate studyDate = studyDateCalculator.toStudyDate(Instant.now());
         List<User> allUsers = userRepositoryPort.findAllOrderByTotalExpDesc();
+        Set<Long> userIdsWithExp = userExpHistoryRepositoryPort.findUserIdsWithExpByDate(studyDate);
 
-        int count = 0;
-        for (User user : allUsers) {
-            boolean hasExpRecord =
-                    userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(user.id(), studyDate, ExpActingCategory.STUDY_TIME).isPresent()
-                    || userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(user.id(), studyDate, ExpActingCategory.GITHUB).isPresent();
+        List<UserExpHistory> zeroRecords = allUsers.stream()
+                .filter(user -> !userIdsWithExp.contains(user.id()))
+                .map(user -> new UserExpHistory(null, Instant.now(), studyDate, 0, ExpActingCategory.STUDY_TIME, user.id()))
+                .toList();
 
-            if (!hasExpRecord) {
-                userExpHistoryRepositoryPort.save(new UserExpHistory(
-                        null, Instant.now(), studyDate, 0, ExpActingCategory.STUDY_TIME, user.id()
-                ));
-                count++;
-            }
+        if (!zeroRecords.isEmpty()) {
+            userExpHistoryRepositoryPort.saveAll(zeroRecords);
         }
-        log.info("0 EXP 초기화 완료. date={}, count={}", studyDate, count);
+        log.info("0 EXP 초기화 완료. date={}, count={}", studyDate, zeroRecords.size());
     }
 
     /**
@@ -58,19 +55,16 @@ public class ZeroRankingDataInitService {
     public void initZeroStudyTimeForToday() {
         LocalDate studyDate = studyDateCalculator.toStudyDate(Instant.now());
         List<User> allUsers = userRepositoryPort.findAllOrderByTotalExpDesc();
+        Set<Long> userIdsWithStudyTime = userStudyTimeRepositoryPort.findUserIdsWithStudyTimeByDate(studyDate);
 
-        int count = 0;
-        for (User user : allUsers) {
-            boolean hasStudyTimeRecord =
-                    userStudyTimeRepositoryPort.findByUserIdAndDate(user.id(), studyDate).isPresent();
+        List<UserStudyTime> zeroRecords = allUsers.stream()
+                .filter(user -> !userIdsWithStudyTime.contains(user.id()))
+                .map(user -> new UserStudyTime(null, studyDate, 0L, user.id()))
+                .toList();
 
-            if (!hasStudyTimeRecord) {
-                userStudyTimeRepositoryPort.save(new UserStudyTime(
-                        null, studyDate, 0L, user.id()
-                ));
-                count++;
-            }
+        if (!zeroRecords.isEmpty()) {
+            userStudyTimeRepositoryPort.saveAll(zeroRecords);
         }
-        log.info("0 학습시간 초기화 완료. date={}, count={}", studyDate, count);
+        log.info("0 학습시간 초기화 완료. date={}, count={}", studyDate, zeroRecords.size());
     }
 }
