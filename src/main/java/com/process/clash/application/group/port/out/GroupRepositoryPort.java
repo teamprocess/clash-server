@@ -41,9 +41,7 @@ public interface GroupRepositoryPort {
 
     Map<Long, Integer> countMembersByGroupIds(List<Long> groupIds);
 
-    MemberPageResult findMembersByGroupId(Long groupId, Integer page, Integer size);
+    List<User> findMembersByGroupId(Long groupId);
 
     record PageResult(List<Group> groups, long totalCount) {}
-
-    record MemberPageResult(List<User> members, long totalCount) {}
 }

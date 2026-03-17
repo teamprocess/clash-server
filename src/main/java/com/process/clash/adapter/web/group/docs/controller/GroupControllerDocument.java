@@ -201,7 +201,6 @@ public interface GroupControllerDocument {
 
     @Operation(summary = "그룹 활동 조회", description = "그룹원의 학습 현황을 조회합니다. date를 주면 해당 기록일 기준으로 조회합니다.")
     @Parameters({
-        @Parameter(name = "page", description = "페이지 번호 (1부터)", example = "1"),
         @Parameter(name = "date", description = "조회할 기록일", example = "2026-03-10")
     })
     @ApiResponses({
