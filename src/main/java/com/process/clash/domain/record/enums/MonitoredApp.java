@@ -11,5 +11,6 @@ public enum MonitoredApp {
     CLION,
     RIDER,
     ANDROID_STUDIO,
-    XCODE
+    XCODE,
+    UNITY,
 }
