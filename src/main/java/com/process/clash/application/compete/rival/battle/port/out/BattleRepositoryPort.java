@@ -18,6 +18,7 @@ public interface BattleRepositoryPort {
     Optional<Battle> findActiveByUserId(Long userId);
     boolean existsPendingBattleByRivalId(Long rivalId);
     void rejectAllActiveBattlesByUserId(Long userId);
+    void rejectAllActiveBattlesByRivalId(Long rivalId);
     List<Battle> findExpiredInProgressBattles(LocalDate today);
     List<Battle> findNotStartedBattlesToStart(LocalDate today);
     List<Battle> findPendingBattlesByUserId(Long userId);

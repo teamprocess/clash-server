@@ -1,6 +1,7 @@
 package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
+import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.policy.RemoveRivalPolicy;
@@ -19,6 +20,7 @@ public class RemoveRivalService implements RemoveRivalUseCase {
 
     private final RemoveRivalPolicy removeRivalPolicy;
     private final RivalRepositoryPort rivalRepositoryPort;
+    private final BattleRepositoryPort battleRepositoryPort;
     private final CompeteRefetchNotifier competeRefetchNotifier;
 
     @Override
@@ -30,6 +32,7 @@ public class RemoveRivalService implements RemoveRivalUseCase {
             throw new RivalNotFoundException();
         }
 
+        battleRepositoryPort.rejectAllActiveBattlesByRivalId(rival.id());
         rivalRepositoryPort.deleteById(rival.id());
         competeRefetchNotifier.notifyCompeteChanged(List.of(rival.firstUserId(), rival.secondUserId()));
     }
