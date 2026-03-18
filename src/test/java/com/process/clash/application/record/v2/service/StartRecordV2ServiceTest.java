@@ -331,6 +331,41 @@ class StartRecordV2ServiceTest {
     }
 
     @Test
+    @DisplayName("완료된 task로는 TASK 세션을 시작할 수 없다")
+    void execute_throwsWhenTaskAlreadyCompleted() {
+        Actor actor = new Actor(1L);
+        User user = createUser(1L);
+        RecordTaskV2 task = new RecordTaskV2(
+            11L,
+            1L,
+            null,
+            "해시테이블",
+            true,
+            0L,
+            currentRecordDate(),
+            Instant.now(),
+            Instant.now()
+        );
+        StartRecordV2Data.Command command = new StartRecordV2Data.Command(
+            RecordSessionTypeV2.TASK,
+            null,
+            11L,
+            null,
+            actor
+        );
+
+        when(userRepositoryPort.findById(actor.id())).thenReturn(Optional.of(user));
+        when(recordSessionV2RepositoryPort.existsActiveSessionByUserId(actor.id())).thenReturn(false);
+        when(recordTaskV2RepositoryPort.findByIdAndUserId(11L, 1L)).thenReturn(Optional.of(task));
+
+        assertThatThrownBy(() -> startRecordV2Service.execute(command))
+            .isInstanceOf(InvalidRecordV2StartRequestException.class);
+
+        verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
+        verify(recordActivityNotifierPort, never()).notifyActivityStarted(any());
+    }
+
+    @Test
     @DisplayName("sessionType이 null이면 요청 형태와 무관하게 예외가 발생한다")
     void execute_throwsWhenSessionTypeIsNull() {
         Actor actor = new Actor(1L);

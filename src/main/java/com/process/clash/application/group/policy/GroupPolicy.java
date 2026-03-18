@@ -2,6 +2,7 @@ package com.process.clash.application.group.policy;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.common.exception.exception.ValidationException;
+import com.process.clash.application.group.exception.exception.conflict.GroupDuplicateNameException;
 import com.process.clash.application.group.exception.exception.conflict.GroupMemberLimitReachedException;
 import com.process.clash.application.group.exception.exception.conflict.GroupOwnerCannotQuitException;
 import com.process.clash.application.group.exception.exception.forbidden.GroupAccessDeniedException;
@@ -20,6 +21,12 @@ public class GroupPolicy {
     public void validateMembership(boolean isMember) {
         if (!isMember) {
             throw new GroupAccessDeniedException();
+        }
+    }
+
+    public void validateDuplicateName(boolean nameExists) {
+        if (nameExists) {
+            throw new GroupDuplicateNameException();
         }
     }
 

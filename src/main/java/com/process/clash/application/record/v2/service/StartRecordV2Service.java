@@ -112,6 +112,7 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
             if (command.taskId() != null) {
                 task = recordTaskV2RepositoryPort.findByIdAndUserId(command.taskId(), command.actor().id())
                     .orElseThrow(TaskV2NotFoundException::new);
+                validateTaskNotCompleted(task);
                 validateTaskRecordDate(task);
             }
 
@@ -158,6 +159,12 @@ public class StartRecordV2Service implements StartRecordV2UseCase {
     private void validateTaskRecordDate(RecordTaskV2 task) {
         LocalDate todayRecordDate = RecordDayWindow.today(recordZoneId, recordProperties.dayBoundaryHour()).recordDate();
         if (!task.belongsToRecordDate(todayRecordDate)) {
+            throw new InvalidRecordV2StartRequestException();
+        }
+    }
+
+    private void validateTaskNotCompleted(RecordTaskV2 task) {
+        if (task.completed()) {
             throw new InvalidRecordV2StartRequestException();
         }
     }

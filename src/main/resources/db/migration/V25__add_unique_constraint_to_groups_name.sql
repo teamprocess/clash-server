@@ -1,0 +1,1 @@
+ALTER TABLE groups ADD CONSTRAINT uq_groups_name UNIQUE (name);

@@ -107,6 +107,11 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     }
 
     @Override
+    public boolean existsByName(String name) {
+        return groupJpaRepository.existsByName(name);
+    }
+
+    @Override
     public boolean existsMember(Long groupId, Long userId) {
         return groupMemberJpaRepository.existsByGroupIdAndUserId(groupId, userId);
     }
