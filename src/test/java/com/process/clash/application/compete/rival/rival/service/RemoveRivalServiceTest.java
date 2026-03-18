@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
+import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.data.ModifyRivalData;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
 import com.process.clash.application.compete.rival.rival.policy.RemoveRivalPolicy;
@@ -14,10 +15,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,13 +35,16 @@ class RemoveRivalServiceTest {
     private RivalRepositoryPort rivalRepositoryPort;
 
     @Mock
+    private BattleRepositoryPort battleRepositoryPort;
+
+    @Mock
     private CompeteRefetchNotifier competeRefetchNotifier;
 
     private RemoveRivalService removeRivalService;
 
     @BeforeEach
     void setUp() {
-        removeRivalService = new RemoveRivalService(removeRivalPolicy, rivalRepositoryPort, competeRefetchNotifier);
+        removeRivalService = new RemoveRivalService(removeRivalPolicy, rivalRepositoryPort, battleRepositoryPort, competeRefetchNotifier);
     }
 
     @Test
@@ -52,8 +58,25 @@ class RemoveRivalServiceTest {
 
         removeRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
+        verify(battleRepositoryPort).rejectAllActiveBattlesByRivalId(rivalId);
         verify(rivalRepositoryPort).deleteById(rivalId);
         verify(competeRefetchNotifier).notifyCompeteChanged(List.of(actor.id(), 2L));
+    }
+
+    @Test
+    @DisplayName("라이벌 삭제 시 배틀 REJECTED 처리 후 라이벌이 삭제된다")
+    void execute_rejectsBattlesBeforeDeletingRival() {
+        Actor actor = new Actor(1L);
+        Long rivalId = 10L;
+        Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.ACCEPTED, actor.id(), 2L);
+
+        when(removeRivalPolicy.check(rivalId)).thenReturn(rival);
+
+        removeRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
+
+        InOrder inOrder = inOrder(battleRepositoryPort, rivalRepositoryPort);
+        inOrder.verify(battleRepositoryPort).rejectAllActiveBattlesByRivalId(rivalId);
+        inOrder.verify(rivalRepositoryPort).deleteById(rivalId);
     }
 
     @Test
@@ -68,6 +91,7 @@ class RemoveRivalServiceTest {
         assertThatThrownBy(() -> removeRivalService.execute(ModifyRivalData.Command.of(actor, rivalId)))
                 .isInstanceOf(RivalNotFoundException.class);
 
+        verify(battleRepositoryPort, never()).rejectAllActiveBattlesByRivalId(rivalId);
         verify(rivalRepositoryPort, never()).deleteById(rivalId);
         verify(competeRefetchNotifier, never()).notifyCompeteChanged(org.mockito.ArgumentMatchers.any());
     }
