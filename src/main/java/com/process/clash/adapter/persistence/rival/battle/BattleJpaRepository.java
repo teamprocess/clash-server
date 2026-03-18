@@ -77,6 +77,18 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     void rejectAllActiveBattlesByUserId(@Param("userId") Long userId);
 
     /**
+     * 라이벌 삭제 시 해당 라이벌의 모든 활성 배틀 REJECTED 처리
+     */
+    @Modifying
+    @Query(value = """
+        UPDATE battles
+        SET battle_status = 'REJECTED'
+        WHERE fk_rival_id = :rivalId
+          AND battle_status NOT IN ('DONE', 'REJECTED')
+    """, nativeQuery = true)
+    void rejectAllActiveBattlesByRivalId(@Param("rivalId") Long rivalId);
+
+    /**
      * 유저 관련 진행 중인 배틀 조회 (Optional)
      */
     @Query(value = """

@@ -79,6 +79,11 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     }
 
     @Override
+    public void rejectAllActiveBattlesByRivalId(Long rivalId) {
+        battleJpaRepository.rejectAllActiveBattlesByRivalId(rivalId);
+    }
+
+    @Override
     public List<Battle> saveAll(List<Battle> battles) {
         List<BattleJpaEntity> entities = battles.stream()
                 .map(battle -> {
