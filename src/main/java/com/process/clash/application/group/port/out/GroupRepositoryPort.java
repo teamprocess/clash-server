@@ -33,6 +33,8 @@ public interface GroupRepositoryPort {
 
     boolean existsById(Long groupId);
 
+    boolean existsByName(String name);
+
     void addMember(Long groupId, Long userId);
 
     void removeMember(Long groupId, Long userId);

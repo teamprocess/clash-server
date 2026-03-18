@@ -32,6 +32,7 @@ public class CreateGroupService implements CreateGroupUseCase {
         User owner = userRepositoryPort.findById(command.actor().id())
             .orElseThrow(UserNotFoundException::new);
 
+        policy.validateDuplicateName(groupRepositoryPort.existsByName(command.name()));
         policy.validateMaxMembers(command.maxMembers());
 
         String password = resolvePassword(command.passwordRequired(), command.password());
