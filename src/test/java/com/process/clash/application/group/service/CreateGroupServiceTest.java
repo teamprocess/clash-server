@@ -28,6 +28,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -131,6 +133,24 @@ class CreateGroupServiceTest {
             .isInstanceOf(UserNotFoundException.class);
 
         verify(groupRepositoryPort, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("동시 요청으로 DB에서 이름 중복이 발생하면 GroupDuplicateNameException을 던진다")
+    void execute_throwsWhenDuplicateNameOnRaceCondition() {
+        Long userId = 1L;
+        Actor actor = new Actor(userId);
+        CreateGroupData.Command command = command(actor, "중복 이름", false, null);
+
+        when(userRepositoryPort.findById(userId)).thenReturn(Optional.of(createUser(userId)));
+        when(groupRepositoryPort.existsByName("중복 이름")).thenReturn(false);
+        when(groupRepositoryPort.save(any(Group.class))).thenThrow(new DataIntegrityViolationException("unique constraint violation"));
+
+        assertThatThrownBy(() -> createGroupService.execute(command))
+            .isInstanceOf(GroupDuplicateNameException.class);
+
+        verify(groupRepositoryPort, never()).addMember(any(), any());
+        verify(groupRefetchNotifier, never()).notifyMyGroupsChanged(any());
     }
 
     @Test

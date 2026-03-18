@@ -2,6 +2,7 @@ package com.process.clash.application.group.service;
 
 import com.process.clash.application.group.data.CreateGroupData;
 import com.process.clash.application.group.exception.exception.badrequest.GroupPasswordRequiredException;
+import com.process.clash.application.group.exception.exception.conflict.GroupDuplicateNameException;
 import com.process.clash.application.group.policy.GroupPolicy;
 import com.process.clash.application.group.port.in.CreateGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
@@ -13,6 +14,7 @@ import com.process.clash.domain.user.user.entity.User;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,9 +49,17 @@ public class CreateGroupService implements CreateGroupUseCase {
             owner.id()
         );
 
-        Group savedGroup = groupRepositoryPort.save(group);
+        Group savedGroup = saveGroup(group);
         groupRepositoryPort.addMember(savedGroup.id(), owner.id());
         groupRefetchNotifier.notifyMyGroupsChanged(List.of(owner.id()));
+    }
+
+    private Group saveGroup(Group group) {
+        try {
+            return groupRepositoryPort.save(group);
+        } catch (DataIntegrityViolationException e) {
+            throw new GroupDuplicateNameException();
+        }
     }
 
     private String resolvePassword(Boolean passwordRequired, String password) {
