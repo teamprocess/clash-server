@@ -140,10 +140,12 @@ public interface RecordActiveSessionV2JpaRepository extends JpaRepository<Record
     @Query(value = """
         select s.fk_user_id as userId,
                coalesce(sum(
-                   extract(epoch from (
+                GREATEST(0,
+                       extract(epoch from (
                        least(coalesce(s.ended_at, :now), :endOfDay) -
                        greatest(s.started_at, :startOfDay)
                    ))
+                )
                ), 0) as totalSeconds
         from record_active_sessions_v2 s
         where s.fk_user_id IN :userIds
