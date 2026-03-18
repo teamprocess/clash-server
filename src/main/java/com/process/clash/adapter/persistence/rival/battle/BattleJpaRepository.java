@@ -84,7 +84,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         UPDATE battles
         SET battle_status = 'REJECTED'
         WHERE fk_rival_id = :rivalId
-          AND battle_status NOT IN ('DONE', 'REJECTED')
+          AND battle_status NOT IN ('DONE', 'REJECTED', 'CANCELED')
     """, nativeQuery = true)
     void rejectAllActiveBattlesByRivalId(@Param("rivalId") Long rivalId);
 
