@@ -207,6 +207,10 @@ class StudyTimeExpGrantServiceTest {
 
         studyTimeExpGrantService.grant(USER_ID, startedAt, endedAt);
 
+        ArgumentCaptor<UserStudyTime> studyTimeCaptor = ArgumentCaptor.forClass(UserStudyTime.class);
+        verify(userStudyTimeRepositoryPort).save(studyTimeCaptor.capture());
+        assertThat(studyTimeCaptor.getValue().totalStudyTimeSeconds()).isEqualTo(36000L + 3600L); // 실제 시간은 계속 누적
+
         verify(userExpHistoryRepositoryPort, never()).save(any());
         verify(userRepositoryPort, never()).save(any());
     }
