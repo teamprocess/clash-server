@@ -22,6 +22,8 @@ public interface GroupJpaRepository extends JpaRepository<GroupJpaEntity, Long> 
     @EntityGraph(attributePaths = {"owner"})
     Optional<GroupJpaEntity> findById(Long id);
 
+    boolean existsByName(String name);
+
     @EntityGraph(attributePaths = {"owner"})
     @Query("""
         select g

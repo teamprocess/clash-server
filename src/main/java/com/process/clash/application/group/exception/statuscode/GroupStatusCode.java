@@ -61,6 +61,12 @@ public enum GroupStatusCode implements StatusCode {
         "INVALID_CATEGORY",
         "유효하지 않은 카테고리입니다.",
         HttpStatus.BAD_REQUEST
+    ),
+
+    DUPLICATE_GROUP_NAME(
+        "DUPLICATE_GROUP_NAME",
+        "이미 사용 중인 그룹 이름입니다.",
+        HttpStatus.CONFLICT
     );
 
     private final String code;
