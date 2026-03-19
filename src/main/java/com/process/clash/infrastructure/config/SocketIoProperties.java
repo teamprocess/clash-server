@@ -15,5 +15,7 @@ public class SocketIoProperties {
     private int pingIntervalMs = 25000;
     private int pingTimeoutMs = 60000;
     private long tokenTtlSeconds = 300;
+    private long reconnectGraceSeconds = 60;
+    private long reconnectSweepFixedDelayMs = 10000;
 
 }
