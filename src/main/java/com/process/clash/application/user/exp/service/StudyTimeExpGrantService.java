@@ -46,10 +46,10 @@ public class StudyTimeExpGrantService {
 
         LocalDate studyDate = studyDateCalculator.toStudyDate(startedAt);
 
-        // 1. user_study_times upsert (누적, 최대 36000초 = 600분)
+        // 1. user_study_times upsert (누적, 제한 없이 실제 학습시간 저장)
         Optional<UserStudyTime> existingStudyTime = userStudyTimeRepositoryPort.findByUserIdAndDate(userId, studyDate);
         long currentSeconds = existingStudyTime.map(UserStudyTime::totalStudyTimeSeconds).orElse(0L);
-        long newTotalSeconds = Math.min(currentSeconds + durationSeconds, MAX_STUDY_SECONDS);
+        long newTotalSeconds = currentSeconds + durationSeconds;
 
         userStudyTimeRepositoryPort.save(new UserStudyTime(
                 existingStudyTime.map(UserStudyTime::id).orElse(null),
@@ -58,8 +58,9 @@ public class StudyTimeExpGrantService {
                 userId
         ));
 
-        // 2. STUDY_TIME EXP 계산
-        int newEarnExp = (int) (newTotalSeconds / 60) * EXP_PER_MINUTE;
+        // 2. STUDY_TIME EXP 계산 (EXP는 최대 600분까지만 지급)
+        long expSeconds = Math.min(newTotalSeconds, MAX_STUDY_SECONDS);
+        int newEarnExp = (int) (expSeconds / 60) * EXP_PER_MINUTE;
 
         // 3. user_exp_history upsert
         Optional<UserExpHistory> existingExp = userExpHistoryRepositoryPort.findByUserIdAndDateAndCategory(
