@@ -2,8 +2,16 @@ package com.process.clash.application.realtime.service;
 
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.NotifyPresenceStatusChangedPort;
+import com.process.clash.application.realtime.port.out.PresenceReconnectStatePort;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,18 +28,29 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class UserPresenceServiceTest {
 
+    private static final Instant BASE_TIME = Instant.parse("2026-03-19T00:00:00Z");
+
     @Mock
     private NotifyPresenceStatusChangedPort notifyPresenceStatusChangedPort;
 
+    private MutableClock clock;
+    private InMemoryPresenceReconnectStatePort presenceReconnectStatePort;
     private UserPresenceService userPresenceService;
 
     @BeforeEach
     void setUp() {
-        userPresenceService = new UserPresenceService(List.of(notifyPresenceStatusChangedPort));
+        clock = new MutableClock(BASE_TIME);
+        presenceReconnectStatePort = new InMemoryPresenceReconnectStatePort();
+        userPresenceService = new UserPresenceService(
+            List.of(notifyPresenceStatusChangedPort),
+            presenceReconnectStatePort,
+            clock,
+            Duration.ofMinutes(1)
+        );
     }
 
     @Test
-    @DisplayName("연결, 자리비움, 복귀, 연결해제 흐름에 따라 상태를 갱신한다")
+    @DisplayName("연결, 자리비움, 복귀, 연결해제, timeout 흐름에 따라 상태를 갱신한다")
     void presenceStatusTransitions() {
         userPresenceService.connected("conn-1", 1L);
         assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
@@ -58,16 +77,25 @@ class UserPresenceServiceTest {
         );
 
         userPresenceService.disconnected("conn-1");
-        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.OFFLINE);
+        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.RECONNECTING);
         verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
             1L,
             UserActivityStatus.ONLINE,
+            UserActivityStatus.RECONNECTING
+        );
+
+        clock.plusSeconds(61);
+        userPresenceService.expireReconnectingUsers();
+        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.OFFLINE);
+        verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
+            1L,
+            UserActivityStatus.RECONNECTING,
             UserActivityStatus.OFFLINE
         );
     }
 
     @Test
-    @DisplayName("다중 연결에서는 하나라도 active면 ONLINE, 모두 away면 AWAY이다")
+    @DisplayName("다중 연결에서는 하나라도 active면 ONLINE, 모두 away면 AWAY, 모두 끊기면 RECONNECTING이다")
     void multiConnectionStatusRule() {
         userPresenceService.connected("conn-1", 1L);
         userPresenceService.connected("conn-2", 1L);
@@ -81,8 +109,8 @@ class UserPresenceServiceTest {
         userPresenceService.disconnected("conn-2");
         assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.AWAY);
 
-        userPresenceService.markedOnline("conn-1");
-        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
+        userPresenceService.disconnected("conn-1");
+        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.RECONNECTING);
     }
 
     @Test
@@ -91,14 +119,36 @@ class UserPresenceServiceTest {
         userPresenceService.connected("u1-1", 1L);
         userPresenceService.connected("u2-1", 2L);
         userPresenceService.markedAway("u2-1");
+        userPresenceService.connected("u3-1", 3L);
+        userPresenceService.disconnected("u3-1");
 
         Map<Long, UserActivityStatus> statuses = userPresenceService.getStatuses(
-            java.util.List.of(1L, 2L, 3L)
+            java.util.List.of(1L, 2L, 3L, 4L)
         );
 
         assertThat(statuses.get(1L)).isEqualTo(UserActivityStatus.ONLINE);
         assertThat(statuses.get(2L)).isEqualTo(UserActivityStatus.AWAY);
-        assertThat(statuses.get(3L)).isEqualTo(UserActivityStatus.OFFLINE);
+        assertThat(statuses.get(3L)).isEqualTo(UserActivityStatus.RECONNECTING);
+        assertThat(statuses.get(4L)).isEqualTo(UserActivityStatus.OFFLINE);
+    }
+
+    @Test
+    @DisplayName("유예 시간 내 재연결하면 RECONNECTING 상태에서 ONLINE으로 복귀한다")
+    void reconnectWithinGrace_restoresOnline() {
+        userPresenceService.connected("conn-1", 1L);
+        userPresenceService.disconnected("conn-1");
+
+        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.RECONNECTING);
+
+        clock.plusSeconds(30);
+        userPresenceService.connected("conn-2", 1L);
+
+        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
+        verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
+            1L,
+            UserActivityStatus.RECONNECTING,
+            UserActivityStatus.ONLINE
+        );
     }
 
     @Test
@@ -119,7 +169,12 @@ class UserPresenceServiceTest {
     void continuesDispatchWhenNotifierThrows() {
         NotifyPresenceStatusChangedPort failingNotifier = mock(NotifyPresenceStatusChangedPort.class);
         NotifyPresenceStatusChangedPort succeedingNotifier = mock(NotifyPresenceStatusChangedPort.class);
-        UserPresenceService service = new UserPresenceService(List.of(failingNotifier, succeedingNotifier));
+        UserPresenceService service = new UserPresenceService(
+            List.of(failingNotifier, succeedingNotifier),
+            new InMemoryPresenceReconnectStatePort(),
+            clock,
+            Duration.ofMinutes(1)
+        );
 
         doThrow(new RuntimeException("notify failed")).when(failingNotifier).notifyStatusChanged(
             1L,
@@ -139,5 +194,96 @@ class UserPresenceServiceTest {
             UserActivityStatus.OFFLINE,
             UserActivityStatus.ONLINE
         );
+    }
+
+    @Test
+    @DisplayName("startup recovery 시 오프라인 사용자만 RECONNECTING으로 등록한다")
+    void registerReconnectingUsers_marksOnlyOfflineUsers() {
+        userPresenceService.connected("conn-1", 1L);
+
+        int recoveredCount = userPresenceService.registerReconnectingUsers(java.util.Arrays.asList(1L, 2L, 3L, null));
+
+        assertThat(recoveredCount).isEqualTo(2);
+        assertThat(userPresenceService.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
+        assertThat(userPresenceService.getStatus(2L)).isEqualTo(UserActivityStatus.RECONNECTING);
+        assertThat(userPresenceService.getStatus(3L)).isEqualTo(UserActivityStatus.RECONNECTING);
+    }
+
+    private static final class MutableClock extends Clock {
+
+        private Instant currentInstant;
+
+        private MutableClock(Instant currentInstant) {
+            this.currentInstant = currentInstant;
+        }
+
+        @Override
+        public ZoneOffset getZone() {
+            return ZoneOffset.UTC;
+        }
+
+        @Override
+        public Clock withZone(java.time.ZoneId zone) {
+            return this;
+        }
+
+        @Override
+        public Instant instant() {
+            return currentInstant;
+        }
+
+        private void plusSeconds(long seconds) {
+            currentInstant = currentInstant.plusSeconds(seconds);
+        }
+    }
+
+    private static final class InMemoryPresenceReconnectStatePort implements PresenceReconnectStatePort {
+
+        private final Map<Long, Instant> reconnectDeadlineByUserId = new ConcurrentHashMap<>();
+
+        @Override
+        public void markReconnectPending(Long userId, Instant reconnectDeadline) {
+            if (userId == null || reconnectDeadline == null) {
+                return;
+            }
+            reconnectDeadlineByUserId.put(userId, reconnectDeadline);
+        }
+
+        @Override
+        public void clearReconnectPending(Long userId) {
+            if (userId == null) {
+                return;
+            }
+            reconnectDeadlineByUserId.remove(userId);
+        }
+
+        @Override
+        public boolean isReconnectPending(Long userId) {
+            if (userId == null) {
+                return false;
+            }
+            return reconnectDeadlineByUserId.containsKey(userId);
+        }
+
+        @Override
+        public Set<Long> findReconnectPendingUserIds(Collection<Long> userIds) {
+            if (userIds == null || userIds.isEmpty()) {
+                return Set.of();
+            }
+            return userIds.stream()
+                .filter(reconnectDeadlineByUserId::containsKey)
+                .collect(java.util.stream.Collectors.toSet());
+        }
+
+        @Override
+        public List<Long> findExpiredReconnectUserIds(Instant deadlineInclusive) {
+            if (deadlineInclusive == null) {
+                return List.of();
+            }
+            return reconnectDeadlineByUserId.entrySet().stream()
+                .filter(entry -> !entry.getValue().isAfter(deadlineInclusive))
+                .map(Map.Entry::getKey)
+                .toList();
+        }
     }
 }
