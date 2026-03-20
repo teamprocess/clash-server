@@ -27,6 +27,16 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     int countAllByUserId(@Param("userId") Long userId);
 
     /**
+     * 유저의 모든 PENDING 라이벌 조회 (양방향)
+     */
+    @Query(value = """
+        SELECT * FROM rivals r
+        WHERE r.rival_linking_status = 'PENDING'
+          AND (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
+    """, nativeQuery = true)
+    List<RivalJpaEntity> findAllPendingByUserId(@Param("userId") Long userId);
+
+    /**
      * 내 활성 라이벌 수 (ACCEPTED 전체 + PENDING 중 내가 신청한 것)
      */
     @Query(value = """

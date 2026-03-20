@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,30 +26,53 @@ public class AcceptRivalService implements AcceptRivalUseCase {
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
     private final CompeteRefetchNotifier competeRefetchNotifier;
 
+    private static final int MAX_RIVAL_COUNT = 4;
+
     @Override
     public void execute(ModifyRivalData.Command command) {
 
         Rival rival = acceptRivalPolicy.check(command.actor(), command.id());
+        Long opponentId = rival.firstUserId();
 
-        Rival updatedRival = rival.accept();
-
-        rivalRepositoryPort.save(updatedRival);
+        rivalRepositoryPort.save(rival.accept());
 
         userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalId(rival.id());
 
-        Long opponentId = rivalRepositoryPort.findOpponentIdByIdAndUserId(rival.id(), command.actor().id());
+        userNoticeRepositoryPort.save(
+                UserNotice.createDefault(NoticeCategory.ACCEPT_RIVAL, command.actor().id(), opponentId)
+        );
 
-        UserNotice userNoticeForReceiver = UserNotice
-                .createDefault(
-                        NoticeCategory.ACCEPT_RIVAL,
-                        command.actor().id(),
-                        opponentId
-                );
+        List<Long> affectedUsers = new ArrayList<>(List.of(opponentId, command.actor().id()));
 
-        userNoticeRepositoryPort.save(userNoticeForReceiver);
+        cancelAllPendingIfFull(command.actor().id(), affectedUsers);
+        cancelAllPendingIfFull(opponentId, affectedUsers);
 
-        List<Long> userIdsToNotify = List.of(opponentId, command.actor().id());
-        competeRefetchNotifier.notifyUserNoticeChanged(userIdsToNotify);
-        competeRefetchNotifier.notifyCompeteChanged(userIdsToNotify);
+        competeRefetchNotifier.notifyUserNoticeChanged(affectedUsers);
+        competeRefetchNotifier.notifyCompeteChanged(affectedUsers);
+    }
+
+    private void cancelAllPendingIfFull(Long userId, List<Long> affectedUsers) {
+
+        if (rivalRepositoryPort.countAcceptedByUserId(userId) < MAX_RIVAL_COUNT) return;
+
+        List<Rival> pendingRivals = rivalRepositoryPort.findAllPendingByUserId(userId);
+
+        if (pendingRivals.isEmpty()) return;
+
+        rivalRepositoryPort.saveAll(pendingRivals.stream().map(Rival::cancel).toList());
+
+        List<UserNotice> cancelNotices = new ArrayList<>();
+
+        for (Rival pending : pendingRivals) {
+            Long pendingOpponentId = pending.firstUserId().equals(userId)
+                    ? pending.secondUserId()
+                    : pending.firstUserId();
+
+            affectedUsers.add(pendingOpponentId);
+            cancelNotices.add(UserNotice.createDefault(NoticeCategory.CANCEL_RIVAL, userId, pendingOpponentId));
+            userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalId(pending.id());
+        }
+
+        userNoticeRepositoryPort.saveAll(cancelNotices);
     }
 }
