@@ -51,13 +51,24 @@ jobs:
           port: ${{ secrets.DEVELOP_SSH_PORT }}
           script_stop: true
           script: |
-            set -eu
-            cd ~/app
+            set -eux
 
+            echo "START"
+            whoami
+            pwd
+            ls -ld /home/server || true
+            ls -ld /home/server/app || true
+      
+            cd /home/server/app
+            pwd
+      
+            touch .deploy.env
             echo "DOCKER_IMAGE=${{ secrets.DEVELOP_DOCKER_IMAGE }}" > .deploy.env
             echo "IMAGE_TAG=${{ github.sha }}" >> .deploy.env
-
-            export $(cat .deploy.env | xargs)
-
+      
+            echo "FILE_CREATED"
+            ls -la .deploy.env
+            cat .deploy.env
+      
             docker compose pull clash-db clash-server
             docker compose up -d --no-deps clash-db clash-server
