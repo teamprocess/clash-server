@@ -141,7 +141,7 @@ class AcceptRivalServiceTest {
         acceptRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
         verify(rivalRepositoryPort).saveAll(anyList());
-        verify(userNoticeRepositoryPort).deleteApplyRivalNoticeByRivalId(pendingRival.id());
+        verify(userNoticeRepositoryPort).deleteApplyRivalNoticeByRivalIds(List.of(pendingRival.id()));
         verify(userNoticeRepositoryPort).saveAll(anyList());
     }
 
@@ -167,7 +167,7 @@ class AcceptRivalServiceTest {
         acceptRivalService.execute(ModifyRivalData.Command.of(actor, rivalId));
 
         verify(rivalRepositoryPort).saveAll(anyList());
-        verify(userNoticeRepositoryPort).deleteApplyRivalNoticeByRivalId(pendingRival.id());
+        verify(userNoticeRepositoryPort).deleteApplyRivalNoticeByRivalIds(List.of(pendingRival.id()));
         verify(userNoticeRepositoryPort).saveAll(anyList());
     }
 

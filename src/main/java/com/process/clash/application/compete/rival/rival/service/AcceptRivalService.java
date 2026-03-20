@@ -61,6 +61,7 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
         rivalRepositoryPort.saveAll(pendingRivals.stream().map(Rival::cancel).toList());
 
+        List<Long> pendingRivalIds = new ArrayList<>();
         List<UserNotice> cancelNotices = new ArrayList<>();
 
         for (Rival pending : pendingRivals) {
@@ -70,9 +71,10 @@ public class AcceptRivalService implements AcceptRivalUseCase {
 
             affectedUsers.add(pendingOpponentId);
             cancelNotices.add(UserNotice.createDefault(NoticeCategory.CANCEL_RIVAL, userId, pendingOpponentId));
-            userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalId(pending.id());
+            pendingRivalIds.add(pending.id());
         }
 
+        userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalIds(pendingRivalIds);
         userNoticeRepositoryPort.saveAll(cancelNotices);
     }
 }

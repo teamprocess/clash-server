@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -33,8 +35,15 @@ public class ApplyRivalPolicy {
             throw new AlreadyAppliedRivalException();
         }
 
+        Map<Long, Integer> opponentAcceptedCounts = rivalRepositoryPort.countAcceptedByUserIdsGrouped(opponentIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        map -> ((Number) map.get("user_id")).longValue(),
+                        map -> ((Number) map.get("count")).intValue()
+                ));
+
         boolean hasOverLimitOpponent = opponentIds.stream()
-                .anyMatch(opponentId -> rivalRepositoryPort.countAcceptedByUserId(opponentId) >= MAX_RIVAL_COUNT);
+                .anyMatch(opponentId -> opponentAcceptedCounts.getOrDefault(opponentId, 0) >= MAX_RIVAL_COUNT);
 
         if (hasOverLimitOpponent) {
             throw new TooMuchRivalsException();
