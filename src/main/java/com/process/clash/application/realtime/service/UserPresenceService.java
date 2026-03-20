@@ -9,8 +9,10 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +89,7 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
                 syncReconnectState(replaced.userId(), now);
             }
             increase(userId, false);
-            presenceReconnectStatePort.clearReconnectPending(userId);
+            clearReconnectPendingSafely(userId);
 
             statusChanges = collectStatusChanges(impactedUserIds, beforeStatuses);
         }
@@ -135,9 +137,16 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             return UserActivityStatus.OFFLINE;
         }
 
+        UserActivityStatus connectedStatus;
         synchronized (monitor) {
-            return resolveStatus(userId, counterByUserId.get(userId));
+            connectedStatus = resolveConnectedStatus(counterByUserId.get(userId));
         }
+
+        if (connectedStatus != UserActivityStatus.OFFLINE) {
+            return connectedStatus;
+        }
+
+        return isReconnectPendingSafely(userId) ? UserActivityStatus.RECONNECTING : UserActivityStatus.OFFLINE;
     }
 
     @Override
@@ -146,20 +155,41 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             return Map.of();
         }
 
-        synchronized (monitor) {
-            return userIds.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(java.util.stream.Collectors.toUnmodifiableMap(
-                    userId -> userId,
-                    userId -> resolveStatus(userId, counterByUserId.get(userId))
-                ));
+        List<Long> distinctUserIds = userIds.stream()
+            .filter(Objects::nonNull)
+            .distinct()
+            .toList();
+        if (distinctUserIds.isEmpty()) {
+            return Map.of();
         }
+
+        Map<Long, UserActivityStatus> statusByUserId = new LinkedHashMap<>();
+        List<Long> offlineUserIds = new ArrayList<>();
+        synchronized (monitor) {
+            for (Long userId : distinctUserIds) {
+                UserActivityStatus connectedStatus = resolveConnectedStatus(counterByUserId.get(userId));
+                if (connectedStatus == UserActivityStatus.OFFLINE) {
+                    offlineUserIds.add(userId);
+                    continue;
+                }
+                statusByUserId.put(userId, connectedStatus);
+            }
+        }
+
+        Set<Long> reconnectingUserIds = findReconnectPendingUserIdsSafely(offlineUserIds);
+        for (Long userId : offlineUserIds) {
+            statusByUserId.put(
+                userId,
+                reconnectingUserIds.contains(userId) ? UserActivityStatus.RECONNECTING : UserActivityStatus.OFFLINE
+            );
+        }
+
+        return Collections.unmodifiableMap(statusByUserId);
     }
 
     public int expireReconnectingUsers() {
         Instant now = now();
-        List<Long> expiredUserIds = presenceReconnectStatePort.findExpiredReconnectUserIds(now);
+        List<Long> expiredUserIds = findExpiredReconnectUserIdsSafely(now);
         if (expiredUserIds.isEmpty()) {
             return 0;
         }
@@ -172,7 +202,7 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
                 }
 
                 UserActivityStatus previousStatus = resolveStatus(userId, counterByUserId.get(userId));
-                presenceReconnectStatePort.clearReconnectPending(userId);
+                clearReconnectPendingSafely(userId);
                 UserActivityStatus currentStatus = resolveStatus(userId, counterByUserId.get(userId));
                 if (previousStatus != currentStatus) {
                     statusChanges.add(new StatusChange(userId, previousStatus, currentStatus));
@@ -202,7 +232,7 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
                     continue;
                 }
 
-                presenceReconnectStatePort.markReconnectPending(userId, reconnectDeadline);
+                markReconnectPendingSafely(userId, reconnectDeadline);
                 UserActivityStatus currentStatus = resolveStatus(userId, counterByUserId.get(userId));
                 if (previousStatus != currentStatus) {
                     statusChanges.add(new StatusChange(userId, previousStatus, currentStatus));
@@ -294,7 +324,7 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
         if (connectedStatus != UserActivityStatus.OFFLINE) {
             return connectedStatus;
         }
-        if (presenceReconnectStatePort.isReconnectPending(userId)) {
+        if (isReconnectPendingSafely(userId)) {
             return UserActivityStatus.RECONNECTING;
         }
         return UserActivityStatus.OFFLINE;
@@ -362,14 +392,57 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
 
         PresenceCounter counter = counterByUserId.get(userId);
         if (counter == null || counter.connectedSessions == 0) {
-            presenceReconnectStatePort.markReconnectPending(userId, now.plus(reconnectGracePeriod));
+            markReconnectPendingSafely(userId, now.plus(reconnectGracePeriod));
             return;
         }
-        presenceReconnectStatePort.clearReconnectPending(userId);
+        clearReconnectPendingSafely(userId);
     }
 
     private Instant now() {
         return Instant.now(clock);
+    }
+
+    private void markReconnectPendingSafely(Long userId, Instant reconnectDeadline) {
+        try {
+            presenceReconnectStatePort.markReconnectPending(userId, reconnectDeadline);
+        } catch (RuntimeException exception) {
+            log.warn("Presence reconnect mark failed. userId={}, reconnectDeadline={}", userId, reconnectDeadline, exception);
+        }
+    }
+
+    private void clearReconnectPendingSafely(Long userId) {
+        try {
+            presenceReconnectStatePort.clearReconnectPending(userId);
+        } catch (RuntimeException exception) {
+            log.warn("Presence reconnect clear failed. userId={}", userId, exception);
+        }
+    }
+
+    private boolean isReconnectPendingSafely(Long userId) {
+        try {
+            return presenceReconnectStatePort.isReconnectPending(userId);
+        } catch (RuntimeException exception) {
+            log.warn("Presence reconnect lookup failed. userId={}", userId, exception);
+            return false;
+        }
+    }
+
+    private Set<Long> findReconnectPendingUserIdsSafely(Collection<Long> userIds) {
+        try {
+            return presenceReconnectStatePort.findReconnectPendingUserIds(userIds);
+        } catch (RuntimeException exception) {
+            log.warn("Presence reconnect batch lookup failed. userIds={}", userIds, exception);
+            return Set.of();
+        }
+    }
+
+    private List<Long> findExpiredReconnectUserIdsSafely(Instant deadlineInclusive) {
+        try {
+            return presenceReconnectStatePort.findExpiredReconnectUserIds(deadlineInclusive);
+        } catch (RuntimeException exception) {
+            log.warn("Presence reconnect expired lookup failed. deadlineInclusive={}", deadlineInclusive, exception);
+            return List.of();
+        }
     }
 
     private void dispatchStatusChanges(List<StatusChange> statusChanges) {

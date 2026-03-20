@@ -6,7 +6,10 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -27,12 +30,14 @@ public class PresenceReconnectPersistenceAdapter implements PresenceReconnectSta
 
         String member = userId.toString();
         String value = String.valueOf(reconnectDeadline.toEpochMilli());
-        stringRedisTemplate.opsForValue().set(reconnectKey(userId), value);
-        stringRedisTemplate.opsForZSet().add(
-            RECONNECT_DEADLINE_ZSET_KEY,
-            member,
-            reconnectDeadline.toEpochMilli()
-        );
+        executeInTransaction(operations -> {
+            operations.opsForValue().set(reconnectKey(userId), value);
+            operations.opsForZSet().add(
+                RECONNECT_DEADLINE_ZSET_KEY,
+                member,
+                reconnectDeadline.toEpochMilli()
+            );
+        });
     }
 
     @Override
@@ -42,8 +47,10 @@ public class PresenceReconnectPersistenceAdapter implements PresenceReconnectSta
         }
 
         String member = userId.toString();
-        stringRedisTemplate.delete(reconnectKey(userId));
-        stringRedisTemplate.opsForZSet().remove(RECONNECT_DEADLINE_ZSET_KEY, member);
+        executeInTransaction(operations -> {
+            operations.delete(reconnectKey(userId));
+            operations.opsForZSet().remove(RECONNECT_DEADLINE_ZSET_KEY, member);
+        });
     }
 
     @Override
@@ -108,6 +115,23 @@ public class PresenceReconnectPersistenceAdapter implements PresenceReconnectSta
 
     private String reconnectKey(Long userId) {
         return RECONNECT_KEY_PREFIX + userId;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void executeInTransaction(Consumer<RedisOperations<String, String>> action) {
+        List<Object> transactionResult = stringRedisTemplate.execute(new SessionCallback<>() {
+            @Override
+            public List<Object> execute(RedisOperations operations) {
+                RedisOperations<String, String> redisOperations = (RedisOperations<String, String>) operations;
+                redisOperations.multi();
+                action.accept(redisOperations);
+                return redisOperations.exec();
+            }
+        });
+
+        if (transactionResult == null) {
+            throw new IllegalStateException("Presence reconnect redis transaction failed");
+        }
     }
 
     private Long parseUserId(String value) {

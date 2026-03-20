@@ -20,9 +20,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -209,6 +211,55 @@ class UserPresenceServiceTest {
         assertThat(userPresenceService.getStatus(3L)).isEqualTo(UserActivityStatus.RECONNECTING);
     }
 
+    @Test
+    @DisplayName("reconnect 저장소 예외가 발생해도 disconnect는 OFFLINE 전이를 전파한다")
+    void disconnect_whenReconnectStoreFails_fallsBackToOfflineTransition() {
+        PresenceReconnectStatePort failingPort = mock(PresenceReconnectStatePort.class);
+        when(failingPort.isReconnectPending(1L)).thenThrow(new RuntimeException("redis down"));
+        doThrow(new RuntimeException("redis down")).when(failingPort).clearReconnectPending(1L);
+        doThrow(new RuntimeException("redis down")).when(failingPort).markReconnectPending(1L, BASE_TIME.plusSeconds(60));
+
+        UserPresenceService service = new UserPresenceService(
+            List.of(notifyPresenceStatusChangedPort),
+            failingPort,
+            clock,
+            Duration.ofMinutes(1)
+        );
+
+        assertThatNoException().isThrownBy(() -> service.connected("conn-1", 1L));
+        assertThatNoException().isThrownBy(() -> service.disconnected("conn-1"));
+
+        assertThat(service.getStatus(1L)).isEqualTo(UserActivityStatus.OFFLINE);
+        verify(notifyPresenceStatusChangedPort).notifyStatusChanged(
+            1L,
+            UserActivityStatus.ONLINE,
+            UserActivityStatus.OFFLINE
+        );
+    }
+
+    @Test
+    @DisplayName("여러 사용자 상태 조회는 reconnect 상태를 배치 조회한다")
+    void getStatuses_batchesReconnectLookup() {
+        TrackingPresenceReconnectStatePort trackingPort = new TrackingPresenceReconnectStatePort(Set.of(2L));
+        UserPresenceService service = new UserPresenceService(
+            List.of(notifyPresenceStatusChangedPort),
+            trackingPort,
+            clock,
+            Duration.ofMinutes(1)
+        );
+
+        service.connected("u1-1", 1L);
+        trackingPort.resetCounters();
+
+        Map<Long, UserActivityStatus> statuses = service.getStatuses(List.of(1L, 2L, 3L));
+
+        assertThat(statuses.get(1L)).isEqualTo(UserActivityStatus.ONLINE);
+        assertThat(statuses.get(2L)).isEqualTo(UserActivityStatus.RECONNECTING);
+        assertThat(statuses.get(3L)).isEqualTo(UserActivityStatus.OFFLINE);
+        assertThat(trackingPort.findReconnectPendingUserIdsCallCount).isEqualTo(1);
+        assertThat(trackingPort.isReconnectPendingCallCount).isZero();
+    }
+
     private static final class MutableClock extends Clock {
 
         private Instant currentInstant;
@@ -284,6 +335,52 @@ class UserPresenceServiceTest {
                 .filter(entry -> !entry.getValue().isAfter(deadlineInclusive))
                 .map(Map.Entry::getKey)
                 .toList();
+        }
+    }
+
+    private static final class TrackingPresenceReconnectStatePort implements PresenceReconnectStatePort {
+
+        private final Set<Long> reconnectingUserIds;
+        private int isReconnectPendingCallCount;
+        private int findReconnectPendingUserIdsCallCount;
+
+        private TrackingPresenceReconnectStatePort(Set<Long> reconnectingUserIds) {
+            this.reconnectingUserIds = reconnectingUserIds;
+        }
+
+        @Override
+        public void markReconnectPending(Long userId, Instant reconnectDeadline) {
+        }
+
+        @Override
+        public void clearReconnectPending(Long userId) {
+        }
+
+        @Override
+        public boolean isReconnectPending(Long userId) {
+            isReconnectPendingCallCount++;
+            return reconnectingUserIds.contains(userId);
+        }
+
+        @Override
+        public Set<Long> findReconnectPendingUserIds(Collection<Long> userIds) {
+            findReconnectPendingUserIdsCallCount++;
+            if (userIds == null || userIds.isEmpty()) {
+                return Set.of();
+            }
+            return userIds.stream()
+                .filter(reconnectingUserIds::contains)
+                .collect(java.util.stream.Collectors.toSet());
+        }
+
+        @Override
+        public List<Long> findExpiredReconnectUserIds(Instant deadlineInclusive) {
+            return List.of();
+        }
+
+        private void resetCounters() {
+            isReconnectPendingCallCount = 0;
+            findReconnectPendingUserIdsCallCount = 0;
         }
     }
 }
