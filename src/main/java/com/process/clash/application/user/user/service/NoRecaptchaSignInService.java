@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class NoRecapchaSignInService implements SignInUseCase {
+public class NoRecaptchaSignInService implements SignInUseCase {
 
     private static final String DUMMY_PASSWORD_HASH = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 

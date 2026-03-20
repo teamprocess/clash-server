@@ -47,9 +47,6 @@ import java.util.Arrays;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
@@ -111,7 +108,15 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/electron/**").permitAll()
-                        .requestMatchers("/api/auth/sign-in", "/api/auth/sign-up", "/api/auth/signin", "/api/auth/signup", "/api/auth/username-duplicate-check", "/api/auth/verify-email").permitAll()
+                        .requestMatchers(
+                                "/api/auth/sign-in",
+                                "/api/auth/no-recaptcha-sign-in",
+                                "/api/auth/sign-up",
+                                "/api/auth/signin",
+                                "/api/auth/signup",
+                                "/api/auth/username-duplicate-check",
+                                "/api/auth/verify-email"
+                        ).permitAll()
                         .requestMatchers("/api/auth/password-reset/**").permitAll()
                         .requestMatchers("/api/config/public").permitAll()
                         .requestMatchers("/auth-login.html", "/auth-signup.html").permitAll()
@@ -244,26 +249,4 @@ public class SecurityConfig {
         services.setTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
         return services;
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        // 사실상 "모든 도메인" 허용 (CORS 무력화)
-        configuration.addAllowedOriginPattern("*");
-
-        // 모든 메서드(GET, POST...) 허용
-        configuration.addAllowedMethod("*");
-
-        // 모든 헤더 허용
-        configuration.addAllowedHeader("*");
-
-        // 쿠키/세션 허용 (인증 사용 중이므로 필수)
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
 }

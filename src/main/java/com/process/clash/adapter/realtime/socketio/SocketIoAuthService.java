@@ -3,18 +3,22 @@ package com.process.clash.adapter.realtime.socketio;
 import com.corundumstudio.socketio.AuthorizationResult;
 import com.corundumstudio.socketio.HandshakeData;
 import com.process.clash.application.realtime.port.out.SocketTokenPort;
+import com.process.clash.infrastructure.config.security.AllowedOriginService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SocketIoAuthService {
 
     private final SocketTokenPort socketTokenPort;
+    private final AllowedOriginService allowedOriginService;
 
     public boolean isAuthorized(HandshakeData data) {
-        return resolveUserId(data).isPresent();
+        return isAllowedOrigin(data) && resolveUserId(data).isPresent();
     }
 
     public AuthorizationResult authorize(HandshakeData data) {
@@ -32,6 +36,21 @@ public class SocketIoAuthService {
             return Optional.empty();
         }
         return socketTokenPort.resolveUserId(token);
+    }
+
+    private boolean isAllowedOrigin(HandshakeData data) {
+        if (data == null) {
+            return false;
+        }
+
+        String origin = data.getHttpHeaders().get("Origin");
+        boolean allowed = allowedOriginService.isAllowed(origin);
+
+        if (!allowed) {
+            log.warn("허용되지 않은 Socket.IO Origin 요청을 거부합니다. origin={}", origin);
+        }
+
+        return allowed;
     }
 
     private String extractToken(HandshakeData data) {
