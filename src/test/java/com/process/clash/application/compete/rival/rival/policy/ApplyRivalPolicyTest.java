@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,50 +31,18 @@ class ApplyRivalPolicyTest {
         applyRivalPolicy = new ApplyRivalPolicy(rivalRepositoryPort);
     }
 
-    // ===== 내 활성 라이벌 수 초과 케이스 =====
+    // ===== 내 ACCEPTED 라이벌 수 초과 케이스 =====
 
     @Test
-    @DisplayName("내 활성 라이벌 수가 4명일 때 신청하면 예외가 발생한다")
-    void check_throwsWhenMyActiveRivalCountIsMax() {
+    @DisplayName("내 ACCEPTED 라이벌 수가 4명이면 신청 시 예외가 발생한다")
+    void check_throwsWhenMyAcceptedRivalCountIsMax() {
         Actor actor = new Actor(1L);
         ApplyRivalData.Command command = new ApplyRivalData.Command(
                 actor,
                 List.of(new ApplyRivalData.Id(2L))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(4);
-
-        assertThatThrownBy(() -> applyRivalPolicy.check(command))
-                .isInstanceOf(TooMuchRivalsException.class);
-    }
-
-    @Test
-    @DisplayName("ACCEPTED 3명 + 내가 신청한 PENDING 1명 = 4명일 때 1명 더 신청하면 예외가 발생한다")
-    void check_throwsWhenAcceptedAndPendingSentSumReachesMax() {
-        Actor actor = new Actor(1L);
-        ApplyRivalData.Command command = new ApplyRivalData.Command(
-                actor,
-                List.of(new ApplyRivalData.Id(2L))
-        );
-
-        // ACCEPTED 3 + 내가 신청한 PENDING 1 = 합산 4
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(4);
-
-        assertThatThrownBy(() -> applyRivalPolicy.check(command))
-                .isInstanceOf(TooMuchRivalsException.class);
-    }
-
-    @Test
-    @DisplayName("여러 명 신청 시 현재 활성 수와 합산해 4명을 넘으면 예외가 발생한다")
-    void check_throwsWhenBatchApplyExceedsMax() {
-        Actor actor = new Actor(1L);
-        ApplyRivalData.Command command = new ApplyRivalData.Command(
-                actor,
-                List.of(new ApplyRivalData.Id(2L), new ApplyRivalData.Id(3L))
-        );
-
-        // 현재 활성 3명 + 신청 2명 = 5명 > 4명
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(3);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(4);
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
                 .isInstanceOf(TooMuchRivalsException.class);
@@ -93,7 +60,7 @@ class ApplyRivalPolicyTest {
                 List.of(new ApplyRivalData.Id(opponentId))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(true);
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
@@ -110,7 +77,7 @@ class ApplyRivalPolicyTest {
                 List.of(new ApplyRivalData.Id(opponentId))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(true);
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
@@ -127,18 +94,18 @@ class ApplyRivalPolicyTest {
                 List.of(new ApplyRivalData.Id(opponentId))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(1);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(1);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(true);
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
                 .isInstanceOf(AlreadyAppliedRivalException.class);
     }
 
-    // ===== 상대방 활성 라이벌 수 초과 케이스 =====
+    // ===== 상대방 ACCEPTED 라이벌 수 초과 케이스 =====
 
     @Test
-    @DisplayName("상대방의 활성 라이벌 수가 4명이면 예외가 발생한다")
-    void check_throwsWhenOpponentActiveRivalCountIsMax() {
+    @DisplayName("상대방의 ACCEPTED 라이벌 수가 4명이면 예외가 발생한다")
+    void check_throwsWhenOpponentAcceptedRivalCountIsMax() {
         Actor actor = new Actor(1L);
         Long opponentId = 2L;
         ApplyRivalData.Command command = new ApplyRivalData.Command(
@@ -146,18 +113,17 @@ class ApplyRivalPolicyTest {
                 List.of(new ApplyRivalData.Id(opponentId))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(false);
-        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId)))
-                .thenReturn(List.of(Map.of("user_id", opponentId, "count", 4L)));
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(4);
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
                 .isInstanceOf(TooMuchRivalsException.class);
     }
 
     @Test
-    @DisplayName("여러 명 신청 시 한 명이라도 활성 라이벌 수가 4명이면 예외가 발생한다")
-    void check_throwsWhenAnyOpponentActiveRivalCountIsMax() {
+    @DisplayName("여러 명 신청 시 한 명이라도 ACCEPTED 라이벌 수가 4명이면 예외가 발생한다")
+    void check_throwsWhenAnyOpponentAcceptedRivalCountIsMax() {
         Actor actor = new Actor(1L);
         Long opponentId1 = 2L;
         Long opponentId2 = 3L;
@@ -166,15 +132,11 @@ class ApplyRivalPolicyTest {
                 List.of(new ApplyRivalData.Id(opponentId1), new ApplyRivalData.Id(opponentId2))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId1)).thenReturn(false);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId2)).thenReturn(false);
-        // opponentId1은 여유 있음(2명), opponentId2는 꽉 참(4명) — 단일 쿼리로 배치 조회
-        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId1, opponentId2)))
-                .thenReturn(List.of(
-                        Map.of("user_id", opponentId1, "count", 2L),
-                        Map.of("user_id", opponentId2, "count", 4L)
-                ));
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId1)).thenReturn(2);
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId2)).thenReturn(4);
 
         assertThatThrownBy(() -> applyRivalPolicy.check(command))
                 .isInstanceOf(TooMuchRivalsException.class);
@@ -192,10 +154,27 @@ class ApplyRivalPolicyTest {
                 List.of(new ApplyRivalData.Id(opponentId))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(3);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(3);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(false);
-        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId)))
-                .thenReturn(List.of(Map.of("user_id", opponentId, "count", 3L)));
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(3);
+
+        assertThatCode(() -> applyRivalPolicy.check(command)).doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("ACCEPTED 3명 + 다수의 PENDING이 있어도 신청할 수 있다")
+    void check_succeedsWhenMyAcceptedIsThreeRegardlessOfPending() {
+        Actor actor = new Actor(1L);
+        Long opponentId = 2L;
+        ApplyRivalData.Command command = new ApplyRivalData.Command(
+                actor,
+                List.of(new ApplyRivalData.Id(opponentId))
+        );
+
+        // ACCEPTED 3명 (PENDING은 카운트하지 않음)
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(3);
+        when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(false);
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(0);
 
         assertThatCode(() -> applyRivalPolicy.check(command)).doesNotThrowAnyException();
     }
@@ -210,11 +189,9 @@ class ApplyRivalPolicyTest {
                 List.of(new ApplyRivalData.Id(opponentId))
         );
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.existsActiveRivalBetween(actor.id(), opponentId)).thenReturn(false);
-        // 라이벌이 없으면 쿼리 결과에 포함되지 않음 (count = 0 → getOrDefault로 0 처리)
-        when(rivalRepositoryPort.countActiveByUserIdsGrouped(List.of(opponentId)))
-                .thenReturn(List.of());
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(0);
 
         assertThatCode(() -> applyRivalPolicy.check(command)).doesNotThrowAnyException();
     }
