@@ -51,7 +51,8 @@ jobs:
           port: ${{ secrets.DEVELOP_SSH_PORT }}
           script_stop: true
           script: |
-            cd ~/app
+            set -eu
+            cd /home/server/app
 
             echo "DOCKER_IMAGE=${{ secrets.DEVELOP_DOCKER_IMAGE }}" > .deploy.env
             echo "IMAGE_TAG=${{ github.sha }}" >> .deploy.env
