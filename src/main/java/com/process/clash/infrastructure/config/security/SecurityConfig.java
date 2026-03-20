@@ -111,7 +111,15 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/electron/**").permitAll()
-                        .requestMatchers("/api/auth/sign-in", "/api/auth/sign-up", "/api/auth/signin", "/api/auth/signup", "/api/auth/username-duplicate-check", "/api/auth/verify-email").permitAll()
+                        .requestMatchers(
+                                "/api/auth/sign-in",
+                                "/api/auth/no-recaptcha-sign-in",
+                                "/api/auth/sign-up",
+                                "/api/auth/signin",
+                                "/api/auth/signup",
+                                "/api/auth/username-duplicate-check",
+                                "/api/auth/verify-email"
+                        ).permitAll()
                         .requestMatchers("/api/auth/password-reset/**").permitAll()
                         .requestMatchers("/api/config/public").permitAll()
                         .requestMatchers("/auth-login.html", "/auth-signup.html").permitAll()
