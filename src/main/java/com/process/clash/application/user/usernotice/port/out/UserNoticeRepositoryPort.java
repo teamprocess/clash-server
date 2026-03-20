@@ -13,6 +13,7 @@ public interface UserNoticeRepositoryPort {
     List<UserNotice> findAllByReceiverIdIncludingRead(Long receiverId);
     Optional<UserNotice> findByIdAndReceiverId(Long id, Long receiverId);
     void deleteApplyRivalNoticeByRivalId(Long rivalId);
+    void deleteApplyRivalNoticeByRivalIds(List<Long> rivalIds);
     void deactivateApplyRivalNoticeByRivalId(Long rivalId);
     void deleteCancelRivalNoticeBySenderAndReceiver(Long senderId, Long receiverId);
     void deleteCancelRivalNoticesBySenderAndReceivers(Long senderId, List<Long> receiverIds);

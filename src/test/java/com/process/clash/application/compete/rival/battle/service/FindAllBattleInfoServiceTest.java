@@ -181,6 +181,16 @@ class FindAllBattleInfoServiceTest {
         assertThat(result.battles().get(0).enemy().tier()).isEqualTo("MASTER");
     }
 
+    @Test
+    @DisplayName("배틀이 없으면 빈 리스트를 반환한다")
+    void execute_returnsEmptyList_whenNoBattles() {
+        when(battleRepositoryPort.findByUserIdWithOutRejected(CURRENT_USER_ID)).thenReturn(List.of());
+
+        FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
+
+        assertThat(result.battles()).isEmpty();
+    }
+
     // ── fixtures ──────────────────────────────────────────────────────────────
 
     private FindAllBattleInfoData.Command command() {
