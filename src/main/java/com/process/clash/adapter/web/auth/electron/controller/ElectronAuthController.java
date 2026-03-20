@@ -43,7 +43,7 @@ public class ElectronAuthController {
 		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
 	}
 
-	@PostMapping({"/no-recapcha-sign-in", "/no-recaptcha-sign-in"})
+	@PostMapping( "/no-recaptcha-sign-in")
 	public ApiResponse<Map<String, String>> noRecaptchaLogin(@Valid @RequestBody ElectronAuthDto.LoginRequest req) {
 		String redirectUrl = noRecaptchaElectronSignInService.execute(
 				req.username(), req.password(), req.state(), req.redirectUri());

@@ -77,7 +77,7 @@ public class AuthController implements AuthControllerDocument {
 		return ApiResponse.success(response, "로그인을 성공했습니다.");
 	}
 
-	@PostMapping({"/no-recapcha-sign-in", "/no-recaptcha-sign-in"})
+	@PostMapping("/no-recaptcha-sign-in")
 	public ApiResponse<SignInDto.Response> noRecaptchaSignIn(
 			@Valid @RequestBody SignInDto.Request request,
 			HttpServletRequest httpRequest
