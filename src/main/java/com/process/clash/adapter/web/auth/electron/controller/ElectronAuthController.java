@@ -25,7 +25,7 @@ public class ElectronAuthController {
 
 	private final ElectronAuthService electronAuthService;
 	private final ElectronLoginUseCase electronSignInService;
-	private final ElectronLoginUseCase noRecapchaElectronSignInService;
+	private final ElectronLoginUseCase noRecaptchaElectronSignInService;
 	private final AccessContextResolver accessContextResolver;
 
 	@PostMapping("/sign-in/start")
@@ -43,9 +43,9 @@ public class ElectronAuthController {
 		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
 	}
 
-	@PostMapping("/no-recapcha-sign-in")
-	public ApiResponse<Map<String, String>> noRecapchaLogin(@Valid @RequestBody ElectronAuthDto.LoginRequest req) {
-		String redirectUrl = noRecapchaElectronSignInService.execute(
+	@PostMapping({"/no-recapcha-sign-in", "/no-recaptcha-sign-in"})
+	public ApiResponse<Map<String, String>> noRecaptchaLogin(@Valid @RequestBody ElectronAuthDto.LoginRequest req) {
+		String redirectUrl = noRecaptchaElectronSignInService.execute(
 				req.username(), req.password(), req.state(), req.redirectUri());
 		return ApiResponse.success(Map.of("redirectUrl", redirectUrl));
 	}
