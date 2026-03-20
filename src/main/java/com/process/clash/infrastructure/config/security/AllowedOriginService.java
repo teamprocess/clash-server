@@ -1,6 +1,7 @@
 package com.process.clash.infrastructure.config.security;
 
 import java.util.List;
+import java.util.Set;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,13 +11,10 @@ public class AllowedOriginService {
             "app://clash",
             "https://local.clash.kr:5173"
     );
+    private static final Set<String> ALLOWED_ORIGIN_SET = Set.copyOf(ALLOWED_ORIGINS);
 
     public List<String> getAllowedOrigins() {
-        return ALLOWED_ORIGINS.stream()
-                .filter(origin -> origin != null && !origin.isBlank())
-                .map(String::trim)
-                .distinct()
-                .toList();
+        return ALLOWED_ORIGINS;
     }
 
     public boolean isAllowed(String origin) {
@@ -24,6 +22,6 @@ public class AllowedOriginService {
             return false;
         }
 
-        return getAllowedOrigins().contains(origin.trim());
+        return ALLOWED_ORIGIN_SET.contains(origin.trim());
     }
 }
