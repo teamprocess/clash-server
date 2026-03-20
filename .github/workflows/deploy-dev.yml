@@ -50,13 +50,11 @@ jobs:
           key: ${{ secrets.DEVELOP_SSH_PRIVATE_KEY }}
           port: ${{ secrets.DEVELOP_SSH_PORT }}
           script: |
-            powershell.exe -NoProfile -NonInteractive -Command "
-              wsl.exe --distribution Ubuntu --user server bash -lc '
-                set -eu
-                cd /home/server/app
-                printf \"DOCKER_IMAGE=%s\n\" \"${{ secrets.DEVELOP_DOCKER_IMAGE }}\" > .deploy.env
-                printf \"IMAGE_TAG=%s\n\" \"${{ github.sha }}\" >> .deploy.env
-                docker compose --env-file .deploy.env pull clash-db clash-server
-                docker compose --env-file .deploy.env up -d --no-deps clash-db clash-server
-              '
-            "
+            wsl.exe --distribution Ubuntu --user server bash -lc '
+              set -eu
+              cd /home/server/app
+              printf \"DOCKER_IMAGE=%s\n\" \"${{ secrets.DEVELOP_DOCKER_IMAGE }}\" > .deploy.env
+              printf \"IMAGE_TAG=%s\n\" \"${{ github.sha }}\" >> .deploy.env
+              docker compose --env-file .deploy.env pull clash-db clash-server
+              docker compose --env-file .deploy.env up -d --no-deps clash-db clash-server
+            '
