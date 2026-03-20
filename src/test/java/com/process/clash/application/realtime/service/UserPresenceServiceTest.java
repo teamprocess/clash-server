@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -132,6 +135,82 @@ class UserPresenceServiceTest {
         assertThat(statuses.get(2L)).isEqualTo(UserActivityStatus.AWAY);
         assertThat(statuses.get(3L)).isEqualTo(UserActivityStatus.RECONNECTING);
         assertThat(statuses.get(4L)).isEqualTo(UserActivityStatus.OFFLINE);
+    }
+
+    @Test
+    @DisplayName("단건 상태 조회는 reconnect 조회 중 connect와 원자적으로 스냅샷을 읽는다")
+    void getStatus_readsAtomicallyWhileReconnectLookupIsInFlight() throws Exception {
+        BlockingPresenceReconnectStatePort blockingPort = new BlockingPresenceReconnectStatePort(Set.of(1L));
+        UserPresenceService service = new UserPresenceService(
+            List.of(notifyPresenceStatusChangedPort),
+            blockingPort,
+            clock,
+            Duration.ofMinutes(1)
+        );
+
+        FutureTask<UserActivityStatus> statusTask = new FutureTask<>(() -> service.getStatus(1L));
+        Thread statusThread = new Thread(statusTask, "presence-get-status");
+        statusThread.start();
+
+        assertThat(blockingPort.awaitSingleLookupStarted()).isTrue();
+
+        CountDownLatch connectStarted = new CountDownLatch(1);
+        FutureTask<Void> connectTask = new FutureTask<>(() -> {
+            connectStarted.countDown();
+            service.connected("conn-1", 1L);
+            return null;
+        });
+        Thread connectThread = new Thread(connectTask, "presence-connect");
+        connectThread.start();
+
+        assertThat(connectStarted.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(blockingPort.awaitClearCalled(500)).isFalse();
+
+        blockingPort.releaseLookup();
+
+        assertThat(statusTask.get(1, TimeUnit.SECONDS)).isEqualTo(UserActivityStatus.RECONNECTING);
+        connectTask.get(1, TimeUnit.SECONDS);
+        assertThat(service.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
+    }
+
+    @Test
+    @DisplayName("배치 상태 조회는 reconnect 조회 중 connect와 원자적으로 스냅샷을 읽는다")
+    void getStatuses_readsAtomicallyWhileReconnectLookupIsInFlight() throws Exception {
+        BlockingPresenceReconnectStatePort blockingPort = new BlockingPresenceReconnectStatePort(Set.of(1L));
+        UserPresenceService service = new UserPresenceService(
+            List.of(notifyPresenceStatusChangedPort),
+            blockingPort,
+            clock,
+            Duration.ofMinutes(1)
+        );
+
+        FutureTask<Map<Long, UserActivityStatus>> statusesTask = new FutureTask<>(
+            () -> service.getStatuses(List.of(1L, 2L))
+        );
+        Thread statusesThread = new Thread(statusesTask, "presence-get-statuses");
+        statusesThread.start();
+
+        assertThat(blockingPort.awaitBatchLookupStarted()).isTrue();
+
+        CountDownLatch connectStarted = new CountDownLatch(1);
+        FutureTask<Void> connectTask = new FutureTask<>(() -> {
+            connectStarted.countDown();
+            service.connected("conn-1", 1L);
+            return null;
+        });
+        Thread connectThread = new Thread(connectTask, "presence-batch-connect");
+        connectThread.start();
+
+        assertThat(connectStarted.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(blockingPort.awaitClearCalled(500)).isFalse();
+
+        blockingPort.releaseLookup();
+
+        Map<Long, UserActivityStatus> statuses = statusesTask.get(1, TimeUnit.SECONDS);
+        assertThat(statuses.get(1L)).isEqualTo(UserActivityStatus.RECONNECTING);
+        assertThat(statuses.get(2L)).isEqualTo(UserActivityStatus.OFFLINE);
+        connectTask.get(1, TimeUnit.SECONDS);
+        assertThat(service.getStatus(1L)).isEqualTo(UserActivityStatus.ONLINE);
     }
 
     @Test
@@ -381,6 +460,90 @@ class UserPresenceServiceTest {
         private void resetCounters() {
             isReconnectPendingCallCount = 0;
             findReconnectPendingUserIdsCallCount = 0;
+        }
+    }
+
+    private static final class BlockingPresenceReconnectStatePort implements PresenceReconnectStatePort {
+
+        private final Map<Long, Instant> reconnectDeadlineByUserId = new ConcurrentHashMap<>();
+        private final CountDownLatch singleLookupStarted = new CountDownLatch(1);
+        private final CountDownLatch batchLookupStarted = new CountDownLatch(1);
+        private final CountDownLatch allowLookupToReturn = new CountDownLatch(1);
+        private final CountDownLatch clearCalled = new CountDownLatch(1);
+
+        private BlockingPresenceReconnectStatePort(Set<Long> reconnectingUserIds) {
+            reconnectingUserIds.forEach(userId -> reconnectDeadlineByUserId.put(userId, BASE_TIME.plusSeconds(60)));
+        }
+
+        @Override
+        public void markReconnectPending(Long userId, Instant reconnectDeadline) {
+            if (userId == null || reconnectDeadline == null) {
+                return;
+            }
+            reconnectDeadlineByUserId.put(userId, reconnectDeadline);
+        }
+
+        @Override
+        public void clearReconnectPending(Long userId) {
+            clearCalled.countDown();
+            if (userId == null) {
+                return;
+            }
+            reconnectDeadlineByUserId.remove(userId);
+        }
+
+        @Override
+        public boolean isReconnectPending(Long userId) {
+            singleLookupStarted.countDown();
+            awaitLookupRelease();
+            if (userId == null) {
+                return false;
+            }
+            return reconnectDeadlineByUserId.containsKey(userId);
+        }
+
+        @Override
+        public Set<Long> findReconnectPendingUserIds(Collection<Long> userIds) {
+            batchLookupStarted.countDown();
+            awaitLookupRelease();
+            if (userIds == null || userIds.isEmpty()) {
+                return Set.of();
+            }
+            return userIds.stream()
+                .filter(reconnectDeadlineByUserId::containsKey)
+                .collect(java.util.stream.Collectors.toSet());
+        }
+
+        @Override
+        public List<Long> findExpiredReconnectUserIds(Instant deadlineInclusive) {
+            return List.of();
+        }
+
+        private boolean awaitSingleLookupStarted() throws InterruptedException {
+            return singleLookupStarted.await(1, TimeUnit.SECONDS);
+        }
+
+        private boolean awaitBatchLookupStarted() throws InterruptedException {
+            return batchLookupStarted.await(1, TimeUnit.SECONDS);
+        }
+
+        private boolean awaitClearCalled(long timeoutMillis) throws InterruptedException {
+            return clearCalled.await(timeoutMillis, TimeUnit.MILLISECONDS);
+        }
+
+        private void releaseLookup() {
+            allowLookupToReturn.countDown();
+        }
+
+        private void awaitLookupRelease() {
+            try {
+                if (!allowLookupToReturn.await(1, TimeUnit.SECONDS)) {
+                    throw new IllegalStateException("Timed out waiting for test lookup release");
+                }
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(exception);
+            }
         }
     }
 }

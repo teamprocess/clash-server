@@ -137,16 +137,9 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             return UserActivityStatus.OFFLINE;
         }
 
-        UserActivityStatus connectedStatus;
         synchronized (monitor) {
-            connectedStatus = resolveConnectedStatus(counterByUserId.get(userId));
+            return resolveStatus(userId, counterByUserId.get(userId));
         }
-
-        if (connectedStatus != UserActivityStatus.OFFLINE) {
-            return connectedStatus;
-        }
-
-        return isReconnectPendingSafely(userId) ? UserActivityStatus.RECONNECTING : UserActivityStatus.OFFLINE;
     }
 
     @Override
@@ -163,9 +156,9 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
             return Map.of();
         }
 
-        Map<Long, UserActivityStatus> statusByUserId = new LinkedHashMap<>();
-        List<Long> offlineUserIds = new ArrayList<>();
         synchronized (monitor) {
+            Map<Long, UserActivityStatus> statusByUserId = new LinkedHashMap<>();
+            List<Long> offlineUserIds = new ArrayList<>();
             for (Long userId : distinctUserIds) {
                 UserActivityStatus connectedStatus = resolveConnectedStatus(counterByUserId.get(userId));
                 if (connectedStatus == UserActivityStatus.OFFLINE) {
@@ -174,17 +167,17 @@ public class UserPresenceService implements ReportUserPresenceUseCase, UserPrese
                 }
                 statusByUserId.put(userId, connectedStatus);
             }
-        }
 
-        Set<Long> reconnectingUserIds = findReconnectPendingUserIdsSafely(offlineUserIds);
-        for (Long userId : offlineUserIds) {
-            statusByUserId.put(
-                userId,
-                reconnectingUserIds.contains(userId) ? UserActivityStatus.RECONNECTING : UserActivityStatus.OFFLINE
-            );
-        }
+            Set<Long> reconnectingUserIds = findReconnectPendingUserIdsSafely(offlineUserIds);
+            for (Long userId : offlineUserIds) {
+                statusByUserId.put(
+                    userId,
+                    reconnectingUserIds.contains(userId) ? UserActivityStatus.RECONNECTING : UserActivityStatus.OFFLINE
+                );
+            }
 
-        return Collections.unmodifiableMap(statusByUserId);
+            return Collections.unmodifiableMap(statusByUserId);
+        }
     }
 
     public int expireReconnectingUsers() {
