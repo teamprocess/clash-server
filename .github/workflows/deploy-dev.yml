@@ -51,13 +51,13 @@ jobs:
           port: ${{ secrets.DEVELOP_SSH_PORT }}
           script_stop: true
           script: |
-            set -eu
-            cd ~/app
-
-            echo "DOCKER_IMAGE=${{ secrets.DEVELOP_DOCKER_IMAGE }}" > .deploy.env
-            echo "IMAGE_TAG=${{ github.sha }}" >> .deploy.env
-
-            export $(cat .deploy.env | xargs)
-
-            docker compose pull clash-db clash-server
-            docker compose up -d --no-deps clash-db clash-server
+            powershell.exe -NoProfile -NonInteractive -Command "
+              wsl.exe --distribution Ubuntu --user server bash -lc '
+                set -eu
+                cd /home/server/app
+                printf \"DOCKER_IMAGE=%s\n\" \"${{ secrets.DEVELOP_DOCKER_IMAGE }}\" > .deploy.env
+                printf \"IMAGE_TAG=%s\n\" \"${{ github.sha }}\" >> .deploy.env
+                docker compose --env-file .deploy.env pull clash-db clash-server
+                docker compose --env-file .deploy.env up -d --no-deps clash-db clash-server
+              '
+            "
