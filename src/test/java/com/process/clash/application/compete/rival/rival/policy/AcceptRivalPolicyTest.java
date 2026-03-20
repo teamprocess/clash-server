@@ -33,61 +33,32 @@ class AcceptRivalPolicyTest {
         acceptRivalPolicy = new AcceptRivalPolicy(rivalRepositoryPort);
     }
 
-    // ===== 내 활성 라이벌 수 초과 케이스 =====
+    // ===== 내 ACCEPTED 라이벌 수 초과 케이스 =====
 
     @Test
-    @DisplayName("내 활성 라이벌 수가 4명이면 수락 시 예외가 발생한다")
-    void check_throwsWhenMyActiveRivalCountIsMax() {
+    @DisplayName("내 ACCEPTED 라이벌 수가 4명이면 수락 시 예외가 발생한다")
+    void check_throwsWhenMyAcceptedRivalCountIsMax() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(4);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(4);
 
         assertThatThrownBy(() -> acceptRivalPolicy.check(actor, rivalId))
                 .isInstanceOf(TooMuchRivalsException.class);
     }
 
-    @Test
-    @DisplayName("ACCEPTED 3명 + 내가 신청한 PENDING 1명 = 4명일 때 수락하면 예외가 발생한다")
-    void check_throwsWhenAcceptedAndPendingSentSumIsMax() {
-        Actor actor = new Actor(1L);
-        Long rivalId = 10L;
-
-        // ACCEPTED 3 + 내가 신청한 PENDING 1 = 합산 4
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(4);
-
-        assertThatThrownBy(() -> acceptRivalPolicy.check(actor, rivalId))
-                .isInstanceOf(TooMuchRivalsException.class);
-    }
-
-    // ===== 상대방 활성 라이벌 수 초과 케이스 =====
+    // ===== 상대방 ACCEPTED 라이벌 수 초과 케이스 =====
 
     @Test
-    @DisplayName("상대방의 활성 라이벌 수가 4명이면 수락 시 예외가 발생한다")
-    void check_throwsWhenOpponentActiveRivalCountIsMax() {
+    @DisplayName("상대방의 ACCEPTED 라이벌 수가 4명이면 수락 시 예외가 발생한다")
+    void check_throwsWhenOpponentAcceptedRivalCountIsMax() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(3);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(3);
         when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(4);
-
-        assertThatThrownBy(() -> acceptRivalPolicy.check(actor, rivalId))
-                .isInstanceOf(TooMuchRivalsException.class);
-    }
-
-    @Test
-    @DisplayName("상대방의 ACCEPTED + 신청한 PENDING 합산이 4명이면 수락 시 예외가 발생한다")
-    void check_throwsWhenOpponentActiveCountReachesMax() {
-        Actor actor = new Actor(1L);
-        Long rivalId = 10L;
-        Long opponentId = 2L;
-
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
-        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
-        // 상대방의 ACCEPTED 3 + 신청한 PENDING 1 = 합산 4
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(4);
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(4);
 
         assertThatThrownBy(() -> acceptRivalPolicy.check(actor, rivalId))
                 .isInstanceOf(TooMuchRivalsException.class);
@@ -102,9 +73,9 @@ class AcceptRivalPolicyTest {
         Long rivalId = 10L;
         Long opponentId = 2L;
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(2);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(2);
         when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(1);
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(1);
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> acceptRivalPolicy.check(actor, rivalId))
@@ -114,16 +85,34 @@ class AcceptRivalPolicyTest {
     // ===== 정상 케이스 =====
 
     @Test
-    @DisplayName("양측 모두 활성 라이벌 수가 4명 미만이면 라이벌 엔티티를 반환한다")
+    @DisplayName("양측 모두 ACCEPTED 라이벌 수가 4명 미만이면 라이벌 엔티티를 반환한다")
     void check_returnsRivalWhenBothUnderLimit() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(3);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(3);
         when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(2);
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(2);
+        when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
+
+        Rival result = acceptRivalPolicy.check(actor, rivalId);
+
+        assertThat(result).isEqualTo(rival);
+    }
+
+    @Test
+    @DisplayName("ACCEPTED 3명 + 다수의 PENDING이 있어도 수락할 수 있다")
+    void check_returnsRivalWhenAcceptedIsThreeRegardlessOfPending() {
+        Actor actor = new Actor(1L);
+        Long rivalId = 10L;
+        Long opponentId = 2L;
+        Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
+
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(3);
+        when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(3);
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
 
         Rival result = acceptRivalPolicy.check(actor, rivalId);
@@ -139,9 +128,9 @@ class AcceptRivalPolicyTest {
         Long opponentId = 2L;
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(), RivalLinkingStatus.PENDING, opponentId, actor.id());
 
-        when(rivalRepositoryPort.countActiveByUserId(actor.id())).thenReturn(0);
+        when(rivalRepositoryPort.countAcceptedByUserId(actor.id())).thenReturn(0);
         when(rivalRepositoryPort.findOpponentIdByIdAndUserIdInRejectCase(rivalId, actor.id())).thenReturn(opponentId);
-        when(rivalRepositoryPort.countActiveByUserId(opponentId)).thenReturn(0);
+        when(rivalRepositoryPort.countAcceptedByUserId(opponentId)).thenReturn(0);
         when(rivalRepositoryPort.findById(rivalId)).thenReturn(Optional.of(rival));
 
         Rival result = acceptRivalPolicy.check(actor, rivalId);

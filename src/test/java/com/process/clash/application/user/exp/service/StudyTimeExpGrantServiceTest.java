@@ -108,8 +108,8 @@ class StudyTimeExpGrantServiceTest {
     }
 
     @Test
-    @DisplayName("일일 최대 36000초(600분)를 초과하면 36000초로 제한된다")
-    void grant_capsStudyTimeAt36000Seconds() {
+    @DisplayName("10시간(36000초)을 초과해도 실제 학습시간이 저장되고, EXP는 최대 600분까지만 지급된다")
+    void grant_savesActualStudyTimeButCapsExpAt36000Seconds() {
         Instant startedAt = Instant.parse("2025-01-15T01:00:00Z");
         Instant endedAt = startedAt.plusSeconds(40000); // 36000초를 초과
         LocalDate expectedDate = LocalDate.of(2025, 1, 15);
@@ -126,7 +126,11 @@ class StudyTimeExpGrantServiceTest {
 
         ArgumentCaptor<UserStudyTime> studyTimeCaptor = ArgumentCaptor.forClass(UserStudyTime.class);
         verify(userStudyTimeRepositoryPort).save(studyTimeCaptor.capture());
-        assertThat(studyTimeCaptor.getValue().totalStudyTimeSeconds()).isEqualTo(36000L);
+        assertThat(studyTimeCaptor.getValue().totalStudyTimeSeconds()).isEqualTo(40000L); // 실제 학습시간 저장
+
+        ArgumentCaptor<UserExpHistory> historyCaptor = ArgumentCaptor.forClass(UserExpHistory.class);
+        verify(userExpHistoryRepositoryPort).save(historyCaptor.capture());
+        assertThat(historyCaptor.getValue().earnExp()).isEqualTo(6000); // EXP는 600분 * 10 = 6000으로 제한
     }
 
     @Test
@@ -184,7 +188,7 @@ class StudyTimeExpGrantServiceTest {
     }
 
     @Test
-    @DisplayName("이미 최대 학습시간(36000초)에 도달했으면 EXP와 user.totalExp를 변경하지 않는다")
+    @DisplayName("이미 최대 EXP 기준 학습시간(36000초)에 도달했으면 EXP와 user.totalExp를 변경하지 않는다")
     void grant_doesNothingWhenAlreadyAtMaxStudyTime() {
         Instant startedAt = Instant.parse("2025-01-15T01:00:00Z");
         Instant endedAt = startedAt.plusSeconds(3600);
@@ -202,6 +206,10 @@ class StudyTimeExpGrantServiceTest {
             .thenReturn(Optional.of(existingExp));
 
         studyTimeExpGrantService.grant(USER_ID, startedAt, endedAt);
+
+        ArgumentCaptor<UserStudyTime> studyTimeCaptor = ArgumentCaptor.forClass(UserStudyTime.class);
+        verify(userStudyTimeRepositoryPort).save(studyTimeCaptor.capture());
+        assertThat(studyTimeCaptor.getValue().totalStudyTimeSeconds()).isEqualTo(36000L + 3600L); // 실제 시간은 계속 누적
 
         verify(userExpHistoryRepositoryPort, never()).save(any());
         verify(userRepositoryPort, never()).save(any());

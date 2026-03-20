@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +39,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -44,9 +47,6 @@ import java.util.Arrays;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
@@ -65,6 +65,29 @@ public class SecurityConfig {
     private String rememberMeKey;
 
     @Bean
+    @Order(1)
+    public SecurityFilterChain healthSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/health", "/health/**", "/actuator/health", "/actuator/health/**")
+                .cors(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .rememberMe(AbstractHttpConfigurer::disable)
+                .csrf(CsrfConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .securityContext(securityContext -> securityContext
+                        .securityContextRepository(new RequestAttributeSecurityContextRepository())
+                )
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
         http
                 .cors(Customizer.withDefaults())
@@ -85,7 +108,15 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/electron/**").permitAll()
-                        .requestMatchers("/api/auth/sign-in", "/api/auth/sign-up", "/api/auth/signin", "/api/auth/signup", "/api/auth/username-duplicate-check", "/api/auth/verify-email").permitAll()
+                        .requestMatchers(
+                                "/api/auth/sign-in",
+                                "/api/auth/no-recaptcha-sign-in",
+                                "/api/auth/sign-up",
+                                "/api/auth/signin",
+                                "/api/auth/signup",
+                                "/api/auth/username-duplicate-check",
+                                "/api/auth/verify-email"
+                        ).permitAll()
                         .requestMatchers("/api/auth/password-reset/**").permitAll()
                         .requestMatchers("/api/config/public").permitAll()
                         .requestMatchers("/auth-login.html", "/auth-signup.html").permitAll()
@@ -218,26 +249,4 @@ public class SecurityConfig {
         services.setTokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
         return services;
     }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        // 사실상 "모든 도메인" 허용 (CORS 무력화)
-        configuration.addAllowedOriginPattern("*");
-
-        // 모든 메서드(GET, POST...) 허용
-        configuration.addAllowedMethod("*");
-
-        // 모든 헤더 허용
-        configuration.addAllowedHeader("*");
-
-        // 쿠키/세션 허용 (인증 사용 중이므로 필수)
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
 }
