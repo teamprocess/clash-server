@@ -49,7 +49,6 @@ jobs:
           username: ${{ secrets.DEVELOP_SSH_USER }}
           key: ${{ secrets.DEVELOP_SSH_PRIVATE_KEY }}
           port: ${{ secrets.DEVELOP_SSH_PORT }}
-          script_stop: true
           script: |
             powershell.exe -NoProfile -NonInteractive -Command "
               wsl.exe --distribution Ubuntu --user server bash -lc '

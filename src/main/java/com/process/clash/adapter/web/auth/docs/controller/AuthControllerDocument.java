@@ -113,7 +113,7 @@ public interface AuthControllerDocument {
                                     """)
                     ))
     })
-    com.process.clash.adapter.web.common.ApiResponse<SignInDto.Response> noRecapchaSignIn(
+    com.process.clash.adapter.web.common.ApiResponse<SignInDto.Response> noRecaptchaSignIn(
             @RequestBody(description = "로그인 요청", required = true,
                     content = @Content(
                             schema = @Schema(implementation = SignInRequestDocument.class),

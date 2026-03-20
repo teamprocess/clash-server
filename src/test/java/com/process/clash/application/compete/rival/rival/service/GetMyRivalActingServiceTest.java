@@ -177,6 +177,18 @@ class GetMyRivalActingServiceTest {
         assertThat(result.myRivals().get(0).tier()).isEqualTo("MASTER");
     }
 
+    @Test
+    @DisplayName("라이벌이 없으면 빈 리스트를 반환한다")
+    void execute_returnsEmptyList_whenNoRivals() {
+        Actor actor = new Actor(1L);
+        when(rivalRepositoryPort.findAllByUserId(actor.id())).thenReturn(List.of());
+
+        GetMyRivalActingData.Result result = getMyRivalActingService.execute(
+                new GetMyRivalActingData.Command(actor));
+
+        assertThat(result.myRivals()).isEmpty();
+    }
+
     private User createUser(Long id, String username, String name) {
         return createUser(id, username, name, RankTier.NONE, ExpTier.UNRANKED);
     }

@@ -20,7 +20,7 @@ import java.util.UUID;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class NoRecapchaElectronSignInService implements ElectronLoginUseCase {
+public class NoRecaptchaElectronSignInService implements ElectronLoginUseCase {
 
 	private static final String DUMMY_PASSWORD_HASH = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
