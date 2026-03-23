@@ -45,16 +45,64 @@ public interface QuestionV2ControllerDocument {
             @ApiResponse(responseCode = "400", description = "잘못된 선택지 또는 챕터 잠김",
                     content = @Content(
                             schema = @Schema(implementation = com.process.clash.adapter.web.common.ApiResponse.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                      "success": false,
-                                      "error": {
-                                        "code": "CHAPTER_V2_LOCKED",
-                                        "message": "챕터가 잠겨 있어 접근할 수 없습니다.",
-                                        "timestamp": "2025-01-02T10:00:00"
-                                      }
-                                    }
-                                    """)
+                            examples = {
+                                    @ExampleObject(name = "chapter_locked", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "CHAPTER_V2_LOCKED",
+                                                "message": "챕터가 잠겨 있어 접근할 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "invalid_choice", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "INVALID_CHOICE_V2",
+                                                "message": "유효하지 않은 선택지입니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "invalid_question_order", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "INVALID_QUESTION_ORDER_V2",
+                                                "message": "문제를 순서대로 제출해야 합니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """)
+                            }
+                    )),
+            @ApiResponse(responseCode = "404", description = "문제 또는 챕터를 찾을 수 없음",
+                    content = @Content(
+                            schema = @Schema(implementation = com.process.clash.adapter.web.common.ApiResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "question_not_found", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "QUESTION_V2_NOT_FOUND",
+                                                "message": "문제를 찾을 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "chapter_not_found", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "CHAPTER_V2_NOT_FOUND",
+                                                "message": "챕터를 찾을 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """)
+                            }
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<SubmitQuestionV2AnswerDto.Response> submitAnswer(
@@ -89,6 +137,20 @@ public interface QuestionV2ControllerDocument {
                                       }
                                     }
                                     """)
+                    )),
+            @ApiResponse(responseCode = "404", description = "챕터를 찾을 수 없음",
+                    content = @Content(
+                            schema = @Schema(implementation = com.process.clash.adapter.web.common.ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "CHAPTER_V2_NOT_FOUND",
+                                        "message": "챕터를 찾을 수 없습니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
+                                    }
+                                    """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetChapterV2ResultDto.Response> getChapterResult(
@@ -105,6 +167,20 @@ public interface QuestionV2ControllerDocument {
                                     {
                                       "success": true,
                                       "message": "챕터 진행도 초기화를 성공했습니다."
+                                    }
+                                    """)
+                    )),
+            @ApiResponse(responseCode = "404", description = "챕터를 찾을 수 없음",
+                    content = @Content(
+                            schema = @Schema(implementation = com.process.clash.adapter.web.common.ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "CHAPTER_V2_NOT_FOUND",
+                                        "message": "챕터를 찾을 수 없습니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
                                     }
                                     """)
                     ))

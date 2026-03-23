@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.auth.electron.controller;
 
+import com.process.clash.adapter.web.auth.electron.docs.controller.ElectronAuthControllerDocument;
 import com.process.clash.adapter.web.auth.electron.dto.ElectronAuthDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.common.util.AccessContextResolver;
@@ -21,7 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth/electron")
 @RequiredArgsConstructor
-public class ElectronAuthController {
+public class ElectronAuthController implements ElectronAuthControllerDocument {
 
 	private final ElectronAuthService electronAuthService;
 	private final ElectronLoginUseCase electronSignInService;

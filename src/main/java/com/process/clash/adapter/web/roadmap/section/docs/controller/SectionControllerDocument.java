@@ -121,6 +121,34 @@ public interface SectionControllerDocument {
                                       }
                                     }
                                     """)
+                    )),
+            @ApiResponse(responseCode = "403", description = "선행 로드맵을 완료하지 않아 접근할 수 없음",
+                    content = @Content(
+                            schema = @Schema(implementation = com.process.clash.adapter.web.common.ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "SECTION_PREREQUISITE_NOT_COMPLETED",
+                                        "message": "선행 로드맵을 먼저 완료해야 합니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
+                                    }
+                                    """)
+                    )),
+            @ApiResponse(responseCode = "404", description = "로드맵을 찾을 수 없음",
+                    content = @Content(
+                            schema = @Schema(implementation = com.process.clash.adapter.web.common.ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "SECTION_NOT_FOUND",
+                                        "message": "로드맵을 찾을 수 없습니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
+                                    }
+                                    """)
                     ))
     })
     com.process.clash.adapter.web.common.ApiResponse<GetSectionDetailsDto.Response> getSectionDetails(
