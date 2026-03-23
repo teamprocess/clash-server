@@ -11,6 +11,7 @@ public class GetSectionV2DetailsDto {
     public record Response(
             Long sectionId,
             String sectionTitle,
+            Boolean completed,
             Integer totalChapters,
             Long currentChapterId,
             Integer currentOrderIndex,
@@ -20,6 +21,7 @@ public class GetSectionV2DetailsDto {
             return new Response(
                     result.sectionId(),
                     result.sectionTitle(),
+                    result.completed(),
                     result.totalChapters(),
                     result.currentChapterId(),
                     result.currentOrderIndex(),

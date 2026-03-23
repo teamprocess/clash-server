@@ -40,6 +40,10 @@ public class GetSectionV2DetailsService implements GetSectionV2DetailsUseCase {
         Optional<UserSectionProgress> progressOpt = userSectionProgressRepository
                 .findByUserIdAndSectionId(command.actor().id(), command.sectionId());
 
+        Boolean completed = progressOpt
+                .map(UserSectionProgress::getIsCompleted)
+                .orElse(false);
+
         Long currentChapterId = progressOpt.map(UserSectionProgress::getCurrentChapterId).orElse(null);
         Integer currentOrderIndex = progressOpt
                 .map(UserSectionProgress::getCurrentChapterId)
@@ -47,6 +51,6 @@ public class GetSectionV2DetailsService implements GetSectionV2DetailsUseCase {
                 .map(ChapterV2::getOrderIndex)
                 .orElse(null);
 
-        return GetSectionV2DetailsData.Result.from(section, currentChapterId, currentOrderIndex, chapters);
+        return GetSectionV2DetailsData.Result.from(section, completed, currentChapterId, currentOrderIndex, chapters);
     }
 }
