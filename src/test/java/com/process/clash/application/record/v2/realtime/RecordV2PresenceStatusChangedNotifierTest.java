@@ -128,7 +128,7 @@ class RecordV2PresenceStatusChangedNotifierTest {
     }
 
     @Test
-    @DisplayName("오프라인 전환 시 TASK 세션은 자동 종료한다")
+    @DisplayName("재접속 유예 시간 만료로 오프라인 전환 시 TASK 세션은 자동 종료한다")
     void notifyStatusChanged_stopsTaskSessionWhenOffline() {
         Long userId = 1L;
         RecordSessionV2 taskSession = new RecordSessionV2(
@@ -149,7 +149,7 @@ class RecordV2PresenceStatusChangedNotifierTest {
         when(recordSessionV2RepositoryPort.save(any(RecordSessionV2.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
 
-        notifier.notifyStatusChanged(userId, UserActivityStatus.ONLINE, UserActivityStatus.OFFLINE);
+        notifier.notifyStatusChanged(userId, UserActivityStatus.RECONNECTING, UserActivityStatus.OFFLINE);
 
         verify(recordSessionV2RepositoryPort).save(
             argThat(session -> session.id().equals(taskSession.id()) && session.endedAt() != null)
@@ -162,9 +162,9 @@ class RecordV2PresenceStatusChangedNotifierTest {
     }
 
     @Test
-    @DisplayName("자리비움/오프라인 전환이 아니면 세션 종료를 시도하지 않는다")
+    @DisplayName("재접속 대기 전환은 세션 종료를 시도하지 않는다")
     void notifyStatusChanged_skipsWhenStatusNotAwayOrOffline() {
-        notifier.notifyStatusChanged(1L, UserActivityStatus.AWAY, UserActivityStatus.ONLINE);
+        notifier.notifyStatusChanged(1L, UserActivityStatus.ONLINE, UserActivityStatus.RECONNECTING);
 
         verifyNoInteractions(
             recordSessionV2RepositoryPort,
@@ -177,13 +177,9 @@ class RecordV2PresenceStatusChangedNotifierTest {
     @Test
     @DisplayName("활성 세션이 없으면 종료를 시도하지 않는다")
     void notifyStatusChanged_skipsWhenNoActiveSession() {
-        Long userId = 1L;
-        when(recordSessionV2RepositoryPort.findActiveSessionByUserIdForUpdate(userId))
-            .thenReturn(Optional.empty());
+        notifier.notifyStatusChanged(1L, UserActivityStatus.ONLINE, UserActivityStatus.RECONNECTING);
 
-        notifier.notifyStatusChanged(userId, UserActivityStatus.ONLINE, UserActivityStatus.AWAY);
-
-        verify(recordSessionV2RepositoryPort).findActiveSessionByUserIdForUpdate(userId);
+        verify(recordSessionV2RepositoryPort, never()).findActiveSessionByUserIdForUpdate(any());
         verify(recordSessionV2RepositoryPort, never()).save(any(RecordSessionV2.class));
         verify(recordDevelopSessionSegmentV2RepositoryPort, never()).save(any(RecordDevelopSessionSegmentV2.class));
         verify(recordActivityNotifierPort, never()).notifyActivityStopped(any());

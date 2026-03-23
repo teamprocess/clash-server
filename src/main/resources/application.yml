@@ -107,6 +107,8 @@ realtime:
     ping-interval-ms: ${SOCKETIO_PING_INTERVAL_MS:25000}
     ping-timeout-ms: ${SOCKETIO_PING_TIMEOUT_MS:60000}
     token-ttl-seconds: ${SOCKETIO_TOKEN_TTL_SECONDS:300}
+    reconnect-grace-seconds: ${SOCKETIO_RECONNECT_GRACE_SECONDS:60}
+    reconnect-sweep-fixed-delay-ms: ${SOCKETIO_RECONNECT_SWEEP_FIXED_DELAY_MS:10000}
 
 google:
   recaptcha:

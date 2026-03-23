@@ -92,8 +92,8 @@ class RecordV2PresenceFlowIntegrationTest {
     }
 
     @Test
-    @DisplayName("소켓 연결 종료 시 진행 중인 DEVELOP 세션이 종료된다")
-    void disconnect_stopsDevelopSession() {
+    @DisplayName("소켓 연결 종료 시 진행 중인 DEVELOP 세션은 재접속 유예 시간 동안 유지된다")
+    void disconnect_keepsDevelopSessionDuringReconnectGrace() {
         User user = createActiveUser();
         String connectionId = "conn-offline-v2-" + UUID.randomUUID();
         Actor actor = new Actor(user.id());
@@ -110,12 +110,12 @@ class RecordV2PresenceFlowIntegrationTest {
 
         reportUserPresenceUseCase.disconnected(connectionId);
 
-        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isEmpty();
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isPresent();
     }
 
     @Test
-    @DisplayName("소켓 연결 종료 시 진행 중인 TASK 세션이 종료된다")
-    void disconnect_stopsTaskSession() {
+    @DisplayName("소켓 연결 종료 시 진행 중인 TASK 세션은 재접속 유예 시간 동안 유지된다")
+    void disconnect_keepsTaskSessionDuringReconnectGrace() {
         User user = createActiveUser();
         String connectionId = "conn-task-offline-v2-" + UUID.randomUUID();
         Actor actor = new Actor(user.id());
@@ -133,7 +133,7 @@ class RecordV2PresenceFlowIntegrationTest {
 
         reportUserPresenceUseCase.disconnected(connectionId);
 
-        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isEmpty();
+        assertThat(recordSessionV2RepositoryPort.findActiveSessionByUserId(user.id())).isPresent();
     }
 
     @Test
