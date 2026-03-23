@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.controller;
 
+import com.process.clash.adapter.web.controller.docs.controller.HealthCheckControllerDocument;
 import com.process.clash.adapter.web.controller.dto.HealthResponse;
 import com.process.clash.adapter.web.controller.dto.PingResponse;
 import com.process.clash.application.health.data.GetHealthStatusData;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/health")
 @RequiredArgsConstructor
-public class HealthCheckController {
+public class HealthCheckController implements HealthCheckControllerDocument {
 
     private final HealthCheckUseCase healthCheckUseCase;
 
