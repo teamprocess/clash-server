@@ -13,12 +13,19 @@ public class GetSectionV2DetailsData {
     public record Result(
             Long sectionId,
             String sectionTitle,
+            Boolean completed,
             Integer totalChapters,
             Long currentChapterId,
             Integer currentOrderIndex,
             List<ChapterVo> chapters
     ) {
-        public static Result from(Section section, Long currentChapterId, Integer currentOrderIndex, List<ChapterV2> chapters) {
+        public static Result from(
+                Section section,
+                Boolean completed,
+                Long currentChapterId,
+                Integer currentOrderIndex,
+                List<ChapterV2> chapters
+        ) {
             List<ChapterVo> chapterVos = chapters.stream()
                     .map(ChapterVo::from)
                     .toList();
@@ -26,6 +33,7 @@ public class GetSectionV2DetailsData {
             return new Result(
                     section.getId(),
                     section.getTitle(),
+                    completed,
                     chapterVos.size(),
                     currentChapterId,
                     currentOrderIndex,
