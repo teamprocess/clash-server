@@ -17,6 +17,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.UnsupportedEncodingException;
 
@@ -25,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 public class SendVerificationEmailAdapter implements SendVerificationEmailPort {
 
     private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
 
     @Value("${mail.sender.address}")
     private String senderAddress;
@@ -44,18 +47,9 @@ public class SendVerificationEmailAdapter implements SendVerificationEmailPort {
             helper.setTo(email);
             helper.setSubject("[Clash] 계정 활성화 이메일 인증 코드");
 
-            String htmlContent = String.format("""
-            <div style="font-family: 'Apple SD Gothic Neo', sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                <h2 style="color: #333;">Welcome to CLASH!</h2>
-                <p style="font-size: 16px; color: #666;">서비스 이용을 위해 아래 인증 코드를 입력해주세요.</p>
-                <div style="background-color: #f4f4f4; padding: 20px; text-align: center; border-radius: 5px; margin: 20px 0;">
-                    <span style="font-size: 30px; font-weight: bold; color: #007bff; letter-spacing: 5px;">%s</span>
-                </div>
-                <p style="font-size: 13px; color: #999;">이 코드는 5분간 유효합니다. 본인이 요청하지 않았다면 이 메일을 무시하세요.</p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                <p style="font-size: 11px; color: #ccc;">© 2026 PROCESS. All rights reserved.</p>
-            </div>
-            """, verificationCode);
+            Context context = new Context();
+            context.setVariable("verificationCode", verificationCode);
+            String htmlContent = templateEngine.process("email/verification-email", context);
 
             helper.setText(htmlContent, true); // true: HTML 형식 사용
 
