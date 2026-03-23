@@ -39,6 +39,10 @@ public interface UserNoticeJpaRepository extends JpaRepository<UserNoticeJpaEnti
     void softDeleteApplyRivalNoticeByRivalId(@Param("rivalId") Long rivalId);
 
     @Modifying
+    @Query(value = "UPDATE user_notices SET deleted_at = now(), is_read = true WHERE rival_id IN (:rivalIds) AND notice_category = 'APPLY_RIVAL' AND deleted_at IS NULL", nativeQuery = true)
+    void softDeleteApplyRivalNoticeByRivalIds(@Param("rivalIds") List<Long> rivalIds);
+
+    @Modifying
     @Query(value = "UPDATE user_notices SET requires_action = false, is_read = true WHERE rival_id = :rivalId AND notice_category = 'APPLY_RIVAL' AND deleted_at IS NULL", nativeQuery = true)
     void deactivateApplyRivalNoticeByRivalId(@Param("rivalId") Long rivalId);
 

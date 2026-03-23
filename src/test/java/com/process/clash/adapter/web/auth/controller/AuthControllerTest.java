@@ -42,7 +42,7 @@ public class AuthControllerTest {
     private SignInUseCase signInService;
 
     @MockitoBean
-    private SignInUseCase noRecapchaSignInService;
+    private SignInUseCase noRecaptchaSignInService;
 
     private void initMockMvc() {
         if (this.mockMvc == null) {

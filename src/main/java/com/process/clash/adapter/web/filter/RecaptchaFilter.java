@@ -56,9 +56,10 @@ public class RecaptchaFilter extends GenericFilterBean {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        String method = httpRequest.getMethod();
 
         // CORS preflight 요청은 건너뛰기
-        if ("OPTIONS".equalsIgnoreCase(httpRequest.getMethod())) {
+        if ("OPTIONS".equalsIgnoreCase(method)) {
             chain.doFilter(request, response);
             return;
         }

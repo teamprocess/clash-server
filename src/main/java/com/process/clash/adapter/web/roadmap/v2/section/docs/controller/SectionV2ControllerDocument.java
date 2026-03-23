@@ -68,6 +68,7 @@ public interface SectionV2ControllerDocument {
                                       "data": {
                                         "sectionId": 1,
                                         "sectionTitle": "스프링 입문",
+                                        "completed": false,
                                         "totalChapters": 3,
                                         "currentChapterId": 1,
                                         "currentOrderIndex": 0,

@@ -85,6 +85,11 @@ public class UserNoticePersistenceAdapter implements UserNoticeRepositoryPort {
     }
 
     @Override
+    public void deleteApplyRivalNoticeByRivalIds(List<Long> rivalIds) {
+        userNoticeJpaRepository.softDeleteApplyRivalNoticeByRivalIds(rivalIds);
+    }
+
+    @Override
     public void deactivateApplyRivalNoticeByRivalId(Long rivalId) {
         userNoticeJpaRepository.deactivateApplyRivalNoticeByRivalId(rivalId);
     }

@@ -21,7 +21,7 @@ public class SocketIoConfig {
         config.setHostname(socketIoProperties.getHost());
         config.setPort(socketIoProperties.getPort());
         config.setContext(socketIoProperties.getPath());
-        config.setOrigin(socketIoProperties.getAllowedOrigins());
+        config.setOrigin(null);
         config.setPingInterval(socketIoProperties.getPingIntervalMs());
         config.setPingTimeout(socketIoProperties.getPingTimeoutMs());
         config.setTransports(Transport.WEBSOCKET);

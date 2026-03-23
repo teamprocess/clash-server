@@ -43,6 +43,82 @@ public interface MissionControllerDocument {
                                     }
                                     """)
                     )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 선택지, 잠긴 챕터, 또는 잘못된 문제 순서",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "invalid_choice", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "INVALID_CHOICE",
+                                                "message": "유효하지 않은 선택지입니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "chapter_locked", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "CHAPTER_LOCKED",
+                                                "message": "챕터가 잠겨 있어 접근할 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "invalid_question_order", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "INVALID_QUESTION_ORDER",
+                                                "message": "문제를 순서대로 제출해야 합니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """)
+                            }
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "미션, 질문, 또는 챕터를 찾을 수 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "mission_not_found", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "MISSION_NOT_FOUND",
+                                                "message": "미션을 찾을 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "question_not_found", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "QUESTION_NOT_FOUND",
+                                                "message": "질문을 찾을 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "chapter_not_found", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "CHAPTER_NOT_FOUND",
+                                                "message": "챕터를 찾을 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """)
+                            }
+                    )
             )
     })
     ApiResponse<MissionSubmitDto.Response> submitAnswer(
@@ -84,6 +160,34 @@ public interface MissionControllerDocument {
                                     }
                                     """)
                     )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "미션 또는 챕터를 찾을 수 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "mission_not_found", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "MISSION_NOT_FOUND",
+                                                "message": "미션을 찾을 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """),
+                                    @ExampleObject(name = "chapter_not_found", value = """
+                                            {
+                                              "success": false,
+                                              "error": {
+                                                "code": "CHAPTER_NOT_FOUND",
+                                                "message": "챕터를 찾을 수 없습니다.",
+                                                "timestamp": "2025-01-02T10:00:00"
+                                              }
+                                            }
+                                            """)
+                            }
+                    )
             )
     })
     ApiResponse<MissionResultDto.Response> getResult(
@@ -101,6 +205,22 @@ public interface MissionControllerDocument {
                                     {
                                       "message": "미션 진행 상황이 초기화되었습니다. 다시 시작합니다.",
                                       "success": true
+                                    }
+                                    """)
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "미션을 찾을 수 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "MISSION_NOT_FOUND",
+                                        "message": "미션을 찾을 수 없습니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
                                     }
                                     """)
                     )

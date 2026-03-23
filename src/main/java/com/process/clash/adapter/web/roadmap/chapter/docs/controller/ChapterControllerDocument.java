@@ -38,6 +38,38 @@ public interface ChapterControllerDocument {
                                     }
                                     """)
                     )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "챕터가 잠겨 있어 접근할 수 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "CHAPTER_LOCKED",
+                                        "message": "챕터가 잠겨 있어 접근할 수 없습니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
+                                    }
+                                    """)
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "챕터를 찾을 수 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": false,
+                                      "error": {
+                                        "code": "CHAPTER_NOT_FOUND",
+                                        "message": "챕터를 찾을 수 없습니다.",
+                                        "timestamp": "2025-01-02T10:00:00"
+                                      }
+                                    }
+                                    """)
+                    )
             )
     })
     ApiResponse<GetChapterDetailsDto.Response> getChapterDetails(
