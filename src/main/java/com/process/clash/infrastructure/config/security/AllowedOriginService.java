@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class AllowedOriginService {
 
     private static final List<String> ALLOWED_ORIGINS = List.of(
+            "https://api.clash.kr",
             "app://clash",
             "https://local.clash.kr:5173"
     );
