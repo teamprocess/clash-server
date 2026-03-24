@@ -47,7 +47,6 @@ class GetAllAbleRivalsServiceTest {
         Rival acceptedRival = new Rival(10L, Instant.now(), Instant.now(), RivalLinkingStatus.ACCEPTED, myId, 2L);
 
         when(rivalRepositoryPort.findAllRivalsByUserId(myId)).thenReturn(List.of(acceptedRival));
-        when(userRepositoryPort.findAbleRivalsWithUserInfo(List.of(2L, myId))).thenReturn(List.of());
 
         getAllAbleRivalsService.execute(GetAllAbleRivalsData.Command.from(actor));
 
