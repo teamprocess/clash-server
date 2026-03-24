@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +48,7 @@ class BattleFinishServiceTest {
         battleFinishService.finishExpiredBattles(today);
 
         ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort, org.mockito.Mockito.times(2)).saveAll(captor.capture());
+        verify(battleRepositoryPort, times(2)).saveAll(captor.capture());
 
         List<Battle> finishedBattles = captor.getAllValues().get(0);
         assertThat(finishedBattles).allMatch(b -> b.battleStatus() == BattleStatus.DONE);
@@ -67,7 +68,7 @@ class BattleFinishServiceTest {
         battleFinishService.finishExpiredBattles(today);
 
         ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort, org.mockito.Mockito.times(2)).saveAll(captor.capture());
+        verify(battleRepositoryPort, times(2)).saveAll(captor.capture());
 
         List<Battle> canceledBattles = captor.getAllValues().get(1);
         assertThat(canceledBattles).allMatch(b -> b.battleStatus() == BattleStatus.CANCELED);
@@ -83,6 +84,6 @@ class BattleFinishServiceTest {
 
         battleFinishService.finishExpiredBattles(today);
 
-        verify(battleRepositoryPort, org.mockito.Mockito.times(2)).saveAll(List.of());
+        verify(battleRepositoryPort, times(2)).saveAll(List.of());
     }
 }
