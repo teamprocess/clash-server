@@ -16,8 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,15 +42,12 @@ class BattleFinishServiceTest {
 
         when(battleRepositoryPort.findExpiredInProgressBattles(today)).thenReturn(List.of(inProgressBattle));
         when(battleRepositoryPort.findExpiredNotStartedBattles(today)).thenReturn(List.of());
-        when(battleRepositoryPort.saveAll(any())).thenReturn(List.of());
 
         battleFinishService.finishExpiredBattles(today);
 
         ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort, times(2)).saveAll(captor.capture());
-
-        List<Battle> finishedBattles = captor.getAllValues().get(0);
-        assertThat(finishedBattles).allMatch(b -> b.battleStatus() == BattleStatus.DONE);
+        verify(battleRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue()).allMatch(b -> b.battleStatus() == BattleStatus.DONE);
     }
 
     @Test
@@ -63,27 +59,44 @@ class BattleFinishServiceTest {
 
         when(battleRepositoryPort.findExpiredInProgressBattles(today)).thenReturn(List.of());
         when(battleRepositoryPort.findExpiredNotStartedBattles(today)).thenReturn(List.of(notStartedBattle));
-        when(battleRepositoryPort.saveAll(any())).thenReturn(List.of());
 
         battleFinishService.finishExpiredBattles(today);
 
         ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort, times(2)).saveAll(captor.capture());
-
-        List<Battle> canceledBattles = captor.getAllValues().get(1);
-        assertThat(canceledBattles).allMatch(b -> b.battleStatus() == BattleStatus.CANCELED);
+        verify(battleRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue()).allMatch(b -> b.battleStatus() == BattleStatus.CANCELED);
     }
 
     @Test
-    @DisplayName("종료할 배틀이 없으면 빈 리스트로 saveAll을 두 번 호출한다")
-    void finishExpiredBattles_savesEmptyLists_whenNoBattlesToProcess() {
+    @DisplayName("IN_PROGRESS와 NOT_STARTED 만료 배틀을 한 번의 saveAll로 처리한다")
+    void finishExpiredBattles_savesAllInSingleCall() {
         LocalDate today = LocalDate.now();
-        when(battleRepositoryPort.findExpiredInProgressBattles(today)).thenReturn(List.of());
-        when(battleRepositoryPort.findExpiredNotStartedBattles(today)).thenReturn(List.of());
-        when(battleRepositoryPort.saveAll(List.of())).thenReturn(List.of());
+        Battle inProgressBattle = new Battle(1L, Instant.now(), Instant.now(),
+                today.minusDays(7), today.minusDays(1), BattleStatus.IN_PROGRESS, null, 10L, 20L);
+        Battle notStartedBattle = new Battle(2L, Instant.now(), Instant.now(),
+                today.minusDays(7), today.minusDays(1), BattleStatus.NOT_STARTED, null, 10L, 20L);
+
+        when(battleRepositoryPort.findExpiredInProgressBattles(today)).thenReturn(List.of(inProgressBattle));
+        when(battleRepositoryPort.findExpiredNotStartedBattles(today)).thenReturn(List.of(notStartedBattle));
 
         battleFinishService.finishExpiredBattles(today);
 
-        verify(battleRepositoryPort, times(2)).saveAll(List.of());
+        ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
+        verify(battleRepositoryPort).saveAll(captor.capture());
+        assertThat(captor.getValue()).hasSize(2)
+                .anyMatch(b -> b.battleStatus() == BattleStatus.DONE)
+                .anyMatch(b -> b.battleStatus() == BattleStatus.CANCELED);
+    }
+
+    @Test
+    @DisplayName("종료할 배틀이 없으면 saveAll을 호출하지 않는다")
+    void finishExpiredBattles_doesNotCallSaveAll_whenNoBattlesToProcess() {
+        LocalDate today = LocalDate.now();
+        when(battleRepositoryPort.findExpiredInProgressBattles(today)).thenReturn(List.of());
+        when(battleRepositoryPort.findExpiredNotStartedBattles(today)).thenReturn(List.of());
+
+        battleFinishService.finishExpiredBattles(today);
+
+        verify(battleRepositoryPort, never()).saveAll(List.of());
     }
 }
