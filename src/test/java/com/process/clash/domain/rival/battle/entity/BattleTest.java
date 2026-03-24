@@ -66,6 +66,18 @@ class BattleTest {
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
     }
 
+    @Test
+    @DisplayName("finish() 호출 시 IN_PROGRESS 배틀이 DONE 상태가 된다")
+    void finish_returnsDone_fromInProgress() {
+        LocalDate today = LocalDate.now();
+        Battle battle = new Battle(1L, Instant.now(), Instant.now(), today.minusDays(7), today.minusDays(1),
+                BattleStatus.IN_PROGRESS, null, 10L, 20L);
+
+        Battle result = battle.finish();
+
+        assertThat(result.battleStatus()).isEqualTo(BattleStatus.DONE);
+    }
+
     private Battle pendingBattle(LocalDate startDate, LocalDate endDate) {
         return new Battle(1L, Instant.now(), Instant.now(), startDate, endDate,
                 BattleStatus.PENDING, null, 10L, 20L);

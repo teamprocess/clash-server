@@ -19,10 +19,12 @@ public class BattleFinishService {
     private final BattleRepositoryPort battleRepositoryPort;
 
     public void finishExpiredBattles(LocalDate today) {
-        List<Battle> expiredBattles = battleRepositoryPort.findExpiredInProgressBattles(today);
+        List<Battle> expiredInProgress = battleRepositoryPort.findExpiredInProgressBattles(today);
+        battleRepositoryPort.saveAll(expiredInProgress.stream().map(Battle::finish).toList());
 
-        battleRepositoryPort.saveAll(expiredBattles.stream().map(Battle::finish).toList());
+        List<Battle> expiredNotStarted = battleRepositoryPort.findExpiredNotStartedBattles(today);
+        battleRepositoryPort.saveAll(expiredNotStarted.stream().map(Battle::cancel).toList());
 
-        log.info("Expired battles finished. count={}", expiredBattles.size());
+        log.info("Expired battles processed. done={}, canceled={}", expiredInProgress.size(), expiredNotStarted.size());
     }
 }
