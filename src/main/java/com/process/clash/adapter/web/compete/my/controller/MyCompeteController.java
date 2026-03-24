@@ -7,6 +7,7 @@ import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.my.data.*;
 import com.process.clash.application.compete.my.port.in.*;
+import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ public class MyCompeteController implements MyCompeteControllerDocument {
     private final CompareGitHubUseCase compareGitHubUseCase;
     private final CompareMyActivityUseCase compareMyActivityUseCase;
     private final GetMyGrowthRateUseCase getMyGrowthRateUseCase;
+    private final AnalyzeMyPeriodUseCase analyzeMyPeriodUseCase;
 
     // 어제와의 비교
     @GetMapping("/compare/yesterday")
@@ -70,6 +72,20 @@ public class MyCompeteController implements MyCompeteControllerDocument {
         GetMyGrowthRateData.Result result = getMyGrowthRateUseCase.execute(command);
         GetMyGrowthRateDto.Response response = GetMyGrowthRateDto.Response.from(result);
         return ApiResponse.success(response, "성장도 분석 결과를 성공적으로 반환했습니다.");
+    }
+
+    // 나의 기간별 활동 분석
+    @GetMapping("/analyze/category/{category}/period/{period}")
+    public ApiResponse<AnalyzeMyPeriodDto.Response> analyzeMyPeriod(
+            @AuthenticatedActor Actor actor,
+            @PathVariable TargetCategory category,
+            @PathVariable PeriodCategory period
+    ) {
+
+        AnalyzeMyPeriodData.Command command = AnalyzeMyPeriodData.Command.of(actor, category, period);
+        AnalyzeMyPeriodData.Result result = analyzeMyPeriodUseCase.execute(command);
+        AnalyzeMyPeriodDto.Response response = AnalyzeMyPeriodDto.Response.from(result);
+        return ApiResponse.success(response, "나의 기간별 활동 분석 결과를 성공적으로 반환했습니다.");
     }
 
     // 나와의 경쟁 - 내 기록 비교
