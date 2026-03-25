@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +20,18 @@ public class BattleFinishService {
     private final BattleRepositoryPort battleRepositoryPort;
 
     public void finishExpiredBattles(LocalDate today) {
-        List<Battle> expiredBattles = battleRepositoryPort.findExpiredInProgressBattles(today);
+        List<Battle> expiredInProgress = battleRepositoryPort.findExpiredInProgressBattles(today);
+        List<Battle> expiredNotStarted = battleRepositoryPort.findExpiredNotStartedBattles(today);
 
-        battleRepositoryPort.saveAll(expiredBattles.stream().map(Battle::finish).toList());
+        List<Battle> battlesToUpdate = Stream.concat(
+                expiredInProgress.stream().map(Battle::finish),
+                expiredNotStarted.stream().map(Battle::cancel)
+        ).toList();
 
-        log.info("Expired battles finished. count={}", expiredBattles.size());
+        if (!battlesToUpdate.isEmpty()) {
+            battleRepositoryPort.saveAll(battlesToUpdate);
+        }
+
+        log.info("Expired battles processed. done={}, canceled={}", expiredInProgress.size(), expiredNotStarted.size());
     }
 }

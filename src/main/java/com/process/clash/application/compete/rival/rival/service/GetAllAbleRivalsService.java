@@ -6,6 +6,7 @@ import com.process.clash.application.compete.rival.rival.port.in.GetAllAbleRival
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.rival.rival.entity.Rival;
+import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +25,14 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
     @Override
     public GetAllAbleRivalsData.Result execute(GetAllAbleRivalsData.Command command) {
 
-        List<Rival> rivals = rivalRepositoryPort.findAllByUserId(command.actor().id());
+        List<Rival> rivals = rivalRepositoryPort.findAllRivalsByUserId(command.actor().id());
 
         Long myId = command.actor().id();
 
         List<Long> excludedUserIds = Stream.concat(
                 rivals.stream()
+                        .filter(rival -> rival.rivalLinkingStatus() == RivalLinkingStatus.PENDING
+                                || rival.rivalLinkingStatus() == RivalLinkingStatus.ACCEPTED)
                         .map(rival -> {
                             if (rival.firstUserId().equals(myId)) {
                                 return rival.secondUserId();

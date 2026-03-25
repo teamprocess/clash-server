@@ -102,7 +102,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     Optional<BattleJpaEntity> findActiveByUserId(@Param("userId") Long userId);
 
     /**
-     * 종료일이 지났으나 아직 IN_PROGRESS 상태인 배틀 조회 (스케줄러용)
+     * 종료일이 지났으나 아직 IN_PROGRESS 상태인 배틀 조회 → DONE 처리 (스케줄러용)
      */
     @Query(value = """
         SELECT b.*
@@ -113,13 +113,25 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
     List<BattleJpaEntity> findExpiredInProgressBattles(@Param("today") LocalDate today);
 
     /**
-     * 시작일이 도래했으나 아직 NOT_STARTED 상태인 배틀 조회 (스케줄러용)
+     * 종료일이 지났으나 아직 NOT_STARTED 상태인 배틀 조회 → CANCELED 처리 (스케줄러용)
+     */
+    @Query(value = """
+        SELECT b.*
+        FROM battles b
+        WHERE b.battle_status = 'NOT_STARTED'
+          AND b.end_date < :today
+    """, nativeQuery = true)
+    List<BattleJpaEntity> findExpiredNotStartedBattles(@Param("today") LocalDate today);
+
+    /**
+     * 시작일이 도래했으나 아직 NOT_STARTED 상태이고, 아직 종료되지 않은 배틀 조회 (스케줄러용)
      */
     @Query(value = """
         SELECT b.*
         FROM battles b
         WHERE b.battle_status = 'NOT_STARTED'
           AND b.start_date <= :today
+          AND b.end_date >= :today
     """, nativeQuery = true)
     List<BattleJpaEntity> findNotStartedBattlesToStart(@Param("today") LocalDate today);
 

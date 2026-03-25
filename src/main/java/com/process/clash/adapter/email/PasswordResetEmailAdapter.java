@@ -17,6 +17,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.UnsupportedEncodingException;
 
@@ -25,6 +27,7 @@ import java.io.UnsupportedEncodingException;
 public class PasswordResetEmailAdapter implements SendPasswordResetEmailPort {
 
     private final JavaMailSender javaMailSender;
+    private final SpringTemplateEngine templateEngine;
 
     @Value("${mail.sender.address}")
     private String senderAddress;
@@ -44,18 +47,9 @@ public class PasswordResetEmailAdapter implements SendPasswordResetEmailPort {
             helper.setTo(email);
             helper.setSubject("[Clash] 비밀번호 재설정");
 
-            String htmlContent = String.format("""
-            <div style="font-family: 'Apple SD Gothic Neo', sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                <h2 style="color: #333;">비밀번호 재설정</h2>
-                <p style="font-size: 16px; color: #666;">아래 버튼을 클릭해 비밀번호를 재설정하세요.</p>
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="%s" style="background-color: #007bff; color: #fff; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-size: 16px;">비밀번호 재설정</a>
-                </div>
-                <p style="font-size: 13px; color: #999;">이 링크는 30분간 유효합니다. 본인이 요청하지 않았다면 이 메일을 무시하세요.</p>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                <p style="font-size: 11px; color: #ccc;">© 2026 PROCESS. All rights reserved.</p>
-            </div>
-            """, resetLink);
+            Context context = new Context();
+            context.setVariable("resetLink", resetLink);
+            String htmlContent = templateEngine.process("email/password-reset-email", context);
 
             helper.setText(htmlContent, true);
 

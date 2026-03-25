@@ -1,16 +1,19 @@
 package com.process.clash.adapter.web.compete.my.docs.controller;
 
 import com.process.clash.adapter.web.compete.my.docs.response.AnalyzeMyActivityResponseDocument;
+import com.process.clash.adapter.web.compete.my.docs.response.AnalyzeMyPeriodResponseDocument;
 import com.process.clash.adapter.web.compete.my.docs.response.CompareGitHubResponseDocument;
 import com.process.clash.adapter.web.compete.my.docs.response.CompareMyActivityResponseDocument;
 import com.process.clash.adapter.web.compete.my.docs.response.GetCompareWithYesterdayResponseDocument;
 import com.process.clash.adapter.web.compete.my.docs.response.GetMyGrowthRateResponseDocument;
 import com.process.clash.adapter.web.compete.my.dto.AnalyzeMyActivityDto;
+import com.process.clash.adapter.web.compete.my.dto.AnalyzeMyPeriodDto;
 import com.process.clash.adapter.web.compete.my.dto.CompareGitHubDto;
 import com.process.clash.adapter.web.compete.my.dto.CompareMyActivityDto;
 import com.process.clash.adapter.web.compete.my.dto.GetCompareWithYesterdayDto;
 import com.process.clash.adapter.web.compete.my.dto.GetMyGrowthRateDto;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -193,6 +196,40 @@ public interface MyCompeteControllerDocument {
             @Parameter(hidden = true) Actor actor,
             @Parameter(description = "조회 기준 (DAY, WEEK, MONTH)", example = "WEEK", required = true)
             @RequestParam String standard
+    );
+
+    @Operation(summary = "나의 기간별 활동 분석", description = "카테고리와 기간별로 나의 활동 데이터를 분석합니다. (일별: 최근 7일, 주별: 최근 7주, 월별: 최근 7개월)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = AnalyzeMyPeriodResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "나의 기간별 활동 분석 결과를 성공적으로 반환했습니다.",
+                                      "data": {
+                                        "category": "EXP",
+                                        "period": "DAY",
+                                        "dataPoints": [
+                                          { "date": "03-18", "point": 120.0 },
+                                          { "date": "03-19", "point": 0.0 },
+                                          { "date": "03-20", "point": 85.5 },
+                                          { "date": "03-21", "point": 200.0 },
+                                          { "date": "03-22", "point": 150.0 },
+                                          { "date": "03-23", "point": 0.0 },
+                                          { "date": "03-24", "point": 95.0 }
+                                        ]
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<AnalyzeMyPeriodDto.Response> analyzeMyPeriod(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "활동 카테고리 (GITHUB, ACTIVE_TIME, EXP)", example = "EXP", required = true)
+            @PathVariable TargetCategory category,
+            @Parameter(description = "기간 (DAY, WEEK, MONTH)", example = "DAY", required = true)
+            @PathVariable PeriodCategory period
     );
 
     @Operation(summary = "내 기록 비교", description = "기준별 활동 기록을 비교합니다.")

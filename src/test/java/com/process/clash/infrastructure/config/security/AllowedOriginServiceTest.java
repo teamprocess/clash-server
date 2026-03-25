@@ -13,6 +13,7 @@ class AllowedOriginServiceTest {
     @DisplayName("허용 origin 목록은 코드 상수와 동일해야 한다")
     void getAllowedOrigins_ReturnsStaticOrigins() {
         assertThat(service.getAllowedOrigins()).containsExactly(
+                "https://api.clash.kr",
                 "app://clash",
                 "https://local.clash.kr:5173"
         );
