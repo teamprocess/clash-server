@@ -9,8 +9,8 @@ public class AllowedOriginService {
 
     private static final List<String> ALLOWED_ORIGINS = List.of(
             "https://api.clash.kr",
+            "https://clash.kr",
             "app://clash",
-            "clash.kr",
             "https://local.clash.kr:5173"
     );
     private static final Set<String> ALLOWED_ORIGIN_SET = Set.copyOf(ALLOWED_ORIGINS);
