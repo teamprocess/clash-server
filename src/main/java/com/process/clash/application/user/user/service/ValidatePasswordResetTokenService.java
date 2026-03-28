@@ -16,7 +16,7 @@ public class ValidatePasswordResetTokenService implements ValidatePasswordResetT
 
     @Override
     public void execute(String token) {
-        passwordResetTokenPort.getUserId(token)
+        passwordResetTokenPort.getTokenPayload(token)
                 .orElseThrow(InvalidPasswordResetTokenException::new);
     }
 }

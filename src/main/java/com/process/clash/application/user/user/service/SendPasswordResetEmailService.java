@@ -1,5 +1,6 @@
 package com.process.clash.application.user.user.service;
 
+import com.process.clash.application.auth.electron.port.out.ElectronAuthConfigPort;
 import com.process.clash.application.common.util.TokenGenerator;
 import com.process.clash.application.mail.port.out.SendPasswordResetEmailPort;
 import com.process.clash.application.user.user.data.ResetPasswordData;
@@ -24,6 +25,7 @@ public class SendPasswordResetEmailService implements SendPasswordResetEmailUseC
     @Value("${app.reset-password.base-url}")
     private String resetBaseUrl;
 
+    private final ElectronAuthConfigPort electronAuthConfigPort;
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordResetTokenPort passwordResetTokenPort;
     private final SendPasswordResetEmailPort sendPasswordResetEmailPort;
@@ -40,9 +42,25 @@ public class SendPasswordResetEmailService implements SendPasswordResetEmailUseC
 
         User user = userOpt.get();
         String token = tokenGenerator.generateCleanToken();
-        passwordResetTokenPort.saveToken(token, user.id(), EXPIRATION_MS);
+        passwordResetTokenPort.saveToken(token, createTokenPayload(user.id(), command), EXPIRATION_MS);
 
         String resetLink = resetBaseUrl + token;
         sendPasswordResetEmailPort.execute(user.email(), resetLink);
+    }
+
+    private PasswordResetTokenPort.TokenPayload createTokenPayload(
+            Long userId,
+            ResetPasswordData.SendCommand command
+    ) {
+        if (!command.hasAuthContext() || !isAllowedRedirectUri(command.redirectUri())) {
+            return new PasswordResetTokenPort.TokenPayload(userId, null, null);
+        }
+
+        return new PasswordResetTokenPort.TokenPayload(userId, command.state(), command.redirectUri());
+    }
+
+    private boolean isAllowedRedirectUri(String redirectUri) {
+        return electronAuthConfigPort.getAllowedRedirectUris() != null
+                && electronAuthConfigPort.getAllowedRedirectUris().contains(redirectUri);
     }
 }
