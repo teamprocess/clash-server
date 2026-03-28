@@ -29,8 +29,9 @@ public class ResetPasswordService implements ResetPasswordUseCase {
 
     @Override
     public ResetPasswordData.ResetResult execute(ResetPasswordData.ResetCommand command) {
-        Long userId = passwordResetTokenPort.getUserId(command.token())
+        PasswordResetTokenPort.TokenPayload tokenPayload = passwordResetTokenPort.getTokenPayload(command.token())
                 .orElseThrow(InvalidPasswordResetTokenException::new);
+        Long userId = tokenPayload.userId();
 
         User user = userRepositoryPort.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
@@ -39,6 +40,11 @@ public class ResetPasswordService implements ResetPasswordUseCase {
         userRepositoryPort.save(user.withPassword(encodedPassword));
 
         passwordResetTokenPort.deleteToken(command.token());
+
+        if (tokenPayload.hasAuthContext()) {
+            electronAuthStorePort.saveState(tokenPayload.state());
+            return new ResetPasswordData.ResetResult(tokenPayload.state(), tokenPayload.redirectUri());
+        }
 
         String state = tokenGenerator.generateCleanToken();
         electronAuthStorePort.saveState(state);
