@@ -28,4 +28,10 @@ public class ResetPasswordDto {
             return new ResetPasswordData.ResetCommand(token, newPassword);
         }
     }
+
+    public record ResetResponse(String state) {
+        public static ResetResponse fromResult(ResetPasswordData.ResetResult result) {
+            return new ResetResponse(result.state());
+        }
+    }
 }

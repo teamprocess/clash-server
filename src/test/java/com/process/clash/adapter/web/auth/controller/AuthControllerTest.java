@@ -1,9 +1,12 @@
 package com.process.clash.adapter.web.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.process.clash.adapter.web.auth.dto.ResetPasswordDto;
+import com.process.clash.application.user.user.data.ResetPasswordData;
 import com.process.clash.adapter.web.auth.dto.SignInDto;
 import com.process.clash.adapter.web.auth.dto.SignUpDto;
 import com.process.clash.application.user.user.data.SignInData;
+import com.process.clash.application.user.user.port.in.ResetPasswordUseCase;
 import com.process.clash.application.user.user.port.in.SignInUseCase;
 import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import com.process.clash.domain.user.user.enums.Role;
@@ -43,6 +46,9 @@ public class AuthControllerTest {
 
     @MockitoBean
     private SignInUseCase noRecaptchaSignInService;
+
+    @MockitoBean
+    private ResetPasswordUseCase resetPasswordUseCase;
 
     private void initMockMvc() {
         if (this.mockMvc == null) {
@@ -98,5 +104,20 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.data.username").value(username))
                 .andExpect(jsonPath("$.data.name").value(name))
                 .andExpect(jsonPath("$.message").value("로그인을 성공했습니다."));
+    }
+
+    @Test
+    void resetPassword_shouldReturnLoginState() throws Exception {
+        initMockMvc();
+        when(resetPasswordUseCase.execute(any())).thenReturn(new ResetPasswordData.ResetResult("eionbosdb"));
+
+        ResetPasswordDto.ResetRequest request = new ResetPasswordDto.ResetRequest("reset-token", "newPassword123");
+
+        mockMvc.perform(post("/api/auth/password-reset/confirm")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("비밀번호가 변경되었습니다."))
+                .andExpect(jsonPath("$.data.state").value("eionbosdb"));
     }
 }
