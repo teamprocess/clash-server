@@ -10,10 +10,12 @@ public class ResetPasswordDto {
     public record SendRequest(
             @NotBlank(message = "이메일은 필수 입력값입니다.")
             @Email(message = "올바른 이메일 형식이 아닙니다.")
-            String email
+            String email,
+            String state,
+            String redirectUri
     ) {
         public ResetPasswordData.SendCommand toCommand() {
-            return new ResetPasswordData.SendCommand(email);
+            return new ResetPasswordData.SendCommand(email, state, redirectUri);
         }
     }
 

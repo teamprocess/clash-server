@@ -3,7 +3,13 @@ package com.process.clash.application.user.user.port.out;
 import java.util.Optional;
 
 public interface PasswordResetTokenPort {
-    void saveToken(String token, Long userId, long expirationMs);
-    Optional<Long> getUserId(String token);
+    record TokenPayload(Long userId, String state, String redirectUri) {
+        public boolean hasAuthContext() {
+            return state != null && !state.isBlank() && redirectUri != null && !redirectUri.isBlank();
+        }
+    }
+
+    void saveToken(String token, TokenPayload payload, long expirationMs);
+    Optional<TokenPayload> getTokenPayload(String token);
     void deleteToken(String token);
 }

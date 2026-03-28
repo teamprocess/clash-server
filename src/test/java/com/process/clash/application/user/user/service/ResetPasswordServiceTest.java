@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,24 +65,44 @@ class ResetPasswordServiceTest {
     }
 
     @Test
-    @DisplayName("비밀번호 변경 성공 시 로그인 가능한 state를 저장하고 반환한다")
-    void execute_returnsAndStoresLoginState() {
+    @DisplayName("비밀번호 변경 성공 시 reset token에 저장된 기존 로그인 state를 반환하고 TTL을 갱신한다")
+    void execute_returnsStoredLoginState() {
         ResetPasswordData.ResetCommand command = new ResetPasswordData.ResetCommand("reset-token", "newPassword123");
         User user = createUser(1L, "old-password");
 
-        when(passwordResetTokenPort.getUserId("reset-token")).thenReturn(Optional.of(1L));
+        when(passwordResetTokenPort.getTokenPayload("reset-token"))
+                .thenReturn(Optional.of(new PasswordResetTokenPort.TokenPayload(1L, "existing-state", "clashapp://auth")));
         when(userRepositoryPort.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.encode("newPassword123")).thenReturn("encoded-password");
-        when(electronAuthConfigPort.getAllowedRedirectUris()).thenReturn(List.of("clashapp://auth"));
-        when(tokenGenerator.generateCleanToken()).thenReturn("eionbosdb");
 
         ResetPasswordData.ResetResult result = resetPasswordService.execute(command);
 
-        assertThat(result.state()).isEqualTo("eionbosdb");
+        assertThat(result.state()).isEqualTo("existing-state");
         assertThat(result.redirectUri()).isEqualTo("clashapp://auth");
         verify(userRepositoryPort).save(any(User.class));
         verify(passwordResetTokenPort).deleteToken("reset-token");
-        verify(electronAuthStorePort).saveState("eionbosdb");
+        verify(electronAuthStorePort).saveState("existing-state");
+        verify(tokenGenerator, never()).generateCleanToken();
+    }
+
+    @Test
+    @DisplayName("reset token에 기존 로그인 컨텍스트가 없으면 새 로그인 state를 발급한다")
+    void execute_generatesNewLoginStateWhenAuthContextMissing() {
+        ResetPasswordData.ResetCommand command = new ResetPasswordData.ResetCommand("reset-token", "newPassword123");
+        User user = createUser(1L, "old-password");
+
+        when(passwordResetTokenPort.getTokenPayload("reset-token"))
+                .thenReturn(Optional.of(new PasswordResetTokenPort.TokenPayload(1L, null, null)));
+        when(userRepositoryPort.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("newPassword123")).thenReturn("encoded-password");
+        when(electronAuthConfigPort.getAllowedRedirectUris()).thenReturn(List.of("clashapp://auth"));
+        when(tokenGenerator.generateCleanToken()).thenReturn("fresh-state");
+
+        ResetPasswordData.ResetResult result = resetPasswordService.execute(command);
+
+        assertThat(result.state()).isEqualTo("fresh-state");
+        assertThat(result.redirectUri()).isEqualTo("clashapp://auth");
+        verify(electronAuthStorePort).saveState("fresh-state");
     }
 
     private User createUser(Long id, String password) {
