@@ -233,7 +233,10 @@ public interface AuthControllerDocument {
                             examples = @ExampleObject(value = """
                                     {
                                       "success": true,
-                                      "message": "비밀번호가 변경되었습니다."
+                                      "message": "비밀번호가 변경되었습니다.",
+                                      "data": {
+                                        "state": "eionbosdb"
+                                      }
                                     }
                                     """)
                     )),
@@ -250,7 +253,7 @@ public interface AuthControllerDocument {
                                     """)
                     ))
     })
-    com.process.clash.adapter.web.common.ApiResponse<Void> resetPassword(
+    com.process.clash.adapter.web.common.ApiResponse<ResetPasswordDto.ResetResponse> resetPassword(
             @RequestBody(description = "비밀번호 변경 요청", required = true,
                     content = @Content(
                             schema = @Schema(implementation = ResetPasswordDto.ResetRequest.class),

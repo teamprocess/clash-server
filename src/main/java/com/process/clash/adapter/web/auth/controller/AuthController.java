@@ -10,6 +10,7 @@ import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.common.util.AccessContextResolver;
 import com.process.clash.application.common.data.AccessContext;
 import com.process.clash.application.user.user.data.CheckDuplicateUsernameData;
+import com.process.clash.application.user.user.data.ResetPasswordData;
 import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.user.user.data.SignInData;
 import com.process.clash.application.user.user.port.in.*;
@@ -133,9 +134,9 @@ public class AuthController implements AuthControllerDocument {
 	}
 
 	@PostMapping("/password-reset/confirm")
-	public ApiResponse<Void> resetPassword(@Valid @RequestBody ResetPasswordDto.ResetRequest request) {
-		resetPasswordUseCase.execute(request.toCommand());
-		return ApiResponse.success("비밀번호가 변경되었습니다.");
+	public ApiResponse<ResetPasswordDto.ResetResponse> resetPassword(@Valid @RequestBody ResetPasswordDto.ResetRequest request) {
+		ResetPasswordData.ResetResult result = resetPasswordUseCase.execute(request.toCommand());
+		return ApiResponse.success(ResetPasswordDto.ResetResponse.fromResult(result), "비밀번호가 변경되었습니다.");
 	}
 
 	@PostMapping({"/{action:signin|signup|signout}"})

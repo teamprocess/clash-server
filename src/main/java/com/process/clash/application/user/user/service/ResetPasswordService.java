@@ -1,5 +1,7 @@
 package com.process.clash.application.user.user.service;
 
+import com.process.clash.application.auth.electron.port.out.ElectronAuthStorePort;
+import com.process.clash.application.common.util.TokenGenerator;
 import com.process.clash.application.user.user.data.ResetPasswordData;
 import com.process.clash.application.user.user.exception.exception.badrequest.InvalidPasswordResetTokenException;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
@@ -20,9 +22,11 @@ public class ResetPasswordService implements ResetPasswordUseCase {
     private final PasswordResetTokenPort passwordResetTokenPort;
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
+    private final ElectronAuthStorePort electronAuthStorePort;
+    private final TokenGenerator tokenGenerator;
 
     @Override
-    public void execute(ResetPasswordData.ResetCommand command) {
+    public ResetPasswordData.ResetResult execute(ResetPasswordData.ResetCommand command) {
         Long userId = passwordResetTokenPort.getUserId(command.token())
                 .orElseThrow(InvalidPasswordResetTokenException::new);
 
@@ -33,5 +37,10 @@ public class ResetPasswordService implements ResetPasswordUseCase {
         userRepositoryPort.save(user.withPassword(encodedPassword));
 
         passwordResetTokenPort.deleteToken(command.token());
+
+        String state = tokenGenerator.generateCleanToken();
+        electronAuthStorePort.saveState(state);
+
+        return new ResetPasswordData.ResetResult(state);
     }
 }
