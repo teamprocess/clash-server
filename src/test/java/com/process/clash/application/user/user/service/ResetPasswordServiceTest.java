@@ -96,6 +96,7 @@ class ResetPasswordServiceTest {
         when(userRepositoryPort.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.encode("newPassword123")).thenReturn("encoded-password");
         when(electronAuthConfigPort.getAllowedRedirectUris()).thenReturn(List.of("clashapp://auth"));
+        when(electronAuthConfigPort.getDefaultRedirectUri()).thenReturn("clashapp://auth");
         when(tokenGenerator.generateCleanToken()).thenReturn("fresh-state");
 
         ResetPasswordData.ResetResult result = resetPasswordService.execute(command);

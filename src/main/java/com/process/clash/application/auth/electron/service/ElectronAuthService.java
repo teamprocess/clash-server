@@ -29,6 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ElectronAuthService {
 
+	private static final String DEV_CLIENT_CHANNEL = "dev";
 	private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
 	// 인증 코드 만료 시간: 5분
@@ -53,15 +54,11 @@ public class ElectronAuthService {
 
 	public record StartSignupResult(String signupUrl, String state) {}
 
-	public StartResult start() {
-		if (config.getAllowedRedirectUris() == null || config.getAllowedRedirectUris().isEmpty()) {
-			throw new IllegalStateException("electron.auth.allowed-redirect-uris is not configured");
-		}
-
+	public StartResult start(String clientChannel) {
+		String redirectUri = resolveRedirectUri(clientChannel);
 		String state = UUID.randomUUID().toString().replace("-", "");
 		store.saveState(state);
 
-		String redirectUri = config.getAllowedRedirectUris().get(0);
 		String loginUrl = config.getAuthWebUrl()
 				+ "?state=" + enc(state)
 				+ "&redirectUri=" + enc(redirectUri);
@@ -99,15 +96,11 @@ public class ElectronAuthService {
 
 	// ========== 회원가입 관련 메서드 ==========
 
-	public StartSignupResult startSignup() {
-		if (config.getAllowedRedirectUris() == null || config.getAllowedRedirectUris().isEmpty()) {
-			throw new IllegalStateException("electron.auth.allowed-redirect-uris is not configured");
-		}
-
+	public StartSignupResult startSignup(String clientChannel) {
+		String redirectUri = resolveRedirectUri(clientChannel);
 		String state = UUID.randomUUID().toString().replace("-", "");
 		store.saveState(state);
 
-		String redirectUri = config.getAllowedRedirectUris().get(0);
 		String signupUrl = config.getSignupWebUrl()
 				+ "?state=" + enc(state)
 				+ "&redirectUri=" + enc(redirectUri);
@@ -217,6 +210,33 @@ public class ElectronAuthService {
 		return redirectUri
 				+ "?code=" + enc(code)
 				+ "&state=" + enc(state);
+	}
+
+	private String resolveRedirectUri(String clientChannel) {
+		validateAllowedRedirectUris();
+
+		String redirectUri = isDevClientChannel(clientChannel)
+				? config.getDevRedirectUri()
+				: config.getDefaultRedirectUri();
+
+		if (redirectUri == null || redirectUri.isBlank()) {
+			throw new IllegalStateException("electron.auth selected redirect uri is not configured");
+		}
+		if (!config.getAllowedRedirectUris().contains(redirectUri)) {
+			throw new IllegalStateException("electron.auth redirect uri must be included in allowed-redirect-uris");
+		}
+
+		return redirectUri;
+	}
+
+	private void validateAllowedRedirectUris() {
+		if (config.getAllowedRedirectUris() == null || config.getAllowedRedirectUris().isEmpty()) {
+			throw new IllegalStateException("electron.auth.allowed-redirect-uris is not configured");
+		}
+	}
+
+	private boolean isDevClientChannel(String clientChannel) {
+		return DEV_CLIENT_CHANNEL.equalsIgnoreCase(clientChannel);
 	}
 
 	public boolean checkUsernameDuplicate(String username) {

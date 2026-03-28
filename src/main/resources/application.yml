@@ -128,8 +128,11 @@ aws:
 
 electron:
   auth:
+    default-redirect-uri: "clashapp://auth"
+    dev-redirect-uri: "clashapp-dev://auth"
     allowed-redirect-uris:
       - "clashapp://auth"
+      - "clashapp-dev://auth"
     auth-web-url: "https://clash.kr/#/sign-in"
     signup-web-url: "https://clash.kr/#/sign-up"
 

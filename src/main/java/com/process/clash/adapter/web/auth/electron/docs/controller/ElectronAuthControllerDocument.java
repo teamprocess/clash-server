@@ -21,6 +21,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
@@ -44,7 +45,13 @@ public interface ElectronAuthControllerDocument {
                                     """)
                     ))
     })
-    ApiResponse<ElectronAuthDto.StartResponse> start();
+    ApiResponse<ElectronAuthDto.StartResponse> start(
+            @Parameter(
+                    description = "클라이언트 채널. dev면 clashapp-dev://auth로 시작 URL을 발급합니다.",
+                    example = "dev"
+            )
+            @RequestHeader(value = "X-Client-Channel", required = false) String clientChannel
+    );
 
     @Operation(summary = "Electron 로그인", description = "아이디/비밀번호로 Electron 로그인 딥링크 URL을 발급합니다.")
     @ApiResponses({
@@ -277,7 +284,13 @@ public interface ElectronAuthControllerDocument {
                                     """)
                     ))
     })
-    ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup();
+    ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup(
+            @Parameter(
+                    description = "클라이언트 채널. dev면 clashapp-dev://auth로 시작 URL을 발급합니다.",
+                    example = "dev"
+            )
+            @RequestHeader(value = "X-Client-Channel", required = false) String clientChannel
+    );
 
     @Operation(summary = "Electron 회원가입 요청", description = "회원가입 정보를 저장하고 이메일 인증 코드를 발송합니다.")
     @ApiResponses({

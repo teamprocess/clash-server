@@ -24,14 +24,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ElectronAuthController implements ElectronAuthControllerDocument {
 
+	private static final String CLIENT_CHANNEL_HEADER = "X-Client-Channel";
+
 	private final ElectronAuthService electronAuthService;
 	private final ElectronLoginUseCase electronSignInService;
 	private final ElectronLoginUseCase noRecaptchaElectronSignInService;
 	private final AccessContextResolver accessContextResolver;
 
 	@PostMapping("/sign-in/start")
-	public ApiResponse<ElectronAuthDto.StartResponse> start() {
-		ElectronAuthService.StartResult result = electronAuthService.start();
+	public ApiResponse<ElectronAuthDto.StartResponse> start(
+			@RequestHeader(value = CLIENT_CHANNEL_HEADER, required = false) String clientChannel
+	) {
+		ElectronAuthService.StartResult result = electronAuthService.start(clientChannel);
 		return ApiResponse.success(new ElectronAuthDto.StartResponse(result.loginUrl(), result.state()));
 	}
 
@@ -67,8 +71,10 @@ public class ElectronAuthController implements ElectronAuthControllerDocument {
 	// ========== 회원가입 관련 엔드포인트 ==========
 
 	@PostMapping("/sign-up/start")
-	public ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup() {
-		ElectronAuthService.StartSignupResult result = electronAuthService.startSignup();
+	public ApiResponse<ElectronAuthDto.StartSignupResponse> startSignup(
+			@RequestHeader(value = CLIENT_CHANNEL_HEADER, required = false) String clientChannel
+	) {
+		ElectronAuthService.StartSignupResult result = electronAuthService.startSignup(clientChannel);
 		return ApiResponse.success(new ElectronAuthDto.StartSignupResponse(result.signupUrl(), result.state()));
 	}
 
