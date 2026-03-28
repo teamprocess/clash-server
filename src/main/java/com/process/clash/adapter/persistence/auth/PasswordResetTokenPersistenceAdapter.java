@@ -53,7 +53,11 @@ public class PasswordResetTokenPersistenceAdapter implements PasswordResetTokenP
 
     private Optional<TokenPayload> deserialize(String value) {
         if (!value.startsWith("{")) {
-            return Optional.of(new TokenPayload(Long.parseLong(value), null, null));
+            try {
+                return Optional.of(new TokenPayload(Long.parseLong(value), null, null));
+            } catch (NumberFormatException exception) {
+                return Optional.empty();
+            }
         }
 
         try {
