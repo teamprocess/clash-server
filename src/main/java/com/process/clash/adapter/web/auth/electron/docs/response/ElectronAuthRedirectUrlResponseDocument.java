@@ -10,7 +10,7 @@ public class ElectronAuthRedirectUrlResponseDocument extends SuccessResponseDocu
     public RedirectUrlData data;
 
     public static class RedirectUrlData {
-        @Schema(description = "앱 딥링크 URL", example = "clashapp://auth/callback?code=one-time-code&state=abc123")
+        @Schema(description = "앱 딥링크 URL", example = "clashapp://auth?code=one-time-code&state=abc123")
         public String redirectUrl;
     }
 }

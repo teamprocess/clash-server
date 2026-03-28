@@ -37,7 +37,7 @@ public interface ElectronAuthControllerDocument {
                                     {
                                       "success": true,
                                       "data": {
-                                        "loginUrl": "https://auth.clash.kr/electron/sign-in?state=abc123&redirectUri=clashapp%3A%2F%2Fauth%2Fcallback",
+                                        "loginUrl": "https://auth.clash.kr/electron/sign-in?state=abc123&redirectUri=clashapp%3A%2F%2Fauth",
                                         "state": "abc123"
                                       }
                                     }
@@ -55,7 +55,7 @@ public interface ElectronAuthControllerDocument {
                                     {
                                       "success": true,
                                       "data": {
-                                        "redirectUrl": "clashapp://auth/callback?code=one-time-code&state=abc123"
+                                        "redirectUrl": "clashapp://auth?code=one-time-code&state=abc123"
                                       }
                                     }
                                     """)
@@ -110,7 +110,7 @@ public interface ElectronAuthControllerDocument {
                                       "username": "process123",
                                       "password": "qwer1234",
                                       "state": "abc123",
-                                      "redirectUri": "clashapp://auth/callback"
+                                      "redirectUri": "clashapp://auth"
                                     }
                                     """)
                     ))
@@ -126,7 +126,7 @@ public interface ElectronAuthControllerDocument {
                                     {
                                       "success": true,
                                       "data": {
-                                        "redirectUrl": "clashapp://auth/callback?code=one-time-code&state=abc123"
+                                        "redirectUrl": "clashapp://auth?code=one-time-code&state=abc123"
                                       }
                                     }
                                     """)
@@ -181,7 +181,7 @@ public interface ElectronAuthControllerDocument {
                                       "username": "process123",
                                       "password": "qwer1234",
                                       "state": "abc123",
-                                      "redirectUri": "clashapp://auth/callback"
+                                      "redirectUri": "clashapp://auth"
                                     }
                                     """)
                     ))
@@ -270,7 +270,7 @@ public interface ElectronAuthControllerDocument {
                                     {
                                       "success": true,
                                       "data": {
-                                        "signupUrl": "https://auth.clash.kr/electron/sign-up?state=abc123&redirectUri=clashapp%3A%2F%2Fauth%2Fcallback",
+                                        "signupUrl": "https://auth.clash.kr/electron/sign-up?state=abc123&redirectUri=clashapp%3A%2F%2Fauth",
                                         "state": "abc123"
                                       }
                                     }
@@ -343,7 +343,7 @@ public interface ElectronAuthControllerDocument {
                                       "name": "프로세스",
                                       "password": "qwer1234",
                                       "state": "abc123",
-                                      "redirectUri": "clashapp://auth/callback"
+                                      "redirectUri": "clashapp://auth"
                                     }
                                     """)
                     ))
@@ -359,7 +359,7 @@ public interface ElectronAuthControllerDocument {
                                     {
                                       "success": true,
                                       "data": {
-                                        "redirectUrl": "clashapp://auth/callback?code=one-time-code&state=abc123"
+                                        "redirectUrl": "clashapp://auth?code=one-time-code&state=abc123"
                                       }
                                     }
                                     """)
@@ -409,7 +409,7 @@ public interface ElectronAuthControllerDocument {
                                     {
                                       "verificationCode": "123456",
                                       "state": "abc123",
-                                      "redirectUri": "clashapp://auth/callback"
+                                      "redirectUri": "clashapp://auth"
                                     }
                                     """)
                     ))
