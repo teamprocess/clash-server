@@ -6,6 +6,6 @@ public class ResetPasswordData {
 
     public record ResetCommand(String token, String newPassword) {}
 
-    public record ResetResult(String state) {}
+    public record ResetResult(String state, String redirectUri) {}
 
 }

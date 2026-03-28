@@ -29,9 +29,9 @@ public class ResetPasswordDto {
         }
     }
 
-    public record ResetResponse(String state) {
+    public record ResetResponse(String state, String redirectUri) {
         public static ResetResponse fromResult(ResetPasswordData.ResetResult result) {
-            return new ResetResponse(result.state());
+            return new ResetResponse(result.state(), result.redirectUri());
         }
     }
 }

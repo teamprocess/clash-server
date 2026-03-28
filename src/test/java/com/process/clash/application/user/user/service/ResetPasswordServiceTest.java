@@ -1,5 +1,6 @@
 package com.process.clash.application.user.user.service;
 
+import com.process.clash.application.auth.electron.port.out.ElectronAuthConfigPort;
 import com.process.clash.application.auth.electron.port.out.ElectronAuthStorePort;
 import com.process.clash.application.common.util.TokenGenerator;
 import com.process.clash.application.user.user.data.ResetPasswordData;
@@ -12,6 +13,7 @@ import com.process.clash.domain.user.user.enums.UserStatus;
 import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +44,9 @@ class ResetPasswordServiceTest {
     private ElectronAuthStorePort electronAuthStorePort;
 
     @Mock
+    private ElectronAuthConfigPort electronAuthConfigPort;
+
+    @Mock
     private TokenGenerator tokenGenerator;
 
     private ResetPasswordService resetPasswordService;
@@ -52,6 +57,7 @@ class ResetPasswordServiceTest {
                 passwordResetTokenPort,
                 userRepositoryPort,
                 passwordEncoder,
+                electronAuthConfigPort,
                 electronAuthStorePort,
                 tokenGenerator
         );
@@ -66,11 +72,13 @@ class ResetPasswordServiceTest {
         when(passwordResetTokenPort.getUserId("reset-token")).thenReturn(Optional.of(1L));
         when(userRepositoryPort.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.encode("newPassword123")).thenReturn("encoded-password");
+        when(electronAuthConfigPort.getAllowedRedirectUris()).thenReturn(List.of("clashapp://auth"));
         when(tokenGenerator.generateCleanToken()).thenReturn("eionbosdb");
 
         ResetPasswordData.ResetResult result = resetPasswordService.execute(command);
 
         assertThat(result.state()).isEqualTo("eionbosdb");
+        assertThat(result.redirectUri()).isEqualTo("clashapp://auth");
         verify(userRepositoryPort).save(any(User.class));
         verify(passwordResetTokenPort).deleteToken("reset-token");
         verify(electronAuthStorePort).saveState("eionbosdb");
