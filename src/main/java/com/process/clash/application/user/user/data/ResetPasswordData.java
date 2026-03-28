@@ -6,4 +6,6 @@ public class ResetPasswordData {
 
     public record ResetCommand(String token, String newPassword) {}
 
+    public record ResetResult(String state) {}
+
 }
