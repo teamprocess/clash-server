@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,7 +61,7 @@ public class SendPasswordResetEmailService implements SendPasswordResetEmailUseC
     }
 
     private boolean isAllowedRedirectUri(String redirectUri) {
-        return electronAuthConfigPort.getAllowedRedirectUris() != null
-                && electronAuthConfigPort.getAllowedRedirectUris().contains(redirectUri);
+        List<String> allowedRedirectUris = electronAuthConfigPort.getAllowedRedirectUris();
+        return allowedRedirectUris != null && allowedRedirectUris.contains(redirectUri);
     }
 }
