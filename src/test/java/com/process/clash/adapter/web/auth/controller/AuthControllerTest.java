@@ -109,7 +109,7 @@ public class AuthControllerTest {
     @Test
     void resetPassword_shouldReturnLoginState() throws Exception {
         initMockMvc();
-        when(resetPasswordUseCase.execute(any())).thenReturn(new ResetPasswordData.ResetResult("eionbosdb"));
+        when(resetPasswordUseCase.execute(any())).thenReturn(new ResetPasswordData.ResetResult("eionbosdb", "clashapp://auth"));
 
         ResetPasswordDto.ResetRequest request = new ResetPasswordDto.ResetRequest("reset-token", "newPassword123");
 
@@ -118,6 +118,7 @@ public class AuthControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("비밀번호가 변경되었습니다."))
-                .andExpect(jsonPath("$.data.state").value("eionbosdb"));
+                .andExpect(jsonPath("$.data.state").value("eionbosdb"))
+                .andExpect(jsonPath("$.data.redirectUri").value("clashapp://auth"));
     }
 }

@@ -1,5 +1,6 @@
 package com.process.clash.application.user.user.service;
 
+import com.process.clash.application.auth.electron.port.out.ElectronAuthConfigPort;
 import com.process.clash.application.auth.electron.port.out.ElectronAuthStorePort;
 import com.process.clash.application.common.util.TokenGenerator;
 import com.process.clash.application.user.user.data.ResetPasswordData;
@@ -22,6 +23,7 @@ public class ResetPasswordService implements ResetPasswordUseCase {
     private final PasswordResetTokenPort passwordResetTokenPort;
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
+    private final ElectronAuthConfigPort electronAuthConfigPort;
     private final ElectronAuthStorePort electronAuthStorePort;
     private final TokenGenerator tokenGenerator;
 
@@ -40,7 +42,15 @@ public class ResetPasswordService implements ResetPasswordUseCase {
 
         String state = tokenGenerator.generateCleanToken();
         electronAuthStorePort.saveState(state);
+        String redirectUri = getDefaultRedirectUri();
 
-        return new ResetPasswordData.ResetResult(state);
+        return new ResetPasswordData.ResetResult(state, redirectUri);
+    }
+
+    private String getDefaultRedirectUri() {
+        if (electronAuthConfigPort.getAllowedRedirectUris() == null || electronAuthConfigPort.getAllowedRedirectUris().isEmpty()) {
+            throw new IllegalStateException("electron.auth.allowed-redirect-uris is not configured");
+        }
+        return electronAuthConfigPort.getAllowedRedirectUris().get(0);
     }
 }
