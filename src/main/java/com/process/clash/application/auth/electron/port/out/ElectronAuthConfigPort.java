@@ -6,6 +6,10 @@ public interface ElectronAuthConfigPort {
 
 	List<String> getAllowedRedirectUris();
 
+	String getDefaultRedirectUri();
+
+	String getDevRedirectUri();
+
 	String getAuthWebUrl();
 
 	String getSignupWebUrl();

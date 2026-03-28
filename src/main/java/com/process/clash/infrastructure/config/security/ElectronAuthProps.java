@@ -14,6 +14,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "electron.auth")
 public class ElectronAuthProps implements ElectronAuthConfigPort {
 	private List<String> allowedRedirectUris;
+	private String defaultRedirectUri;
+	private String devRedirectUri;
 	private String authWebUrl;
 	private String signupWebUrl;
 }
