@@ -57,6 +57,13 @@ public class ResetPasswordService implements ResetPasswordUseCase {
         if (electronAuthConfigPort.getAllowedRedirectUris() == null || electronAuthConfigPort.getAllowedRedirectUris().isEmpty()) {
             throw new IllegalStateException("electron.auth.allowed-redirect-uris is not configured");
         }
-        return electronAuthConfigPort.getAllowedRedirectUris().get(0);
+        String redirectUri = electronAuthConfigPort.getDefaultRedirectUri();
+        if (redirectUri == null || redirectUri.isBlank()) {
+            throw new IllegalStateException("electron.auth.default-redirect-uri is not configured");
+        }
+        if (!electronAuthConfigPort.getAllowedRedirectUris().contains(redirectUri)) {
+            throw new IllegalStateException("electron.auth.default-redirect-uri must be included in allowed-redirect-uris");
+        }
+        return redirectUri;
     }
 }
