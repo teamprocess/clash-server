@@ -145,6 +145,29 @@ public record User(
         );
     }
 
+    public User addCookie(int amount) {
+        int nextTotalCookie = this.totalCookie + amount;
+
+        return new User(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                this.profileImage,
+                this.totalExp,
+                nextTotalCookie,
+                this.major,
+                this.userStatus,
+                this.deletedAt,
+                this.currentRankTier,
+                this.currentExpTier
+        );
+    }
+
     public User updateProfileImage(String profileImage) {
         return new User(
                 this.id,
