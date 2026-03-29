@@ -144,7 +144,7 @@ security:
 
 app:
   reset-password:
-    base-url: ${RESET_PASSWORD_BASE_URL:}
+    base-url: ${RESET_PASSWORD_BASE_URL:https://clash.kr/#/reset-password?token=}
 
 cors:
   allowed-origins:
