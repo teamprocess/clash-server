@@ -170,7 +170,7 @@ class CompareWithRivalsServiceTest {
         CompareWithRivalsData.Result result = service.execute(command(TargetCategory.EXP, PeriodCategory.SEASON));
 
         int expectedSize = (int) (today.toEpochDay() - season.startDate().toEpochDay() + 1);
-        result.totalData().forEach(td -> assertThat(td.dataPoints()).hasSize(expectedSize));
+        result.totalData().forEach(td -> assertThat(td.dataPoint()).hasSize(expectedSize));
     }
 
     @Test
