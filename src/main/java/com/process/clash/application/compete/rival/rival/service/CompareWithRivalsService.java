@@ -7,9 +7,12 @@ import com.process.clash.application.compete.rival.rival.port.in.CompareWithRiva
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.shop.season.exception.exception.notfound.SeasonNotFoundException;
+import com.process.clash.application.shop.season.port.out.SeasonRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.domain.shop.season.entity.Season;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
+    private final SeasonRepositoryPort seasonRepositoryPort;
     private final ZoneId recordZoneId;
     private final RecordProperties recordProperties;
 
@@ -50,9 +54,22 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
 
         rivalIds.add(command.actor().id());
 
-        LocalDate endDate = LocalDate.now(recordZoneId);
-        List<LocalDate> expectedDates = generateExpectedDates(command.period(), endDate);
-        LocalDate startDate = expectedDates.isEmpty() ? null : expectedDates.get(0);
+        LocalDate today = LocalDate.now(recordZoneId);
+        LocalDate endDate;
+        LocalDate startDate;
+        List<LocalDate> expectedDates;
+
+        if (command.period() == PeriodCategory.SEASON) {
+            Season season = seasonRepositoryPort.findCurrentSeason()
+                    .orElseThrow(SeasonNotFoundException::new);
+            startDate = season.startDate();
+            endDate = season.endDate().isBefore(today) ? season.endDate() : today;
+            expectedDates = generateSeasonDates(startDate, endDate);
+        } else {
+            endDate = today;
+            expectedDates = generateExpectedDates(command.period(), endDate);
+            startDate = expectedDates.isEmpty() ? null : expectedDates.get(0);
+        }
 
         List<Object[]> results = switch (command.category()) {
             case GITHUB -> gitHub(command.period(), rivalIds, startDate, endDate);
@@ -98,6 +115,10 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
                 .toList();
 
         return CompareWithRivalsData.Result.of(command.category(), command.period(), totalData);
+    }
+
+    private List<LocalDate> generateSeasonDates(LocalDate startDate, LocalDate endDate) {
+        return startDate.datesUntil(endDate.plusDays(1)).toList();
     }
 
     private List<LocalDate> generateExpectedDates(PeriodCategory period, LocalDate endDate) {
@@ -146,7 +167,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
             case DAY -> userExpHistoryRepositoryPort.findDailyDataByUserIds(rivalIds, startDate, endDate);
             case WEEK -> userExpHistoryRepositoryPort.findWeeklyDataByUserIds(rivalIds, startDate, endDate);
             case MONTH -> userExpHistoryRepositoryPort.findMonthlyDataByUserIds(rivalIds, startDate, endDate);
-            case SEASON -> null; //TODO: 나중에 처리
+            case SEASON -> userExpHistoryRepositoryPort.findDailyDataByUserIds(rivalIds, startDate, endDate);
             case YEAR -> null; //TODO: 나중에 처리
         };
     }
@@ -157,7 +178,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
             case DAY -> githubDailyStatsQueryPort.findDailyContributionsByUserIds(rivalIds, startDate, endDate);
             case WEEK -> githubDailyStatsQueryPort.findWeeklyContributionsByUserIds(rivalIds, startDate, endDate);
             case MONTH -> githubDailyStatsQueryPort.findMonthlyContributionsByUserIds(rivalIds, startDate, endDate);
-            case SEASON -> null; //TODO: 나중에 처리
+            case SEASON -> githubDailyStatsQueryPort.findDailyContributionsByUserIds(rivalIds, startDate, endDate);
             case YEAR -> null; //TODO: 나중에 처리
         };
     }
@@ -173,7 +194,7 @@ public class CompareWithRivalsService implements CompareWithRivalsUseCase {
             case DAY -> recordSessionRepositoryPort.findDailyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime, now);
             case WEEK -> recordSessionRepositoryPort.findWeeklyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime, now);
             case MONTH -> recordSessionRepositoryPort.findMonthlyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime, now);
-            case SEASON -> null; //TODO: 나중에 처리
+            case SEASON -> recordSessionRepositoryPort.findDailyStudyTimeByUserIds(rivalIds, startDateTime, endDateTime, now);
             case YEAR -> null; //TODO: 나중에 처리
         };
     }

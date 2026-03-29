@@ -4,8 +4,11 @@ import com.process.clash.application.compete.my.data.AnalyzeMyPeriodData;
 import com.process.clash.application.compete.my.port.in.AnalyzeMyPeriodUseCase;
 import com.process.clash.application.github.port.out.GitHubDailyStatsQueryPort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.shop.season.exception.exception.notfound.SeasonNotFoundException;
+import com.process.clash.application.shop.season.port.out.SeasonRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.domain.shop.season.entity.Season;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class AnalyzeMyPeriodService implements AnalyzeMyPeriodUseCase {
     private final GitHubDailyStatsQueryPort githubDailyStatsQueryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
+    private final SeasonRepositoryPort seasonRepositoryPort;
     private final ZoneId recordZoneId;
     private final RecordProperties recordProperties;
 
@@ -37,9 +41,22 @@ public class AnalyzeMyPeriodService implements AnalyzeMyPeriodUseCase {
 
         List<Long> userIds = List.of(command.actor().id());
 
-        LocalDate endDate = LocalDate.now(recordZoneId);
-        List<LocalDate> expectedDates = generateExpectedDates(command.period(), endDate);
-        LocalDate startDate = expectedDates.isEmpty() ? null : expectedDates.get(0);
+        LocalDate today = LocalDate.now(recordZoneId);
+        LocalDate endDate;
+        LocalDate startDate;
+        List<LocalDate> expectedDates;
+
+        if (command.period() == PeriodCategory.SEASON) {
+            Season season = seasonRepositoryPort.findCurrentSeason()
+                    .orElseThrow(SeasonNotFoundException::new);
+            startDate = season.startDate();
+            endDate = season.endDate().isBefore(today) ? season.endDate() : today;
+            expectedDates = generateSeasonDates(startDate, endDate);
+        } else {
+            endDate = today;
+            expectedDates = generateExpectedDates(command.period(), endDate);
+            startDate = expectedDates.isEmpty() ? null : expectedDates.get(0);
+        }
 
         List<Object[]> results = switch (command.category()) {
             case GITHUB -> gitHub(command.period(), userIds, startDate, endDate);
@@ -59,6 +76,10 @@ public class AnalyzeMyPeriodService implements AnalyzeMyPeriodUseCase {
                 .toList();
 
         return AnalyzeMyPeriodData.Result.of(command.category(), command.period(), dataPoints);
+    }
+
+    private List<LocalDate> generateSeasonDates(LocalDate startDate, LocalDate endDate) {
+        return startDate.datesUntil(endDate.plusDays(1)).toList();
     }
 
     private List<LocalDate> generateExpectedDates(PeriodCategory period, LocalDate endDate) {
@@ -104,7 +125,8 @@ public class AnalyzeMyPeriodService implements AnalyzeMyPeriodUseCase {
             case DAY -> userExpHistoryRepositoryPort.findDailyDataByUserIds(userIds, startDate, endDate);
             case WEEK -> userExpHistoryRepositoryPort.findWeeklyDataByUserIds(userIds, startDate, endDate);
             case MONTH -> userExpHistoryRepositoryPort.findMonthlyDataByUserIds(userIds, startDate, endDate);
-            case SEASON, YEAR -> null;
+            case SEASON -> userExpHistoryRepositoryPort.findDailyDataByUserIds(userIds, startDate, endDate);
+            case YEAR -> null;
         };
     }
 
@@ -113,7 +135,8 @@ public class AnalyzeMyPeriodService implements AnalyzeMyPeriodUseCase {
             case DAY -> githubDailyStatsQueryPort.findDailyContributionsByUserIds(userIds, startDate, endDate);
             case WEEK -> githubDailyStatsQueryPort.findWeeklyContributionsByUserIds(userIds, startDate, endDate);
             case MONTH -> githubDailyStatsQueryPort.findMonthlyContributionsByUserIds(userIds, startDate, endDate);
-            case SEASON, YEAR -> null;
+            case SEASON -> githubDailyStatsQueryPort.findDailyContributionsByUserIds(userIds, startDate, endDate);
+            case YEAR -> null;
         };
     }
 
@@ -126,7 +149,8 @@ public class AnalyzeMyPeriodService implements AnalyzeMyPeriodUseCase {
             case DAY -> recordSessionRepositoryPort.findDailyStudyTimeByUserIds(userIds, startDateTime, endDateTime, now);
             case WEEK -> recordSessionRepositoryPort.findWeeklyStudyTimeByUserIds(userIds, startDateTime, endDateTime, now);
             case MONTH -> recordSessionRepositoryPort.findMonthlyStudyTimeByUserIds(userIds, startDateTime, endDateTime, now);
-            case SEASON, YEAR -> null;
+            case SEASON -> recordSessionRepositoryPort.findDailyStudyTimeByUserIds(userIds, startDateTime, endDateTime, now);
+            case YEAR -> null;
         };
     }
 }
