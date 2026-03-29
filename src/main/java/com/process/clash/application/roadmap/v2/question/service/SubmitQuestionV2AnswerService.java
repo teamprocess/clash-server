@@ -12,11 +12,17 @@ import com.process.clash.application.roadmap.v2.question.exception.exception.bad
 import com.process.clash.application.roadmap.v2.question.exception.exception.notfound.ChapterV2NotFoundException;
 import com.process.clash.application.roadmap.v2.question.exception.exception.notfound.QuestionV2NotFoundException;
 import com.process.clash.application.roadmap.v2.question.port.in.SubmitQuestionV2AnswerUseCase;
+import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.application.user.usergoodshistory.port.out.UserGoodsHistoryRepositoryPort;
+import com.process.clash.domain.common.enums.GoodsActingCategory;
 import com.process.clash.domain.roadmap.entity.UserSectionProgress;
 import com.process.clash.domain.roadmap.v2.entity.ChapterV2;
 import com.process.clash.domain.roadmap.v2.entity.ChoiceV2;
 import com.process.clash.domain.roadmap.v2.entity.QuestionV2;
 import com.process.clash.domain.roadmap.v2.entity.UserQuestionHistoryV2;
+import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.usergoodshistory.entity.UserGoodsHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +34,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseCase {
 
+    private static final int CHAPTER_CLEAR_COOKIE_REWARD = 300;
+    private static final int SECTION_CLEAR_COOKIE_REWARD = 3000;
+
     private final QuestionV2RepositoryPort questionV2RepositoryPort;
     private final ChapterV2RepositoryPort chapterV2RepositoryPort;
     private final UserQuestionHistoryV2RepositoryPort userQuestionHistoryV2RepositoryPort;
     private final UserSectionProgressRepositoryPort userSectionProgressRepositoryPort;
+    private final UserRepositoryPort userRepositoryPort;
+    private final UserGoodsHistoryRepositoryPort userGoodsHistoryRepositoryPort;
 
     @Override
     @Transactional
@@ -114,6 +125,9 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
             }
 
             if (progress != null && chapter.getId().equals(progress.getCurrentChapterId())) {
+                User user = userRepositoryPort.findByIdForUpdate(actor.id())
+                        .orElseThrow(UserNotFoundException::new);
+
                 // 다음 챕터 찾기
                 List<ChapterV2> chaptersInSection = chapterV2RepositoryPort
                         .findAllBySectionId(chapter.getSectionId());
@@ -127,9 +141,14 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
                     progress.moveToNextChapter(nextChapter.get().getId());
                     nextChapterId = nextChapter.get().getId();
                     nextChapterOrderIndex = nextChapter.get().getOrderIndex();
+                    user = grantCookieReward(user, CHAPTER_CLEAR_COOKIE_REWARD, GoodsActingCategory.ROADMAP_V2_CHAPTER_REWARD);
                 } else {
                     progress.completeFinalChapter();
+                    user = grantCookieReward(user, CHAPTER_CLEAR_COOKIE_REWARD, GoodsActingCategory.ROADMAP_V2_CHAPTER_REWARD);
+                    user = grantCookieReward(user, SECTION_CLEAR_COOKIE_REWARD, GoodsActingCategory.ROADMAP_V2_SECTION_REWARD);
                 }
+
+                userRepositoryPort.save(user);
                 userSectionProgressRepositoryPort.save(progress);
             }
         }
@@ -200,5 +219,24 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
                 throw new InvalidQuestionOrderV2Exception();
             }
         }
+    }
+
+    /**
+     *
+     * @param user 쿠키 추가 대상
+     * @param amount 쿠키 추가 양
+     * @param goodsActingCategory
+     * @return 쿠키 추가된 user
+     */
+    private User grantCookieReward(User user, int amount, GoodsActingCategory goodsActingCategory) {
+        userGoodsHistoryRepositoryPort.save(new UserGoodsHistory(
+                null,
+                null,
+                goodsActingCategory,
+                amount,
+                null,
+                user.id()
+        ));
+        return user.addCookie(amount);
     }
 }
