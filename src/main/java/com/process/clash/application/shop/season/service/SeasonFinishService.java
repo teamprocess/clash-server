@@ -8,7 +8,7 @@ import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.userexphistory.entity.UserExpHistory;
 import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import com.process.clash.domain.user.usergoodshistory.entity.UserGoodsHistory;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

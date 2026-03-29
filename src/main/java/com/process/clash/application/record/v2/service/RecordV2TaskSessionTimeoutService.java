@@ -5,7 +5,7 @@ import com.process.clash.application.record.v2.port.out.RecordActivityNotifierPo
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;

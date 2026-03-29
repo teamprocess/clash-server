@@ -7,7 +7,7 @@ import com.process.clash.domain.shop.season.entity.Season;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.userrankhistory.entity.UserRankHistory;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

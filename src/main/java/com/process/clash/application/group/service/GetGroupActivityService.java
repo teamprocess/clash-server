@@ -12,7 +12,7 @@ import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.infrastructure.config.record.RecordProperties;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
