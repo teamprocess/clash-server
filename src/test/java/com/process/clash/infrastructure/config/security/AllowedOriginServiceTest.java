@@ -1,5 +1,6 @@
 package com.process.clash.infrastructure.config.security;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -7,13 +8,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AllowedOriginServiceTest {
 
-    private final AllowedOriginService service = new AllowedOriginService();
+    private final AllowedOriginService service = new AllowedOriginService(
+            new CorsProperties(List.of(
+                    "https://api.clash.kr",
+                    "https://clash.kr",
+                    "app://clash",
+                    "https://local.clash.kr:5173"
+            ))
+    );
 
     @Test
     @DisplayName("허용 origin 목록은 코드 상수와 동일해야 한다")
     void getAllowedOrigins_ReturnsStaticOrigins() {
         assertThat(service.getAllowedOrigins()).containsExactly(
                 "https://api.clash.kr",
+                "https://clash.kr",
                 "app://clash",
                 "https://local.clash.kr:5173"
         );

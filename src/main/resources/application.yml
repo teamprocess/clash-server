@@ -144,7 +144,15 @@ security:
 
 app:
   reset-password:
-    base-url: ${RESET_PASSWORD_BASE_URL:https://clash.kr/#/reset-password?token=}
+    base-url: ${RESET_PASSWORD_BASE_URL:}
+
+cors:
+  allowed-origins:
+    - https://api.clash.kr
+    - ${PRODUCTION_WEB_SERVER:}
+    - ${PRODUCTION_ELECTRON_CUSTOM_PROTOCOL:}
+    - ${DEVELOP_ELECTRON_SERVER:}
+    - ${DEVELOP_WEB_SERVER:}
 
 management:
   endpoint:
