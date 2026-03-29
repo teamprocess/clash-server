@@ -61,9 +61,15 @@ public class SeasonFinishService {
             log.debug("시즌 리셋 처리. userId={}, exp={}, cookieReward={}", user.id(), currentExp, cookieReward);
         }
 
-        userRepositoryPort.saveAll(updatedUsers);
-        userExpHistoryRepositoryPort.saveAll(expHistories);
-        userGoodsHistoryRepositoryPort.saveAll(goodsHistories);
+        if (!updatedUsers.isEmpty()) {
+            userRepositoryPort.saveAll(updatedUsers);
+        }
+        if (!expHistories.isEmpty()) {
+            userExpHistoryRepositoryPort.saveAll(expHistories);
+        }
+        if (!goodsHistories.isEmpty()) {
+            userGoodsHistoryRepositoryPort.saveAll(goodsHistories);
+        }
 
         log.info("시즌 리셋 완료. 처리 유저 수={}, 쿠키 지급 수={}", updatedUsers.size(), goodsHistories.size());
     }
