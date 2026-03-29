@@ -229,4 +229,25 @@ public record User(
                 this.currentExpTier
         );
     }
+
+    public User seasonReset(int cookieReward) {
+        return new User(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                this.username,
+                this.email,
+                this.name,
+                this.password,
+                this.role,
+                this.profileImage,
+                0,
+                this.totalCookie + cookieReward,
+                this.major,
+                this.userStatus,
+                this.deletedAt,
+                RankTier.NONE,
+                ExpTier.UNRANKED
+        );
+    }
 }

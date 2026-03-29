@@ -30,6 +30,19 @@ public class UserGoodsHistoryPersistenceAdapter implements UserGoodsHistoryRepos
     }
 
     @Override
+    public void saveAll(List<UserGoodsHistory> userGoodsHistories) {
+        List<UserGoodsHistoryJpaEntity> entities = userGoodsHistories.stream()
+                .map(history -> {
+                    UserJpaEntity userJpaEntity = userJpaRepository.getReferenceById(history.userId());
+                    ProductJpaEntity productJpaEntity = history.productId() != null ?
+                            productJpaRepository.getReferenceById(history.productId()) : null;
+                    return userGoodsHistoryJpaMapper.toJpaEntity(history, userJpaEntity, productJpaEntity);
+                })
+                .toList();
+        userGoodsHistoryJpaRepository.saveAll(entities);
+    }
+
+    @Override
     public List<Long> findDistinctProductIdsByUserId(Long userId) {
         return userGoodsHistoryJpaRepository.findDistinctProductIdsByUserId(userId);
     }

@@ -7,5 +7,7 @@ public interface UserGoodsHistoryRepositoryPort {
 
     UserGoodsHistory save(UserGoodsHistory userGoodsHistory);
 
+    void saveAll(List<UserGoodsHistory> userGoodsHistories);
+
     List<Long> findDistinctProductIdsByUserId(Long userId);
 }
