@@ -3,8 +3,10 @@ package com.process.clash.adapter.realtime.socketio;
 import com.corundumstudio.socketio.HandshakeData;
 import com.process.clash.application.realtime.port.out.SocketTokenPort;
 import com.process.clash.infrastructure.config.security.AllowedOriginService;
+import com.process.clash.infrastructure.config.security.CorsProperties;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +34,9 @@ class SocketIoAuthServiceTest {
         // given
         SocketIoAuthService socketIoAuthService = new SocketIoAuthService(
                 socketTokenPort,
-                new AllowedOriginService()
+                new AllowedOriginService(new CorsProperties(List.of(
+                        "https://api.clash.kr", "https://clash.kr", "app://clash",
+                        "https://local.clash.kr:5173", "https://local.clash.kr:5174")))
         );
         HttpHeaders headers = new DefaultHttpHeaders();
         headers.add("Origin", "app://clash");
@@ -54,7 +58,9 @@ class SocketIoAuthServiceTest {
         // given
         SocketIoAuthService socketIoAuthService = new SocketIoAuthService(
                 socketTokenPort,
-                new AllowedOriginService()
+                new AllowedOriginService(new CorsProperties(List.of(
+                        "https://api.clash.kr", "https://clash.kr", "app://clash",
+                        "https://local.clash.kr:5173", "https://local.clash.kr:5174")))
         );
         HttpHeaders headers = new DefaultHttpHeaders();
         headers.add("Origin", "https://evil.example");
@@ -74,7 +80,9 @@ class SocketIoAuthServiceTest {
         // given
         SocketIoAuthService socketIoAuthService = new SocketIoAuthService(
                 socketTokenPort,
-                new AllowedOriginService()
+                new AllowedOriginService(new CorsProperties(List.of(
+                        "https://api.clash.kr", "https://clash.kr", "app://clash",
+                        "https://local.clash.kr:5173", "https://local.clash.kr:5174")))
         );
         HttpHeaders headers = new DefaultHttpHeaders();
         headers.add("Origin", "app://clash");

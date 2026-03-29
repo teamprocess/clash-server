@@ -1,5 +1,6 @@
 package com.process.clash.infrastructure.config.security;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import org.springframework.stereotype.Component;
@@ -7,16 +8,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class AllowedOriginService {
 
-    private static final List<String> ALLOWED_ORIGINS = List.of(
-            "https://api.clash.kr",
-            "https://clash.kr",
-            "app://clash",
-            "https://local.clash.kr:5173"
-    );
-    private static final Set<String> ALLOWED_ORIGIN_SET = Set.copyOf(ALLOWED_ORIGINS);
+    private final List<String> allowedOrigins;
+    private final Set<String> allowedOriginSet;
+
+    public AllowedOriginService(CorsProperties corsProperties) {
+        this.allowedOrigins = corsProperties.allowedOrigins().stream()
+                .flatMap(o -> Arrays.stream(o.split(",")))
+                .map(String::trim)
+                .map(o -> o.endsWith("/") ? o.substring(0, o.length() - 1) : o)
+                .filter(o -> !o.isEmpty())
+                .toList();
+        this.allowedOriginSet = Set.copyOf(this.allowedOrigins);
+    }
 
     public List<String> getAllowedOrigins() {
-        return ALLOWED_ORIGINS;
+        return allowedOrigins;
     }
 
     public boolean isAllowed(String origin) {
@@ -24,6 +30,6 @@ public class AllowedOriginService {
             return false;
         }
 
-        return ALLOWED_ORIGIN_SET.contains(origin.trim());
+        return allowedOriginSet.contains(origin.trim());
     }
 }
