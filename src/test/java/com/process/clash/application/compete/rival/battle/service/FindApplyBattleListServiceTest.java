@@ -23,7 +23,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -76,11 +75,7 @@ class FindApplyBattleListServiceTest {
         Long battleId = 100L;
         Actor actor = new Actor(myId);
 
-        Battle pendingBattle = new Battle(
-                battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
-                BattleStatus.PENDING, null, rivalId, myId
-        );
+        Battle pendingBattle = pendingBattle(battleId, rivalId, myId, 7);
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(),
                 RivalLinkingStatus.ACCEPTED, myId, opponentId);
         User opponent = createUser(opponentId, "이몽룡", "mongryong", "https://img.example.com/2.png");
@@ -94,8 +89,7 @@ class FindApplyBattleListServiceTest {
         );
 
         assertThat(result.battles()).hasSize(1);
-        FindApplyBattleListData.BattleApplyInfo info = result.battles().get(0);
-        assertThat(info.isMine()).isTrue();
+        assertThat(result.battles().get(0).isMine()).isTrue();
     }
 
     @Test
@@ -107,11 +101,7 @@ class FindApplyBattleListServiceTest {
         Long battleId = 100L;
         Actor actor = new Actor(myId);
 
-        Battle pendingBattle = new Battle(
-                battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
-                BattleStatus.PENDING, null, rivalId, opponentId
-        );
+        Battle pendingBattle = pendingBattle(battleId, rivalId, opponentId, 7);
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(),
                 RivalLinkingStatus.ACCEPTED, myId, opponentId);
         User opponent = createUser(opponentId, "이몽룡", "mongryong", "https://img.example.com/2.png");
@@ -125,26 +115,20 @@ class FindApplyBattleListServiceTest {
         );
 
         assertThat(result.battles()).hasSize(1);
-        FindApplyBattleListData.BattleApplyInfo info = result.battles().get(0);
-        assertThat(info.isMine()).isFalse();
+        assertThat(result.battles().get(0).isMine()).isFalse();
     }
 
     @Test
-    @DisplayName("배틀 정보에 상대방 정보와 날짜가 올바르게 담긴다")
-    void execute_returnsBattleInfoWithCorrectEnemyAndDates() {
+    @DisplayName("배틀 정보에 상대방 정보와 duration이 올바르게 담긴다")
+    void execute_returnsBattleInfoWithCorrectEnemyAndDuration() {
         Long myId = 1L;
         Long opponentId = 2L;
         Long rivalId = 10L;
         Long battleId = 100L;
-        LocalDate startDate = LocalDate.of(2026, 1, 22);
-        LocalDate endDate = LocalDate.of(2026, 1, 29);
+        int duration = 7;
         Actor actor = new Actor(myId);
 
-        Battle pendingBattle = new Battle(
-                battleId, Instant.now(), Instant.now(),
-                startDate, endDate,
-                BattleStatus.PENDING, null, rivalId, myId
-        );
+        Battle pendingBattle = pendingBattle(battleId, rivalId, myId, duration);
         Rival rival = new Rival(rivalId, Instant.now(), Instant.now(),
                 RivalLinkingStatus.ACCEPTED, myId, opponentId);
         User opponent = createUser(opponentId, "이몽룡", "mongryong", "https://img.example.com/2.png");
@@ -159,8 +143,7 @@ class FindApplyBattleListServiceTest {
 
         FindApplyBattleListData.BattleApplyInfo info = result.battles().get(0);
         assertThat(info.id()).isEqualTo(battleId);
-        assertThat(info.startDate()).isEqualTo(startDate);
-        assertThat(info.endDate()).isEqualTo(endDate);
+        assertThat(info.duration()).isEqualTo(duration);
         assertThat(info.enemy().id()).isEqualTo(opponentId);
         assertThat(info.enemy().name()).isEqualTo("이몽룡");
         assertThat(info.enemy().profileImage()).isEqualTo("https://img.example.com/2.png");
@@ -176,12 +159,8 @@ class FindApplyBattleListServiceTest {
         Long rival2Id = 11L;
         Actor actor = new Actor(myId);
 
-        Battle battle1 = new Battle(100L, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
-                BattleStatus.PENDING, null, rival1Id, myId);
-        Battle battle2 = new Battle(101L, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(5),
-                BattleStatus.PENDING, null, rival2Id, opponent2Id);
+        Battle battle1 = pendingBattle(100L, rival1Id, myId, 7);
+        Battle battle2 = pendingBattle(101L, rival2Id, opponent2Id, 5);
 
         Rival rival1 = new Rival(rival1Id, Instant.now(), Instant.now(),
                 RivalLinkingStatus.ACCEPTED, myId, opponent1Id);
@@ -203,6 +182,12 @@ class FindApplyBattleListServiceTest {
         assertThat(result.battles())
                 .extracting(FindApplyBattleListData.BattleApplyInfo::id)
                 .containsExactlyInAnyOrder(100L, 101L);
+    }
+
+    private Battle pendingBattle(Long battleId, Long rivalId, Long applicantId, int duration) {
+        return new Battle(battleId, Instant.now(), Instant.now(),
+                null, null, duration,
+                BattleStatus.PENDING, null, rivalId, applicantId);
     }
 
     private User createUser(Long id, String name, String username, String profileImage) {
