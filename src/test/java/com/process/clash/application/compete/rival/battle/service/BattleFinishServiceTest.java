@@ -97,6 +97,6 @@ class BattleFinishServiceTest {
 
         battleFinishService.finishExpiredBattles();
 
-        verify(battleRepositoryPort, never()).saveAll(List.of());
+        verify(battleRepositoryPort, never()).saveAll(any());
     }
 }

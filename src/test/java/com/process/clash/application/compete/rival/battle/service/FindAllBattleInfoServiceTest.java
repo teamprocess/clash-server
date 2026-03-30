@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -181,6 +182,26 @@ class FindAllBattleInfoServiceTest {
         FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
 
         assertThat(result.battles().get(0).enemy().tier()).isEqualTo("MASTER");
+    }
+
+    @Test
+    @DisplayName("IN_PROGRESS 배틀의 expireDate는 endAt을 KST 기준 LocalDate로 변환한 값이다")
+    void execute_returnsExpireDateFromEndAt_whenInProgress() {
+        Instant endAt = Instant.now().plus(6, ChronoUnit.DAYS);
+        Battle battle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
+                Instant.now().minus(1, ChronoUnit.DAYS), endAt, 7,
+                BattleStatus.IN_PROGRESS, null, RIVAL_ID, CURRENT_USER_ID);
+
+        stubCommonDependencies(List.of(battle));
+        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(CURRENT_USER_ID), anyList()))
+                .thenReturn(Map.of(BATTLE_ID, 0.0));
+        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(ENEMY_USER_ID), anyList()))
+                .thenReturn(Map.of(BATTLE_ID, 0.0));
+
+        FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
+
+        LocalDate expectedDate = endAt.atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
+        assertThat(result.battles().get(0).expireDate()).isEqualTo(expectedDate);
     }
 
     @Test
