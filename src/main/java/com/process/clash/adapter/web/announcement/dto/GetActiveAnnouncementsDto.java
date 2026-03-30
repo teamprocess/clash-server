@@ -17,8 +17,7 @@ public class GetActiveAnnouncementsDto {
                             announcement.userId(),
                             announcement.content(),
                             announcement.startAt() != null ? announcement.startAt().toString() : null,
-                            announcement.endAt() != null ? announcement.endAt().toString() : null,
-                            announcement.hideable()
+                            announcement.endAt() != null ? announcement.endAt().toString() : null
                     ))
                     .toList();
             return new Response(items);
@@ -32,7 +31,6 @@ public class GetActiveAnnouncementsDto {
             Long userId,
             String content,
             String startAt,
-            String endAt,
-            boolean hideable
+            String endAt
     ) {}
 }
