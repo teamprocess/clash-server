@@ -11,7 +11,6 @@ public record Announcement(
         Long userId,
         String content,
         Instant startAt,
-        Instant endAt,
-        boolean hideable
+        Instant endAt
 ) {
 }

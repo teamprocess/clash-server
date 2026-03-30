@@ -16,8 +16,7 @@ public class GetActiveAnnouncementsData {
             Long userId,
             String content,
             Instant startAt,
-            Instant endAt,
-            boolean hideable
+            Instant endAt
     ) {
         public static AnnouncementItem from(Announcement announcement) {
             return new AnnouncementItem(
@@ -27,8 +26,7 @@ public class GetActiveAnnouncementsData {
                     announcement.userId(),
                     announcement.content(),
                     announcement.startAt(),
-                    announcement.endAt(),
-                    announcement.hideable()
+                    announcement.endAt()
             );
         }
     }

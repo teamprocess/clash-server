@@ -16,8 +16,7 @@ public class AnnouncementJpaMapper {
                 entity.getUserId(),
                 entity.getContent(),
                 entity.getStartAt(),
-                entity.getEndAt(),
-                entity.isHideable()
+                entity.getEndAt()
         );
     }
 }

@@ -48,7 +48,4 @@ public class AnnouncementJpaEntity {
 
     @Column(nullable = false)
     private Instant endAt;
-
-    @Column(nullable = false)
-    private boolean hideable;
 }
