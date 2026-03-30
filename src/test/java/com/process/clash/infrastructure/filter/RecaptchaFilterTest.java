@@ -40,6 +40,8 @@ class RecaptchaFilterTest {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         recaptchaFilter = new RecaptchaFilter(recaptchaPort, objectMapper);
+        ReflectionTestUtils.setField(recaptchaFilter, "recaptchaEnabled", true);
+        ReflectionTestUtils.setField(recaptchaFilter, "environment", "prod");
     }
 
     @Test
@@ -66,6 +68,23 @@ class RecaptchaFilterTest {
         request.setRequestURI("/api/auth/sign-up");
         MockHttpServletResponse response = new MockHttpServletResponse();
         ReflectionTestUtils.setField(recaptchaFilter, "environment", "dev");
+
+        // when
+        recaptchaFilter.doFilter(request, response, filterChain);
+
+        // then
+        verify(filterChain).doFilter(request, response);
+        verify(recaptchaPort, never()).verifyToken(anyString());
+    }
+
+    @Test
+    @DisplayName("recaptcha가 비활성화되면 보호 경로도 통과")
+    void doFilter_RecaptchaDisabled_PassesThroughWithoutRecaptcha() throws ServletException, IOException {
+        // given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRequestURI("/api/auth/sign-up");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ReflectionTestUtils.setField(recaptchaFilter, "recaptchaEnabled", false);
 
         // when
         recaptchaFilter.doFilter(request, response, filterChain);
