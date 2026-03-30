@@ -10,6 +10,7 @@ import com.process.clash.application.record.v2.port.out.RecordSessionV2Repositor
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.TargetCategory;
 import com.process.clash.domain.rival.battle.entity.Battle;
+import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
         LocalDate startDate = battle.startedAt() != null
                 ? battle.startedAt().atZone(battleZoneId).toLocalDate()
                 : LocalDate.now(battleZoneId);
-        LocalDate endDate = battle.endAt() != null
+        LocalDate endDate = battle.battleStatus() == BattleStatus.DONE && battle.endAt() != null
                 ? battle.endAt().atZone(battleZoneId).toLocalDate()
                 : LocalDate.now(battleZoneId);
 
