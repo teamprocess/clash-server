@@ -1,8 +1,6 @@
 package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
-import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
-import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.rival.rival.entity.Rival;
@@ -209,6 +207,7 @@ class BattleFinishServiceTest {
 
         battleFinishService.finishExpiredBattles();
 
+        verify(battleRepositoryPort, never()).saveAll(any());
     @Test
     @DisplayName("soft-delete된 라이벌의 배틀은 쿼리에서 제외되어 saveAll을 호출하지 않는다")
     void finishExpiredBattles_doesNotCallSaveAll_whenAllBattlesHaveSoftDeletedRival() {

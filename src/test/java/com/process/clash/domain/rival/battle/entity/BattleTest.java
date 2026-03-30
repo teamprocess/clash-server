@@ -49,6 +49,39 @@ class BattleTest {
     }
 
     @Test
+    @DisplayName("reject() 호출 시 REJECTED 상태가 된다")
+    void reject_returnsRejected() {
+        Battle battle = pendingBattle(7);
+
+        Battle result = battle.reject();
+
+        assertThat(result.battleStatus()).isEqualTo(BattleStatus.REJECTED);
+    }
+
+    @Test
+    @DisplayName("resolveStatus: endAt이 null인 배틀(PENDING)은 상태 그대로 반환된다")
+    void resolveStatus_returnsUnchanged_whenEndAtIsNull() {
+        Battle battle = pendingBattle(7);
+
+        Battle result = battle.resolveStatus(Instant.now());
+
+        assertThat(result.battleStatus()).isEqualTo(BattleStatus.PENDING);
+    }
+
+    @Test
+    @DisplayName("resolveStatus: 이미 DONE 상태인 배틀은 변경되지 않는다")
+    void resolveStatus_returnsUnchanged_whenAlreadyDone() {
+        Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
+        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
+        Battle battle = new Battle(1L, Instant.now(), Instant.now(), startedAt, endAt,
+                7, BattleStatus.DONE, null, 10L, 20L);
+
+        Battle result = battle.resolveStatus(Instant.now());
+
+        assertThat(result.battleStatus()).isEqualTo(BattleStatus.DONE);
+    }
+
+    @Test
     @DisplayName("cancel() 호출 시 CANCELED 상태가 된다")
     void cancel_returnsCanceled() {
         Battle battle = pendingBattle(7);
