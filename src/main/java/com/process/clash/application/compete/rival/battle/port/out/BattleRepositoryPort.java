@@ -2,7 +2,6 @@ package com.process.clash.application.compete.rival.battle.port.out;
 
 import com.process.clash.domain.rival.battle.entity.Battle;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +18,7 @@ public interface BattleRepositoryPort {
     boolean existsPendingBattleByRivalId(Long rivalId);
     void rejectAllActiveBattlesByUserId(Long userId);
     void rejectAllActiveBattlesByRivalId(Long rivalId);
-    List<Battle> findExpiredInProgressBattles(LocalDate today);
-    List<Battle> findExpiredNotStartedBattles(LocalDate today);
-    List<Battle> findNotStartedBattlesToStart(LocalDate today);
+    List<Battle> findExpiredInProgressBattles();
+    List<Battle> findExpiredNotStartedBattles();
     List<Battle> findPendingBattlesByUserId(Long userId);
 }

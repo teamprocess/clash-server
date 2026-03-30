@@ -1,6 +1,9 @@
 package com.process.clash.application.compete.rival.battle.service;
 
-import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData.*;
+import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData.BattleInfo;
+import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData.Command;
+import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData.Enemy;
+import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData.Result;
 import com.process.clash.application.compete.rival.battle.port.in.FindAllBattleInfoUseCase;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.exception.exception.notfound.RivalNotFoundException;
@@ -15,11 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +42,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
+    private final ZoneId battleZoneId;
 
     @Override
     public Result execute(Command command) {
@@ -159,10 +161,14 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
                 enemyAvgExpMap
         );
 
+        LocalDate expireDate = battle.endAt() != null
+                ? battle.endAt().atZone(battleZoneId).toLocalDate()
+                : null;
+
         return BattleInfo.of(
                 battle.id(),
                 enemy,
-                battle.endDate(),
+                expireDate,
                 result
         );
     }
