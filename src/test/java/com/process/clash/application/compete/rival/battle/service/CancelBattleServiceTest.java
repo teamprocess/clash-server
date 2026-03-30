@@ -21,7 +21,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +28,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CancelBattleServiceTest {
@@ -68,7 +65,7 @@ class CancelBattleServiceTest {
         Long rivalId = 30L;
         Long opponentId = 2L;
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, actor.id());
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -91,7 +88,7 @@ class CancelBattleServiceTest {
         Long rivalId = 30L;
         Long opponentId = 2L;
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, actor.id());
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -112,7 +109,7 @@ class CancelBattleServiceTest {
         Long rivalId = 30L;
         Long opponentId = 2L;
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, actor.id());
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -133,7 +130,7 @@ class CancelBattleServiceTest {
         Long rivalId = 30L;
         Long opponentId = 2L;
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, actor.id());
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -159,7 +156,7 @@ class CancelBattleServiceTest {
         Long actualApplicantId = 2L;
         // applicantId가 다른 유저(2L)로 설정
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, actualApplicantId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -178,7 +175,8 @@ class CancelBattleServiceTest {
         Long battleId = 20L;
         Long rivalId = 30L;
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(7),
+                Instant.now().minus(1, java.time.temporal.ChronoUnit.DAYS),
+                Instant.now().plus(6, java.time.temporal.ChronoUnit.DAYS), 7,
                 BattleStatus.IN_PROGRESS, null, rivalId, actor.id());
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));

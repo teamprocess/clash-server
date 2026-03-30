@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -28,7 +26,6 @@ public class ApplyBattleService implements ApplyBattleUseCase {
     private final UserNoticeRepositoryPort userNoticeRepositoryPort;
     private final ApplyBattlePolicy applyBattlePolicy;
     private final CompeteRefetchNotifier competeRefetchNotifier;
-    private final ZoneId battleZoneId;
 
     @Override
     public void execute(ApplyBattleData.Command command) {
@@ -43,11 +40,8 @@ public class ApplyBattleService implements ApplyBattleUseCase {
 
         userNoticeRepositoryPort.deleteCancelBattleNoticeBySenderAndReceiver(userId, opponentUserId);
 
-        // 배틀 생성 (Rival 엔티티 ID 사용) - 다음날 KST 06시부터 시작
-        LocalDate startDate = LocalDate.now(battleZoneId).plusDays(1);
-        LocalDate endDate = startDate.plusDays(command.duration());
-
-        Battle battle = Battle.createDefault(startDate, endDate, rivalEntityId, userId);
+        // 배틀 생성 (승인 시각이 시작 시각이므로, 신청 시점에는 duration만 저장)
+        Battle battle = Battle.createDefault(command.duration(), rivalEntityId, userId);
         Battle savedBattle = battleRepositoryPort.save(battle);
 
         // 상대방에게 알림 전송 (상대방 사용자 ID 사용)

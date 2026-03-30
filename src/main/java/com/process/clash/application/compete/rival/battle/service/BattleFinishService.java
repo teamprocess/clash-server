@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -19,9 +18,9 @@ public class BattleFinishService {
 
     private final BattleRepositoryPort battleRepositoryPort;
 
-    public void finishExpiredBattles(LocalDate today) {
-        List<Battle> expiredInProgress = battleRepositoryPort.findExpiredInProgressBattles(today);
-        List<Battle> expiredNotStarted = battleRepositoryPort.findExpiredNotStartedBattles(today);
+    public void finishExpiredBattles() {
+        List<Battle> expiredInProgress = battleRepositoryPort.findExpiredInProgressBattles();
+        List<Battle> expiredNotStarted = battleRepositoryPort.findExpiredNotStartedBattles();
 
         List<Battle> battlesToUpdate = Stream.concat(
                 expiredInProgress.stream().map(Battle::finish),

@@ -6,11 +6,10 @@ import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaRepository;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
-
-import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +36,7 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     public Optional<Battle> findById(Long id) {
 
         return battleJpaRepository.findById(id)
-                .map(battleJpaMapper::toDomain);
+                .map(entity -> battleJpaMapper.toDomain(entity).resolveStatus(Instant.now()));
     }
 
     @Override
@@ -55,9 +54,10 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     @Override
     public List<Battle> findByUserIdWithOutRejected(Long userId) {
 
+        Instant now = Instant.now();
         return battleJpaRepository.findByUserIdWithOutRejected(userId)
                 .stream()
-                .map(battleJpaMapper::toDomain)
+                .map(entity -> battleJpaMapper.toDomain(entity).resolveStatus(now))
                 .toList();
     }
 
@@ -65,7 +65,7 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     public Optional<Battle> findActiveByUserId(Long userId) {
 
         return battleJpaRepository.findActiveByUserId(userId)
-                .map(battleJpaMapper::toDomain);
+                .map(entity -> battleJpaMapper.toDomain(entity).resolveStatus(Instant.now()));
     }
 
     @Override
@@ -101,24 +101,16 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     }
 
     @Override
-    public List<Battle> findExpiredInProgressBattles(LocalDate today) {
-        return battleJpaRepository.findExpiredInProgressBattles(today)
+    public List<Battle> findExpiredInProgressBattles() {
+        return battleJpaRepository.findExpiredInProgressBattles()
                 .stream()
                 .map(battleJpaMapper::toDomain)
                 .toList();
     }
 
     @Override
-    public List<Battle> findExpiredNotStartedBattles(LocalDate today) {
-        return battleJpaRepository.findExpiredNotStartedBattles(today)
-                .stream()
-                .map(battleJpaMapper::toDomain)
-                .toList();
-    }
-
-    @Override
-    public List<Battle> findNotStartedBattlesToStart(LocalDate today) {
-        return battleJpaRepository.findNotStartedBattlesToStart(today)
+    public List<Battle> findExpiredNotStartedBattles() {
+        return battleJpaRepository.findExpiredNotStartedBattles()
                 .stream()
                 .map(battleJpaMapper::toDomain)
                 .toList();

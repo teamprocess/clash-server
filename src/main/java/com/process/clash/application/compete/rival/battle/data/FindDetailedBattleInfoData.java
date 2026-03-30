@@ -30,12 +30,12 @@ public class FindDetailedBattleInfoData {
             Double enemyOverallPercentage
     ) {
 
-        public static Result of(Battle battle, User user, Double myOverallPercentage, Double enemyOverallPercentage) {
+        public static Result of(Battle battle, User user, LocalDate expireDate, Double myOverallPercentage, Double enemyOverallPercentage) {
 
             return new Result(
                     battle.id(),
                     user != null ? Enemy.from(user) : null,
-                    battle.endDate(),
+                    expireDate,
                     myOverallPercentage,
                     enemyOverallPercentage
             );

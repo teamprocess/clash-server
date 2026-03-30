@@ -25,6 +25,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +64,8 @@ class FindAllBattleInfoServiceTest {
                 battleRepositoryPort,
                 rivalRepositoryPort,
                 userRepositoryPort,
-                userExpHistoryRepositoryPort
+                userExpHistoryRepositoryPort,
+                ZoneId.of("Asia/Seoul")
         );
     }
 
@@ -182,6 +185,26 @@ class FindAllBattleInfoServiceTest {
     }
 
     @Test
+    @DisplayName("IN_PROGRESS 배틀의 expireDate는 endAt을 KST 기준 LocalDate로 변환한 값이다")
+    void execute_returnsExpireDateFromEndAt_whenInProgress() {
+        Instant endAt = Instant.now().plus(6, ChronoUnit.DAYS);
+        Battle battle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
+                Instant.now().minus(1, ChronoUnit.DAYS), endAt, 7,
+                BattleStatus.IN_PROGRESS, null, RIVAL_ID, CURRENT_USER_ID);
+
+        stubCommonDependencies(List.of(battle));
+        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(CURRENT_USER_ID), anyList()))
+                .thenReturn(Map.of(BATTLE_ID, 0.0));
+        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(ENEMY_USER_ID), anyList()))
+                .thenReturn(Map.of(BATTLE_ID, 0.0));
+
+        FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
+
+        LocalDate expectedDate = endAt.atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
+        assertThat(result.battles().get(0).expireDate()).isEqualTo(expectedDate);
+    }
+
+    @Test
     @DisplayName("배틀이 없으면 빈 리스트를 반환한다")
     void execute_returnsEmptyList_whenNoBattles() {
         when(battleRepositoryPort.findByUserIdWithOutRejected(CURRENT_USER_ID)).thenReturn(List.of());
@@ -198,8 +221,10 @@ class FindAllBattleInfoServiceTest {
     }
 
     private Battle battle(BattleStatus status, Long winnerId) {
+        Instant startedAt = Instant.now().minus(1, ChronoUnit.DAYS);
+        Instant endAt = Instant.now().plus(6, ChronoUnit.DAYS);
         return new Battle(BATTLE_ID, Instant.now(), Instant.now(),
-                LocalDate.now().minusDays(1), LocalDate.now().plusDays(6),
+                startedAt, endAt, 7,
                 status, winnerId, RIVAL_ID, CURRENT_USER_ID);
     }
 
