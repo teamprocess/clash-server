@@ -1,17 +1,16 @@
 package com.process.clash.adapter.persistence.user.userexphistory;
 
+import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.application.compete.my.data.Streak;
 import com.process.clash.application.compete.my.data.UserEarnedExp;
 import com.process.clash.application.compete.my.data.Variation;
 import com.process.clash.application.ranking.data.UserRanking;
+import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
-import com.process.clash.domain.user.userexphistory.enums.ExpActingCategory;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -168,14 +167,14 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     );
 
     @Query(value = """
-        SELECT 
+        SELECT
             b.id AS battleId,
             COALESCE(AVG(ueh.earn_exp), 0) AS avgExp
         FROM user_exp_history ueh
         JOIN battles b ON b.id IN (:battleIds)
             AND ueh.fk_user_id = :userId
-            AND ueh.date >= b.start_date
-            AND ueh.date <= b.end_date
+            AND ueh.date >= (b.started_at AT TIME ZONE 'Asia/Seoul')::date
+            AND ueh.date <= (b.end_at AT TIME ZONE 'Asia/Seoul')::date
         GROUP BY b.id
     """, nativeQuery = true)
     List<Object[]> findAverageExpForBattles(

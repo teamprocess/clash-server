@@ -29,9 +29,9 @@ public class BattleFinishService {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
 
-    public void finishExpiredBattles(LocalDate today) {
-        List<Battle> expiredInProgress = battleRepositoryPort.findExpiredInProgressBattles(today);
-        List<Battle> expiredNotStarted = battleRepositoryPort.findExpiredNotStartedBattles(today);
+    public void finishExpiredBattles() {
+        List<Battle> expiredInProgress = battleRepositoryPort.findExpiredInProgressBattles();
+        List<Battle> expiredNotStarted = battleRepositoryPort.findExpiredNotStartedBattles();
 
         List<Battle> battlesToUpdate = new ArrayList<>();
 
@@ -92,4 +92,5 @@ public class BattleFinishService {
         if (secondExp > firstExp) return secondUserId;
         return null; // 무승부
     }
+}
 }
