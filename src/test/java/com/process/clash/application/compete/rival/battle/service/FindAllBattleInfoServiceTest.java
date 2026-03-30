@@ -24,7 +24,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +63,8 @@ class FindAllBattleInfoServiceTest {
                 battleRepositoryPort,
                 rivalRepositoryPort,
                 userRepositoryPort,
-                userExpHistoryRepositoryPort
+                userExpHistoryRepositoryPort,
+                ZoneId.of("Asia/Seoul")
         );
     }
 
@@ -198,8 +200,10 @@ class FindAllBattleInfoServiceTest {
     }
 
     private Battle battle(BattleStatus status, Long winnerId) {
+        Instant startedAt = Instant.now().minus(1, ChronoUnit.DAYS);
+        Instant endAt = Instant.now().plus(6, ChronoUnit.DAYS);
         return new Battle(BATTLE_ID, Instant.now(), Instant.now(),
-                LocalDate.now().minusDays(1), LocalDate.now().plusDays(6),
+                startedAt, endAt, 7,
                 status, winnerId, RIVAL_ID, CURRENT_USER_ID);
     }
 

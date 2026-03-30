@@ -10,10 +10,6 @@ import com.process.clash.application.user.usernotice.port.out.UserNoticeReposito
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,13 +18,14 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RejectBattleServiceTest {
@@ -66,7 +63,7 @@ class RejectBattleServiceTest {
         Long applicantId = 2L;
         // applicantId = 2L(신청자), actor = 1L(수신자)
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(1),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, applicantId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -93,7 +90,7 @@ class RejectBattleServiceTest {
         Long rivalId = 30L;
         Long applicantId = 2L;
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(1),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, applicantId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -114,7 +111,7 @@ class RejectBattleServiceTest {
         Long rivalId = 30L;
         Long applicantId = 2L;
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(1),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, applicantId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
@@ -135,7 +132,7 @@ class RejectBattleServiceTest {
         Long rivalId = 30L;
         // actor가 신청자(applicantId)인 경우
         Battle battle = new Battle(battleId, Instant.now(), Instant.now(),
-                LocalDate.now(), LocalDate.now().plusDays(1),
+                null, null, 7,
                 BattleStatus.PENDING, null, rivalId, actor.id());
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));

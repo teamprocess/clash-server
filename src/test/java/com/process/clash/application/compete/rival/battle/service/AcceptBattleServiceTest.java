@@ -10,11 +10,6 @@ import com.process.clash.application.user.usernotice.port.out.UserNoticeReposito
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Collection;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +18,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AcceptBattleServiceTest {
@@ -56,8 +53,7 @@ class AcceptBattleServiceTest {
             modifyBattlePolicy,
             rivalRepositoryPort,
             userNoticeRepositoryPort,
-            competeRefetchNotifier,
-            ZoneId.of("Asia/Seoul")
+            competeRefetchNotifier
         );
     }
 
@@ -71,7 +67,7 @@ class AcceptBattleServiceTest {
         Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(LocalDate.now()));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now()));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -96,7 +92,7 @@ class AcceptBattleServiceTest {
         Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(LocalDate.now()));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now()));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -115,7 +111,7 @@ class AcceptBattleServiceTest {
         Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(LocalDate.now()));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now()));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -129,8 +125,9 @@ class AcceptBattleServiceTest {
             battleId,
             Instant.now(),
             Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(1),
+            null,
+            null,
+            7,
             BattleStatus.PENDING,
             null,
             rivalId,

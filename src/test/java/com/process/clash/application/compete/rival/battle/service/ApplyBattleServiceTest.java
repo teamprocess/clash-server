@@ -10,10 +10,6 @@ import com.process.clash.application.user.usernotice.port.out.UserNoticeReposito
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.Instant;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,8 +53,7 @@ class ApplyBattleServiceTest {
             rivalRepositoryPort,
             userNoticeRepositoryPort,
             applyBattlePolicy,
-            competeRefetchNotifier,
-            ZoneId.of("Asia/Seoul")
+            competeRefetchNotifier
         );
     }
 
@@ -66,17 +64,7 @@ class ApplyBattleServiceTest {
         Long rivalId = 10L;
         Long opponentId = 2L;
         ApplyBattleData.Command command = new ApplyBattleData.Command(actor, rivalId, 7);
-        Battle savedBattle = new Battle(
-            100L,
-            Instant.now(),
-            Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(7),
-            BattleStatus.PENDING,
-            null,
-            rivalId,
-            actor.id()
-        );
+        Battle savedBattle = pendingBattle(100L, rivalId, actor.id(), 7);
 
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(battleRepositoryPort.save(any(Battle.class))).thenReturn(savedBattle);
@@ -91,19 +79,14 @@ class ApplyBattleServiceTest {
     }
 
     @Test
-    @DisplayName("배틀 신청 시 startDate는 내일, endDate는 startDate로부터 duration일 후로 설정된다")
-    void execute_setsStartAndEndDatesCorrectly() {
+    @DisplayName("배틀 신청 시 duration이 Battle에 올바르게 저장된다")
+    void execute_setsDurationCorrectly() {
         Actor actor = new Actor(1L);
         Long rivalId = 10L;
         Long opponentId = 2L;
         int duration = 7;
         ApplyBattleData.Command command = new ApplyBattleData.Command(actor, rivalId, duration);
-        LocalDate tomorrow = LocalDate.now(ZoneId.of("Asia/Seoul")).plusDays(1);
-        Battle savedBattle = new Battle(
-            100L, Instant.now(), Instant.now(),
-            tomorrow, tomorrow.plusDays(duration),
-            BattleStatus.PENDING, null, rivalId, actor.id()
-        );
+        Battle savedBattle = pendingBattle(100L, rivalId, actor.id(), duration);
 
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(battleRepositoryPort.save(any(Battle.class))).thenReturn(savedBattle);
@@ -113,8 +96,9 @@ class ApplyBattleServiceTest {
 
         ArgumentCaptor<Battle> battleCaptor = ArgumentCaptor.forClass(Battle.class);
         verify(battleRepositoryPort).save(battleCaptor.capture());
-        assertThat(battleCaptor.getValue().startDate()).isEqualTo(tomorrow);
-        assertThat(battleCaptor.getValue().endDate()).isEqualTo(tomorrow.plusDays(duration));
+        assertThat(battleCaptor.getValue().duration()).isEqualTo(duration);
+        assertThat(battleCaptor.getValue().startedAt()).isNull();
+        assertThat(battleCaptor.getValue().endAt()).isNull();
     }
 
     @Test
@@ -124,17 +108,7 @@ class ApplyBattleServiceTest {
         Long rivalId = 10L;
         Long opponentId = 2L;
         ApplyBattleData.Command command = new ApplyBattleData.Command(actor, rivalId, 7);
-        Battle savedBattle = new Battle(
-            100L,
-            Instant.now(),
-            Instant.now(),
-            LocalDate.now(),
-            LocalDate.now().plusDays(7),
-            BattleStatus.PENDING,
-            null,
-            rivalId,
-            actor.id()
-        );
+        Battle savedBattle = pendingBattle(100L, rivalId, actor.id(), 7);
 
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(battleRepositoryPort.save(any(Battle.class))).thenReturn(savedBattle);
@@ -143,5 +117,11 @@ class ApplyBattleServiceTest {
         applyBattleService.execute(command);
 
         verify(userNoticeRepositoryPort).deleteCancelBattleNoticeBySenderAndReceiver(actor.id(), opponentId);
+    }
+
+    private Battle pendingBattle(Long battleId, Long rivalId, Long applicantId, int duration) {
+        return new Battle(battleId, Instant.now(), Instant.now(),
+                null, null, duration,
+                BattleStatus.PENDING, null, rivalId, applicantId);
     }
 }
