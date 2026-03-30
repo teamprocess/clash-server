@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.announcement.controller;
 
+import com.process.clash.adapter.web.announcement.docs.controller.AnnouncementControllerDocument;
 import com.process.clash.adapter.web.announcement.dto.GetActiveAnnouncementsDto;
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.application.announcement.data.GetActiveAnnouncementsData;
@@ -12,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/announcements")
 @RequiredArgsConstructor
-public class AnnouncementController {
+public class AnnouncementController implements AnnouncementControllerDocument {
 
     private final GetActiveAnnouncementsUseCase getActiveAnnouncementsUseCase;
 
+    @Override
     @GetMapping("/active")
     public ApiResponse<GetActiveAnnouncementsDto.Response> getActiveAnnouncements() {
         GetActiveAnnouncementsData.Result result = getActiveAnnouncementsUseCase.execute();
