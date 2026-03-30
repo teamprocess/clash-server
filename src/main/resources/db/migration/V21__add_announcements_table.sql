@@ -9,6 +9,5 @@ CREATE TABLE announcements
     content    TEXT                                    NOT NULL,
     start_at   TIMESTAMPTZ                             NOT NULL,
     end_at     TIMESTAMPTZ                             NOT NULL,
-    hideable   BOOLEAN                                 NOT NULL DEFAULT FALSE,
     CONSTRAINT pk_announcements PRIMARY KEY (id)
 );
