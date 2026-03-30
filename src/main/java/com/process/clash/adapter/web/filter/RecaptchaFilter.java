@@ -29,9 +29,10 @@ public class RecaptchaFilter extends GenericFilterBean {
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
     private static final String RECAPTCHA_HEADER = "X-Recaptcha-Token";
     private static final String DEV_ENVIRONMENT = "dev";
-
     private final RecaptchaPort recaptchaPort;
     private final ObjectMapper objectMapper;
+    @Value("${app.recaptcha.enabled:true}")
+    private boolean recaptchaEnabled;
     @Value("${ENVIRONMENT:prod}")
     private String environment;
 
@@ -64,7 +65,7 @@ public class RecaptchaFilter extends GenericFilterBean {
             return;
         }
 
-        if (isDevEnvironment()) {
+        if (!recaptchaEnabled || isDevEnvironment()) {
             chain.doFilter(request, response);
             return;
         }
@@ -93,12 +94,12 @@ public class RecaptchaFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
-    private boolean isDevEnvironment() {
-        return environment != null && DEV_ENVIRONMENT.equalsIgnoreCase(environment.trim());
-    }
-
     private boolean isProtectedPath(String path) {
         return PROTECTED_PATHS.stream().anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
+    private boolean isDevEnvironment() {
+        return environment != null && DEV_ENVIRONMENT.equalsIgnoreCase(environment.trim());
     }
 
     private void sendErrorResponse(HttpServletResponse response, String errorCode, String errorMessage) throws IOException {
