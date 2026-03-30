@@ -10,7 +10,7 @@ import com.process.clash.application.record.v2.port.out.RecordSessionV2Repositor
 import com.process.clash.application.record.v2.service.RecordSessionV2Mapper;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

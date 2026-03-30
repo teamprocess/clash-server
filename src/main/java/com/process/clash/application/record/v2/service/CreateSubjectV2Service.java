@@ -6,7 +6,7 @@ import com.process.clash.application.record.v2.port.out.RecordSubjectV2Repositor
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

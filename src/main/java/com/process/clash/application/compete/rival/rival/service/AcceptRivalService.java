@@ -9,7 +9,7 @@ import com.process.clash.application.user.usernotice.port.out.UserNoticeReposito
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -27,7 +27,7 @@ import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.infrastructure.config.record.RecordProperties;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;

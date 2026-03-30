@@ -11,7 +11,7 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.group.entity.Group;
 import com.process.clash.domain.user.user.entity.User;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

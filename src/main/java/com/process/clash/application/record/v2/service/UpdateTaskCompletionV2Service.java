@@ -12,7 +12,7 @@ import com.process.clash.application.user.exp.service.StudyTimeExpGrantService;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.entity.RecordTaskV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;

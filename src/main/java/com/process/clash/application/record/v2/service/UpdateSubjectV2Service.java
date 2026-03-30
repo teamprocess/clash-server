@@ -6,7 +6,7 @@ import com.process.clash.application.record.v2.policy.SubjectV2Policy;
 import com.process.clash.application.record.v2.port.in.UpdateSubjectV2UseCase;
 import com.process.clash.application.record.v2.port.out.RecordSubjectV2RepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSubjectV2;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

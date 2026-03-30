@@ -12,7 +12,7 @@ import com.process.clash.domain.record.enums.MonitoredApp;
 import com.process.clash.domain.record.v2.entity.RecordDevelopSessionSegmentV2;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
 import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

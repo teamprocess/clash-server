@@ -9,7 +9,7 @@ import com.process.clash.application.group.port.in.QuitGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -11,7 +11,7 @@ import com.process.clash.application.group.port.in.JoinGroupUseCase;
 import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.group.realtime.GroupRefetchNotifier;
 import com.process.clash.domain.group.entity.Group;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
