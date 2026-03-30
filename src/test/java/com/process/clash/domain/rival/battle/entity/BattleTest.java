@@ -5,72 +5,53 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BattleTest {
 
     @Test
-    @DisplayName("수락 시 startDate 이전이면 NOT_STARTED 상태가 된다")
-    void accept_returnsNotStarted_whenBeforeStartDate() {
-        LocalDate today = LocalDate.now();
-        Battle battle = pendingBattle(today.plusDays(1), today.plusDays(8));
+    @DisplayName("승인 즉시 startedAt이 설정되고 IN_PROGRESS 상태가 된다")
+    void accept_setsStartedAtAndReturnsInProgress() {
+        Battle battle = pendingBattle(7);
+        Instant now = Instant.now();
 
-        Battle result = battle.accept(today);
-
-        assertThat(result.battleStatus()).isEqualTo(BattleStatus.NOT_STARTED);
-    }
-
-    @Test
-    @DisplayName("수락 시 startDate 당일이면 IN_PROGRESS 상태가 된다")
-    void accept_returnsInProgress_whenOnStartDate() {
-        LocalDate today = LocalDate.now();
-        Battle battle = pendingBattle(today, today.plusDays(7));
-
-        Battle result = battle.accept(today);
+        Battle result = battle.accept(now);
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
+        assertThat(result.startedAt()).isEqualTo(now);
+        assertThat(result.endAt()).isEqualTo(now.plus(7, ChronoUnit.DAYS));
     }
 
     @Test
-    @DisplayName("수락 시 startDate 이후 endDate 이전이면 IN_PROGRESS 상태가 된다")
-    void accept_returnsInProgress_whenAfterStartDateBeforeEndDate() {
-        LocalDate today = LocalDate.now();
-        Battle battle = pendingBattle(today.minusDays(1), today.plusDays(6));
+    @DisplayName("resolveStatus: endAt이 지난 IN_PROGRESS 배틀은 DONE으로 보정된다")
+    void resolveStatus_returnsDone_whenInProgressAndExpired() {
+        Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
+        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
+        Battle battle = inProgressBattle(7, startedAt, endAt);
 
-        Battle result = battle.accept(today);
-
-        assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
-    }
-
-    @Test
-    @DisplayName("수락 시 endDate 이후이면 DONE 상태가 된다")
-    void accept_returnsDone_whenAfterEndDate() {
-        LocalDate today = LocalDate.now();
-        Battle battle = pendingBattle(today.minusDays(8), today.minusDays(1));
-
-        Battle result = battle.accept(today);
+        Battle result = battle.resolveStatus(Instant.now());
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.DONE);
     }
 
     @Test
-    @DisplayName("start() 호출 시 IN_PROGRESS 상태가 된다")
-    void start_returnsInProgress() {
-        LocalDate today = LocalDate.now();
-        Battle battle = notStartedBattle(today, today.plusDays(7));
+    @DisplayName("resolveStatus: endAt이 아직 남은 IN_PROGRESS 배틀은 상태 그대로 반환된다")
+    void resolveStatus_returnsUnchanged_whenInProgressAndNotExpired() {
+        Instant startedAt = Instant.now().minus(1, ChronoUnit.DAYS);
+        Instant endAt = Instant.now().plus(6, ChronoUnit.DAYS);
+        Battle battle = inProgressBattle(7, startedAt, endAt);
 
-        Battle result = battle.start();
+        Battle result = battle.resolveStatus(Instant.now());
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
     }
 
     @Test
-    @DisplayName("cancel() 호출 시 NOT_STARTED 배틀이 CANCELED 상태가 된다")
-    void cancel_returnsCanceled_fromNotStarted() {
-        LocalDate today = LocalDate.now();
-        Battle battle = notStartedBattle(today.minusDays(7), today.minusDays(1));
+    @DisplayName("cancel() 호출 시 CANCELED 상태가 된다")
+    void cancel_returnsCanceled() {
+        Battle battle = pendingBattle(7);
 
         Battle result = battle.cancel();
 
@@ -80,22 +61,22 @@ class BattleTest {
     @Test
     @DisplayName("finish() 호출 시 IN_PROGRESS 배틀이 DONE 상태가 된다")
     void finish_returnsDone_fromInProgress() {
-        LocalDate today = LocalDate.now();
-        Battle battle = new Battle(1L, Instant.now(), Instant.now(), today.minusDays(7), today.minusDays(1),
-                BattleStatus.IN_PROGRESS, null, 10L, 20L);
+        Instant startedAt = Instant.now().minus(7, ChronoUnit.DAYS);
+        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
+        Battle battle = inProgressBattle(7, startedAt, endAt);
 
         Battle result = battle.finish();
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.DONE);
     }
 
-    private Battle pendingBattle(LocalDate startDate, LocalDate endDate) {
-        return new Battle(1L, Instant.now(), Instant.now(), startDate, endDate,
-                BattleStatus.PENDING, null, 10L, 20L);
+    private Battle pendingBattle(int duration) {
+        return new Battle(1L, Instant.now(), Instant.now(), null, null,
+                duration, BattleStatus.PENDING, null, 10L, 20L);
     }
 
-    private Battle notStartedBattle(LocalDate startDate, LocalDate endDate) {
-        return new Battle(1L, Instant.now(), Instant.now(), startDate, endDate,
-                BattleStatus.NOT_STARTED, null, 10L, 20L);
+    private Battle inProgressBattle(int duration, Instant startedAt, Instant endAt) {
+        return new Battle(1L, Instant.now(), Instant.now(), startedAt, endAt,
+                duration, BattleStatus.IN_PROGRESS, null, 10L, 20L);
     }
 }
