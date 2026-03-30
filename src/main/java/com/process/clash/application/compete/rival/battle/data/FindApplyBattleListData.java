@@ -3,7 +3,6 @@ package com.process.clash.application.compete.rival.battle.data;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.domain.user.user.entity.User;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class FindApplyBattleListData {
@@ -27,12 +26,11 @@ public class FindApplyBattleListData {
     public record BattleApplyInfo(
             Long id,
             Enemy enemy,
-            LocalDate startDate,
-            LocalDate endDate,
+            int duration,
             Boolean isMine
     ) {
-        public static BattleApplyInfo of(Long id, Enemy enemy, LocalDate startDate, LocalDate endDate, Boolean isMine) {
-            return new BattleApplyInfo(id, enemy, startDate, endDate, isMine);
+        public static BattleApplyInfo of(Long id, Enemy enemy, int duration, Boolean isMine) {
+            return new BattleApplyInfo(id, enemy, duration, isMine);
         }
     }
 

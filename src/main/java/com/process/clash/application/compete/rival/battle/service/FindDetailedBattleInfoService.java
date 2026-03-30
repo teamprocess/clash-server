@@ -35,15 +35,20 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
 
         Battle battle = getBattleInfoPolicy.check(command.id());
 
+        LocalDate startDate = battle.startedAt() != null
+                ? battle.startedAt().atZone(battleZoneId).toLocalDate()
+                : LocalDate.now(battleZoneId);
+
+        LocalDate endDate = battle.battleStatus().equals(BattleStatus.DONE) && battle.endAt() != null
+                ? battle.endAt().atZone(battleZoneId).toLocalDate()
+                : LocalDate.now(battleZoneId);
+
         // 상대방이 탈퇴해 라이벌이 삭제된 경우 상대 정보 없이 반환
         if (battle.rivalId() == null) {
-            LocalDate endDate = battle.battleStatus().equals(BattleStatus.DONE)
-                    ? battle.endDate()
-                    : LocalDate.now(battleZoneId);
             double myAverageExp = userExpHistoryRepositoryPort
-                    .findAverageExpByUserIdAndPeriod(command.actor().id(), battle.startDate(), endDate);
+                    .findAverageExpByUserIdAndPeriod(command.actor().id(), startDate, endDate);
             double myOverallPercentage = myAverageExp == 0 ? 0 : 100.0;
-            return FindDetailedBattleInfoData.Result.of(battle, null, myOverallPercentage, null);
+            return FindDetailedBattleInfoData.Result.of(battle, null, endDate, myOverallPercentage, null);
         }
 
         Rival rival = rivalRepositoryPort.findById(battle.rivalId())
@@ -54,17 +59,11 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
         User user = userRepositoryPort.findById(rivalId)
                 .orElseThrow(UserNotFoundException::new);
 
-        LocalDate endDate = LocalDate.now(battleZoneId);
-
-        if (battle.battleStatus().equals(BattleStatus.DONE)) {
-            endDate = battle.endDate();
-        }
-
         double myAverageExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndPeriod(command.actor().id(), battle.startDate(), endDate);
+                .findAverageExpByUserIdAndPeriod(command.actor().id(), startDate, endDate);
 
         double enemyAverageExp = userExpHistoryRepositoryPort
-                .findAverageExpByUserIdAndPeriod(rivalId, battle.startDate(), endDate);
+                .findAverageExpByUserIdAndPeriod(rivalId, startDate, endDate);
 
         double totalAverageExp = myAverageExp + enemyAverageExp;
         double myOverallPercentage;
@@ -78,6 +77,6 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
             enemyOverallPercentage = (enemyAverageExp / totalAverageExp) * 100;
         }
 
-        return FindDetailedBattleInfoData.Result.of(battle, user, myOverallPercentage, enemyOverallPercentage);
+        return FindDetailedBattleInfoData.Result.of(battle, user, endDate, myOverallPercentage, enemyOverallPercentage);
     }
 }

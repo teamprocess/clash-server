@@ -4,7 +4,6 @@ import com.process.clash.adapter.persistence.rival.rival.RivalJpaEntity;
 import com.process.clash.adapter.persistence.user.user.UserJpaEntity;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import jakarta.persistence.*;
-import jakarta.persistence.EntityListeners;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.Instant;
 
 @Entity
@@ -36,11 +34,14 @@ public class BattleJpaEntity {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @Column(nullable = false)
-    private LocalDate startDate;
+    @Column(nullable = true)
+    private Instant startedAt;
+
+    @Column(nullable = true)
+    private Instant endAt;
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private int duration;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

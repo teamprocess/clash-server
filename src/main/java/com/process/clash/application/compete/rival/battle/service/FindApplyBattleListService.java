@@ -66,8 +66,7 @@ public class FindApplyBattleListService implements FindApplyBattleListUseCase {
                     return FindApplyBattleListData.BattleApplyInfo.of(
                             battle.id(),
                             FindApplyBattleListData.Enemy.from(enemy),
-                            battle.startDate(),
-                            battle.endDate(),
+                            battle.duration(),
                             isMine
                     );
                 })
