@@ -13,8 +13,8 @@ public interface AnnouncementJpaRepository extends JpaRepository<AnnouncementJpa
 
     @Query("""
             select a from AnnouncementJpaEntity a
-            where a.startAt <= :now and a.endAt >= :now
-            order by a.startAt desc
+            where a.startedAt <= :now and a.endedAt >= :now
+            order by a.startedAt desc
             """)
     List<AnnouncementJpaEntity> findAllActive(@Param("now") Instant now);
 }
