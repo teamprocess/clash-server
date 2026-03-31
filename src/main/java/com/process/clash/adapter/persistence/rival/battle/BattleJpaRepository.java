@@ -103,23 +103,27 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
 
     /**
      * 종료일이 지났으나 아직 IN_PROGRESS 상태인 배틀 조회 → DONE 처리 (스케줄러용)
+     * soft-delete된 라이벌(fk_rival_id IS NULL)은 제외
      */
     @Query(value = """
         SELECT b.*
         FROM battles b
         WHERE b.battle_status = 'IN_PROGRESS'
           AND b.end_date < :today
+          AND b.fk_rival_id IS NOT NULL
     """, nativeQuery = true)
     List<BattleJpaEntity> findExpiredInProgressBattles(@Param("today") LocalDate today);
 
     /**
      * 종료일이 지났으나 아직 NOT_STARTED 상태인 배틀 조회 → CANCELED 처리 (스케줄러용)
+     * soft-delete된 라이벌(fk_rival_id IS NULL)은 제외
      */
     @Query(value = """
         SELECT b.*
         FROM battles b
         WHERE b.battle_status = 'NOT_STARTED'
           AND b.end_date < :today
+          AND b.fk_rival_id IS NOT NULL
     """, nativeQuery = true)
     List<BattleJpaEntity> findExpiredNotStartedBattles(@Param("today") LocalDate today);
 
