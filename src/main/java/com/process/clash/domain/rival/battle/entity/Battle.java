@@ -116,4 +116,19 @@ public record Battle(
                 this.applicantId
         );
     }
+
+    public Battle finishWithWinner(Long winnerId) {
+
+        return new Battle(
+                this.id,
+                this.createdAt,
+                this.updatedAt,
+                this.startDate,
+                this.endDate,
+                BattleStatus.DONE,
+                winnerId,
+                this.rivalId,
+                this.applicantId
+        );
+    }
 }
