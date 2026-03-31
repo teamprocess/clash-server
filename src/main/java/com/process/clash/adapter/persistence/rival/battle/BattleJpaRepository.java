@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,45 +104,30 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
 
     /**
      * 종료 시각이 지났으나 아직 IN_PROGRESS 상태인 배틀 조회 → DONE 처리 (스케줄러용)
+     * soft-delete된 라이벌(fk_rival_id IS NULL)은 제외
      */
     @Query(value = """
         SELECT b.*
         FROM battles b
         WHERE b.battle_status = 'IN_PROGRESS'
-          AND b.end_date < :today
           AND b.fk_rival_id IS NOT NULL
           AND b.end_at < NOW()
     """, nativeQuery = true)
     List<BattleJpaEntity> findExpiredInProgressBattles();
 
     /**
-     * 종료 시각이 지났으나 아직 NOT_STARTED 상태인 배틀 조회 → CANCELED 처리 (스케줄러용, 구 데이터 호환)
-     */
-    @Query(value = """
-        SELECT b.*
-        FROM battles b
-        WHERE b.battle_status = 'NOT_STARTED'
-          AND b.end_date < :today
-          AND b.fk_rival_id IS NOT NULL
-          AND b.end_at IS NOT NULL
-          AND b.end_at < NOW()
-    """, nativeQuery = true)
-    List<BattleJpaEntity> findExpiredNotStartedBattles();
-    List<BattleJpaEntity> findExpiredNotStartedBattles(@Param("today") LocalDate today);
-
-    /**
-     * 시작일이 도래했으나 아직 NOT_STARTED 상태이고, 아직 종료되지 않은 배틀 조회 (스케줄러용)
+     * 종료 시각이 지났으나 아직 NOT_STARTED 상태인 배틀 조회 → CANCELED 처리 (스케줄러용)
      * soft-delete된 라이벌(fk_rival_id IS NULL)은 제외
      */
     @Query(value = """
         SELECT b.*
         FROM battles b
         WHERE b.battle_status = 'NOT_STARTED'
-          AND b.start_date <= :today
-          AND b.end_date >= :today
           AND b.fk_rival_id IS NOT NULL
+          AND b.end_at IS NOT NULL
+          AND b.end_at < NOW()
     """, nativeQuery = true)
-    List<BattleJpaEntity> findNotStartedBattlesToStart(@Param("today") LocalDate today);
+    List<BattleJpaEntity> findExpiredNotStartedBattles();
 
     /**
      * 유저 관련 PENDING 상태 배틀 신청 목록 조회
