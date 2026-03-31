@@ -15,7 +15,6 @@ public class UpdateAnnouncementAdminDto {
             @NotBlank(message = "제목은 비워둘 수 없습니다.")
             String title,
 
-            @NotBlank(message = "작성자는 비워둘 수 없습니다.")
             String author,
 
             @NotBlank(message = "내용은 비워둘 수 없습니다.")
@@ -28,7 +27,7 @@ public class UpdateAnnouncementAdminDto {
             Instant endedAt
     ) {
         public UpdateAnnouncementAdminData.Command toCommand(Actor actor, Long id) {
-            return new UpdateAnnouncementAdminData.Command(actor, id, title, author, content, startedAt, endedAt);
+            return new UpdateAnnouncementAdminData.Command(actor, id, title, author != null ? author : "PROCESS", content, startedAt, endedAt);
         }
     }
 
