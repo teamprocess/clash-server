@@ -2,7 +2,6 @@ package com.process.clash.domain.rival.battle.entity;
 
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 
-import java.time.LocalDate;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -118,8 +117,9 @@ public record Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
-                this.startDate,
-                this.endDate,
+                this.startedAt,
+                this.endAt,
+                this.duration,
                 BattleStatus.DONE,
                 winnerId,
                 this.rivalId,
