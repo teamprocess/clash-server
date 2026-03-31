@@ -24,7 +24,7 @@ public class BattleFinishScheduler {
         this.battleZoneId = ZoneId.of(battleTimezone);
     }
 
-    @Scheduled(cron = "0 0 6 * * *", zone = "${battle.timezone:Asia/Seoul}")
+    @Scheduled(cron = "0 0 * * * *", zone = "${battle.timezone:Asia/Seoul}")
     public void finishExpiredBattles() {
         safeFinish("scheduled");
     }

@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -97,6 +98,19 @@ class BattleFinishServiceTest {
 
         battleFinishService.finishExpiredBattles(today);
 
-        verify(battleRepositoryPort, never()).saveAll(List.of());
+        verify(battleRepositoryPort, never()).saveAll(any());
+    }
+
+    @Test
+    @DisplayName("soft-delete된 라이벌의 배틀은 쿼리에서 제외되어 saveAll을 호출하지 않는다")
+    void finishExpiredBattles_doesNotCallSaveAll_whenAllBattlesHaveSoftDeletedRival() {
+        LocalDate today = LocalDate.now();
+        // fk_rival_id IS NOT NULL 조건으로 soft-delete된 라이벌의 배틀은 이미 쿼리에서 필터링됨
+        when(battleRepositoryPort.findExpiredInProgressBattles(today)).thenReturn(List.of());
+        when(battleRepositoryPort.findExpiredNotStartedBattles(today)).thenReturn(List.of());
+
+        battleFinishService.finishExpiredBattles(today);
+
+        verify(battleRepositoryPort, never()).saveAll(any());
     }
 }

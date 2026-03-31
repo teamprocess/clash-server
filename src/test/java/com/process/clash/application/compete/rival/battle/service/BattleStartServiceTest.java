@@ -61,4 +61,17 @@ class BattleStartServiceTest {
 
         verify(battleRepositoryPort).saveAll(List.of());
     }
+
+    @Test
+    @DisplayName("soft-delete된 라이벌의 배틀은 조회에서 제외되어 빈 리스트로 saveAll을 호출한다")
+    void startScheduledBattles_savesEmptyList_whenAllBattlesHaveSoftDeletedRival() {
+        LocalDate today = LocalDate.now();
+        // fk_rival_id IS NOT NULL 조건으로 soft-delete된 라이벌의 배틀은 이미 쿼리에서 필터링됨
+        when(battleRepositoryPort.findNotStartedBattlesToStart(today)).thenReturn(List.of());
+        when(battleRepositoryPort.saveAll(List.of())).thenReturn(List.of());
+
+        battleStartService.startScheduledBattles(today);
+
+        verify(battleRepositoryPort).saveAll(List.of());
+    }
 }

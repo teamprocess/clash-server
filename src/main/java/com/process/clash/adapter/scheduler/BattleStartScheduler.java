@@ -26,7 +26,7 @@ public class BattleStartScheduler {
         this.battleZoneId = ZoneId.of(battleTimezone);
     }
 
-    @Scheduled(cron = "0 0 6 * * *", zone = BATTLE_TIMEZONE)
+    @Scheduled(cron = "0 0 * * * *", zone = BATTLE_TIMEZONE)
     public void startScheduledBattles() {
         safeStart("scheduled");
     }
