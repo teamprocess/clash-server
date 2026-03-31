@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,5 +22,30 @@ public class AnnouncementPersistenceAdapter implements AnnouncementRepositoryPor
                 .stream()
                 .map(announcementJpaMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Announcement save(Announcement announcement) {
+        AnnouncementJpaEntity entity = announcementJpaMapper.toJpaEntity(announcement);
+        return announcementJpaMapper.toDomain(announcementJpaRepository.save(entity));
+    }
+
+    @Override
+    public Optional<Announcement> findById(Long id) {
+        return announcementJpaRepository.findById(id)
+                .map(announcementJpaMapper::toDomain);
+    }
+
+    @Override
+    public List<Announcement> findAll() {
+        return announcementJpaRepository.findAll()
+                .stream()
+                .map(announcementJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        announcementJpaRepository.deleteById(id);
     }
 }

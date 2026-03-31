@@ -19,4 +19,18 @@ public class AnnouncementJpaMapper {
                 entity.getEndAt()
         );
     }
+
+    public AnnouncementJpaEntity toJpaEntity(Announcement domain) {
+        return new AnnouncementJpaEntity(
+                domain.id(),
+                domain.createdAt(),
+                domain.updatedAt(),
+                domain.title(),
+                domain.author(),
+                domain.userId(),
+                domain.content(),
+                domain.startAt(),
+                domain.endAt()
+        );
+    }
 }
