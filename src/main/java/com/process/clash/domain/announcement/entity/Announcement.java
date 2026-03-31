@@ -10,7 +10,7 @@ public record Announcement(
         String author,
         Long userId,
         String content,
-        Instant startAt,
-        Instant endAt
+        Instant startedAt,
+        Instant endedAt
 ) {
 }

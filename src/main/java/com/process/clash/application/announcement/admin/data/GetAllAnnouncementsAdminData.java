@@ -15,8 +15,8 @@ public class GetAllAnnouncementsAdminData {
             String author,
             Long userId,
             String content,
-            Instant startAt,
-            Instant endAt,
+            Instant startedAt,
+            Instant endedAt,
             Instant createdAt
     ) {
         public static AnnouncementItem from(Announcement announcement) {
@@ -26,8 +26,8 @@ public class GetAllAnnouncementsAdminData {
                     announcement.author(),
                     announcement.userId(),
                     announcement.content(),
-                    announcement.startAt(),
-                    announcement.endAt(),
+                    announcement.startedAt(),
+                    announcement.endedAt(),
                     announcement.createdAt()
             );
         }

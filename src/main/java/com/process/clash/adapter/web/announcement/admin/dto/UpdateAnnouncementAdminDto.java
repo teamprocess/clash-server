@@ -22,13 +22,13 @@ public class UpdateAnnouncementAdminDto {
             String content,
 
             @NotNull(message = "시작 시각은 비워둘 수 없습니다.")
-            Instant startAt,
+            Instant startedAt,
 
             @NotNull(message = "종료 시각은 비워둘 수 없습니다.")
-            Instant endAt
+            Instant endedAt
     ) {
         public UpdateAnnouncementAdminData.Command toCommand(Actor actor, Long id) {
-            return new UpdateAnnouncementAdminData.Command(actor, id, title, author, content, startAt, endAt);
+            return new UpdateAnnouncementAdminData.Command(actor, id, title, author, content, startedAt, endedAt);
         }
     }
 
@@ -39,8 +39,8 @@ public class UpdateAnnouncementAdminDto {
             String author,
             Long userId,
             String content,
-            String startAt,
-            String endAt,
+            String startedAt,
+            String endedAt,
             String updatedAt
     ) {
         public static Response from(UpdateAnnouncementAdminData.Result result) {
@@ -50,8 +50,8 @@ public class UpdateAnnouncementAdminDto {
                     result.author(),
                     result.userId(),
                     result.content(),
-                    result.startAt().toString(),
-                    result.endAt().toString(),
+                    result.startedAt().toString(),
+                    result.endedAt().toString(),
                     result.updatedAt() != null ? result.updatedAt().toString() : null
             );
         }

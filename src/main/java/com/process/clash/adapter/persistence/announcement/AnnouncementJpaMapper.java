@@ -15,8 +15,8 @@ public class AnnouncementJpaMapper {
                 entity.getAuthor(),
                 entity.getUserId(),
                 entity.getContent(),
-                entity.getStartAt(),
-                entity.getEndAt()
+                entity.getStartedAt(),
+                entity.getEndedAt()
         );
     }
 
@@ -29,8 +29,8 @@ public class AnnouncementJpaMapper {
                 domain.author(),
                 domain.userId(),
                 domain.content(),
-                domain.startAt(),
-                domain.endAt()
+                domain.startedAt(),
+                domain.endedAt()
         );
     }
 }

@@ -13,8 +13,8 @@ public class UpdateAnnouncementAdminData {
             String title,
             String author,
             String content,
-            Instant startAt,
-            Instant endAt
+            Instant startedAt,
+            Instant endedAt
     ) {}
 
     public record Result(
@@ -23,8 +23,8 @@ public class UpdateAnnouncementAdminData {
             String author,
             Long userId,
             String content,
-            Instant startAt,
-            Instant endAt,
+            Instant startedAt,
+            Instant endedAt,
             Instant updatedAt
     ) {
         public static Result from(Announcement announcement) {
@@ -34,8 +34,8 @@ public class UpdateAnnouncementAdminData {
                     announcement.author(),
                     announcement.userId(),
                     announcement.content(),
-                    announcement.startAt(),
-                    announcement.endAt(),
+                    announcement.startedAt(),
+                    announcement.endedAt(),
                     announcement.updatedAt()
             );
         }

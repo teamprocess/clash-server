@@ -18,8 +18,8 @@ public class GetAllAnnouncementsAdminDto {
                             a.author(),
                             a.userId(),
                             a.content(),
-                            a.startAt().toString(),
-                            a.endAt().toString(),
+                            a.startedAt().toString(),
+                            a.endedAt().toString(),
                             a.createdAt().toString()
                     ))
                     .toList();
@@ -33,8 +33,8 @@ public class GetAllAnnouncementsAdminDto {
             String author,
             Long userId,
             String content,
-            String startAt,
-            String endAt,
+            String startedAt,
+            String endedAt,
             String createdAt
     ) {}
 }

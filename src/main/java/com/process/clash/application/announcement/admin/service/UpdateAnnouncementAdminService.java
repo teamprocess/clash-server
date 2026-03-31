@@ -33,8 +33,8 @@ public class UpdateAnnouncementAdminService implements UpdateAnnouncementAdminUs
                 command.author(),
                 existing.userId(),
                 command.content(),
-                command.startAt(),
-                command.endAt()
+                command.startedAt(),
+                command.endedAt()
         );
 
         Announcement saved = announcementRepositoryPort.save(updated);

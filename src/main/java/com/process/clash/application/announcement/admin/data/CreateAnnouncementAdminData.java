@@ -12,11 +12,11 @@ public class CreateAnnouncementAdminData {
             String title,
             String author,
             String content,
-            Instant startAt,
-            Instant endAt
+            Instant startedAt,
+            Instant endedAt
     ) {
         public Announcement toDomain() {
-            return new Announcement(null, null, null, title, author, actor.id(), content, startAt, endAt);
+            return new Announcement(null, null, null, title, author, actor.id(), content, startedAt, endedAt);
         }
     }
 
@@ -26,8 +26,8 @@ public class CreateAnnouncementAdminData {
             String author,
             Long userId,
             String content,
-            Instant startAt,
-            Instant endAt,
+            Instant startedAt,
+            Instant endedAt,
             Instant createdAt
     ) {
         public static Result from(Announcement announcement) {
@@ -37,8 +37,8 @@ public class CreateAnnouncementAdminData {
                     announcement.author(),
                     announcement.userId(),
                     announcement.content(),
-                    announcement.startAt(),
-                    announcement.endAt(),
+                    announcement.startedAt(),
+                    announcement.endedAt(),
                     announcement.createdAt()
             );
         }
