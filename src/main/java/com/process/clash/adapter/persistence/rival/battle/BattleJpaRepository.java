@@ -129,6 +129,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
 
     /**
      * 시작일이 도래했으나 아직 NOT_STARTED 상태이고, 아직 종료되지 않은 배틀 조회 (스케줄러용)
+     * soft-delete된 라이벌(fk_rival_id IS NULL)은 제외
      */
     @Query(value = """
         SELECT b.*
@@ -136,6 +137,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         WHERE b.battle_status = 'NOT_STARTED'
           AND b.start_date <= :today
           AND b.end_date >= :today
+          AND b.fk_rival_id IS NOT NULL
     """, nativeQuery = true)
     List<BattleJpaEntity> findNotStartedBattlesToStart(@Param("today") LocalDate today);
 
