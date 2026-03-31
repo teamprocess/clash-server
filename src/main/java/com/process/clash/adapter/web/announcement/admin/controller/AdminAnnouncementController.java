@@ -50,7 +50,7 @@ public class AdminAnnouncementController implements AdminAnnouncementControllerD
     }
 
     @Override
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ApiResponse<UpdateAnnouncementAdminDto.Response> updateAnnouncement(
             @AuthenticatedActor Actor actor,
             @PathVariable Long id,
