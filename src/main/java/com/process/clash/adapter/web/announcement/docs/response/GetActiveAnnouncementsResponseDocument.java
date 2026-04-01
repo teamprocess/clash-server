@@ -33,9 +33,9 @@ public class GetActiveAnnouncementsResponseDocument extends SuccessResponseDocum
         public String content;
 
         @Schema(description = "공지 시작 시각 (ISO 8601)", example = "2026-03-29T00:00:00Z")
-        public String startAt;
+        public String startedAt;
 
         @Schema(description = "공지 종료 시각 (ISO 8601)", example = "2026-04-01T00:00:00Z")
-        public String endAt;
+        public String endedAt;
     }
 }

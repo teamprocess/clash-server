@@ -37,8 +37,8 @@ public interface AdminAnnouncementControllerDocument {
                                         "author": "관리자",
                                         "userId": 1,
                                         "content": "3월 30일 오전 2시~4시 서버 점검이 예정되어 있습니다.",
-                                        "startAt": "2026-03-29T00:00:00Z",
-                                        "endAt": "2026-04-01T00:00:00Z",
+                                        "startedAt": "2026-03-29T00:00:00Z",
+                                        "endedAt": "2026-04-01T00:00:00Z",
                                         "createdAt": "2026-03-28T12:00:00Z"
                                       }
                                     }
@@ -67,8 +67,8 @@ public interface AdminAnnouncementControllerDocument {
                                             "author": "관리자",
                                             "userId": 1,
                                             "content": "3월 30일 오전 2시~4시 서버 점검이 예정되어 있습니다.",
-                                            "startAt": "2026-03-29T00:00:00Z",
-                                            "endAt": "2026-04-01T00:00:00Z",
+                                            "startedAt": "2026-03-29T00:00:00Z",
+                                            "endedAt": "2026-04-01T00:00:00Z",
                                             "createdAt": "2026-03-28T12:00:00Z"
                                           }
                                         ]
@@ -96,8 +96,8 @@ public interface AdminAnnouncementControllerDocument {
                                         "author": "관리자",
                                         "userId": 1,
                                         "content": "점검 시간이 변경되었습니다.",
-                                        "startAt": "2026-03-29T00:00:00Z",
-                                        "endAt": "2026-04-02T00:00:00Z",
+                                        "startedAt": "2026-03-29T00:00:00Z",
+                                        "endedAt": "2026-04-02T00:00:00Z",
                                         "updatedAt": "2026-03-29T09:00:00Z"
                                       }
                                     }

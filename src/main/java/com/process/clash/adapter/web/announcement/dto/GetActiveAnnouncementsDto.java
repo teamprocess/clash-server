@@ -16,8 +16,8 @@ public class GetActiveAnnouncementsDto {
                             announcement.author(),
                             announcement.userId(),
                             announcement.content(),
-                            announcement.startAt() != null ? announcement.startAt().toString() : null,
-                            announcement.endAt() != null ? announcement.endAt().toString() : null
+                            announcement.startedAt() != null ? announcement.startedAt().toString() : null,
+                            announcement.endedAt() != null ? announcement.endedAt().toString() : null
                     ))
                     .toList();
             return new Response(items);
@@ -30,7 +30,7 @@ public class GetActiveAnnouncementsDto {
             String author,
             Long userId,
             String content,
-            String startAt,
-            String endAt
+            String startedAt,
+            String endedAt
     ) {}
 }
