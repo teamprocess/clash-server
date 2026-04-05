@@ -10,6 +10,7 @@ import com.process.clash.application.user.user.port.in.ResetPasswordUseCase;
 import com.process.clash.application.user.user.port.in.SignInUseCase;
 import com.process.clash.application.user.user.port.in.SignUpUseCase;
 import com.process.clash.domain.user.user.enums.Role;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,7 +56,9 @@ public class AuthControllerTest {
 
     private void initMockMvc() {
         if (this.mockMvc == null) {
-            this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
+            this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
+                    .apply(springSecurity())
+                    .build();
         }
     }
 
@@ -120,5 +126,29 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.message").value("비밀번호가 변경되었습니다."))
                 .andExpect(jsonPath("$.data.state").value("eionbosdb"))
                 .andExpect(jsonPath("$.data.redirectUri").value("clashapp://auth"));
+    }
+
+    @Test
+    @DisplayName("허용된 Origin의 CORS preflight 요청은 Allow-Origin 헤더와 함께 성공한다")
+    void corsPreflight_shouldAllowConfiguredOrigin() throws Exception {
+        initMockMvc();
+
+        mockMvc.perform(options("/api/auth/sign-in")
+                        .header("Origin", "https://api.clash.kr")
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://api.clash.kr"));
+    }
+
+    @Test
+    @DisplayName("허용되지 않은 Origin의 CORS preflight 요청은 403으로 거부된다")
+    void corsPreflight_shouldRejectUnconfiguredOrigin() throws Exception {
+        initMockMvc();
+
+        mockMvc.perform(options("/api/auth/sign-in")
+                        .header("Origin", "https://evil.example.com")
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(status().isForbidden())
+                .andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
     }
 }

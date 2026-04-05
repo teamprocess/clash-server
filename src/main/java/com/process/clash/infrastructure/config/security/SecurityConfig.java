@@ -23,7 +23,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,6 +39,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -66,10 +66,13 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain healthSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain healthSecurityFilterChain(
+            HttpSecurity http,
+            CorsConfigurationSource corsConfigurationSource
+    ) throws Exception {
         http
                 .securityMatcher("/health", "/health/**", "/actuator/health", "/actuator/health/**")
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
@@ -88,9 +91,13 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            RememberMeServices rememberMeServices,
+            CorsConfigurationSource corsConfigurationSource
+    ) throws Exception {
         http
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
