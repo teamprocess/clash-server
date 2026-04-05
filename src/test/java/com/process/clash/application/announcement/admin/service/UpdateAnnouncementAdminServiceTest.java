@@ -62,7 +62,7 @@ class UpdateAnnouncementAdminServiceTest {
 
         assertThat(result.title()).isEqualTo("수정된 제목");
         assertThat(result.content()).isEqualTo("수정된 내용");
-        assertThat(result.endAt()).isEqualTo(endAt);
+        assertThat(result.endedAt()).isEqualTo(endAt);
         verify(announcementRepositoryPort).save(any());
     }
 

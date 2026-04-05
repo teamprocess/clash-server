@@ -8,10 +8,13 @@ import com.process.clash.application.shop.recommendedproduct.port.in.GetRecommen
 import com.process.clash.application.shop.recommendedproduct.port.out.RecommendedProductRepositoryPort;
 import com.process.clash.domain.shop.product.entity.Product;
 import com.process.clash.domain.shop.recommendedproduct.entity.RecommendedProduct;
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +27,25 @@ public class GetRecommendedProductsService implements GetRecommendedProductsUseC
 
     @Override
     public GetRecommendedProductsData.Result execute(GetRecommendedProductsData.Command command) {
-        List<RecommendedProduct> recommendations = recommendedProductRepositoryPort.findTop10ByIsActiveTrueOrderByDisplayOrder();
+        List<RecommendedProduct> recommendations = recommendedProductRepositoryPort
+                .findTop10ActiveByDateOrderByDisplayOrder(LocalDate.now());
 
         List<Long> productIds = recommendations.stream()
                 .map(RecommendedProduct::productId)
                 .toList();
 
         List<Product> products = productRepositoryPort.findAllByIdIn(productIds);
-        List<ProductVo> productVos = productVoConverter.toProductVos(products, command.actor());
+        Map<Long, Product> productById = new LinkedHashMap<>();
+        for (Product product : products) {
+            productById.put(product.id(), product);
+        }
+
+        List<Product> orderedProducts = productIds.stream()
+                .map(productById::get)
+                .filter(java.util.Objects::nonNull)
+                .toList();
+
+        List<ProductVo> productVos = productVoConverter.toProductVos(orderedProducts, command.actor());
 
         return new GetRecommendedProductsData.Result(productVos);
     }
