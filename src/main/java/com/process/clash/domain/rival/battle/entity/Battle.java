@@ -2,29 +2,31 @@ package com.process.clash.domain.rival.battle.entity;
 
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 
-import java.time.LocalDate;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 public record Battle(
         Long id,
         Instant createdAt,
         Instant updatedAt,
-        LocalDate startDate,
-        LocalDate endDate,
+        Instant startedAt,
+        Instant endAt,
+        int duration,
         BattleStatus battleStatus,
         Long winnerId,
         Long rivalId,
         Long applicantId
 ) {
 
-    public static Battle createDefault(LocalDate startDate, LocalDate endDate, Long rivalId, Long applicantId) {
+    public static Battle createDefault(int duration, Long rivalId, Long applicantId) {
 
         return new Battle(
                 null,
                 null,
                 null,
-                startDate,
-                endDate,
+                null,
+                null,
+                duration,
                 BattleStatus.PENDING,
                 null,
                 rivalId,
@@ -32,44 +34,40 @@ public record Battle(
         );
     }
 
-    public Battle accept(LocalDate today) {
-
-        BattleStatus status;
-
-        if (today.isAfter(this.endDate)) {
-            status = BattleStatus.DONE;
-        } else if (!today.isBefore(this.startDate)) {
-            status = BattleStatus.IN_PROGRESS;
-        } else {
-            status = BattleStatus.NOT_STARTED;
-        }
+    public Battle accept(Instant now) {
 
         return new Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
-                this.startDate,
-                this.endDate,
-                status,
+                now,
+                now.plus(this.duration, ChronoUnit.DAYS),
+                this.duration,
+                BattleStatus.IN_PROGRESS,
                 this.winnerId,
                 this.rivalId,
                 this.applicantId
         );
     }
 
-    public Battle start() {
+    /**
+     * 배틀이 IN_PROGRESS 상태이며 종료 시각이 지났는지 확인한다.
+     */
+    public boolean isExpiredInProgress(Instant now) {
+        return this.battleStatus == BattleStatus.IN_PROGRESS
+                && this.endAt != null
+                && this.endAt.isBefore(now);
+    }
 
-        return new Battle(
-                this.id,
-                this.createdAt,
-                this.updatedAt,
-                this.startDate,
-                this.endDate,
-                BattleStatus.IN_PROGRESS,
-                this.winnerId,
-                this.rivalId,
-                this.applicantId
-        );
+    /**
+     * 조회 시점에 만료된 배틀을 DONE 상태로 보정한다.
+     * DB 업데이트 없이 반환 값만 보정하는 fallback 용도로 사용한다.
+     */
+    public Battle resolveStatus(Instant now) {
+        if (isExpiredInProgress(now)) {
+            return finish();
+        }
+        return this;
     }
 
     public Battle reject() {
@@ -78,8 +76,9 @@ public record Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
-                this.startDate,
-                this.endDate,
+                this.startedAt,
+                this.endAt,
+                this.duration,
                 BattleStatus.REJECTED,
                 this.winnerId,
                 this.rivalId,
@@ -93,8 +92,9 @@ public record Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
-                this.startDate,
-                this.endDate,
+                this.startedAt,
+                this.endAt,
+                this.duration,
                 BattleStatus.CANCELED,
                 this.winnerId,
                 this.rivalId,
@@ -108,8 +108,9 @@ public record Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
-                this.startDate,
-                this.endDate,
+                this.startedAt,
+                this.endAt,
+                this.duration,
                 BattleStatus.DONE,
                 this.winnerId,
                 this.rivalId,
@@ -123,8 +124,9 @@ public record Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
-                this.startDate,
-                this.endDate,
+                this.startedAt,
+                this.endAt,
+                this.duration,
                 BattleStatus.DONE,
                 winnerId,
                 this.rivalId,

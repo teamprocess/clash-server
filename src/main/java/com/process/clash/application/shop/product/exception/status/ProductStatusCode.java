@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ProductStatusCode implements StatusCode {
     PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND", "상품을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    PRODUCT_IN_USE("PRODUCT_IN_USE", "다른 데이터에서 사용 중인 상품은 삭제할 수 없습니다.", HttpStatus.CONFLICT),
     INVALID_TITLE("INVALID_TITLE", "상품 제목은 필수입니다.", HttpStatus.BAD_REQUEST),
     INVALID_PRICE("INVALID_PRICE", "가격은 0 이상이어야 합니다.", HttpStatus.BAD_REQUEST),
     INVALID_DISCOUNT("INVALID_DISCOUNT", "할인율은 0~100 사이여야 합니다.", HttpStatus.BAD_REQUEST),

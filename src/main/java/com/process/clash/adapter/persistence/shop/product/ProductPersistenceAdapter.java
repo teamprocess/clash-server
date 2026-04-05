@@ -34,6 +34,12 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     }
 
     @Override
+    public void deleteById(Long productId) {
+        productJpaRepository.deleteById(productId);
+        productJpaRepository.flush();
+    }
+
+    @Override
     public List<Product> findAllByIdIn(List<Long> productIds) {
         return productJpaRepository.findByIdIn(productIds)
                 .stream()

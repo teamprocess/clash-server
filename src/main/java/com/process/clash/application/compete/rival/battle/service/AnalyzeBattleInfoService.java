@@ -10,6 +10,7 @@ import com.process.clash.application.record.v2.port.out.RecordSessionV2Repositor
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.TargetCategory;
 import com.process.clash.domain.rival.battle.entity.Battle;
+import com.process.clash.domain.rival.battle.enums.BattleStatus;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 @Service
@@ -31,6 +33,7 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
     private final RivalRepositoryPort rivalRepositoryPort;
     private final GetBattleInfoPolicy getBattleInfoPolicy;
     private final RecordProperties recordProperties;
+    private final ZoneId battleZoneId;
 
     @Override
     public AnalyzeBattleInfoData.Result execute(AnalyzeBattleInfoData.Command command) {
@@ -53,12 +56,19 @@ public class AnalyzeBattleInfoService implements AnalyzeBattleInfoUseCase {
                 ? rival.secondUserId()
                 : rival.firstUserId();
 
-        // 카테고리별 점수 계산
+        // 카테고리별 점수 계산 (startedAt/endAt을 KST 기준 LocalDate로 변환)
+        LocalDate startDate = battle.startedAt() != null
+                ? battle.startedAt().atZone(battleZoneId).toLocalDate()
+                : LocalDate.now(battleZoneId);
+        LocalDate endDate = battle.battleStatus() == BattleStatus.DONE && battle.endAt() != null
+                ? battle.endAt().atZone(battleZoneId).toLocalDate()
+                : LocalDate.now(battleZoneId);
+
         Integer myPoint = calculatePointByCategory(
-                userId, category, battle.startDate(), battle.endDate()
+                userId, category, startDate, endDate
         );
         Integer enemyPoint = calculatePointByCategory(
-                enemyId, category, battle.startDate(), battle.endDate()
+                enemyId, category, startDate, endDate
         );
 
         return AnalyzeBattleInfoData.Result.of(category, battle.id(), enemyPoint, myPoint);

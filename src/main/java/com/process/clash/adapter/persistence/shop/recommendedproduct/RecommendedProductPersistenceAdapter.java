@@ -2,6 +2,7 @@ package com.process.clash.adapter.persistence.shop.recommendedproduct;
 
 import com.process.clash.application.shop.recommendedproduct.port.out.RecommendedProductRepositoryPort;
 import com.process.clash.domain.shop.recommendedproduct.entity.RecommendedProduct;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -39,8 +40,12 @@ public class RecommendedProductPersistenceAdapter implements RecommendedProductR
     }
 
     @Override
-    public List<RecommendedProduct> findTop10ByIsActiveTrueOrderByDisplayOrder() {
-        return recommendedProductJpaRepository.findTop10ByIsActiveTrueOrderByDisplayOrderAsc()
+    public List<RecommendedProduct> findTop10ActiveByDateOrderByDisplayOrder(LocalDate date) {
+        return recommendedProductJpaRepository
+                .findTop10ByIsActiveTrueAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByDisplayOrderAsc(
+                        date,
+                        date
+                )
                 .stream()
                 .map(recommendedProductJpaMapper::toDomain)
                 .toList();

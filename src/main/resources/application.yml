@@ -143,6 +143,8 @@ security:
     key: ${REMEMBER_ME_KEY:UniqueKey}
 
 app:
+  recaptcha:
+    enabled: ${ENABLE_RECAPTCHA:true}
   reset-password:
     base-url: ${RESET_PASSWORD_BASE_URL:https://clash.kr/#/reset-password?token=}
 
