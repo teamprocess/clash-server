@@ -110,20 +110,4 @@ public record Battle(
                 this.applicantId
         );
     }
-
-    public Battle finishWithWinner(Long winnerId) {
-
-        return new Battle(
-                this.id,
-                this.createdAt,
-                this.updatedAt,
-                this.startedAt,
-                this.endAt,
-                this.duration,
-                BattleStatus.DONE,
-                winnerId,
-                this.rivalId,
-                this.applicantId
-        );
-    }
 }

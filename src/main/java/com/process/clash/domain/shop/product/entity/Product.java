@@ -58,6 +58,31 @@ public record Product(
         );
     }
 
+    public Product update(
+            String title,
+            ProductCategory category,
+            String image,
+            Long price,
+            Integer discount,
+            String description,
+            Season season
+    ) {
+        return new Product(
+                this.id,
+                this.createdAt,
+                Instant.now(),
+                title,
+                category,
+                image,
+                price,
+                discount != null ? discount : 0,
+                description,
+                this.popularity,
+                season,
+                season != null
+        );
+    }
+
     public Product increasePopularity() {
         long nextPopularity = this.popularity != null ? this.popularity + 1 : 1L;
         return new Product(

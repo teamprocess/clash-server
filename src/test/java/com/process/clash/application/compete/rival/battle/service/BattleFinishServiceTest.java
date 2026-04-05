@@ -1,12 +1,8 @@
 package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
-import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
-import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
-import com.process.clash.domain.rival.rival.entity.Rival;
-import com.process.clash.domain.rival.rival.enums.RivalLinkingStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,15 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BattleFinishServiceTest {
@@ -34,22 +24,11 @@ class BattleFinishServiceTest {
     @Mock
     private BattleRepositoryPort battleRepositoryPort;
 
-    @Mock
-    private RivalRepositoryPort rivalRepositoryPort;
-
-    @Mock
-    private UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
-
     private BattleFinishService battleFinishService;
-
-    private static final Long BATTLE_ID = 1L;
-    private static final Long RIVAL_ID = 10L;
-    private static final Long FIRST_USER_ID = 100L;
-    private static final Long SECOND_USER_ID = 200L;
 
     @BeforeEach
     void setUp() {
-        battleFinishService = new BattleFinishService(battleRepositoryPort, rivalRepositoryPort, userExpHistoryRepositoryPort);
+        battleFinishService = new BattleFinishService(battleRepositoryPort);
     }
 
     @Test
@@ -57,12 +36,11 @@ class BattleFinishServiceTest {
     void finishExpiredBattles_transitionsInProgressToDone() {
         Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
         Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
-        Battle inProgressBattle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, RIVAL_ID, 20L);
+        Battle inProgressBattle = new Battle(1L, Instant.now(), Instant.now(),
+                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, 10L, 20L);
 
         when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of(inProgressBattle));
         when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of());
-        stubRivalAndExp(inProgressBattle, 50.0, 30.0);
 
         battleFinishService.finishExpiredBattles();
 
@@ -77,7 +55,7 @@ class BattleFinishServiceTest {
         Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
         Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
         Battle notStartedBattle = new Battle(2L, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.NOT_STARTED, null, RIVAL_ID, 20L);
+                startedAt, endAt, 7, BattleStatus.NOT_STARTED, null, 10L, 20L);
 
         when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of());
         when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of(notStartedBattle));
@@ -94,14 +72,13 @@ class BattleFinishServiceTest {
     void finishExpiredBattles_savesAllInSingleCall() {
         Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
         Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
-        Battle inProgressBattle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, RIVAL_ID, 20L);
+        Battle inProgressBattle = new Battle(1L, Instant.now(), Instant.now(),
+                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, 10L, 20L);
         Battle notStartedBattle = new Battle(2L, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.NOT_STARTED, null, RIVAL_ID, 20L);
+                startedAt, endAt, 7, BattleStatus.NOT_STARTED, null, 10L, 20L);
 
         when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of(inProgressBattle));
         when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of(notStartedBattle));
-        stubRivalAndExp(inProgressBattle, 50.0, 30.0);
 
         battleFinishService.finishExpiredBattles();
 
@@ -113,78 +90,6 @@ class BattleFinishServiceTest {
     }
 
     @Test
-    @DisplayName("평균 exp가 높은 유저가 승자로 설정된다")
-    void finishExpiredBattles_assignsWinnerWithHigherAvgExp() {
-        Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
-        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
-        Battle inProgressBattle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, RIVAL_ID, 20L);
-
-        when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of(inProgressBattle));
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of());
-        stubRivalAndExp(inProgressBattle, 80.0, 50.0);
-
-        battleFinishService.finishExpiredBattles();
-
-        ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort).saveAll(captor.capture());
-        assertThat(captor.getValue())
-                .filteredOn(b -> b.battleStatus() == BattleStatus.DONE)
-                .allMatch(b -> FIRST_USER_ID.equals(b.winnerId()));
-    }
-
-    @Test
-    @DisplayName("평균 exp가 동일하면 무승부로 winnerId가 null이다")
-    void finishExpiredBattles_setsNullWinnerId_whenExpIsEqual() {
-        Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
-        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
-        Battle inProgressBattle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, RIVAL_ID, 20L);
-
-        when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of(inProgressBattle));
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of());
-        stubRivalAndExp(inProgressBattle, 50.0, 50.0);
-
-        battleFinishService.finishExpiredBattles();
-
-        ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort).saveAll(captor.capture());
-        assertThat(captor.getValue())
-                .filteredOn(b -> b.battleStatus() == BattleStatus.DONE)
-                .allMatch(b -> b.winnerId() == null);
-    }
-
-    @Test
-    @DisplayName("라이벌 조회 실패 시 해당 배틀을 건너뛰고 나머지 배틀은 정상 처리한다")
-    void finishExpiredBattles_skipsFailedBattle_andProcessesRest() {
-        Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
-        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
-        Long otherRivalId = 20L;
-        Battle failBattle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, RIVAL_ID, 30L);
-        Battle okBattle = new Battle(2L, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, otherRivalId, 30L);
-
-        when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of(failBattle, okBattle));
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of());
-        // RIVAL_ID는 rivalMap에 없음 (soft-delete 등으로 조회 불가)
-        when(rivalRepositoryPort.findByIdIn(Set.of(RIVAL_ID, otherRivalId))).thenReturn(List.of(
-                new Rival(otherRivalId, null, null, RivalLinkingStatus.ACCEPTED, FIRST_USER_ID, SECOND_USER_ID)
-        ));
-        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(FIRST_USER_ID), any()))
-                .thenReturn(Map.of(2L, 60.0));
-        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(SECOND_USER_ID), any()))
-                .thenReturn(Map.of(2L, 40.0));
-
-        battleFinishService.finishExpiredBattles();
-
-        ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort).saveAll(captor.capture());
-        assertThat(captor.getValue()).hasSize(1)
-                .allMatch(b -> b.id().equals(2L) && b.battleStatus() == BattleStatus.DONE);
-    }
-
-    @Test
     @DisplayName("종료할 배틀이 없으면 saveAll을 호출하지 않는다")
     void finishExpiredBattles_doesNotCallSaveAll_whenNoBattlesToProcess() {
         when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of());
@@ -193,26 +98,5 @@ class BattleFinishServiceTest {
         battleFinishService.finishExpiredBattles();
 
         verify(battleRepositoryPort, never()).saveAll(any());
-    }
-
-    @Test
-    @DisplayName("soft-delete된 라이벌의 배틀은 쿼리에서 제외되어 saveAll을 호출하지 않는다")
-    void finishExpiredBattles_doesNotCallSaveAll_whenAllBattlesHaveSoftDeletedRival() {
-        when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of());
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of());
-
-        battleFinishService.finishExpiredBattles();
-
-        verify(battleRepositoryPort, never()).saveAll(any());
-    }
-
-    private void stubRivalAndExp(Battle battle, double firstUserExp, double secondUserExp) {
-        when(rivalRepositoryPort.findByIdIn(Set.of(battle.rivalId()))).thenReturn(List.of(
-                new Rival(battle.rivalId(), null, null, RivalLinkingStatus.ACCEPTED, FIRST_USER_ID, SECOND_USER_ID)
-        ));
-        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(FIRST_USER_ID), any()))
-                .thenReturn(Map.of(battle.id(), firstUserExp));
-        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(SECOND_USER_ID), any()))
-                .thenReturn(Map.of(battle.id(), secondUserExp));
     }
 }

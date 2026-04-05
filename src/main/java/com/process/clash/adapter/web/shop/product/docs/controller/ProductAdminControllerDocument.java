@@ -1,8 +1,13 @@
 package com.process.clash.adapter.web.shop.product.docs.controller;
 
 import com.process.clash.adapter.web.shop.product.docs.request.CreateProductRequestDocument;
+import com.process.clash.adapter.web.shop.product.docs.request.UpdateProductRequestDocument;
 import com.process.clash.adapter.web.shop.product.docs.response.CreateProductResponseDocument;
+import com.process.clash.adapter.web.shop.product.docs.response.DeleteProductResponseDocument;
+import com.process.clash.adapter.web.shop.product.docs.response.UpdateProductResponseDocument;
 import com.process.clash.adapter.web.shop.product.dto.CreateProductDto;
+import com.process.clash.adapter.web.shop.product.dto.DeleteProductDto;
+import com.process.clash.adapter.web.shop.product.dto.UpdateProductDto;
 import com.process.clash.application.common.actor.Actor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,8 +18,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@Tag(name = "상품 관리 API", description = "상품 생성")
+@Tag(name = "상품 관리 API", description = "상품 생성/수정/삭제")
 public interface ProductAdminControllerDocument {
 
     @Operation(summary = "상품 생성", description = "새로운 상품을 생성합니다.")
@@ -51,5 +57,63 @@ public interface ProductAdminControllerDocument {
                                     """)
                     ))
             CreateProductDto.Request request
+    );
+
+    @Operation(summary = "상품 수정", description = "기존 상품 정보를 수정합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "수정 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = UpdateProductResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "상품 수정에 성공했습니다.",
+                                      "data": {
+                                        "productId": 100
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<UpdateProductDto.Response> updateProduct(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "상품 ID", example = "100") @PathVariable Long productId,
+            @RequestBody(description = "상품 수정 요청", required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = UpdateProductRequestDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "title": "프로세스 삼겹살 헌터 리마스터",
+                                      "category": "NAMEPLATE",
+                                      "image": "https://cdn.example.com/products/100-v2.png",
+                                      "price": 15000,
+                                      "discount": 15,
+                                      "description": "리마스터 버전입니다.",
+                                      "seasonId": null
+                                    }
+                                    """)
+                    ))
+            UpdateProductDto.Request request
+    );
+
+    @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공",
+                    content = @Content(
+                            schema = @Schema(implementation = DeleteProductResponseDocument.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "success": true,
+                                      "message": "상품 삭제에 성공했습니다.",
+                                      "data": {
+                                        "productId": 100
+                                      }
+                                    }
+                                    """)
+                    ))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<DeleteProductDto.Response> deleteProduct(
+            @Parameter(hidden = true) Actor actor,
+            @Parameter(description = "상품 ID", example = "100") @PathVariable Long productId
     );
 }
