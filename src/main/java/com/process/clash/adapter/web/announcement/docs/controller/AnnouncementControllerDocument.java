@@ -30,8 +30,8 @@ public interface AnnouncementControllerDocument {
                                             "author": "PROSSES",
                                             "userId": null,
                                             "content": "3월 30일 오전 2시~4시 서버 점검이 예정되어 있습니다.",
-                                            "startedAt": "2026-03-29T00:00:00Z",
-                                            "endedAt": "2026-04-01T00:00:00Z"
+                                            "startedAt": "2026-03-29T09:00:00+09:00",
+                                            "endedAt": "2026-04-01T09:00:00+09:00"
                                           }
                                         ]
                                       }

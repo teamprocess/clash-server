@@ -3,6 +3,7 @@ package com.process.clash.adapter.web.announcement.admin.dto;
 import com.process.clash.application.announcement.admin.data.GetAllAnnouncementsAdminData;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.Instant;
 import java.util.List;
 
 public class GetAllAnnouncementsAdminDto {
@@ -18,9 +19,9 @@ public class GetAllAnnouncementsAdminDto {
                             a.author(),
                             a.userId(),
                             a.content(),
-                            a.startedAt().toString(),
-                            a.endedAt().toString(),
-                            a.createdAt().toString()
+                            a.startedAt(),
+                            a.endedAt(),
+                            a.createdAt()
                     ))
                     .toList();
             return new Response(items);
@@ -33,8 +34,8 @@ public class GetAllAnnouncementsAdminDto {
             String author,
             Long userId,
             String content,
-            String startedAt,
-            String endedAt,
-            String createdAt
+            Instant startedAt,
+            Instant endedAt,
+            Instant createdAt
     ) {}
 }
