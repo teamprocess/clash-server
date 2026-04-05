@@ -2,9 +2,18 @@ package com.process.clash.adapter.web.announcement.dto;
 
 import com.process.clash.application.announcement.data.GetActiveAnnouncementsData;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class GetActiveAnnouncementsDto {
+
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
+
+    private static String toKst(Instant instant) {
+        return instant != null ? OffsetDateTime.ofInstant(instant, KST).toString() : null;
+    }
 
     public record Response(List<AnnouncementItem> announcements) {
 
@@ -16,8 +25,8 @@ public class GetActiveAnnouncementsDto {
                             announcement.author(),
                             announcement.userId(),
                             announcement.content(),
-                            announcement.startedAt() != null ? announcement.startedAt().toString() : null,
-                            announcement.endedAt() != null ? announcement.endedAt().toString() : null
+                            toKst(announcement.startedAt()),
+                            toKst(announcement.endedAt())
                     ))
                     .toList();
             return new Response(items);
