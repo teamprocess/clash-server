@@ -7,8 +7,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class CreateAnnouncementAdminDto {
+
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
     @Schema(name = "CreateAnnouncementAdminDtoRequest")
     public record Request(
@@ -21,13 +25,17 @@ public class CreateAnnouncementAdminDto {
             String content,
 
             @NotNull(message = "시작 시각은 비워둘 수 없습니다.")
-            Instant startedAt,
+            LocalDateTime startedAt,
 
             @NotNull(message = "종료 시각은 비워둘 수 없습니다.")
-            Instant endedAt
+            LocalDateTime endedAt
     ) {
         public CreateAnnouncementAdminData.Command toCommand(Actor actor) {
-            return new CreateAnnouncementAdminData.Command(actor, title, author != null ? author : "PROCESS", content, startedAt, endedAt);
+            return new CreateAnnouncementAdminData.Command(
+                    actor, title, author != null ? author : "PROCESS", content,
+                    startedAt.atZone(KST).toInstant(),
+                    endedAt.atZone(KST).toInstant()
+            );
         }
     }
 
@@ -38,9 +46,9 @@ public class CreateAnnouncementAdminDto {
             String author,
             Long userId,
             String content,
-            String startedAt,
-            String endedAt,
-            String createdAt
+            Instant startedAt,
+            Instant endedAt,
+            Instant createdAt
     ) {
         public static Response from(CreateAnnouncementAdminData.Result result) {
             return new Response(
@@ -49,9 +57,9 @@ public class CreateAnnouncementAdminDto {
                     result.author(),
                     result.userId(),
                     result.content(),
-                    result.startedAt().toString(),
-                    result.endedAt().toString(),
-                    result.createdAt().toString()
+                    result.startedAt(),
+                    result.endedAt(),
+                    result.createdAt()
             );
         }
     }

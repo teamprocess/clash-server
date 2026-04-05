@@ -7,8 +7,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class UpdateAnnouncementAdminDto {
+
+    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
 
     @Schema(name = "UpdateAnnouncementAdminDtoRequest")
     public record Request(
@@ -21,13 +25,17 @@ public class UpdateAnnouncementAdminDto {
             String content,
 
             @NotNull(message = "시작 시각은 비워둘 수 없습니다.")
-            Instant startedAt,
+            LocalDateTime startedAt,
 
             @NotNull(message = "종료 시각은 비워둘 수 없습니다.")
-            Instant endedAt
+            LocalDateTime endedAt
     ) {
         public UpdateAnnouncementAdminData.Command toCommand(Actor actor, Long id) {
-            return new UpdateAnnouncementAdminData.Command(actor, id, title, author != null ? author : "PROCESS", content, startedAt, endedAt);
+            return new UpdateAnnouncementAdminData.Command(
+                    actor, id, title, author != null ? author : "PROCESS", content,
+                    startedAt.atZone(KST).toInstant(),
+                    endedAt.atZone(KST).toInstant()
+            );
         }
     }
 
@@ -38,9 +46,9 @@ public class UpdateAnnouncementAdminDto {
             String author,
             Long userId,
             String content,
-            String startedAt,
-            String endedAt,
-            String updatedAt
+            Instant startedAt,
+            Instant endedAt,
+            Instant updatedAt
     ) {
         public static Response from(UpdateAnnouncementAdminData.Result result) {
             return new Response(
@@ -49,9 +57,9 @@ public class UpdateAnnouncementAdminDto {
                     result.author(),
                     result.userId(),
                     result.content(),
-                    result.startedAt().toString(),
-                    result.endedAt().toString(),
-                    result.updatedAt() != null ? result.updatedAt().toString() : null
+                    result.startedAt(),
+                    result.endedAt(),
+                    result.updatedAt()
             );
         }
     }

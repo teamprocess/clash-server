@@ -2,6 +2,7 @@ package com.process.clash.adapter.web.announcement.dto;
 
 import com.process.clash.application.announcement.data.GetActiveAnnouncementsData;
 
+import java.time.Instant;
 import java.util.List;
 
 public class GetActiveAnnouncementsDto {
@@ -16,8 +17,8 @@ public class GetActiveAnnouncementsDto {
                             announcement.author(),
                             announcement.userId(),
                             announcement.content(),
-                            announcement.startedAt() != null ? announcement.startedAt().toString() : null,
-                            announcement.endedAt() != null ? announcement.endedAt().toString() : null
+                            announcement.startedAt(),
+                            announcement.endedAt()
                     ))
                     .toList();
             return new Response(items);
@@ -30,7 +31,7 @@ public class GetActiveAnnouncementsDto {
             String author,
             Long userId,
             String content,
-            String startedAt,
-            String endedAt
+            Instant startedAt,
+            Instant endedAt
     ) {}
 }
