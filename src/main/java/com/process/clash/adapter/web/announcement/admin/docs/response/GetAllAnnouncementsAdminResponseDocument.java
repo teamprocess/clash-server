@@ -1,12 +1,12 @@
-package com.process.clash.adapter.web.announcement.docs.response;
+package com.process.clash.adapter.web.announcement.admin.docs.response;
 
 import com.process.clash.adapter.web.common.docs.response.SuccessResponseDocument;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-@Schema(description = "활성 공지 목록 조회 응답")
-public class GetActiveAnnouncementsResponseDocument extends SuccessResponseDocument {
+@Schema(description = "전체 공지 목록 조회 응답 (어드민)")
+public class GetAllAnnouncementsAdminResponseDocument extends SuccessResponseDocument {
 
     @Schema(description = "응답 데이터")
     public DataDoc data;
@@ -37,5 +37,8 @@ public class GetActiveAnnouncementsResponseDocument extends SuccessResponseDocum
 
         @Schema(description = "공지 종료 시각 (ISO 8601)", example = "2026-04-01T00:00:00Z")
         public String endedAt;
+
+        @Schema(description = "생성 시각 (ISO 8601)", example = "2026-03-28T12:00:00Z")
+        public String createdAt;
     }
 }

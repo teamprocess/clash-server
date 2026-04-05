@@ -44,8 +44,8 @@ public class AnnouncementJpaEntity {
     private String content;
 
     @Column(nullable = false)
-    private Instant startAt;
+    private Instant startedAt;
 
     @Column(nullable = false)
-    private Instant endAt;
+    private Instant endedAt;
 }

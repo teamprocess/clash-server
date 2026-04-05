@@ -15,8 +15,22 @@ public class AnnouncementJpaMapper {
                 entity.getAuthor(),
                 entity.getUserId(),
                 entity.getContent(),
-                entity.getStartAt(),
-                entity.getEndAt()
+                entity.getStartedAt(),
+                entity.getEndedAt()
+        );
+    }
+
+    public AnnouncementJpaEntity toJpaEntity(Announcement domain) {
+        return new AnnouncementJpaEntity(
+                domain.id(),
+                domain.createdAt(),
+                domain.updatedAt(),
+                domain.title(),
+                domain.author(),
+                domain.userId(),
+                domain.content(),
+                domain.startedAt(),
+                domain.endedAt()
         );
     }
 }
