@@ -4,17 +4,9 @@ import com.process.clash.application.announcement.admin.data.GetAllAnnouncements
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 public class GetAllAnnouncementsAdminDto {
-
-    private static final ZoneId KST = ZoneId.of("Asia/Seoul");
-
-    private static String toKst(Instant instant) {
-        return OffsetDateTime.ofInstant(instant, KST).toString();
-    }
 
     @Schema(name = "GetAllAnnouncementsAdminDtoResponse")
     public record Response(List<AnnouncementItem> announcements) {
@@ -27,9 +19,9 @@ public class GetAllAnnouncementsAdminDto {
                             a.author(),
                             a.userId(),
                             a.content(),
-                            toKst(a.startedAt()),
-                            toKst(a.endedAt()),
-                            toKst(a.createdAt())
+                            a.startedAt(),
+                            a.endedAt(),
+                            a.createdAt()
                     ))
                     .toList();
             return new Response(items);
@@ -42,8 +34,8 @@ public class GetAllAnnouncementsAdminDto {
             String author,
             Long userId,
             String content,
-            String startedAt,
-            String endedAt,
-            String createdAt
+            Instant startedAt,
+            Instant endedAt,
+            Instant createdAt
     ) {}
 }

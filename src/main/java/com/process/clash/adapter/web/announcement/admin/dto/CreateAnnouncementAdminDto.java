@@ -8,16 +8,11 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 
 public class CreateAnnouncementAdminDto {
 
     private static final ZoneId KST = ZoneId.of("Asia/Seoul");
-
-    private static String toKst(Instant instant) {
-        return OffsetDateTime.ofInstant(instant, KST).toString();
-    }
 
     @Schema(name = "CreateAnnouncementAdminDtoRequest")
     public record Request(
@@ -51,9 +46,9 @@ public class CreateAnnouncementAdminDto {
             String author,
             Long userId,
             String content,
-            String startedAt,
-            String endedAt,
-            String createdAt
+            Instant startedAt,
+            Instant endedAt,
+            Instant createdAt
     ) {
         public static Response from(CreateAnnouncementAdminData.Result result) {
             return new Response(
@@ -62,9 +57,9 @@ public class CreateAnnouncementAdminDto {
                     result.author(),
                     result.userId(),
                     result.content(),
-                    toKst(result.startedAt()),
-                    toKst(result.endedAt()),
-                    toKst(result.createdAt())
+                    result.startedAt(),
+                    result.endedAt(),
+                    result.createdAt()
             );
         }
     }
