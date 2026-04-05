@@ -51,13 +51,20 @@ public record Battle(
     }
 
     /**
+     * 배틀이 IN_PROGRESS 상태이며 종료 시각이 지났는지 확인한다.
+     */
+    public boolean isExpiredInProgress(Instant now) {
+        return this.battleStatus == BattleStatus.IN_PROGRESS
+                && this.endAt != null
+                && this.endAt.isBefore(now);
+    }
+
+    /**
      * 조회 시점에 만료된 배틀을 DONE 상태로 보정한다.
-     * DB 업데이트 없이 반환 값만 보정하여 스케줄러 지연 구간에 IN_PROGRESS 노출을 방지한다.
+     * DB 업데이트 없이 반환 값만 보정하는 fallback 용도로 사용한다.
      */
     public Battle resolveStatus(Instant now) {
-        if (this.battleStatus == BattleStatus.IN_PROGRESS
-                && this.endAt != null
-                && this.endAt.isBefore(now)) {
+        if (isExpiredInProgress(now)) {
             return finish();
         }
         return this;

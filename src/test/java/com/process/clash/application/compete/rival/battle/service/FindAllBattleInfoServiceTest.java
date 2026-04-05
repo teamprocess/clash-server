@@ -3,6 +3,7 @@ package com.process.clash.application.compete.rival.battle.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.battle.data.FindAllBattleInfoData;
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
+import com.process.clash.application.compete.rival.battle.service.BattleFinishService;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
@@ -43,6 +44,9 @@ class FindAllBattleInfoServiceTest {
     private BattleRepositoryPort battleRepositoryPort;
 
     @Mock
+    private BattleFinishService battleFinishService;
+
+    @Mock
     private RivalRepositoryPort rivalRepositoryPort;
 
     @Mock
@@ -62,6 +66,7 @@ class FindAllBattleInfoServiceTest {
     void setUp() {
         findAllBattleInfoService = new FindAllBattleInfoService(
                 battleRepositoryPort,
+                battleFinishService,
                 rivalRepositoryPort,
                 userRepositoryPort,
                 userExpHistoryRepositoryPort,

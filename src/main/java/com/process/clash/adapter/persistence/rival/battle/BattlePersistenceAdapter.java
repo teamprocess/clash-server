@@ -36,7 +36,7 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     public Optional<Battle> findById(Long id) {
 
         return battleJpaRepository.findById(id)
-                .map(entity -> battleJpaMapper.toDomain(entity).resolveStatus(Instant.now()));
+                .map(battleJpaMapper::toDomain);
     }
 
     @Override
@@ -54,10 +54,9 @@ public class BattlePersistenceAdapter implements BattleRepositoryPort {
     @Override
     public List<Battle> findByUserIdWithOutRejected(Long userId) {
 
-        Instant now = Instant.now();
         return battleJpaRepository.findByUserIdWithOutRejected(userId)
                 .stream()
-                .map(entity -> battleJpaMapper.toDomain(entity).resolveStatus(now))
+                .map(battleJpaMapper::toDomain)
                 .toList();
     }
 

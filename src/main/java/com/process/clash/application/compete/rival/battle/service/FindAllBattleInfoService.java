@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -39,6 +40,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
     private static final String RESULT_PENDING = "PENDING";
 
     private final BattleRepositoryPort battleRepositoryPort;
+    private final BattleFinishService battleFinishService;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
@@ -48,11 +50,19 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
     public Result execute(Command command) {
         Long userId = command.actor().id();
 
-        List<Battle> battles = battleRepositoryPort.findByUserIdWithOutRejected(userId);
+        List<Battle> rawBattles = battleRepositoryPort.findByUserIdWithOutRejected(userId);
 
-        if (battles.isEmpty()) {
+        if (rawBattles.isEmpty()) {
             return Result.from(List.of());
         }
+
+        // 스케줄러 미실행 구간에도 조회 시점에 만료 배틀을 DONE으로 DB 저장
+        Instant now = Instant.now();
+        List<Battle> battles = rawBattles.stream()
+                .map(battle -> battle.isExpiredInProgress(now)
+                        ? battleFinishService.finishSingleIfExpired(battle)
+                        : battle)
+                .toList();
 
         Set<Long> rivalIds = battles.stream()
                 .map(Battle::rivalId)
