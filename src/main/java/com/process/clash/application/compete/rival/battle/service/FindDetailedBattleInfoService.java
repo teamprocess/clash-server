@@ -39,14 +39,14 @@ public class FindDetailedBattleInfoService implements FindDetailedBattleInfoUseC
                 ? battle.startedAt().atZone(battleZoneId).toLocalDate()
                 : LocalDate.now(battleZoneId);
 
-        // exp 계산 기간 종료일: DONE이면 실제 종료일, 진행 중이면 오늘까지
+        // exp 계산 기간 종료일: DONE이면 마지막 활동일(endAt 자정의 전날), 진행 중이면 오늘까지
         LocalDate endDate = battle.battleStatus().equals(BattleStatus.DONE) && battle.endAt() != null
-                ? battle.endAt().atZone(battleZoneId).toLocalDate()
+                ? battle.endAt().atZone(battleZoneId).toLocalDate().minusDays(1)
                 : LocalDate.now(battleZoneId);
 
-        // 클라이언트 표시용 종료 예정일: 상태에 무관하게 항상 실제 endAt 기준
+        // 클라이언트 표시용 종료 예정일: endAt 자정의 전날 = 마지막 활동일
         LocalDate expireDate = battle.endAt() != null
-                ? battle.endAt().atZone(battleZoneId).toLocalDate()
+                ? battle.endAt().atZone(battleZoneId).toLocalDate().minusDays(1)
                 : null;
 
         // 상대방이 탈퇴해 라이벌이 삭제된 경우 상대 정보 없이 반환
