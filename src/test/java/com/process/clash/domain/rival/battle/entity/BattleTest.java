@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BattleTest {
 
     @Test
-    @DisplayName("승인 즉시 startedAt이 설정되고, endAt은 수락일(KST) + duration일의 자정 KST로 설정된다")
+    @DisplayName("승인 즉시 startedAt이 설정되고, endAt은 수락 시각으로부터 duration일(72시간 단위) 후로 설정된다")
     void accept_setsStartedAtAndReturnsInProgress() {
         Battle battle = pendingBattle(7);
         Instant now = Instant.now();
@@ -22,8 +22,7 @@ class BattleTest {
 
         Battle result = battle.accept(now, zoneId);
 
-        LocalDate acceptanceDateKST = now.atZone(zoneId).toLocalDate();
-        Instant expectedEndAt = acceptanceDateKST.plusDays(7).atStartOfDay(zoneId).toInstant();
+        Instant expectedEndAt = now.plus(7, ChronoUnit.DAYS);
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
         assertThat(result.startedAt()).isEqualTo(now);

@@ -190,7 +190,7 @@ class FindAllBattleInfoServiceTest {
     }
 
     @Test
-    @DisplayName("IN_PROGRESS 배틀의 expireDate는 endAt을 KST 기준 LocalDate로 변환한 값이다")
+    @DisplayName("IN_PROGRESS 배틀의 expireDate는 endAt의 KST 날짜(마지막 활동일)이다")
     void execute_returnsExpireDateFromEndAt_whenInProgress() {
         Instant endAt = Instant.now().plus(6, ChronoUnit.DAYS);
         Battle battle = new Battle(BATTLE_ID, Instant.now(), Instant.now(),
