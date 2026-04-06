@@ -3,7 +3,8 @@ package com.process.clash.domain.rival.battle.entity;
 import com.process.clash.domain.rival.battle.enums.BattleStatus;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 public record Battle(
         Long id,
@@ -34,14 +35,16 @@ public record Battle(
         );
     }
 
-    public Battle accept(Instant now) {
+    public Battle accept(Instant now, ZoneId zoneId) {
+        LocalDate acceptanceDateKST = now.atZone(zoneId).toLocalDate();
+        Instant endAt = acceptanceDateKST.plusDays(this.duration).atStartOfDay(zoneId).toInstant();
 
         return new Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
                 now,
-                now.plus(this.duration, ChronoUnit.DAYS),
+                endAt,
                 this.duration,
                 BattleStatus.IN_PROGRESS,
                 this.winnerId,
