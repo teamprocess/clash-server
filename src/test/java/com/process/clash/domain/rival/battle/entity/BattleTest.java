@@ -5,8 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,9 +16,8 @@ class BattleTest {
     void accept_setsStartedAtAndReturnsInProgress() {
         Battle battle = pendingBattle(7);
         Instant now = Instant.now();
-        ZoneId zoneId = ZoneId.of("Asia/Seoul");
 
-        Battle result = battle.accept(now, zoneId);
+        Battle result = battle.accept(now);
 
         Instant expectedEndAt = now.plus(7, ChronoUnit.DAYS);
 

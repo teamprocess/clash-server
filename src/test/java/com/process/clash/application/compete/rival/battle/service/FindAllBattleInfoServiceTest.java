@@ -205,7 +205,7 @@ class FindAllBattleInfoServiceTest {
 
         FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
 
-        LocalDate expectedDate = endAt.atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
+        LocalDate expectedDate = endAt.minusNanos(1).atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
         assertThat(result.battles().get(0).expireDate()).isEqualTo(expectedDate);
     }
 
