@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -46,6 +47,8 @@ class AcceptBattleServiceTest {
 
     private AcceptBattleService acceptBattleService;
 
+    private static final ZoneId BATTLE_ZONE_ID = ZoneId.of("Asia/Seoul");
+
     @BeforeEach
     void setUp() {
         acceptBattleService = new AcceptBattleService(
@@ -53,7 +56,8 @@ class AcceptBattleServiceTest {
             modifyBattlePolicy,
             rivalRepositoryPort,
             userNoticeRepositoryPort,
-            competeRefetchNotifier
+            competeRefetchNotifier,
+            BATTLE_ZONE_ID
         );
     }
 
@@ -67,7 +71,7 @@ class AcceptBattleServiceTest {
         Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now()));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now(), BATTLE_ZONE_ID));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -92,7 +96,7 @@ class AcceptBattleServiceTest {
         Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now()));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now(), BATTLE_ZONE_ID));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -111,7 +115,7 @@ class AcceptBattleServiceTest {
         Battle battle = pendingBattle(battleId, rivalId, opponentId);
 
         when(battleRepositoryPort.findById(battleId)).thenReturn(Optional.of(battle));
-        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now()));
+        when(battleRepositoryPort.save(any(Battle.class))).thenReturn(battle.accept(Instant.now(), BATTLE_ZONE_ID));
         when(rivalRepositoryPort.findOpponentIdByIdAndUserId(rivalId, actor.id())).thenReturn(opponentId);
         when(userNoticeRepositoryPort.save(any(UserNotice.class))).thenAnswer(invocation -> invocation.getArgument(0));
 

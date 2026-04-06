@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,16 +14,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BattleTest {
 
     @Test
-    @DisplayName("승인 즉시 startedAt이 설정되고 IN_PROGRESS 상태가 된다")
+    @DisplayName("승인 즉시 startedAt이 설정되고, endAt은 수락일(KST) + duration일의 자정 KST로 설정된다")
     void accept_setsStartedAtAndReturnsInProgress() {
         Battle battle = pendingBattle(7);
         Instant now = Instant.now();
+        ZoneId zoneId = ZoneId.of("Asia/Seoul");
 
-        Battle result = battle.accept(now);
+        Battle result = battle.accept(now, zoneId);
+
+        LocalDate acceptanceDateKST = now.atZone(zoneId).toLocalDate();
+        Instant expectedEndAt = acceptanceDateKST.plusDays(7).atStartOfDay(zoneId).toInstant();
 
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
         assertThat(result.startedAt()).isEqualTo(now);
-        assertThat(result.endAt()).isEqualTo(now.plus(7, ChronoUnit.DAYS));
+        assertThat(result.endAt()).isEqualTo(expectedEndAt);
     }
 
     @Test
