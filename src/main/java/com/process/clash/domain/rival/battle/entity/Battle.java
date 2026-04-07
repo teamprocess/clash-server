@@ -35,14 +35,13 @@ public record Battle(
     }
 
     public Battle accept(Instant now) {
-        Instant endAt = now.plus(this.duration, ChronoUnit.DAYS);
 
         return new Battle(
                 this.id,
                 this.createdAt,
                 this.updatedAt,
                 now,
-                endAt,
+                now.plus(this.duration, ChronoUnit.DAYS),
                 this.duration,
                 BattleStatus.IN_PROGRESS,
                 this.winnerId,

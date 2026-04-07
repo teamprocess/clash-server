@@ -174,7 +174,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
         JOIN battles b ON b.id IN (:battleIds)
             AND ueh.fk_user_id = :userId
             AND ueh.date >= (b.started_at AT TIME ZONE 'Asia/Seoul')::date
-            AND ueh.date <= ((b.end_at - interval '1 microsecond') AT TIME ZONE 'Asia/Seoul')::date
+            AND ueh.date <= (b.end_at AT TIME ZONE 'Asia/Seoul')::date
         GROUP BY b.id
     """, nativeQuery = true)
     List<Object[]> findAverageExpForBattles(
