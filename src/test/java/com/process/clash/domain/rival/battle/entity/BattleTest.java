@@ -12,16 +12,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BattleTest {
 
     @Test
-    @DisplayName("승인 즉시 startedAt이 설정되고 IN_PROGRESS 상태가 된다")
+    @DisplayName("승인 즉시 startedAt이 설정되고, endAt은 수락 시각으로부터 duration일(72시간 단위) 후로 설정된다")
     void accept_setsStartedAtAndReturnsInProgress() {
         Battle battle = pendingBattle(7);
         Instant now = Instant.now();
 
         Battle result = battle.accept(now);
 
+        Instant expectedEndAt = now.plus(7, ChronoUnit.DAYS);
+
         assertThat(result.battleStatus()).isEqualTo(BattleStatus.IN_PROGRESS);
         assertThat(result.startedAt()).isEqualTo(now);
-        assertThat(result.endAt()).isEqualTo(now.plus(7, ChronoUnit.DAYS));
+        assertThat(result.endAt()).isEqualTo(expectedEndAt);
     }
 
     @Test
