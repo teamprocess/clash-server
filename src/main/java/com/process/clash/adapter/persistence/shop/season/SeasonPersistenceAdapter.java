@@ -40,4 +40,10 @@ public class SeasonPersistenceAdapter implements SeasonRepositoryPort {
         return seasonJpaRepository.findCurrentSeason(LocalDate.now(recordZoneId))
                 .map(seasonJpaMapper::toDomain);
     }
+
+    @Override
+    public Optional<Season> findSeasonByDate(LocalDate date) {
+        return seasonJpaRepository.findCurrentSeason(date)
+                .map(seasonJpaMapper::toDomain);
+    }
 }
