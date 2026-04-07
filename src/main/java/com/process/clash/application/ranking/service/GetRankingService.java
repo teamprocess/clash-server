@@ -79,13 +79,15 @@ public class GetRankingService implements GetRankingUseCase {
         DateRange range = calculateDateRange(periodCategory, today);
 
         LocalDateTime startDate = range.startDate().atTime(recordProperties.dayBoundaryHour(), 0);
-        LocalDateTime endDate = now.toLocalDateTime();
+        LocalDateTime endDate = range.endDate().isBefore(today)
+                ? range.endDate().plusDays(1).atTime(recordProperties.dayBoundaryHour(), 0)
+                : now.toLocalDateTime();
         return recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
     }
 
     private DateRange calculateDateRange(PeriodCategory periodCategory, LocalDate today) {
         if (periodCategory == PeriodCategory.SEASON) {
-            Season season = seasonRepositoryPort.findCurrentSeason()
+            Season season = seasonRepositoryPort.findSeasonByDate(today)
                     .orElseThrow(SeasonNotFoundException::new);
             LocalDate endDate = season.endDate().isBefore(today) ? season.endDate() : today;
             return new DateRange(season.startDate(), endDate);
