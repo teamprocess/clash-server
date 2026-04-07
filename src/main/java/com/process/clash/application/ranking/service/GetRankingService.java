@@ -7,8 +7,11 @@ import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.ranking.port.in.GetRankingUseCase;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
+import com.process.clash.application.shop.season.exception.exception.notfound.SeasonNotFoundException;
+import com.process.clash.application.shop.season.port.out.SeasonRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
+import com.process.clash.domain.shop.season.entity.Season;
 import com.process.clash.infrastructure.config.record.RecordProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class GetRankingService implements GetRankingUseCase {
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     private final GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     private final RecordSessionV2RepositoryPort recordSessionRepositoryPort;
+    private final SeasonRepositoryPort seasonRepositoryPort;
     private final ZoneId recordZoneId;
     private final RecordProperties recordProperties;
     private final EquippedItemsAssembler equippedItemsAssembler;
@@ -49,63 +53,54 @@ public class GetRankingService implements GetRankingUseCase {
     }
 
     private List<UserRanking> gitHub(Long userId, PeriodCategory periodCategory) {
-
         // GitHub는 00시 기준 (캘린더 날짜 그대로)
         LocalDate today = LocalDate.now(recordZoneId);
-        LocalDate startDate = switch (periodCategory) {
-            case DAY -> today;
-            case WEEK -> today.minusWeeks(1);
-            case MONTH -> today.minusMonths(1);
-            case SEASON -> null; //TODO: 나중에 구현
-            case YEAR -> today.minusYears(1);
-        };
-
-        return gitHubDailyStatsQueryPort.findGitHubRankingByUserIdAndPeriod(userId, startDate, today);
+        DateRange range = calculateDateRange(periodCategory, today);
+        return gitHubDailyStatsQueryPort.findGitHubRankingByUserIdAndPeriod(userId, range.startDate(), range.endDate());
     }
 
     private List<UserRanking> exp(Long userId, PeriodCategory periodCategory) {
-
         // EXP는 학습시간과 동일하게 경계시간(06:00) 기준
         ZonedDateTime now = ZonedDateTime.now(recordZoneId);
         LocalDate today = now.toLocalDate();
         if (now.getHour() < recordProperties.dayBoundaryHour()) {
             today = today.minusDays(1);
         }
-
-        LocalDate startDate = switch (periodCategory) {
-            case DAY -> today;
-            case WEEK -> today.minusWeeks(1);
-            case MONTH -> today.minusMonths(1);
-            case SEASON -> null; //TODO: 나중에 구현
-            case YEAR -> today.minusYears(1);
-        };
-
-        return userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(userId, startDate, today);
+        DateRange range = calculateDateRange(periodCategory, today);
+        return userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(userId, range.startDate(), range.endDate());
     }
 
     private List<UserRanking> activeTime(Long userId, PeriodCategory periodCategory) {
-
         ZonedDateTime now = ZonedDateTime.now(recordZoneId);
         LocalDate today = now.toLocalDate();
         if (now.getHour() < recordProperties.dayBoundaryHour()) {
             today = today.minusDays(1);
         }
+        DateRange range = calculateDateRange(periodCategory, today);
 
-        LocalDate startLocalDate = switch (periodCategory) {
+        LocalDateTime startDate = range.startDate().atTime(recordProperties.dayBoundaryHour(), 0);
+        LocalDateTime endDate = now.toLocalDateTime();
+        return recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
+    }
+
+    private DateRange calculateDateRange(PeriodCategory periodCategory, LocalDate today) {
+        if (periodCategory == PeriodCategory.SEASON) {
+            Season season = seasonRepositoryPort.findCurrentSeason()
+                    .orElseThrow(SeasonNotFoundException::new);
+            LocalDate endDate = season.endDate().isBefore(today) ? season.endDate() : today;
+            return new DateRange(season.startDate(), endDate);
+        }
+        LocalDate startDate = switch (periodCategory) {
             case DAY -> today;
             case WEEK -> today.minusWeeks(1);
             case MONTH -> today.minusMonths(1);
-            case SEASON -> null; //TODO: 나중에 구현
             case YEAR -> today.minusYears(1);
+            default -> today;
         };
-
-        LocalDateTime startDate = startLocalDate != null
-                ? startLocalDate.atTime(recordProperties.dayBoundaryHour(), 0)
-                : null;
-        LocalDateTime endDate = now.toLocalDateTime();
-
-        return recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(userId, startDate, endDate);
+        return new DateRange(startDate, today);
     }
+
+    private record DateRange(LocalDate startDate, LocalDate endDate) {}
 
     private List<UserRanking> attachEquippedItems(List<UserRanking> rankings) {
         if (rankings == null || rankings.isEmpty()) {
