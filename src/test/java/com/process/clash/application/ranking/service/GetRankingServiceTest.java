@@ -13,11 +13,9 @@ import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.ranking.data.GetRankingData;
 import com.process.clash.application.ranking.data.UserRanking;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
-import com.process.clash.application.shop.season.port.out.SeasonRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
 import com.process.clash.domain.common.enums.PeriodCategory;
 import com.process.clash.domain.common.enums.TargetCategory;
-import com.process.clash.domain.shop.season.entity.Season;
 import com.process.clash.domain.user.userrankhistory.enums.ExpTier;
 import com.process.clash.domain.user.userrankhistory.enums.RankTier;
 import com.process.clash.infrastructure.config.record.RecordProperties;
@@ -27,7 +25,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +44,6 @@ class GetRankingServiceTest {
     @Mock private UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     @Mock private GitHubDailyStatsQueryPort gitHubDailyStatsQueryPort;
     @Mock private RecordSessionV2RepositoryPort recordSessionRepositoryPort;
-    @Mock private SeasonRepositoryPort seasonRepositoryPort;
     @Mock private EquippedItemsAssembler equippedItemsAssembler;
 
     private GetRankingService service;
@@ -58,7 +54,6 @@ class GetRankingServiceTest {
             userExpHistoryRepositoryPort,
             gitHubDailyStatsQueryPort,
             recordSessionRepositoryPort,
-            seasonRepositoryPort,
             TEST_ZONE,
             RECORD_PROPS,
             equippedItemsAssembler
@@ -166,27 +161,6 @@ class GetRankingServiceTest {
     }
 
     @Test
-    @DisplayName("ACTIVE_TIME + SEASON: startDate는 시즌 시작일 06:00이다")
-    void activeTime_season_startIsSeasonStartDateAt06() {
-        LocalDate seasonStart = LocalDate.now(TEST_ZONE).minusDays(7);
-        LocalDate seasonEnd = LocalDate.now(TEST_ZONE).plusDays(83);
-        Season season = new Season(1L, null, null, "SEASON_1", seasonStart, seasonEnd);
-        when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(season));
-        when(recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(any(), any(), any()))
-            .thenReturn(List.of());
-
-        service.execute(activeTimeCommand(PeriodCategory.SEASON));
-
-        ArgumentCaptor<LocalDateTime> start = ArgumentCaptor.forClass(LocalDateTime.class);
-        ArgumentCaptor<LocalDateTime> end   = ArgumentCaptor.forClass(LocalDateTime.class);
-        verify(recordSessionRepositoryPort)
-            .findStudyTimeRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
-
-        assertThat(start.getValue()).isEqualTo(seasonStart.atTime(BOUNDARY_HOUR, 0));
-        assertThat(start.getValue()).isBefore(end.getValue());
-    }
-
-    @Test
     @DisplayName("ACTIVE_TIME 카테고리는 요청자의 userId로 저장소를 조회한다")
     void activeTime_callsRepositoryWithRequesterId() {
         when(recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(any(), any(), any()))
@@ -235,29 +209,6 @@ class GetRankingServiceTest {
     }
 
     @Test
-    @DisplayName("EXP + SEASON: startDate는 시즌 시작일이고, endDate는 시즌 종료일(미래면 오늘)이다")
-    void exp_season_startIsSeasonStartDate() {
-        LocalDate seasonStart = LocalDate.now(TEST_ZONE).minusDays(10);
-        LocalDate seasonEnd = LocalDate.now(TEST_ZONE).plusDays(80);
-        Season season = new Season(1L, null, null, "SEASON_1", seasonStart, seasonEnd);
-        when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(season));
-        when(userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(any(), any(), any()))
-            .thenReturn(List.of());
-
-        LocalDate expectedBoundaryToday = boundaryToday();
-
-        service.execute(expCommand(PeriodCategory.SEASON));
-
-        ArgumentCaptor<LocalDate> start = ArgumentCaptor.forClass(LocalDate.class);
-        ArgumentCaptor<LocalDate> end   = ArgumentCaptor.forClass(LocalDate.class);
-        verify(userExpHistoryRepositoryPort)
-            .findExpRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
-
-        assertThat(start.getValue()).isEqualTo(seasonStart);
-        assertThat(end.getValue()).isEqualTo(expectedBoundaryToday);
-    }
-
-    @Test
     @DisplayName("EXP + WEEK: startDate는 boundary-today 기준 1주 전이고, endDate는 boundary-today이다")
     void exp_week_startIsOneWeekBeforeBoundaryToday() {
         when(userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(any(), any(), any()))
@@ -277,29 +228,6 @@ class GetRankingServiceTest {
     }
 
     // ===== GITHUB =====
-
-    @Test
-    @DisplayName("GITHUB + SEASON: startDate는 시즌 시작일이고, endDate는 시즌 종료일(미래면 오늘)이다")
-    void gitHub_season_startIsSeasonStartDate() {
-        LocalDate seasonStart = LocalDate.now(TEST_ZONE).minusDays(5);
-        LocalDate seasonEnd = LocalDate.now(TEST_ZONE).plusDays(85);
-        Season season = new Season(1L, null, null, "SEASON_1", seasonStart, seasonEnd);
-        when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(season));
-        when(gitHubDailyStatsQueryPort.findGitHubRankingByUserIdAndPeriod(any(), any(), any()))
-            .thenReturn(List.of());
-
-        LocalDate expectedCalendarToday = LocalDate.now(TEST_ZONE);
-
-        service.execute(gitHubCommand(PeriodCategory.SEASON));
-
-        ArgumentCaptor<LocalDate> start = ArgumentCaptor.forClass(LocalDate.class);
-        ArgumentCaptor<LocalDate> end   = ArgumentCaptor.forClass(LocalDate.class);
-        verify(gitHubDailyStatsQueryPort)
-            .findGitHubRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
-
-        assertThat(start.getValue()).isEqualTo(seasonStart);
-        assertThat(end.getValue()).isEqualTo(expectedCalendarToday);
-    }
 
     @Test
     @DisplayName("GITHUB + DAY: startDate와 endDate 모두 캘린더 기준(00시) 오늘이다")

@@ -172,7 +172,7 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
         );
 
         LocalDate expireDate = battle.endAt() != null
-                ? battle.endAt().minusNanos(1).atZone(battleZoneId).toLocalDate()
+                ? battle.endAt().atZone(battleZoneId).toLocalDate()
                 : null;
 
         return BattleInfo.of(

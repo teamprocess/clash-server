@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Optional;
 
 @Repository
@@ -15,7 +14,6 @@ public class SeasonPersistenceAdapter implements SeasonRepositoryPort {
 
     private final SeasonJpaRepository seasonJpaRepository;
     private final SeasonJpaMapper seasonJpaMapper;
-    private final ZoneId recordZoneId;
 
     @Override
     public Season save(Season season) {
@@ -37,7 +35,7 @@ public class SeasonPersistenceAdapter implements SeasonRepositoryPort {
 
     @Override
     public Optional<Season> findCurrentSeason() {
-        return seasonJpaRepository.findCurrentSeason(LocalDate.now(recordZoneId))
+        return seasonJpaRepository.findCurrentSeason(LocalDate.now())
                 .map(seasonJpaMapper::toDomain);
     }
 }

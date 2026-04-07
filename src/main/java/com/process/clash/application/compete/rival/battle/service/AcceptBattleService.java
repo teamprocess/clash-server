@@ -37,6 +37,7 @@ public class AcceptBattleService implements AcceptBattleUseCase {
         Battle battle = battleRepositoryPort.findById(command.id())
                 .orElseThrow(BattleNotFoundException::new);
 
+        // 승인 시각을 배틀 시작 시각으로 사용
         Battle updatedBattle = battle.accept(Instant.now());
 
         battleRepositoryPort.save(updatedBattle);
