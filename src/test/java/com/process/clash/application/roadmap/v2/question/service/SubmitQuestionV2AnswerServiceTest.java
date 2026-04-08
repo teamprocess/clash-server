@@ -138,7 +138,7 @@ class SubmitQuestionV2AnswerServiceTest {
 
         assertThat(result.isChapterCleared()).isTrue();
         assertThat(result.nextChapterId()).isNull();
-        assertThat(userCaptor.getValue().totalCookie()).isEqualTo(3800);
+        assertThat(userCaptor.getValue().totalCookie()).isEqualTo(1800);
         assertThat(historyCaptor.getAllValues())
                 .extracting(UserGoodsHistory::goodsActingCategory, UserGoodsHistory::variation)
                 .containsExactly(
