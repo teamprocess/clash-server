@@ -35,7 +35,7 @@ import java.util.Optional;
 public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseCase {
 
     private static final int CHAPTER_CLEAR_COOKIE_REWARD = 300;
-    private static final int SECTION_CLEAR_COOKIE_REWARD = 3000;
+    private static final int SECTION_CLEAR_COOKIE_REWARD = 1000;
 
     private final QuestionV2RepositoryPort questionV2RepositoryPort;
     private final ChapterV2RepositoryPort chapterV2RepositoryPort;
