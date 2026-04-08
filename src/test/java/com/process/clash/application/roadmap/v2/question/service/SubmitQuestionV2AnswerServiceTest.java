@@ -103,13 +103,13 @@ class SubmitQuestionV2AnswerServiceTest {
 
         assertThat(result.isChapterCleared()).isTrue();
         assertThat(result.nextChapterId()).isEqualTo(21L);
-        assertThat(userCaptor.getValue().totalCookie()).isEqualTo(1300);
+        assertThat(userCaptor.getValue().totalCookie()).isEqualTo(1100);
         assertThat(historyCaptor.getValue().goodsActingCategory()).isEqualTo(GoodsActingCategory.ROADMAP_V2_CHAPTER_REWARD);
-        assertThat(historyCaptor.getValue().variation()).isEqualTo(300);
+        assertThat(historyCaptor.getValue().variation()).isEqualTo(100);
     }
 
     @Test
-    @DisplayName("마지막 챕터를 클리어하면 챕터 300과 섹션 3000 쿠키를 모두 지급한다")
+    @DisplayName("마지막 챕터를 클리어하면 챕터 100과 섹션 1000 쿠키를 모두 지급한다")
     void execute_grantsChapterAndSectionClearCookieRewards() {
         Actor actor = new Actor(1L);
         ChoiceV2 correctChoice = new ChoiceV2(100L, 10L, "정답", true, 0);
@@ -138,12 +138,12 @@ class SubmitQuestionV2AnswerServiceTest {
 
         assertThat(result.isChapterCleared()).isTrue();
         assertThat(result.nextChapterId()).isNull();
-        assertThat(userCaptor.getValue().totalCookie()).isEqualTo(1800);
+        assertThat(userCaptor.getValue().totalCookie()).isEqualTo(1600);
         assertThat(historyCaptor.getAllValues())
                 .extracting(UserGoodsHistory::goodsActingCategory, UserGoodsHistory::variation)
                 .containsExactly(
-                        org.assertj.core.groups.Tuple.tuple(GoodsActingCategory.ROADMAP_V2_CHAPTER_REWARD, 300),
-                        org.assertj.core.groups.Tuple.tuple(GoodsActingCategory.ROADMAP_V2_SECTION_REWARD, 3000)
+                        org.assertj.core.groups.Tuple.tuple(GoodsActingCategory.ROADMAP_V2_CHAPTER_REWARD, 100),
+                        org.assertj.core.groups.Tuple.tuple(GoodsActingCategory.ROADMAP_V2_SECTION_REWARD, 1000)
                 );
         assertThat(progress.getIsCompleted()).isTrue();
     }
