@@ -1,5 +1,7 @@
 package com.process.clash.infrastructure.config.security;
 
+import com.process.clash.adapter.web.filter.NoRecaptchaEndpointFilter;
+import com.process.clash.adapter.web.filter.PublicAuthRateLimitFilter;
 import com.process.clash.adapter.web.filter.RateLimitFilter;
 import com.process.clash.adapter.web.filter.RecaptchaFilter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ public class FilterConfig {
 
     private final RecaptchaFilter recaptchaFilter;
     private final RateLimitFilter rateLimitFilter;
+    private final NoRecaptchaEndpointFilter noRecaptchaEndpointFilter;
+    private final PublicAuthRateLimitFilter publicAuthRateLimitFilter;
 
     /**
      * RecaptchaFilter의 서블릿 컨테이너 자동 등록 비활성화
@@ -26,6 +30,30 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<RecaptchaFilter> disableRecaptchaAutoRegistration() {
         FilterRegistrationBean<RecaptchaFilter> registration = new FilterRegistrationBean<>(recaptchaFilter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    /**
+     * NoRecaptchaEndpointFilter의 서블릿 컨테이너 자동 등록 비활성화
+     * Spring Security 체인에서만 실행됨
+     */
+    @Bean
+    public FilterRegistrationBean<NoRecaptchaEndpointFilter> disableNoRecaptchaEndpointAutoRegistration() {
+        FilterRegistrationBean<NoRecaptchaEndpointFilter> registration =
+                new FilterRegistrationBean<>(noRecaptchaEndpointFilter);
+        registration.setEnabled(false);
+        return registration;
+    }
+
+    /**
+     * PublicAuthRateLimitFilter의 서블릿 컨테이너 자동 등록 비활성화
+     * Spring Security 체인에서만 실행됨
+     */
+    @Bean
+    public FilterRegistrationBean<PublicAuthRateLimitFilter> disablePublicAuthRateLimitAutoRegistration() {
+        FilterRegistrationBean<PublicAuthRateLimitFilter> registration =
+                new FilterRegistrationBean<>(publicAuthRateLimitFilter);
         registration.setEnabled(false);
         return registration;
     }

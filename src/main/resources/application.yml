@@ -145,6 +145,11 @@ security:
 app:
   recaptcha:
     enabled: ${ENABLE_RECAPTCHA:true}
+  auth:
+    public-rate-limit:
+      enabled: ${ENABLE_PUBLIC_AUTH_RATE_LIMIT:}
+      requests: ${PUBLIC_AUTH_RATE_LIMIT_REQUESTS:}
+      period-seconds: ${PUBLIC_AUTH_RATE_LIMIT_PERIOD_SECONDS:}
   reset-password:
     base-url: ${RESET_PASSWORD_BASE_URL:https://clash.kr/#/reset-password?token=}
 

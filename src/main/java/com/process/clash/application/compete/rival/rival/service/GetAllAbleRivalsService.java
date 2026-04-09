@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -19,15 +21,21 @@ import java.util.stream.Stream;
 @Transactional(readOnly = true)
 public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
 
+    private static final int MAX_RIVAL_COUNT = 4;
+
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
 
     @Override
     public GetAllAbleRivalsData.Result execute(GetAllAbleRivalsData.Command command) {
 
-        List<Rival> rivals = rivalRepositoryPort.findAllRivalsByUserId(command.actor().id());
-
         Long myId = command.actor().id();
+
+        if (rivalRepositoryPort.countAcceptedByUserId(myId) >= MAX_RIVAL_COUNT) {
+            return GetAllAbleRivalsData.Result.from(List.of());
+        }
+
+        List<Rival> rivals = rivalRepositoryPort.findAllRivalsByUserId(myId);
 
         List<Long> excludedUserIds = Stream.concat(
                 rivals.stream()
@@ -42,8 +50,23 @@ public class GetAllAbleRivalsService implements GetAllAbleRivalsUseCase {
                 Stream.of(myId)
         ).distinct().toList();
 
+        List<AbleRivalInfoForRival> candidates = userRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
 
-        List<AbleRivalInfoForRival> ableRivalInfoForRivals = userRepositoryPort.findAbleRivalsWithUserInfo(excludedUserIds);
+        if (candidates.isEmpty()) {
+            return GetAllAbleRivalsData.Result.from(List.of());
+        }
+
+        List<Long> candidateIds = candidates.stream().map(AbleRivalInfoForRival::id).toList();
+        Map<Long, Integer> acceptedCounts = rivalRepositoryPort.countAcceptedByUserIdsGrouped(candidateIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        map -> ((Number) map.get("user_id")).longValue(),
+                        map -> ((Number) map.get("count")).intValue()
+                ));
+
+        List<AbleRivalInfoForRival> ableRivalInfoForRivals = candidates.stream()
+                .filter(user -> acceptedCounts.getOrDefault(user.id(), 0) < MAX_RIVAL_COUNT)
+                .toList();
 
         return GetAllAbleRivalsData.Result.from(ableRivalInfoForRivals);
     }
