@@ -99,7 +99,7 @@ public class RateLimitFilter extends GenericFilterBean {
         // 6. Bucket 키로 조회/생성
         String bucketKey = RATE_LIMIT_KEY_PREFIX + userId;
         Bucket bucket = bucketProxyManager.builder()
-                .build(bucketKey, configuration);
+                .build(bucketKey, () -> configuration);
 
         // 7. 토큰 소비 시도
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
