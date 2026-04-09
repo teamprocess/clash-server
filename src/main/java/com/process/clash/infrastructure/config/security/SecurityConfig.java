@@ -5,6 +5,7 @@ import com.process.clash.infrastructure.service.CustomUserDetailsService;
 import com.process.clash.adapter.web.common.CommonResponse;
 import com.process.clash.adapter.web.common.ErrorResponse;
 import com.process.clash.application.common.exception.statuscode.CommonStatusCode;
+import com.process.clash.adapter.web.filter.NoRecaptchaEndpointFilter;
 import com.process.clash.adapter.web.filter.RateLimitFilter;
 import com.process.clash.adapter.web.filter.RecaptchaFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,6 +59,7 @@ public class SecurityConfig {
 
     private final RateLimitFilter rateLimitFilter;
     private final RecaptchaFilter recaptchaFilter;
+    private final NoRecaptchaEndpointFilter noRecaptchaEndpointFilter;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService customUserDetailsService;
     private static final int TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30;
@@ -150,6 +152,7 @@ public class SecurityConfig {
                 .securityContext(securityContext -> securityContext
                         .securityContextRepository(securityContextRepository())
                 )
+                .addFilterBefore(noRecaptchaEndpointFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(recaptchaFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(rateLimitFilter, SecurityContextHolderFilter.class);
 

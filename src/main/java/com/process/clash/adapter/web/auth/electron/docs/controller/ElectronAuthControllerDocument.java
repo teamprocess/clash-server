@@ -124,7 +124,7 @@ public interface ElectronAuthControllerDocument {
             @Valid @org.springframework.web.bind.annotation.RequestBody ElectronAuthDto.LoginRequest req
     );
 
-    @Operation(summary = "Electron 로그인 (리캡차 없음)", description = "리캡차 없이 Electron 로그인 딥링크 URL을 발급합니다. 내부 테스트용 엔드포인트입니다.")
+    @Operation(summary = "Electron 로그인 (리캡차 없음)", description = "리캡차 없이 Electron 로그인 딥링크 URL을 발급합니다. 개발 환경에서만 허용되는 내부 테스트용 엔드포인트입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "로그인 URL 발급 성공",
                     content = @Content(

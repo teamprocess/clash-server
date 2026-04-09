@@ -95,7 +95,7 @@ public interface AuthControllerDocument {
             @Parameter(hidden = true) HttpServletRequest httpRequest
     );
 
-    @Operation(summary = "로그인 (리캡차 없음)", description = "리캡차 없이 아이디/비밀번호로 로그인합니다. 내부 테스트용 엔드포인트입니다.")
+    @Operation(summary = "로그인 (리캡차 없음)", description = "리캡차 없이 아이디/비밀번호로 로그인합니다. 개발 환경에서만 허용되는 내부 테스트용 엔드포인트입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인 성공",
                     content = @Content(
