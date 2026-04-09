@@ -94,9 +94,9 @@ public class GetRankingService implements GetRankingUseCase {
         }
         LocalDate startDate = switch (periodCategory) {
             case DAY -> today;
-            case WEEK -> today.minusWeeks(1);
-            case MONTH -> today.minusMonths(1);
-            case YEAR -> today.minusYears(1);
+            case WEEK -> today.minusWeeks(1).plusDays(1);
+            case MONTH -> today.minusMonths(1).plusDays(1);
+            case YEAR -> today.minusYears(1).plusDays(1);
             default -> today;
         };
         return new DateRange(startDate, today);
