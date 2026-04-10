@@ -108,7 +108,7 @@ class GetRankingServiceTest {
     }
 
     @Test
-    @DisplayName("ACTIVE_TIME + WEEK: startDate는 boundary-today 기준 1주 전 06:00이다")
+    @DisplayName("ACTIVE_TIME + WEEK: startDate는 boundary-today 기준 6일 전 06:00이다 (정확히 7일)")
     void activeTime_week_startDateIsOneWeekBeforeBoundaryTodayAt06() {
         when(recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
@@ -123,12 +123,12 @@ class GetRankingServiceTest {
             .findStudyTimeRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
         assertThat(start.getValue())
-            .isEqualTo(expectedBoundaryToday.minusWeeks(1).atTime(BOUNDARY_HOUR, 0));
+            .isEqualTo(expectedBoundaryToday.minusWeeks(1).plusDays(1).atTime(BOUNDARY_HOUR, 0));
         assertThat(start.getValue()).isBefore(end.getValue());
     }
 
     @Test
-    @DisplayName("ACTIVE_TIME + MONTH: startDate는 boundary-today 기준 1달 전 06:00이다")
+    @DisplayName("ACTIVE_TIME + MONTH: startDate는 boundary-today 기준 정확히 1달(+1일 조정) 06:00이다")
     void activeTime_month_startDateIsOneMonthBeforeBoundaryTodayAt06() {
         when(recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
@@ -143,11 +143,11 @@ class GetRankingServiceTest {
             .findStudyTimeRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
         assertThat(start.getValue())
-            .isEqualTo(expectedBoundaryToday.minusMonths(1).atTime(BOUNDARY_HOUR, 0));
+            .isEqualTo(expectedBoundaryToday.minusMonths(1).plusDays(1).atTime(BOUNDARY_HOUR, 0));
     }
 
     @Test
-    @DisplayName("ACTIVE_TIME + YEAR: startDate는 boundary-today 기준 1년 전 06:00이다")
+    @DisplayName("ACTIVE_TIME + YEAR: startDate는 boundary-today 기준 정확히 1년(+1일 조정) 06:00이다")
     void activeTime_year_startDateIsOneYearBeforeBoundaryTodayAt06() {
         when(recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
@@ -162,7 +162,7 @@ class GetRankingServiceTest {
             .findStudyTimeRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
         assertThat(start.getValue())
-            .isEqualTo(expectedBoundaryToday.minusYears(1).atTime(BOUNDARY_HOUR, 0));
+            .isEqualTo(expectedBoundaryToday.minusYears(1).plusDays(1).atTime(BOUNDARY_HOUR, 0));
     }
 
     @Test
@@ -171,7 +171,7 @@ class GetRankingServiceTest {
         LocalDate seasonStart = LocalDate.now(TEST_ZONE).minusDays(7);
         LocalDate seasonEnd = LocalDate.now(TEST_ZONE).plusDays(83);
         Season season = new Season(1L, null, null, "SEASON_1", seasonStart, seasonEnd);
-        when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(season));
+        when(seasonRepositoryPort.findSeasonByDate(any())).thenReturn(Optional.of(season));
         when(recordSessionRepositoryPort.findStudyTimeRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
 
@@ -240,7 +240,7 @@ class GetRankingServiceTest {
         LocalDate seasonStart = LocalDate.now(TEST_ZONE).minusDays(10);
         LocalDate seasonEnd = LocalDate.now(TEST_ZONE).plusDays(80);
         Season season = new Season(1L, null, null, "SEASON_1", seasonStart, seasonEnd);
-        when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(season));
+        when(seasonRepositoryPort.findSeasonByDate(any())).thenReturn(Optional.of(season));
         when(userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
 
@@ -258,7 +258,7 @@ class GetRankingServiceTest {
     }
 
     @Test
-    @DisplayName("EXP + WEEK: startDate는 boundary-today 기준 1주 전이고, endDate는 boundary-today이다")
+    @DisplayName("EXP + WEEK: startDate는 boundary-today 기준 6일 전이고, endDate는 boundary-today이다 (정확히 7일)")
     void exp_week_startIsOneWeekBeforeBoundaryToday() {
         when(userExpHistoryRepositoryPort.findExpRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
@@ -272,7 +272,7 @@ class GetRankingServiceTest {
         verify(userExpHistoryRepositoryPort)
             .findExpRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
-        assertThat(start.getValue()).isEqualTo(expectedBoundaryToday.minusWeeks(1));
+        assertThat(start.getValue()).isEqualTo(expectedBoundaryToday.minusWeeks(1).plusDays(1));
         assertThat(end.getValue()).isEqualTo(expectedBoundaryToday);
     }
 
@@ -284,7 +284,7 @@ class GetRankingServiceTest {
         LocalDate seasonStart = LocalDate.now(TEST_ZONE).minusDays(5);
         LocalDate seasonEnd = LocalDate.now(TEST_ZONE).plusDays(85);
         Season season = new Season(1L, null, null, "SEASON_1", seasonStart, seasonEnd);
-        when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(season));
+        when(seasonRepositoryPort.findSeasonByDate(any())).thenReturn(Optional.of(season));
         when(gitHubDailyStatsQueryPort.findGitHubRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
 
@@ -321,7 +321,7 @@ class GetRankingServiceTest {
     }
 
     @Test
-    @DisplayName("GITHUB + WEEK: startDate는 캘린더 기준(00시) 오늘에서 1주 전이고, endDate는 오늘이다")
+    @DisplayName("GITHUB + WEEK: startDate는 캘린더 기준(00시) 오늘에서 6일 전이고, endDate는 오늘이다 (정확히 7일)")
     void gitHub_week_startIsOneWeekBeforeCalendarToday() {
         when(gitHubDailyStatsQueryPort.findGitHubRankingByUserIdAndPeriod(any(), any(), any()))
             .thenReturn(List.of());
@@ -335,7 +335,7 @@ class GetRankingServiceTest {
         verify(gitHubDailyStatsQueryPort)
             .findGitHubRankingByUserIdAndPeriod(eq(USER_ID), start.capture(), end.capture());
 
-        assertThat(start.getValue()).isEqualTo(expectedCalendarToday.minusWeeks(1));
+        assertThat(start.getValue()).isEqualTo(expectedCalendarToday.minusWeeks(1).plusDays(1));
         assertThat(end.getValue()).isEqualTo(expectedCalendarToday);
     }
 }
