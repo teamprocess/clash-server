@@ -5,7 +5,7 @@ import com.process.clash.application.profile.data.EquippedItemsData;
 public class EquippedItemsDto {
 
     public record Response(
-            Item insigma,
+            Item insignia,
             Item nameplate,
             Item banner
     ) {
@@ -14,7 +14,7 @@ public class EquippedItemsDto {
                 return new Response(null, null, null);
             }
             return new Response(
-                    Item.from(data.insigma()),
+                    Item.from(data.insignia()),
                     Item.from(data.nameplate()),
                     Item.from(data.banner())
             );
