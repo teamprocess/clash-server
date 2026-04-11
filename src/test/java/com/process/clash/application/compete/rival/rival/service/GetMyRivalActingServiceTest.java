@@ -228,8 +228,8 @@ class GetMyRivalActingServiceTest {
                 new GetMyRivalActingData.Command(actor));
 
         EquippedItemsData actual = result.myRivals().get(0).equippedItems();
-        assertThat(actual.insigma().id()).isEqualTo(1L);
-        assertThat(actual.insigma().name()).isEqualTo("배지이름");
+        assertThat(actual.insignia().id()).isEqualTo(1L);
+        assertThat(actual.insignia().name()).isEqualTo("배지이름");
         assertThat(actual.nameplate().id()).isEqualTo(2L);
         assertThat(actual.banner()).isNull();
     }

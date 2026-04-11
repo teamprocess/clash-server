@@ -67,7 +67,7 @@ public class EquippedItemsAssembler {
             List<UserEquippedItem> userEquippedItems,
             Map<Long, Product> productById
     ) {
-        EquippedItemsData.EquippedItemData insigma = null;
+        EquippedItemsData.EquippedItemData insignia = null;
         EquippedItemsData.EquippedItemData nameplate = null;
         EquippedItemsData.EquippedItemData banner = null;
 
@@ -87,7 +87,7 @@ public class EquippedItemsAssembler {
             );
 
             if (userEquippedItem.category() == ProductCategory.INSIGNIA) {
-                insigma = summary;
+                insignia = summary;
             } else if (userEquippedItem.category() == ProductCategory.NAMEPLATE) {
                 nameplate = summary;
             } else if (userEquippedItem.category() == ProductCategory.BANNER) {
@@ -95,6 +95,6 @@ public class EquippedItemsAssembler {
             }
         }
 
-        return new EquippedItemsData(insigma, nameplate, banner);
+        return new EquippedItemsData(insignia, nameplate, banner);
     }
 }
