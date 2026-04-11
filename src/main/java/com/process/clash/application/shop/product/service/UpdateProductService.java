@@ -39,6 +39,7 @@ public class UpdateProductService implements UpdateProductUseCase {
                 command.title(),
                 command.category(),
                 command.image(),
+                command.audio(),
                 command.price(),
                 command.discount(),
                 command.description(),

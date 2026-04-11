@@ -70,6 +70,7 @@ public class EquippedItemsAssembler {
         EquippedItemsData.EquippedItemData insignia = null;
         EquippedItemsData.EquippedItemData nameplate = null;
         EquippedItemsData.EquippedItemData banner = null;
+        EquippedItemsData.EquippedItemData bgm = null;
 
         for (UserEquippedItem userEquippedItem : userEquippedItems) {
             Product product = productById.get(userEquippedItem.productId());
@@ -83,7 +84,8 @@ public class EquippedItemsAssembler {
             EquippedItemsData.EquippedItemData summary = EquippedItemsData.EquippedItemData.of(
                     product.id(),
                     product.title(),
-                    product.image()
+                    product.image(),
+                    product.audio()
             );
 
             if (userEquippedItem.category() == ProductCategory.INSIGNIA) {
@@ -92,9 +94,11 @@ public class EquippedItemsAssembler {
                 nameplate = summary;
             } else if (userEquippedItem.category() == ProductCategory.BANNER) {
                 banner = summary;
+            } else if (userEquippedItem.category() == ProductCategory.BGM) {
+                bgm = summary;
             }
         }
 
-        return new EquippedItemsData(insignia, nameplate, banner);
+        return new EquippedItemsData(insignia, nameplate, banner, bgm);
     }
 }

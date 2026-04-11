@@ -44,6 +44,9 @@ public class ProductJpaEntity {
     @Column(nullable = false)
     private String image;
 
+    @Column
+    private String audio;
+
     @Column(nullable = false)
     private Long price;
 
