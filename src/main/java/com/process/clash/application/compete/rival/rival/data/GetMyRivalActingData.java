@@ -1,6 +1,7 @@
 package com.process.clash.application.compete.rival.rival.data;
 
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.profile.data.EquippedItemsData;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.domain.user.user.entity.User;
 
@@ -38,7 +39,8 @@ public class GetMyRivalActingData {
             String usingApp,
             Boolean isStudying,
             UserActivityStatus status,
-            String tier
+            String tier,
+            EquippedItemsData equippedItems
     ) {
 
         public static MyRival of(
@@ -47,7 +49,8 @@ public class GetMyRivalActingData {
             Long activeTime,
             String usingApp,
             Boolean isStudying,
-            UserActivityStatus status
+            UserActivityStatus status,
+            EquippedItemsData equippedItems
         ) {
             return new MyRival(
                     rivalId,
@@ -59,7 +62,8 @@ public class GetMyRivalActingData {
                     usingApp,
                     isStudying,
                     status,
-                    user.tier()
+                    user.tier(),
+                    equippedItems
             );
         }
     }

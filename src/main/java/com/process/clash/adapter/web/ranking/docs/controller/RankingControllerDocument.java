@@ -41,9 +41,9 @@ public interface RankingControllerDocument {
                                             "point": 1200,
                                             "tier": "AURA",
                                             "equippedItems": {
-                                              "insigma": {
+                                              "insignia": {
                                                 "id": 1,
-                                                "name": "기본 인시그니아",
+                                                "name": "기본 휘장",
                                                 "image": "https://cdn.example.com/items/insignia.png"
                                               },
                                               "nameplate": null,
@@ -58,7 +58,7 @@ public interface RankingControllerDocument {
                                             "point": 980,
                                             "tier": "GOLD",
                                             "equippedItems": {
-                                              "insigma": null,
+                                              "insignia": null,
                                               "nameplate": null,
                                               "banner": null
                                             }

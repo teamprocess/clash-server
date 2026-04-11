@@ -1,7 +1,7 @@
 package com.process.clash.application.profile.data;
 
 public record EquippedItemsData(
-        EquippedItemData insigma,
+        EquippedItemData insignia,
         EquippedItemData nameplate,
         EquippedItemData banner
 ) {
