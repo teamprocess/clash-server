@@ -35,6 +35,7 @@ public class CreateProductService implements CreateProductUseCase {
                 command.title(),
                 command.category(),
                 command.image(),
+                command.audio(),
                 command.price(),
                 command.discount(),
                 command.description(),
