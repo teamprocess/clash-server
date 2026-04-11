@@ -89,7 +89,10 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
         Map<Long, UserActivityStatus> activityStatusByUserId = userPresencePort.getStatuses(opponentIds);
 
-        Map<Long, EquippedItemsData> equippedItemsMap = equippedItemsAssembler.loadByUserIds(opponentIds);
+        List<Long> rivalIds = opponentIds.stream()
+                .filter(id -> !id.equals(command.actor().id()))
+                .toList();
+        Map<Long, EquippedItemsData> equippedItemsMap = equippedItemsAssembler.loadByUserIds(rivalIds);
 
         Long myId = command.actor().id();
 
