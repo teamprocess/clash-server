@@ -65,6 +65,9 @@ public class GetRankingResponseDocument {
 
         @Schema(description = "배너")
         private EquippedItemDoc banner;
+
+        @Schema(description = "배경음악")
+        private EquippedItemDoc bgm;
     }
 
     @Schema(name = "EquippedItem", description = "장착 아이템 요약")
@@ -78,5 +81,8 @@ public class GetRankingResponseDocument {
 
         @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")
         private String image;
+
+        @Schema(description = "오디오 URL (BGM 카테고리 전용, 그 외 null)", example = "https://cdn.example.com/bgm/lofi.mp3")
+        private String audio;
     }
 }
