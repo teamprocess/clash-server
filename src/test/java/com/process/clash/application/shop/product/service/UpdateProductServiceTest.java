@@ -60,12 +60,13 @@ class UpdateProductServiceTest {
                 "기존 상품",
                 ProductCategory.BANNER,
                 "https://cdn.example.com/old.png",
+                null,
                 1000L,
                 10,
                 "기존 설명",
                 null
         );
-        product = new Product(10L, Instant.now(), Instant.now(), product.title(), product.category(), product.image(), product.price(), product.discount(), product.description(), 15L, null, false);
+        product = new Product(10L, Instant.now(), Instant.now(), product.title(), product.category(), product.image(), null, product.price(), product.discount(), product.description(), 15L, null, false);
 
         UpdateProductData.Command command = new UpdateProductData.Command(
                 actor,
@@ -73,6 +74,7 @@ class UpdateProductServiceTest {
                 "변경 상품",
                 ProductCategory.NAMEPLATE,
                 "https://cdn.example.com/new.png",
+                null,
                 2000L,
                 20,
                 "변경 설명",
@@ -113,6 +115,7 @@ class UpdateProductServiceTest {
                 "상품",
                 ProductCategory.NAMEPLATE,
                 "https://cdn.example.com/old.png",
+                null,
                 1000L,
                 5,
                 "설명",
@@ -127,6 +130,7 @@ class UpdateProductServiceTest {
                 "상품",
                 ProductCategory.NAMEPLATE,
                 "https://cdn.example.com/new.png",
+                null,
                 1000L,
                 5,
                 "설명",
@@ -155,6 +159,7 @@ class UpdateProductServiceTest {
                 "상품",
                 ProductCategory.NAMEPLATE,
                 "https://cdn.example.com/new.png",
+                null,
                 1000L,
                 5,
                 "설명",
@@ -168,6 +173,51 @@ class UpdateProductServiceTest {
     }
 
     @Test
+    @DisplayName("BGM 상품 수정 시 audio URL이 저장된다")
+    void execute_savesBgmAudioUrl() {
+        Actor actor = new Actor(1L, Role.ADMIN);
+        Product product = new Product(
+                10L,
+                Instant.now(),
+                Instant.now(),
+                "BGM 상품",
+                ProductCategory.BGM,
+                "https://cdn.example.com/cover.png",
+                null,
+                5000L,
+                0,
+                "배경음악",
+                0L,
+                null,
+                false
+        );
+
+        UpdateProductData.Command command = new UpdateProductData.Command(
+                actor,
+                10L,
+                "BGM 상품",
+                ProductCategory.BGM,
+                "https://cdn.example.com/cover.png",
+                "https://cdn.example.com/bgm.mp3",
+                5000L,
+                0,
+                "배경음악",
+                null
+        );
+
+        when(productRepositoryPort.findById(10L)).thenReturn(Optional.of(product));
+        when(productRepositoryPort.save(any(Product.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        updateProductService.execute(command);
+
+        ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepositoryPort).save(captor.capture());
+        assertThat(captor.getValue().category()).isEqualTo(ProductCategory.BGM);
+        assertThat(captor.getValue().audio()).isEqualTo("https://cdn.example.com/bgm.mp3");
+    }
+
+    @Test
     @DisplayName("존재하지 않는 시즌 ID면 예외가 발생한다")
     void execute_throwsWhenSeasonNotFound() {
         Actor actor = new Actor(1L, Role.ADMIN);
@@ -178,6 +228,7 @@ class UpdateProductServiceTest {
                 "상품",
                 ProductCategory.NAMEPLATE,
                 "https://cdn.example.com/old.png",
+                null,
                 1000L,
                 5,
                 "설명",
@@ -191,6 +242,7 @@ class UpdateProductServiceTest {
                 "상품",
                 ProductCategory.NAMEPLATE,
                 "https://cdn.example.com/new.png",
+                null,
                 1000L,
                 5,
                 "설명",
