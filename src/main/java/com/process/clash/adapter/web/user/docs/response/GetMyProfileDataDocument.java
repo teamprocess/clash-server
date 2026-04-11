@@ -58,8 +58,8 @@ public class GetMyProfileDataDocument {
 
     @Schema(description = "장착 아이템")
     public static class EquippedItemsDocument {
-        @Schema(description = "인시그니아")
-        public EquippedItemDocument insigma;
+        @Schema(description = "휘장")
+        public EquippedItemDocument insignia;
 
         @Schema(description = "네임플레이트")
         public EquippedItemDocument nameplate;
@@ -73,7 +73,7 @@ public class GetMyProfileDataDocument {
         @Schema(description = "아이템 ID", example = "1")
         public Long id;
 
-        @Schema(description = "아이템 이름", example = "기본 인시그니아")
+        @Schema(description = "아이템 이름", example = "기본 휘장")
         public String name;
 
         @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")

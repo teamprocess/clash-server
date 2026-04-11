@@ -26,9 +26,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 "githubLinked": true,
                 "activityStatus": "ONLINE",
                 "equippedItems": {
-                  "insigma": {
+                  "insignia": {
                     "id": 1,
-                    "name": "기본 인시그니아",
+                    "name": "기본 휘장",
                     "image": "https://cdn.example.com/items/insignia.png"
                   },
                   "nameplate": null,
