@@ -116,6 +116,34 @@ class ProductAdminControllerTest {
     }
 
     @Test
+    @DisplayName("POST /api/admin/shop/products BGM 상품 생성 시 audio 필드가 Command에 전달된다")
+    void createProduct_bgm_passesAudioToCommand() throws Exception {
+        when(createProductUseCase.execute(any()))
+                .thenReturn(new CreateProductData.Result(200L));
+
+        mockMvc.perform(post("/api/admin/shop/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "로파이 BGM",
+                                  "category": "BGM",
+                                  "image": "https://cdn.example.com/products/bgm-cover.png",
+                                  "audio": "https://cdn.example.com/products/bgm.mp3",
+                                  "price": 5000,
+                                  "discount": 0,
+                                  "description": "집중력 향상 BGM"
+                                }
+                                """))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.productId").value(200));
+
+        ArgumentCaptor<CreateProductData.Command> captor = ArgumentCaptor.forClass(CreateProductData.Command.class);
+        verify(createProductUseCase).execute(captor.capture());
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().category().name()).isEqualTo("BGM");
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().audio()).isEqualTo("https://cdn.example.com/products/bgm.mp3");
+    }
+
+    @Test
     @DisplayName("DELETE /api/admin/shop/products/{productId} 는 상품 삭제 요청을 처리한다")
     void deleteProduct_returnsSuccessResponse() throws Exception {
         when(deleteProductUseCase.execute(any()))
