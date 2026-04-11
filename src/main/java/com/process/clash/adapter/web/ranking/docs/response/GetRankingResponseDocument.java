@@ -57,8 +57,8 @@ public class GetRankingResponseDocument {
     @Schema(name = "EquippedItems", description = "장착 아이템 정보")
     public static class EquippedItemsDoc {
 
-        @Schema(description = "인시그니아")
-        private EquippedItemDoc insigma;
+        @Schema(description = "휘장")
+        private EquippedItemDoc insignia;
 
         @Schema(description = "네임플레이트")
         private EquippedItemDoc nameplate;
@@ -73,7 +73,7 @@ public class GetRankingResponseDocument {
         @Schema(description = "아이템 ID", example = "1")
         private Long id;
 
-        @Schema(description = "아이템 이름", example = "기본 인시그니아")
+        @Schema(description = "아이템 이름", example = "기본 휘장")
         private String name;
 
         @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")
