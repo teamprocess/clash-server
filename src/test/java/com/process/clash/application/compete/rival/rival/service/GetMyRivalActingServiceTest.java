@@ -3,6 +3,7 @@ package com.process.clash.application.compete.rival.rival.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingData;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
@@ -51,6 +52,8 @@ class GetMyRivalActingServiceTest {
     private UserPresencePort userPresencePort;
 
     private GetMyRivalActingService getMyRivalActingService;
+    @Mock
+    private EquippedItemsAssembler equippedItemsAssembler;
 
     @BeforeEach
     void setUp() {
@@ -59,8 +62,11 @@ class GetMyRivalActingServiceTest {
             recordSessionRepositoryPort,
             userRepositoryPort,
             userPresencePort,
+
             new RecordProperties("UTC", 0),
-            ZoneId.of("UTC")
+            ZoneId.of("UTC"),
+
+            equippedItemsAssembler
         );
     }
 
@@ -116,6 +122,7 @@ class GetMyRivalActingServiceTest {
             ));
         when(userPresencePort.getStatuses(anyList()))
             .thenReturn(Map.of(2L, UserActivityStatus.ONLINE, 3L, UserActivityStatus.AWAY, 1L, UserActivityStatus.ONLINE));
+        when(equippedItemsAssembler.loadByUserIds(anyList())).thenReturn(Map.of());
 
         GetMyRivalActingData.Result result = getMyRivalActingService.execute(command);
 
@@ -147,6 +154,7 @@ class GetMyRivalActingServiceTest {
                 .thenReturn(Map.of());
         when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList())).thenReturn(List.of());
         when(userPresencePort.getStatuses(anyList())).thenReturn(Map.of(2L, UserActivityStatus.OFFLINE));
+        when(equippedItemsAssembler.loadByUserIds(anyList())).thenReturn(Map.of());
 
         GetMyRivalActingData.Result result = getMyRivalActingService.execute(
                 new GetMyRivalActingData.Command(actor));
@@ -170,6 +178,7 @@ class GetMyRivalActingServiceTest {
                 .thenReturn(Map.of());
         when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList())).thenReturn(List.of());
         when(userPresencePort.getStatuses(anyList())).thenReturn(Map.of(2L, UserActivityStatus.OFFLINE));
+        when(equippedItemsAssembler.loadByUserIds(anyList())).thenReturn(Map.of());
 
         GetMyRivalActingData.Result result = getMyRivalActingService.execute(
                 new GetMyRivalActingData.Command(actor));
