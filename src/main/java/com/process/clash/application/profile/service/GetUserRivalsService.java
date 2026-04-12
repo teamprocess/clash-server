@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,16 +102,13 @@ public class GetUserRivalsService implements GetUserRivalsUsecase {
 
         List<GetMyRivalActingData.MyRival> myRivals = rivals.stream()
             .map(rival -> {
-                Long opponentId;
-                if (rival.firstUserId().equals(command.targetUserId())) {
-                    opponentId = rival.secondUserId();
-                } else {
-                    opponentId = rival.firstUserId();
-                }
+                Long opponentId = rival.firstUserId().equals(command.targetUserId())
+                    ? rival.secondUserId()
+                    : rival.firstUserId();
 
                 User opponent = opponentMap.get(opponentId);
                 if (opponent == null) {
-                    throw new UserNotFoundException();
+                    return null;
                 }
 
                 Long activeTime = studyTimeMap.getOrDefault(opponentId, 0L);
@@ -124,6 +122,7 @@ public class GetUserRivalsService implements GetUserRivalsUsecase {
                     rival.id(), opponent, activeTime, usingApp, isStudying, activityStatus, equippedItems
                 );
             })
+            .filter(Objects::nonNull)
             .toList();
 
         return GetMyRivalActingData.Result.from(myRivals);
