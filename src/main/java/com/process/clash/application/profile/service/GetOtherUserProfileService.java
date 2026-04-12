@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class GetUserProfileService implements GetUserProfileUsecase {
+public class GetOtherUserProfileService implements GetUserProfileUsecase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final UserPresencePort userPresencePort;

@@ -38,11 +38,11 @@ class GetUserProfileServiceTest {
     @Mock
     private EquippedItemsAssembler equippedItemsAssembler;
 
-    private GetUserProfileService getUserProfileService;
+    private GetOtherUserProfileService getUserProfileService;
 
     @BeforeEach
     void setUp() {
-        getUserProfileService = new GetUserProfileService(
+        getUserProfileService = new GetOtherUserProfileService(
             userRepositoryPort, userPresencePort, equippedItemsAssembler
         );
     }
