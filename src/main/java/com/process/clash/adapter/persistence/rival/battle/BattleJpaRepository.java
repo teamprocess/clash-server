@@ -48,7 +48,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         FROM battles b
         LEFT JOIN rivals r ON b.fk_rival_id = r.id
         WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
-            AND b.battle_status NOT IN ('REJECTED', 'PENDING')
+            AND b.battle_status NOT IN ('REJECTED', 'PENDING', 'CANCELED')
     """, nativeQuery = true)
     List<BattleJpaEntity> findByUserIdWithOutRejected(@Param("userId") Long userId);
 
