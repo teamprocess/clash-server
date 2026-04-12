@@ -183,12 +183,6 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
-    public Optional<Rival> findPendingByFirstAndSecondUserId(Long firstUserId, Long secondUserId) {
-        return rivalJpaRepository.findPendingByFirstAndSecondUserId(firstUserId, secondUserId)
-                .map(rivalJpaMapper::toDomain);
-    }
-
-    @Override
     public boolean existsPendingRivalRequestFrom(Long opponentId, Long myId) {
         return rivalJpaRepository.existsPendingRivalRequestFrom(opponentId, myId);
     }
