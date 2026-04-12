@@ -34,7 +34,7 @@ public class FindAllBattleInfoResponseDocument extends SuccessMessageResponseDoc
         public LocalDate expireDate;
 
         @Schema(description = "결과", example = "WON")
-        public String result; // WON, LOST, DRAWN, WINNING, LOSING, DRAWING, NOT_STARTED, CANCELED, PENDING
+        public String result; // WON, LOST, DRAWN, WINNING, LOSING, DRAWING
     }
 
     public static class EnemyDoc {
