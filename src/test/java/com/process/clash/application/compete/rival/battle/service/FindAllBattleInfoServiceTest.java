@@ -227,7 +227,7 @@ class FindAllBattleInfoServiceTest {
         User enemyUser = new User(ENEMY_USER_ID, Instant.now(), Instant.now(),
                 "enemy", "enemy@example.com", "Enemy", "",
                 Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null,
-                rankTier, expTier);
+                false, rankTier, expTier);
 
         when(battleRepositoryPort.findByUserIdWithOutRejected(CURRENT_USER_ID)).thenReturn(battles);
         when(rivalRepositoryPort.findByIdIn(Set.of(RIVAL_ID))).thenReturn(List.of(rival));

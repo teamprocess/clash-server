@@ -196,7 +196,7 @@ class FindApplyBattleListServiceTest {
                 username, username + "@test.com", name,
                 "password", Role.USER, profileImage,
                 0, 0, Major.NONE, UserStatus.ACTIVE,
-                null, RankTier.NONE, ExpTier.UNRANKED
+                null, false, RankTier.NONE, ExpTier.UNRANKED
         );
     }
 }

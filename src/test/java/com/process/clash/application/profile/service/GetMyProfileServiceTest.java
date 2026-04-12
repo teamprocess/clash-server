@@ -133,6 +133,7 @@ class GetMyProfileServiceTest {
             Major.NONE,
             UserStatus.ACTIVE,
             null,
+            false,
             currentRankTier,
             ExpTier.fromExp(totalExp)
         );

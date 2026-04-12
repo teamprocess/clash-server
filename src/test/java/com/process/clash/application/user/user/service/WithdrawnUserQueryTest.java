@@ -131,6 +131,7 @@ class WithdrawnUserQueryTest {
                 Major.NONE,
                 UserStatus.ACTIVE,
                 Instant.now(),   // deletedAt 설정 → 탈퇴 상태
+                false,
                 RankTier.NONE,
                 ExpTier.UNRANKED
         );
