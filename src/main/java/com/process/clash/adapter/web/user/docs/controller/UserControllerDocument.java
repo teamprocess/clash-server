@@ -10,6 +10,7 @@ import com.process.clash.adapter.web.user.docs.response.GetMyActivityCalendarRes
 import com.process.clash.adapter.web.user.docs.response.IssueProfileImageUploadUrlResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.LinkGitHubOAuthResponseDocument;
 import com.process.clash.adapter.web.user.docs.response.UpdateMyProfileImageResponseDocument;
+import com.process.clash.adapter.web.compete.rival.rival.dto.GetMyRivalActingDto;
 import com.process.clash.adapter.web.user.dto.EquippedItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubLinkStatusDto;
 import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDto;
@@ -17,6 +18,8 @@ import com.process.clash.adapter.web.user.dto.GetMyGitHubActivityDetailDto;
 import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyActivityCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
+import com.process.clash.adapter.web.user.dto.GetUserProfileDto;
+import com.process.clash.adapter.web.user.dto.UpdateMyPrivacyDto;
 import com.process.clash.adapter.web.user.dto.IssueProfileImageUploadUrlDto;
 import com.process.clash.adapter.web.user.dto.LinkGitHubOAuthDto;
 import com.process.clash.adapter.web.user.dto.UpdateMyProfileImageDto;
@@ -251,5 +254,76 @@ public interface UserControllerDocument {
                                     """)
                     ))
             UpdateMyProfileImageDto.Request request
+    );
+
+    @Operation(summary = "다른 유저 프로필 조회", description = "특정 유저의 공개 프로필 정보를 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = GetUserProfileDto.Response.class)))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetUserProfileDto.Response> getUserProfile(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "유저 ID", required = true) Long userId
+    );
+
+    @Operation(summary = "다른 유저 보유 아이템 조회", description = "특정 유저의 보유 아이템 목록을 조회합니다. 비공개 프로필이면 403.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = GetMyItemsDto.Response.class))),
+        @ApiResponse(responseCode = "403", description = "비공개 프로필")
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyItemsDto.Response> getUserItems(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "유저 ID", required = true) Long userId,
+        @Parameter(description = "카테고리 (ALL, INSIGNIA, NAMEPLATE, BANNER)", required = false) UserItemCategory category
+    );
+
+    @Operation(summary = "다른 유저 GitHub 활동 조회", description = "특정 유저의 GitHub 활동을 조회합니다. 비공개 프로필이면 403.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = GetMyGitHubActivityDto.Response.class))),
+        @ApiResponse(responseCode = "403", description = "비공개 프로필")
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyGitHubActivityDto.Response> getUserGitHubActivity(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "유저 ID", required = true) Long userId,
+        @Parameter(description = "기간 (YEAR, MONTH, WEEK)", required = true) PeriodCategory period
+    );
+
+    @Operation(summary = "다른 유저 라이벌 조회", description = "특정 유저의 라이벌 목록을 조회합니다. 비공개 프로필이면 403.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = GetMyRivalActingDto.Response.class))),
+        @ApiResponse(responseCode = "403", description = "비공개 프로필")
+    })
+    com.process.clash.adapter.web.common.ApiResponse<GetMyRivalActingDto.Response> getUserRivals(
+        @Parameter(hidden = true) Actor actor,
+        @Parameter(description = "유저 ID", required = true) Long userId
+    );
+
+    @Operation(summary = "프로필 공개 설정 변경", description = "내 프로필의 공개/비공개 여부를 설정합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "변경 성공",
+            content = @Content(schema = @Schema(implementation = UpdateMyPrivacyDto.Response.class),
+                examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "message": "프로필 공개 설정을 성공적으로 변경했습니다.",
+                      "data": {
+                        "isPrivate": true
+                      }
+                    }
+                    """)))
+    })
+    com.process.clash.adapter.web.common.ApiResponse<UpdateMyPrivacyDto.Response> updateMyPrivacy(
+        @Parameter(hidden = true) Actor actor,
+        @RequestBody(description = "비공개 설정", required = true,
+            content = @Content(schema = @Schema(implementation = UpdateMyPrivacyDto.Request.class),
+                examples = @ExampleObject(value = """
+                    {
+                      "isPrivate": true
+                    }
+                    """)))
+        UpdateMyPrivacyDto.Request request
     );
 }
