@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -197,6 +198,21 @@ public interface RivalJpaRepository extends JpaRepository<RivalJpaEntity, Long> 
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(@Param("userId") Long userId);
 
     List<RivalJpaEntity> findByIdIn(Set<Long> ids);
+
+    /**
+     * firstUser → secondUser 방향의 PENDING 라이벌 레코드 조회
+     * 수락 시 반대 방향 미러 레코드 정리에 사용
+     */
+    @Query(value = """
+        SELECT * FROM rivals r
+        WHERE r.fk_first_user_id = :firstUserId
+          AND r.fk_second_user_id = :secondUserId
+          AND r.rival_linking_status = 'PENDING'
+    """, nativeQuery = true)
+    Optional<RivalJpaEntity> findPendingByFirstAndSecondUserId(
+            @Param("firstUserId") Long firstUserId,
+            @Param("secondUserId") Long secondUserId
+    );
 
     /**
      * 상대방이 나에게 보낸 PENDING 라이벌 신청 존재 여부

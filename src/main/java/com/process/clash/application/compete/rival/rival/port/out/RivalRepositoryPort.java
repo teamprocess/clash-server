@@ -29,6 +29,7 @@ public interface RivalRepositoryPort {
     void deleteById(Long id);
     List<AbleRivalInfoForBattle> findAbleToBattleRivals(Long userId);
     List<Rival> findByIdIn(Set<Long> ids);
+    Optional<Rival> findPendingByFirstAndSecondUserId(Long firstUserId, Long secondUserId);
     boolean existsPendingRivalRequestFrom(Long opponentId, Long myId);
     boolean existsActiveRivalBetween(Long myId, Long opponentId);
     void deleteAllByUserId(Long userId);
