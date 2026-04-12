@@ -47,19 +47,8 @@ public class AcceptRivalService implements AcceptRivalUseCase {
         cancelAllPendingIfFull(command.actor().id(), affectedUsers);
         cancelAllPendingIfFull(opponentId, affectedUsers);
 
-        // 레이스 컨디션으로 반대 방향(actor→opponent) PENDING 레코드가 함께 생성된 경우 정리
-        cancelMirrorPendingIfExists(command.actor().id(), opponentId);
-
         competeRefetchNotifier.notifyUserNoticeChanged(affectedUsers);
         competeRefetchNotifier.notifyCompeteChanged(affectedUsers);
-    }
-
-    private void cancelMirrorPendingIfExists(Long actorId, Long opponentId) {
-        rivalRepositoryPort.findPendingByFirstAndSecondUserId(actorId, opponentId)
-                .ifPresent(mirror -> {
-                    rivalRepositoryPort.save(mirror.cancel());
-                    userNoticeRepositoryPort.deleteApplyRivalNoticeByRivalId(mirror.id());
-                });
     }
 
     private void cancelAllPendingIfFull(Long userId, List<Long> affectedUsers) {
