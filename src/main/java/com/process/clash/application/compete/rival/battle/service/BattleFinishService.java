@@ -74,8 +74,10 @@ public class BattleFinishService {
             }
         }
 
-        battleRepositoryPort.saveAll(battlesToUpdate);
-        log.info("Expired battles processed. done={}", expiredInProgress.size());
+        if (!battlesToUpdate.isEmpty()) {
+            battleRepositoryPort.saveAll(battlesToUpdate);
+        }
+        log.info("Expired battles processed. done={}", battlesToUpdate.size());
     }
 
     /**
