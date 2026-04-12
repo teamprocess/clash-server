@@ -38,7 +38,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             SELECT
                 fk_user_id,
                 cast(date_trunc('day', date) as date) AS day_date,
-                AVG(earn_exp) AS point,
+                SUM(earn_exp) AS point,
                 ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY date_trunc('day', date) DESC) as rn
             FROM user_exp_history
             WHERE fk_user_id IN (:userIds)
@@ -67,7 +67,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             SELECT
                 fk_user_id,
                 cast(date_trunc('month', date) as date) + (floor((extract(day from date) - 1) / 7) * 7)::int AS week_start,
-                AVG(earn_exp) AS point,
+                SUM(earn_exp) AS point,
                 ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY cast(date_trunc('month', date) as date) + (floor((extract(day from date) - 1) / 7) * 7)::int DESC) as rn
             FROM user_exp_history
             WHERE fk_user_id IN (:userIds)
@@ -96,7 +96,7 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
             SELECT
                 fk_user_id,
                 cast(date_trunc('month', date) as date) AS month_start,
-                AVG(earn_exp) AS point,
+                SUM(earn_exp) AS point,
                 ROW_NUMBER() OVER (PARTITION BY fk_user_id ORDER BY date_trunc('month', date) DESC) as rn
             FROM user_exp_history
             WHERE fk_user_id IN (:userIds)
