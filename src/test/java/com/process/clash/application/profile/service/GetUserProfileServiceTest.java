@@ -78,6 +78,24 @@ class GetUserProfileServiceTest {
     }
 
     @Test
+    @DisplayName("탈퇴한 유저 조회 시 UserNotFoundException을 던진다")
+    void execute_throwsUserNotFoundException_whenUserDeleted() {
+        Long targetUserId = 2L;
+        User deletedUser = new User(
+            targetUserId, Instant.now(), Instant.now(),
+            "username", "user@example.com", "name", "encoded-password",
+            Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE,
+            Instant.now(), false, RankTier.NONE, ExpTier.UNRANKED
+        );
+        GetUserProfileData.Command command = new GetUserProfileData.Command(targetUserId);
+
+        when(userRepositoryPort.findById(targetUserId)).thenReturn(Optional.of(deletedUser));
+
+        assertThatThrownBy(() -> getUserProfileService.execute(command))
+            .isInstanceOf(UserNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("비공개 유저도 기본 프로필은 반환한다")
     void execute_returnsProfile_evenWhenPrivate() {
         Long targetUserId = 3L;
