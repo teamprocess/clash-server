@@ -48,7 +48,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         FROM battles b
         LEFT JOIN rivals r ON b.fk_rival_id = r.id
         WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
-            AND b.battle_status NOT IN ('REJECTED', 'PENDING')
+            AND b.battle_status NOT IN ('REJECTED', 'PENDING', 'CANCELED')
     """, nativeQuery = true)
     List<BattleJpaEntity> findByUserIdWithOutRejected(@Param("userId") Long userId);
 
@@ -114,20 +114,6 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
           AND b.end_at < NOW()
     """, nativeQuery = true)
     List<BattleJpaEntity> findExpiredInProgressBattles();
-
-    /**
-     * 종료 시각이 지났으나 아직 NOT_STARTED 상태인 배틀 조회 → CANCELED 처리 (스케줄러용)
-     * soft-delete된 라이벌(fk_rival_id IS NULL)은 제외
-     */
-    @Query(value = """
-        SELECT b.*
-        FROM battles b
-        WHERE b.battle_status = 'NOT_STARTED'
-          AND b.fk_rival_id IS NOT NULL
-          AND b.end_at IS NOT NULL
-          AND b.end_at < NOW()
-    """, nativeQuery = true)
-    List<BattleJpaEntity> findExpiredNotStartedBattles();
 
     /**
      * 유저 관련 PENDING 상태 배틀 신청 목록 조회

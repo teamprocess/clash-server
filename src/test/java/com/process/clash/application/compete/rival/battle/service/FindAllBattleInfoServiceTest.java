@@ -148,26 +148,6 @@ class FindAllBattleInfoServiceTest {
     }
 
     @Test
-    @DisplayName("NOT_STARTED 배틀은 NOT_STARTED를 반환한다")
-    void execute_returnsNotStarted_whenNotStarted() {
-        stubCommonDependencies(List.of(battle(BattleStatus.NOT_STARTED, null)));
-
-        FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
-
-        assertThat(result.battles().get(0).result()).isEqualTo("NOT_STARTED");
-    }
-
-    @Test
-    @DisplayName("CANCELED 배틀은 CANCELED를 반환한다")
-    void execute_returnsCanceled_whenCanceled() {
-        stubCommonDependencies(List.of(battle(BattleStatus.CANCELED, null)));
-
-        FindAllBattleInfoData.Result result = findAllBattleInfoService.execute(command());
-
-        assertThat(result.battles().get(0).result()).isEqualTo("CANCELED");
-    }
-
-    @Test
     @DisplayName("상대방 rankTier가 NONE이면 expTier를 tier로 반환한다")
     void execute_returnsEnemyTierAsExpTier_whenRankTierIsNone() {
         stubCommonDependenciesWithEnemy(RankTier.NONE, ExpTier.GOLD,
