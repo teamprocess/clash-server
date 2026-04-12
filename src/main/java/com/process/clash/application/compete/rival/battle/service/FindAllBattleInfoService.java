@@ -35,7 +35,6 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
     private static final String RESULT_WINNING = "WINNING";
     private static final String RESULT_LOSING = "LOSING";
     private static final String RESULT_DRAWING = "DRAWING";
-    private static final String RESULT_NOT_STARTED = "NOT_STARTED";
 
     private final BattleRepositoryPort battleRepositoryPort;
     private final BattleFinishService battleFinishService;
@@ -211,11 +210,6 @@ public class FindAllBattleInfoService implements FindAllBattleInfoUseCase {
             } else {
                 return RESULT_DRAWING;
             }
-        }
-
-        // 시작 전 배틀
-        if (status == BattleStatus.NOT_STARTED) {
-            return RESULT_NOT_STARTED;
         }
 
         throw new IllegalStateException("Unexpected battle status: " + status);

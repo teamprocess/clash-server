@@ -47,7 +47,7 @@ public interface BattleControllerDocument {
             ApplyBattleDto.Request request
     );
 
-    @Operation(summary = "배틀 승인", description = "신청받은 배틀을 승인합니다. 승인 후 배틀은 NOT_STARTED 상태가 되며, 시작일 KST 06시에 자동으로 IN_PROGRESS로 전환됩니다.")
+    @Operation(summary = "배틀 승인", description = "신청받은 배틀을 승인합니다. 승인 즉시 배틀이 IN_PROGRESS 상태로 시작됩니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "승인 성공",
                     content = @Content(
