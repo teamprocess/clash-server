@@ -25,6 +25,10 @@ public class GetUserProfileService implements GetUserProfileUsecase {
         User user = userRepositoryPort.findById(command.targetUserId())
             .orElseThrow(UserNotFoundException::new);
 
+        if (user.isDeleted()) {
+            throw new UserNotFoundException();
+        }
+
         UserActivityStatus activityStatus = userPresencePort.getStatus(user.id());
         return GetUserProfileData.Result.from(
             user,

@@ -46,6 +46,10 @@ public class GetUserRivalsService implements GetUserRivalsUsecase {
         User targetUser = userRepositoryPort.findById(command.targetUserId())
             .orElseThrow(UserNotFoundException::new);
 
+        if (targetUser.isDeleted()) {
+            throw new UserNotFoundException();
+        }
+
         if (targetUser.isPrivate()) {
             throw new ProfilePrivatedException();
         }
