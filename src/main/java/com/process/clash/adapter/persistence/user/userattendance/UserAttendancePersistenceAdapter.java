@@ -7,6 +7,7 @@ import com.process.clash.domain.user.userattendance.entity.UserAttendance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -35,5 +36,25 @@ public class UserAttendancePersistenceAdapter implements UserAttendanceRepositor
     @Override
     public boolean existsByUserIdAndIsAttended(Long userId, boolean isAttended) {
         return userAttendanceJpaRepository.existsByUserIdAndIsAttended(userId, isAttended);
+    }
+
+    @Override
+    public List<Long> findAllNonDeletedUserIds() {
+        return userAttendanceJpaRepository.findAllNonDeletedUserIds();
+    }
+
+    @Override
+    public void saveAll(List<UserAttendance> attendances) {
+        List<UserAttendanceJpaEntity> entities = attendances.stream()
+                .map(attendance -> userAttendanceJpaMapper.toJpaEntity(
+                        attendance, userJpaRepository.getReferenceById(attendance.userId())
+                ))
+                .toList();
+        userAttendanceJpaRepository.saveAll(entities);
+    }
+
+    @Override
+    public void deleteAll() {
+        userAttendanceJpaRepository.deleteAllInBatch();
     }
 }
