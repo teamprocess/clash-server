@@ -81,7 +81,7 @@ class ApplyRivalServiceTest {
 
         applyRivalService.execute(command);
 
-        verify(rivalRepositoryPort).saveAll(anyList());
+        verify(rivalRepositoryPort).saveAllAndFlush(anyList());
         verify(userNoticeRepositoryPort).saveAll(anyList());
     }
 
@@ -95,7 +95,7 @@ class ApplyRivalServiceTest {
                 List.of(new ApplyRivalData.Id(opponentId))
         );
         Rival savedRival = Rival.createDefault(actor.id(), opponentId);
-        when(rivalRepositoryPort.saveAll(anyList())).thenReturn(List.of(savedRival));
+        when(rivalRepositoryPort.saveAllAndFlush(anyList())).thenReturn(List.of(savedRival));
 
         applyRivalService.execute(command);
 
