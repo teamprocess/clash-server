@@ -22,6 +22,7 @@ public class UserJpaMapper {
                 user.major(),
                 user.userStatus(),
                 user.deletedAt(),
+                user.isPrivate(),
                 user.currentRankTier(),
                 user.currentExpTier()
         );
@@ -43,6 +44,7 @@ public class UserJpaMapper {
                 userJpaEntity.getMajor(),
                 userJpaEntity.getUserStatus(),
                 userJpaEntity.getDeletedAt(),
+                userJpaEntity.isPrivate(),
                 userJpaEntity.getCurrentRankTier(),
                 userJpaEntity.getCurrentExpTier()
         );

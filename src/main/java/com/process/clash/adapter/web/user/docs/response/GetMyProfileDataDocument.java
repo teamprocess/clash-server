@@ -58,14 +58,17 @@ public class GetMyProfileDataDocument {
 
     @Schema(description = "장착 아이템")
     public static class EquippedItemsDocument {
-        @Schema(description = "인시그니아")
-        public EquippedItemDocument insigma;
+        @Schema(description = "휘장")
+        public EquippedItemDocument insignia;
 
         @Schema(description = "네임플레이트")
         public EquippedItemDocument nameplate;
 
         @Schema(description = "배너")
         public EquippedItemDocument banner;
+
+        @Schema(description = "배경음악")
+        public EquippedItemDocument bgm;
     }
 
     @Schema(description = "장착 아이템 요약")
@@ -73,10 +76,13 @@ public class GetMyProfileDataDocument {
         @Schema(description = "아이템 ID", example = "1")
         public Long id;
 
-        @Schema(description = "아이템 이름", example = "기본 인시그니아")
+        @Schema(description = "아이템 이름", example = "기본 휘장")
         public String name;
 
         @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")
         public String image;
+
+        @Schema(description = "오디오 URL (BGM 카테고리 전용, 그 외 null)", example = "https://cdn.example.com/bgm/lofi.mp3")
+        public String audio;
     }
 }

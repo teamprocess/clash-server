@@ -3,6 +3,8 @@ package com.process.clash.application.compete.rival.rival.service;
 import com.process.clash.application.common.actor.Actor;
 import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingData;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.profile.data.EquippedItemsData;
+import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
@@ -51,6 +53,8 @@ class GetMyRivalActingServiceTest {
     private UserPresencePort userPresencePort;
 
     private GetMyRivalActingService getMyRivalActingService;
+    @Mock
+    private EquippedItemsAssembler equippedItemsAssembler;
 
     @BeforeEach
     void setUp() {
@@ -59,8 +63,11 @@ class GetMyRivalActingServiceTest {
             recordSessionRepositoryPort,
             userRepositoryPort,
             userPresencePort,
+
             new RecordProperties("UTC", 0),
-            ZoneId.of("UTC")
+            ZoneId.of("UTC"),
+
+            equippedItemsAssembler
         );
     }
 
@@ -116,6 +123,7 @@ class GetMyRivalActingServiceTest {
             ));
         when(userPresencePort.getStatuses(anyList()))
             .thenReturn(Map.of(2L, UserActivityStatus.ONLINE, 3L, UserActivityStatus.AWAY, 1L, UserActivityStatus.ONLINE));
+        when(equippedItemsAssembler.loadByUserIds(anyList())).thenReturn(Map.of());
 
         GetMyRivalActingData.Result result = getMyRivalActingService.execute(command);
 
@@ -147,6 +155,7 @@ class GetMyRivalActingServiceTest {
                 .thenReturn(Map.of());
         when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList())).thenReturn(List.of());
         when(userPresencePort.getStatuses(anyList())).thenReturn(Map.of(2L, UserActivityStatus.OFFLINE));
+        when(equippedItemsAssembler.loadByUserIds(anyList())).thenReturn(Map.of());
 
         GetMyRivalActingData.Result result = getMyRivalActingService.execute(
                 new GetMyRivalActingData.Command(actor));
@@ -170,6 +179,7 @@ class GetMyRivalActingServiceTest {
                 .thenReturn(Map.of());
         when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList())).thenReturn(List.of());
         when(userPresencePort.getStatuses(anyList())).thenReturn(Map.of(2L, UserActivityStatus.OFFLINE));
+        when(equippedItemsAssembler.loadByUserIds(anyList())).thenReturn(Map.of());
 
         GetMyRivalActingData.Result result = getMyRivalActingService.execute(
                 new GetMyRivalActingData.Command(actor));
@@ -187,6 +197,42 @@ class GetMyRivalActingServiceTest {
                 new GetMyRivalActingData.Command(actor));
 
         assertThat(result.myRivals()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("라이벌의 equippedItems가 응답에 올바르게 포함된다")
+    void execute_returnsEquippedItems() {
+        Actor actor = new Actor(1L);
+        Rival rival = new Rival(100L, Instant.now().minusSeconds(86_400), Instant.now(),
+                RivalLinkingStatus.ACCEPTED, 1L, 2L);
+
+        User rivalUser = createUser(2L, "rivalA", "Rival A");
+
+        EquippedItemsData equippedItemsData = new EquippedItemsData(
+                new EquippedItemsData.EquippedItemData(1L, "배지이름", "badge.png", null),
+                new EquippedItemsData.EquippedItemData(2L, "닉네임판", "nameplate.png", null),
+                null,
+                null
+        );
+
+        when(rivalRepositoryPort.findAllByUserId(actor.id())).thenReturn(List.of(rival));
+        when(userRepositoryPort.findAllByIds(anyList()))
+                .thenReturn(List.of(rivalUser, createUser(1L, "me", "Me")));
+        when(recordSessionRepositoryPort.getTotalStudyTimeInSecondsByUserIds(anyList(), any(), any()))
+                .thenReturn(Map.of());
+        when(recordSessionRepositoryPort.findAllActiveSessionsByUserIds(anyList())).thenReturn(List.of());
+        when(userPresencePort.getStatuses(anyList())).thenReturn(Map.of(2L, UserActivityStatus.OFFLINE));
+        when(equippedItemsAssembler.loadByUserIds(anyList()))
+                .thenReturn(Map.of(2L, equippedItemsData));
+
+        GetMyRivalActingData.Result result = getMyRivalActingService.execute(
+                new GetMyRivalActingData.Command(actor));
+
+        EquippedItemsData actual = result.myRivals().get(0).equippedItems();
+        assertThat(actual.insignia().id()).isEqualTo(1L);
+        assertThat(actual.insignia().name()).isEqualTo("배지이름");
+        assertThat(actual.nameplate().id()).isEqualTo(2L);
+        assertThat(actual.banner()).isNull();
     }
 
     private User createUser(Long id, String username, String name) {
@@ -209,6 +255,7 @@ class GetMyRivalActingServiceTest {
             Major.NONE,
             UserStatus.ACTIVE,
             null,
+            false,
             rankTier,
             expTier
         );

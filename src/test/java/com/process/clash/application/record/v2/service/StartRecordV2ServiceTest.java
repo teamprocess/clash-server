@@ -531,6 +531,7 @@ class StartRecordV2ServiceTest {
             Major.NONE,
             UserStatus.ACTIVE,
             null,
+            false,
             RankTier.NONE,
             ExpTier.UNRANKED
         );

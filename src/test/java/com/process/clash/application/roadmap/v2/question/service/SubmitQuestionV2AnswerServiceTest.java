@@ -165,6 +165,7 @@ class SubmitQuestionV2AnswerServiceTest {
                 Major.SERVER,
                 UserStatus.ACTIVE,
                 null,
+                false,
                 RankTier.NONE,
                 ExpTier.UNRANKED
         );

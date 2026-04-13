@@ -57,14 +57,17 @@ public class GetRankingResponseDocument {
     @Schema(name = "EquippedItems", description = "장착 아이템 정보")
     public static class EquippedItemsDoc {
 
-        @Schema(description = "인시그니아")
-        private EquippedItemDoc insigma;
+        @Schema(description = "휘장")
+        private EquippedItemDoc insignia;
 
         @Schema(description = "네임플레이트")
         private EquippedItemDoc nameplate;
 
         @Schema(description = "배너")
         private EquippedItemDoc banner;
+
+        @Schema(description = "배경음악")
+        private EquippedItemDoc bgm;
     }
 
     @Schema(name = "EquippedItem", description = "장착 아이템 요약")
@@ -73,10 +76,13 @@ public class GetRankingResponseDocument {
         @Schema(description = "아이템 ID", example = "1")
         private Long id;
 
-        @Schema(description = "아이템 이름", example = "기본 인시그니아")
+        @Schema(description = "아이템 이름", example = "기본 휘장")
         private String name;
 
         @Schema(description = "아이템 이미지 URL", example = "https://cdn.example.com/items/insignia.png")
         private String image;
+
+        @Schema(description = "오디오 URL (BGM 카테고리 전용, 그 외 null)", example = "https://cdn.example.com/bgm/lofi.mp3")
+        private String audio;
     }
 }

@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
                 "items": [
                   {
                     "id": 1,
-                    "title": "기본 인시그니아",
+                    "title": "기본 휘장",
                     "image": "https://cdn.example.com/items/insignia.png",
                     "description": "기본 아이템",
                     "category": "INSIGNIA",

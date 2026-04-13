@@ -72,6 +72,7 @@ class UnequipMyItemServiceTest {
                 "item-" + id,
                 category,
                 "https://cdn.example.com/item.png",
+                null,
                 1000L,
                 10,
                 "desc",

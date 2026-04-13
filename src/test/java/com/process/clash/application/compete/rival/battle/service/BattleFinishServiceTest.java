@@ -65,7 +65,6 @@ class BattleFinishServiceTest {
                 RivalLinkingStatus.ACCEPTED, FIRST_USER_ID, SECOND_USER_ID);
 
         when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of(inProgressBattle));
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of());
         when(rivalRepositoryPort.findByIdIn(Set.of(RIVAL_ID))).thenReturn(List.of(rival));
         when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(FIRST_USER_ID), anyList()))
                 .thenReturn(Map.of(1L, 10.0));
@@ -80,58 +79,9 @@ class BattleFinishServiceTest {
     }
 
     @Test
-    @DisplayName("종료 시각이 지난 NOT_STARTED 배틀을 CANCELED로 전환한다")
-    void finishExpiredBattles_transitionsNotStartedToCanceled() {
-        Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
-        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
-        Battle notStartedBattle = new Battle(2L, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.NOT_STARTED, null, RIVAL_ID, FIRST_USER_ID);
-
-        when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of());
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of(notStartedBattle));
-
-        battleFinishService.finishExpiredBattles();
-
-        ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort).saveAll(captor.capture());
-        assertThat(captor.getValue()).allMatch(b -> b.battleStatus() == BattleStatus.CANCELED);
-    }
-
-    @Test
-    @DisplayName("IN_PROGRESS와 NOT_STARTED 만료 배틀을 한 번의 saveAll로 처리한다")
-    void finishExpiredBattles_savesAllInSingleCall() {
-        Instant startedAt = Instant.now().minus(8, ChronoUnit.DAYS);
-        Instant endAt = Instant.now().minus(1, ChronoUnit.DAYS);
-        Battle inProgressBattle = new Battle(1L, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.IN_PROGRESS, null, RIVAL_ID, FIRST_USER_ID);
-        Battle notStartedBattle = new Battle(2L, Instant.now(), Instant.now(),
-                startedAt, endAt, 7, BattleStatus.NOT_STARTED, null, RIVAL_ID, FIRST_USER_ID);
-
-        Rival rival = new Rival(RIVAL_ID, Instant.now(), Instant.now(),
-                RivalLinkingStatus.ACCEPTED, FIRST_USER_ID, SECOND_USER_ID);
-
-        when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of(inProgressBattle));
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of(notStartedBattle));
-        when(rivalRepositoryPort.findByIdIn(Set.of(RIVAL_ID))).thenReturn(List.of(rival));
-        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(FIRST_USER_ID), anyList()))
-                .thenReturn(Map.of(1L, 10.0));
-        when(userExpHistoryRepositoryPort.findAverageExpForBattles(eq(SECOND_USER_ID), anyList()))
-                .thenReturn(Map.of(1L, 5.0));
-
-        battleFinishService.finishExpiredBattles();
-
-        ArgumentCaptor<List<Battle>> captor = ArgumentCaptor.forClass(List.class);
-        verify(battleRepositoryPort).saveAll(captor.capture());
-        assertThat(captor.getValue()).hasSize(2)
-                .anyMatch(b -> b.battleStatus() == BattleStatus.DONE)
-                .anyMatch(b -> b.battleStatus() == BattleStatus.CANCELED);
-    }
-
-    @Test
     @DisplayName("종료할 배틀이 없으면 saveAll을 호출하지 않는다")
     void finishExpiredBattles_doesNotCallSaveAll_whenNoBattlesToProcess() {
         when(battleRepositoryPort.findExpiredInProgressBattles()).thenReturn(List.of());
-        when(battleRepositoryPort.findExpiredNotStartedBattles()).thenReturn(List.of());
 
         battleFinishService.finishExpiredBattles();
 

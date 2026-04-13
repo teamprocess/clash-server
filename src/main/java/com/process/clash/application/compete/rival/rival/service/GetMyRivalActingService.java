@@ -3,13 +3,14 @@ package com.process.clash.application.compete.rival.rival.service;
 import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingData;
 import com.process.clash.application.compete.rival.rival.port.in.GetMyRivalActingUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.profile.data.EquippedItemsData;
+import com.process.clash.application.profile.service.EquippedItemsAssembler;
 import com.process.clash.application.realtime.data.UserActivityStatus;
 import com.process.clash.application.realtime.port.out.UserPresencePort;
 import com.process.clash.application.record.v2.port.out.RecordSessionV2RepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
-import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.infrastructure.config.record.RecordProperties;
@@ -37,6 +38,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
     private final UserPresencePort userPresencePort;
     private final RecordProperties recordProperties;
     private final ZoneId recordZoneId;
+    private final EquippedItemsAssembler equippedItemsAssembler;
 
     @Override
     public GetMyRivalActingData.Result execute(GetMyRivalActingData.Command command) {
@@ -86,6 +88,11 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
 
         Map<Long, UserActivityStatus> activityStatusByUserId = userPresencePort.getStatuses(opponentIds);
 
+        List<Long> rivalIds = opponentIds.stream()
+                .filter(id -> !id.equals(command.actor().id()))
+                .toList();
+        Map<Long, EquippedItemsData> equippedItemsMap = equippedItemsAssembler.loadByUserIds(rivalIds);
+
         Long myId = command.actor().id();
 
         List<GetMyRivalActingData.MyRival> myRivals = rivals.stream()
@@ -109,8 +116,10 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                         UserActivityStatus.OFFLINE
                     );
                     RecordSessionV2 activeSession = activeSessionByUserId.get(opponentId);
-                    String usingApp = resolveUsingApp(activeSession);
+                    String usingApp = activeSession != null ? activeSession.resolveUsingApp() : null;
                     boolean isStudying = activeSession != null;
+
+                    EquippedItemsData equippedItems = equippedItemsMap.getOrDefault(opponentId, EquippedItemsData.empty());
 
                     return GetMyRivalActingData.MyRival.of(
                             rival.id(),
@@ -118,7 +127,8 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                             activeTime,
                             usingApp,
                             isStudying,
-                            activityStatus
+                            activityStatus,
+                            equippedItems
                     );
                 })
                 .toList();
@@ -127,16 +137,4 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         return GetMyRivalActingData.Result.from(myRivals);
     }
 
-    private String resolveUsingApp(RecordSessionV2 activeSession) {
-        if (activeSession == null) {
-            return null;
-        }
-        if (activeSession.sessionType() != RecordSessionTypeV2.DEVELOP) {
-            return null;
-        }
-        if (activeSession.appId() == null) {
-            return null;
-        }
-        return activeSession.appId().name();
-    }
 }

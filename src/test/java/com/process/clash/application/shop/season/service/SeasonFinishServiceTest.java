@@ -272,7 +272,7 @@ class SeasonFinishServiceTest {
                 id, Instant.now(), Instant.now(),
                 "user" + id, "user" + id + "@test.com", "User" + id,
                 "pw", Role.USER, "", totalExp, totalCookie,
-                Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE,
+                Major.NONE, UserStatus.ACTIVE, null, false, RankTier.NONE,
                 ExpTier.fromExp(totalExp)
         );
     }

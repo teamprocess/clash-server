@@ -147,6 +147,7 @@ class LinkGitHubOAuthServiceTest {
                 Major.NONE,
                 UserStatus.ACTIVE,
                 null,
+                false,
                 RankTier.NONE,
                 ExpTier.UNRANKED
         );

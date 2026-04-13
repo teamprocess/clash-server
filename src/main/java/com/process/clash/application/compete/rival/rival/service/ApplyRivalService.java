@@ -2,6 +2,7 @@ package com.process.clash.application.compete.rival.rival.service;
 
 import com.process.clash.application.compete.realtime.CompeteRefetchNotifier;
 import com.process.clash.application.compete.rival.rival.data.ApplyRivalData;
+import com.process.clash.application.compete.rival.rival.exception.exception.conflict.AlreadyAppliedRivalException;
 import com.process.clash.application.compete.rival.rival.policy.ApplyRivalPolicy;
 import com.process.clash.application.compete.rival.rival.port.in.ApplyRivalUseCase;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
@@ -9,6 +10,7 @@ import com.process.clash.application.user.usernotice.port.out.UserNoticeReposito
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.usernotice.entity.UserNotice;
 import com.process.clash.domain.user.usernotice.enums.NoticeCategory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,12 @@ public class ApplyRivalService implements ApplyRivalUseCase {
                 .map(opponentId -> Rival.createDefault(command.actor().id(), opponentId.id()))
                 .toList();
 
-        List<Rival> savedRivals = rivalRepositoryPort.saveAll(rivals);
+        List<Rival> savedRivals;
+        try {
+            savedRivals = rivalRepositoryPort.saveAllAndFlush(rivals);
+        } catch (DataIntegrityViolationException e) {
+            throw new AlreadyAppliedRivalException();
+        }
 
         List<Long> savedOpponentIds = savedRivals.stream()
                 .map(Rival::secondUserId)

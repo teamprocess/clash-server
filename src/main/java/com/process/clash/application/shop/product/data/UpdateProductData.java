@@ -13,6 +13,7 @@ public class UpdateProductData {
             String title,
             ProductCategory category,
             String image,
+            String audio,
             Long price,
             Integer discount,
             String description,

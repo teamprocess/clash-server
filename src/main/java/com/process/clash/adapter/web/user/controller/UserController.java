@@ -9,17 +9,25 @@ import com.process.clash.adapter.web.user.dto.GetMyGitHubLinkStatusDto;
 import com.process.clash.adapter.web.user.dto.GetMyActivityCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
+import com.process.clash.adapter.web.user.dto.GetUserProfileDto;
+import com.process.clash.adapter.web.user.dto.UpdateMyPrivacyDto;
 import com.process.clash.adapter.web.user.dto.IssueProfileImageUploadUrlDto;
 import com.process.clash.adapter.web.user.dto.LinkGitHubOAuthDto;
 import com.process.clash.adapter.web.user.dto.UpdateMyProfileImageDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
+import com.process.clash.adapter.web.compete.rival.rival.dto.GetMyRivalActingDto;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.compete.rival.rival.data.GetMyRivalActingData;
 import com.process.clash.application.profile.data.EquipMyItemData;
 import com.process.clash.application.profile.data.GetMyGitHubActivityDetailData;
 import com.process.clash.application.profile.data.GetMyGitHubActivityData;
 import com.process.clash.application.profile.data.GetMyActivityCalendarData;
 import com.process.clash.application.profile.data.GetMyItemsData;
 import com.process.clash.application.profile.data.GetMyProfileData;
+import com.process.clash.application.profile.data.GetUserProfileData;
+import com.process.clash.application.profile.data.GetUserItemsData;
+import com.process.clash.application.profile.data.GetUserGitHubActivityData;
+import com.process.clash.application.profile.data.GetUserRivalsData;
 import com.process.clash.application.profile.data.UnequipMyItemData;
 import com.process.clash.application.profile.port.in.EquipMyItemUsecase;
 import com.process.clash.application.profile.port.in.GetMyGitHubActivityDetailUsecase;
@@ -27,10 +35,16 @@ import com.process.clash.application.profile.port.in.GetMyGitHubActivityUsecase;
 import com.process.clash.application.profile.port.in.GetMyActivityCalendarUsecase;
 import com.process.clash.application.profile.port.in.GetMyItemsUsecase;
 import com.process.clash.application.profile.port.in.GetMyProfileUsecase;
+import com.process.clash.application.profile.port.in.GetUserProfileUsecase;
+import com.process.clash.application.profile.port.in.GetUserItemsUsecase;
+import com.process.clash.application.profile.port.in.GetUserGitHubActivityUsecase;
+import com.process.clash.application.profile.port.in.GetUserRivalsUsecase;
 import com.process.clash.application.profile.port.in.UnequipMyItemUsecase;
 import com.process.clash.application.user.user.data.IssueProfileImageUploadUrlData;
+import com.process.clash.application.user.user.data.UpdateMyPrivacyData;
 import com.process.clash.application.user.user.data.UpdateMyProfileImageData;
 import com.process.clash.application.user.user.port.in.IssueProfileImageUploadUrlUseCase;
+import com.process.clash.application.user.user.port.in.UpdateMyPrivacyUseCase;
 import com.process.clash.application.user.user.port.in.UpdateMyProfileImageUseCase;
 import com.process.clash.application.user.user.port.in.WithdrawUseCase;
 import com.process.clash.application.user.usergithub.data.GetMyGitHubLinkStatusData;
@@ -71,6 +85,11 @@ public class UserController implements UserControllerDocument {
     private final IssueProfileImageUploadUrlUseCase issueProfileImageUploadUrlUseCase;
     private final UpdateMyProfileImageUseCase updateMyProfileImageUseCase;
     private final WithdrawUseCase withdrawUseCase;
+    private final GetUserProfileUsecase getUserProfileUsecase;
+    private final GetUserItemsUsecase getUserItemsUsecase;
+    private final GetUserGitHubActivityUsecase getUserGitHubActivityUsecase;
+    private final GetUserRivalsUsecase getUserRivalsUsecase;
+    private final UpdateMyPrivacyUseCase updateMyPrivacyUseCase;
 
     @DeleteMapping("/me")
     public ApiResponse<Void> withdraw(
@@ -197,5 +216,62 @@ public class UserController implements UserControllerDocument {
         UpdateMyProfileImageData.Result result = updateMyProfileImageUseCase.execute(command);
         UpdateMyProfileImageDto.Response response = UpdateMyProfileImageDto.Response.from(result);
         return ApiResponse.success(response, "프로필 이미지 수정을 성공했습니다.");
+    }
+
+    @GetMapping("/{userId}")
+    public ApiResponse<GetUserProfileDto.Response> getUserProfile(
+        @AuthenticatedActor Actor actor,
+        @PathVariable Long userId
+    ) {
+        GetUserProfileData.Command command = new GetUserProfileData.Command(userId);
+        GetUserProfileData.Result result = getUserProfileUsecase.execute(command);
+        GetUserProfileDto.Response response = GetUserProfileDto.Response.from(result);
+        return ApiResponse.success(response, "유저 프로필을 성공적으로 조회했습니다.");
+    }
+
+    @GetMapping("/{userId}/items")
+    public ApiResponse<GetMyItemsDto.Response> getUserItems(
+        @AuthenticatedActor Actor actor,
+        @PathVariable Long userId,
+        @RequestParam(name = "category", defaultValue = "ALL") UserItemCategory category
+    ) {
+        GetUserItemsData.Command command = new GetUserItemsData.Command(userId, category);
+        GetMyItemsData.Result result = getUserItemsUsecase.execute(command);
+        GetMyItemsDto.Response response = GetMyItemsDto.Response.from(result);
+        return ApiResponse.success(response, "유저 아이템 목록을 성공적으로 조회했습니다.");
+    }
+
+    @GetMapping("/{userId}/github")
+    public ApiResponse<GetMyGitHubActivityDto.Response> getUserGitHubActivity(
+        @AuthenticatedActor Actor actor,
+        @PathVariable Long userId,
+        @RequestParam PeriodCategory period
+    ) {
+        GetUserGitHubActivityData.Command command = new GetUserGitHubActivityData.Command(userId, period);
+        GetMyGitHubActivityData.Result result = getUserGitHubActivityUsecase.execute(command);
+        GetMyGitHubActivityDto.Response response = GetMyGitHubActivityDto.Response.from(result);
+        return ApiResponse.success(response, "유저 깃허브 활동을 성공적으로 조회했습니다.");
+    }
+
+    @GetMapping("/{userId}/rivals")
+    public ApiResponse<GetMyRivalActingDto.Response> getUserRivals(
+        @AuthenticatedActor Actor actor,
+        @PathVariable Long userId
+    ) {
+        GetUserRivalsData.Command command = new GetUserRivalsData.Command(userId);
+        GetMyRivalActingData.Result result = getUserRivalsUsecase.execute(command);
+        GetMyRivalActingDto.Response response = GetMyRivalActingDto.Response.from(result);
+        return ApiResponse.success(response, "유저 라이벌 목록을 성공적으로 조회했습니다.");
+    }
+
+    @PatchMapping("/me/privacy")
+    public ApiResponse<UpdateMyPrivacyDto.Response> updateMyPrivacy(
+        @AuthenticatedActor Actor actor,
+        @Valid @RequestBody UpdateMyPrivacyDto.Request request
+    ) {
+        UpdateMyPrivacyData.Command command = request.toCommand(actor);
+        UpdateMyPrivacyData.Result result = updateMyPrivacyUseCase.execute(command);
+        UpdateMyPrivacyDto.Response response = UpdateMyPrivacyDto.Response.from(result);
+        return ApiResponse.success(response, "프로필 공개 설정을 성공적으로 변경했습니다.");
     }
 }

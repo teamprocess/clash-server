@@ -15,6 +15,9 @@ public class UpdateProductRequestDocument {
     @Schema(description = "이미지 URL")
     public String image;
 
+    @Schema(description = "오디오 URL (BGM 카테고리 전용, 그 외 null)")
+    public String audio;
+
     @Schema(description = "가격")
     public Long price;
 
