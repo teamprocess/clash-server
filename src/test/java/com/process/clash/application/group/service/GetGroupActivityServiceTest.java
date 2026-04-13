@@ -127,6 +127,7 @@ class GetGroupActivityServiceTest {
             Major.NONE,
             UserStatus.ACTIVE,
             null,
+            false,
             RankTier.NONE,
             ExpTier.UNRANKED
         );

@@ -23,6 +23,7 @@ public record User(
         Major major,
         UserStatus userStatus,
         Instant deletedAt,
+        boolean isPrivate,
         RankTier currentRankTier,
         ExpTier currentExpTier
 ) {
@@ -50,6 +51,7 @@ public record User(
                 Major.NONE,
                 UserStatus.PENDING,
                 null,
+                false,
                 RankTier.NONE,
                 ExpTier.UNRANKED
         );
@@ -71,6 +73,7 @@ public record User(
                 major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 this.currentExpTier
         );
@@ -92,6 +95,7 @@ public record User(
                 this.major,
                 UserStatus.ACTIVE,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 this.currentExpTier
         );
@@ -117,6 +121,7 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 this.currentExpTier
         );
@@ -140,6 +145,7 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 this.currentExpTier
         );
@@ -163,6 +169,7 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 this.currentExpTier
         );
@@ -184,6 +191,7 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 this.currentExpTier
         );
@@ -205,6 +213,7 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 this.currentExpTier
         );
@@ -227,6 +236,7 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 this.currentRankTier,
                 ExpTier.fromExp(newTotalExp)
         );
@@ -248,6 +258,7 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 rankTier,
                 this.currentExpTier
         );
@@ -269,8 +280,18 @@ public record User(
                 this.major,
                 this.userStatus,
                 this.deletedAt,
+                this.isPrivate,
                 RankTier.NONE,
                 ExpTier.UNRANKED
+        );
+    }
+
+    public User updatePrivacy(boolean isPrivate) {
+        return new User(
+                this.id, this.createdAt, Instant.now(),
+                this.username, this.email, this.name, this.password, this.role,
+                this.profileImage, this.totalExp, this.totalCookie, this.major,
+                this.userStatus, this.deletedAt, isPrivate, this.currentRankTier, this.currentExpTier
         );
     }
 }

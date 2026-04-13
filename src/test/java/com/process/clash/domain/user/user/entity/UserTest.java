@@ -46,6 +46,7 @@ class UserTest {
                 Major.NONE,
                 UserStatus.ACTIVE,
                 null,
+                false,
                 RankTier.NONE,
                 ExpTier.UNRANKED
         );
@@ -67,6 +68,7 @@ class UserTest {
                 Major.NONE,
                 UserStatus.ACTIVE,
                 Instant.now(),
+                false,
                 RankTier.NONE,
                 ExpTier.UNRANKED
         );

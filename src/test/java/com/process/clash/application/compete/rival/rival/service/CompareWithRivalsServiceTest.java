@@ -106,7 +106,7 @@ class CompareWithRivalsServiceTest {
                 id, Instant.now(), Instant.now(),
                 "user" + id, "user" + id + "@test.com", "User" + id,
                 "password", Role.USER, "", 0, 0,
-                Major.NONE, UserStatus.ACTIVE, null, RankTier.NONE, ExpTier.UNRANKED
+                Major.NONE, UserStatus.ACTIVE, null, false, RankTier.NONE, ExpTier.UNRANKED
         );
     }
 

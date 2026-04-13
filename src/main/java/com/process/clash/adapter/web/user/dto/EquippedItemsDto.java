@@ -1,5 +1,6 @@
 package com.process.clash.adapter.web.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.process.clash.application.profile.data.EquippedItemsData;
 
 public class EquippedItemsDto {
@@ -20,6 +21,13 @@ public class EquippedItemsDto {
                     Item.from(data.banner()),
                     Item.from(data.bgm())
             );
+        }
+
+        /** @deprecated insignia 필드로 대체됨. 클라이언트 업데이트 후 제거 예정 */
+        @Deprecated
+        @JsonProperty("insigma")
+        public Item insigma() {
+            return insignia;
         }
     }
 

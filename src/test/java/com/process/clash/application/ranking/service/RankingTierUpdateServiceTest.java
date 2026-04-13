@@ -277,7 +277,7 @@ class RankingTierUpdateServiceTest {
                 id, Instant.now(), Instant.now(),
                 "user" + id, "user" + id + "@test.com", "User" + id,
                 "pw", Role.USER, "", totalExp, 0,
-                Major.NONE, UserStatus.ACTIVE, null, currentRankTier,
+                Major.NONE, UserStatus.ACTIVE, null, false, currentRankTier,
                 ExpTier.fromExp(totalExp)
         );
     }

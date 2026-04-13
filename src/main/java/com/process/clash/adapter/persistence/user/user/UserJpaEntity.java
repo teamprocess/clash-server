@@ -72,6 +72,9 @@ public class UserJpaEntity {
 
     private Instant deletedAt;
 
+    @Column(nullable = false)
+    private boolean isPrivate;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RankTier currentRankTier;
