@@ -25,7 +25,8 @@ public record User(
         Instant deletedAt,
         boolean isPrivate,
         RankTier currentRankTier,
-        ExpTier currentExpTier
+        ExpTier currentExpTier,
+        int currentAttendanceStreak
 ) {
     public boolean isDeleted() {
         return deletedAt != null;
@@ -53,7 +54,8 @@ public record User(
                 null,
                 false,
                 RankTier.NONE,
-                ExpTier.UNRANKED
+                ExpTier.UNRANKED,
+                0
         );
     }
 
@@ -75,7 +77,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -97,7 +100,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -123,7 +127,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -147,7 +152,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -171,7 +177,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -193,7 +200,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -215,7 +223,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -238,7 +247,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 this.currentRankTier,
-                ExpTier.fromExp(newTotalExp)
+                ExpTier.fromExp(newTotalExp),
+                this.currentAttendanceStreak
         );
     }
 
@@ -260,7 +270,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 rankTier,
-                this.currentExpTier
+                this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 
@@ -282,7 +293,8 @@ public record User(
                 this.deletedAt,
                 this.isPrivate,
                 RankTier.NONE,
-                ExpTier.UNRANKED
+                ExpTier.UNRANKED,
+                this.currentAttendanceStreak
         );
     }
 
@@ -291,7 +303,8 @@ public record User(
                 this.id, this.createdAt, Instant.now(),
                 this.username, this.email, this.name, this.password, this.role,
                 this.profileImage, this.totalExp, this.totalCookie, this.major,
-                this.userStatus, this.deletedAt, isPrivate, this.currentRankTier, this.currentExpTier
+                this.userStatus, this.deletedAt, isPrivate, this.currentRankTier, this.currentExpTier,
+                this.currentAttendanceStreak
         );
     }
 }

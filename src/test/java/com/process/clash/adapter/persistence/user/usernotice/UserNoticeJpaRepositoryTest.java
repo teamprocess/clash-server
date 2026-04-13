@@ -111,7 +111,8 @@ class UserNoticeJpaRepositoryTest {
         User user = new User(
                 null, null, null,
                 name + counter, email, name,
-                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, false, RankTier.NONE, ExpTier.UNRANKED
+                "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, false, RankTier.NONE, ExpTier.UNRANKED,
+                0
         );
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);

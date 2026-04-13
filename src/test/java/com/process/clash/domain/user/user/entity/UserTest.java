@@ -48,7 +48,8 @@ class UserTest {
                 null,
                 false,
                 RankTier.NONE,
-                ExpTier.UNRANKED
+                ExpTier.UNRANKED,
+                0
         );
     }
 
@@ -70,7 +71,8 @@ class UserTest {
                 Instant.now(),
                 false,
                 RankTier.NONE,
-                ExpTier.UNRANKED
+                ExpTier.UNRANKED,
+                0
         );
     }
 }

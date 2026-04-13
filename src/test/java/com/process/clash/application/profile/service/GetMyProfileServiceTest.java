@@ -135,7 +135,8 @@ class GetMyProfileServiceTest {
             null,
             false,
             currentRankTier,
-            ExpTier.fromExp(totalExp)
+            ExpTier.fromExp(totalExp),
+            0
         );
     }
 }

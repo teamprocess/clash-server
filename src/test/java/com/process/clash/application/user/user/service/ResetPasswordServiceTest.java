@@ -111,7 +111,8 @@ class ResetPasswordServiceTest {
                 id, Instant.now(), Instant.now(),
                 "testuser", "test@example.com", "테스트유저", password,
                 Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null,
-                false, RankTier.NONE, ExpTier.UNRANKED
+                false, RankTier.NONE, ExpTier.UNRANKED,
+                0
         );
     }
 }
