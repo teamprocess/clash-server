@@ -11,7 +11,6 @@ import com.process.clash.application.record.v2.port.out.RecordSessionV2Repositor
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.domain.record.v2.entity.RecordSessionV2;
-import com.process.clash.domain.record.v2.enums.RecordSessionTypeV2;
 import com.process.clash.domain.rival.rival.entity.Rival;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.infrastructure.config.record.RecordProperties;
@@ -117,7 +116,7 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
                         UserActivityStatus.OFFLINE
                     );
                     RecordSessionV2 activeSession = activeSessionByUserId.get(opponentId);
-                    String usingApp = resolveUsingApp(activeSession);
+                    String usingApp = activeSession != null ? activeSession.resolveUsingApp() : null;
                     boolean isStudying = activeSession != null;
 
                     EquippedItemsData equippedItems = equippedItemsMap.getOrDefault(opponentId, EquippedItemsData.empty());
@@ -138,16 +137,4 @@ public class GetMyRivalActingService implements GetMyRivalActingUseCase {
         return GetMyRivalActingData.Result.from(myRivals);
     }
 
-    private String resolveUsingApp(RecordSessionV2 activeSession) {
-        if (activeSession == null) {
-            return null;
-        }
-        if (activeSession.sessionType() != RecordSessionTypeV2.DEVELOP) {
-            return null;
-        }
-        if (activeSession.appId() == null) {
-            return null;
-        }
-        return activeSession.appId().name();
-    }
 }

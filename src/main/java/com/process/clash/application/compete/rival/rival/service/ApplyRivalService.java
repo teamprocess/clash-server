@@ -39,7 +39,7 @@ public class ApplyRivalService implements ApplyRivalUseCase {
 
         List<Rival> savedRivals;
         try {
-            savedRivals = rivalRepositoryPort.saveAll(rivals);
+            savedRivals = rivalRepositoryPort.saveAllAndFlush(rivals);
         } catch (DataIntegrityViolationException e) {
             throw new AlreadyAppliedRivalException();
         }

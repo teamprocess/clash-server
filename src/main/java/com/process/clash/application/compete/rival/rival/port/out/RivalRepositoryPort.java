@@ -13,6 +13,7 @@ public interface RivalRepositoryPort {
     void saveAndFlush(Rival rival);
     Rival save(Rival rival);
     List<Rival> saveAll(List<Rival> rivals);
+    List<Rival> saveAllAndFlush(List<Rival> rivals);
     List<Rival> findAllByUserId(Long myId);
     List<Rival> findAllRivalsByUserId(Long userId);
     int countAllByUserId(Long myId);

@@ -76,6 +76,41 @@ public class RivalPersistenceAdapter implements RivalRepositoryPort {
     }
 
     @Override
+    public List<Rival> saveAllAndFlush(List<Rival> rivals) {
+        Set<Long> allUserIds = rivals.stream()
+                .flatMap(rival -> Stream.of(rival.firstUserId(), rival.secondUserId()))
+                .collect(Collectors.toSet());
+
+        Map<Long, UserJpaEntity> userMap = userJpaRepository.findAllById(allUserIds)
+                .stream()
+                .collect(Collectors.toMap(UserJpaEntity::getId, user -> user));
+
+        List<RivalJpaEntity> entities = rivals.stream()
+                .map(rival -> {
+                    UserJpaEntity my = userMap.get(rival.firstUserId());
+                    UserJpaEntity opponent = userMap.get(rival.secondUserId());
+
+                    if (my == null) {
+                        throw new IllegalArgumentException(
+                                "User not found with id: " + rival.firstUserId()
+                        );
+                    }
+                    if (opponent == null) {
+                        throw new IllegalArgumentException(
+                                "User not found with id: " + rival.secondUserId()
+                        );
+                    }
+
+                    return rivalJpaMapper.toJpaEntity(rival, my, opponent);
+                })
+                .toList();
+
+        return rivalJpaRepository.saveAllAndFlush(entities).stream()
+                .map(rivalJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public int countAllByUserId(Long myId) {
 
         return rivalJpaRepository.countAllByUserId(myId);

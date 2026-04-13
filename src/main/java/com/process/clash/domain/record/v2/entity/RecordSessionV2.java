@@ -87,4 +87,10 @@ public record RecordSessionV2(
             this.endedAt
         );
     }
+
+    public String resolveUsingApp() {
+        if (sessionType != RecordSessionTypeV2.DEVELOP) return null;
+        if (appId == null) return null;
+        return appId.name();
+    }
 }
