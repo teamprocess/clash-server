@@ -38,7 +38,7 @@ public class DailyRankingRewardService {
             return;
         }
 
-        for (int i = 0; i < topUserIds.size(); i++) {
+        for (int i = 0; i < Math.min(topUserIds.size(), COOKIE_REWARDS.length); i++) {
             Long userId = topUserIds.get(i);
             int cookies = COOKIE_REWARDS[i];
 
