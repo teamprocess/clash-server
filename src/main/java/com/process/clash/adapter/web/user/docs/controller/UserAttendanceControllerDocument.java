@@ -53,7 +53,15 @@ public interface UserAttendanceControllerDocument {
             @Parameter(hidden = true) Actor actor
     );
 
-    @Operation(summary = "주간 출석 현황 조회", description = "이번 주(일~토) 날짜별 출석 여부를 조회합니다.")
+    @Operation(
+            summary = "주간 출석 현황 조회",
+            description = """
+                    이번 주(일~토) 날짜별 출석 여부와 연속 출석 streak을 조회합니다.
+                    앱 시작 시 출석판 초기 렌더링에 사용하며, 소켓으로 ATTENDANCE/DATA_CHANGED 이벤트를 수신할 때도 재호출합니다.
+                    - weekNumber: 최초 출석일 기준 몇 번째 주인지
+                    - currentStreak: 현재 연속 출석일
+                    """
+    )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공",
                     content = @Content(
@@ -62,6 +70,7 @@ public interface UserAttendanceControllerDocument {
                                       "success": true,
                                       "message": "주간 출석 현황을 성공적으로 조회했습니다.",
                                       "data": {
+                                        "weekNumber": 3,
                                         "weekStart": "2026-04-12",
                                         "weekEnd": "2026-04-18",
                                         "days": [
@@ -72,7 +81,8 @@ public interface UserAttendanceControllerDocument {
                                           { "date": "2026-04-16", "dayOfWeek": "THURSDAY",  "isAttended": false },
                                           { "date": "2026-04-17", "dayOfWeek": "FRIDAY",    "isAttended": false },
                                           { "date": "2026-04-18", "dayOfWeek": "SATURDAY",  "isAttended": false }
-                                        ]
+                                        ],
+                                        "currentStreak": 5
                                       }
                                     }
                                     """)
