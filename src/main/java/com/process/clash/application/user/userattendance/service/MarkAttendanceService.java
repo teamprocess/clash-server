@@ -4,7 +4,6 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userattendance.data.MarkAttendanceData;
 import com.process.clash.application.user.userattendance.exception.exception.conflict.AlreadyAttendedException;
-import com.process.clash.application.user.userattendance.exception.exception.notfound.UserAttendanceNotFoundException;
 import com.process.clash.application.user.userattendance.port.in.MarkAttendanceUseCase;
 import com.process.clash.application.user.userattendance.port.out.UserAttendanceRepositoryPort;
 import com.process.clash.domain.user.user.entity.User;
@@ -35,7 +34,7 @@ public class MarkAttendanceService implements MarkAttendanceUseCase {
 
         UserAttendance attendance = userAttendanceRepositoryPort
                 .findByUserIdAndAttendanceDate(userId, attendanceDate)
-                .orElseThrow(UserAttendanceNotFoundException::new);
+                .orElseGet(() -> userAttendanceRepositoryPort.save(UserAttendance.create(userId, attendanceDate)));
 
         if (attendance.isAttended()) {
             throw new AlreadyAttendedException();
