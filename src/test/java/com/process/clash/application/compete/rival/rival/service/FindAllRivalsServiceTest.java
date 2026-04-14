@@ -156,7 +156,8 @@ class FindAllRivalsServiceTest {
                 name, name + "@test.com", name,
                 "password", Role.USER, "",
                 0, 0, Major.NONE, UserStatus.ACTIVE,
-                null, false, rankTier, expTier
+                null, false, rankTier, expTier,
+                0
         );
     }
 }

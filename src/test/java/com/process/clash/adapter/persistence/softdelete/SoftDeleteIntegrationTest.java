@@ -98,7 +98,8 @@ class SoftDeleteIntegrationTest {
         User user = new User(
             null, Instant.now(), Instant.now(),
             "user_" + suffix, suffix + "@test.com", "유저" + label,
-            "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, false, RankTier.NONE, ExpTier.UNRANKED
+            "pw", Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE, null, false, RankTier.NONE, ExpTier.UNRANKED,
+            0
         );
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);

@@ -278,6 +278,6 @@ class StudyTimeExpGrantServiceTest {
     private User createUser(Long id, int totalExp) {
         return new User(id, Instant.now(), Instant.now(), "user" + id, "user@example.com",
             "name", "pw", Role.USER, "", totalExp, 0, Major.NONE, UserStatus.ACTIVE, null, false, RankTier.NONE,
-            ExpTier.fromExp(totalExp));
+            ExpTier.fromExp(totalExp), 0);
     }
 }

@@ -1,0 +1,50 @@
+package com.process.clash.adapter.persistence.user.userattendance;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface UserAttendanceJpaRepository extends JpaRepository<UserAttendanceJpaEntity, Long> {
+
+    @Query("SELECT ua FROM UserAttendanceJpaEntity ua WHERE ua.user.id = :userId AND ua.attendanceDate = :attendanceDate")
+    Optional<UserAttendanceJpaEntity> findByUserIdAndAttendanceDate(
+            @Param("userId") Long userId,
+            @Param("attendanceDate") LocalDate attendanceDate
+    );
+
+    @Query(value = """
+        SELECT u.id
+        FROM users u
+        WHERE u.deleted_at IS NULL
+    """, nativeQuery = true)
+    List<Long> findAllNonDeletedUserIds();
+
+    @Query("SELECT ua.user.id FROM UserAttendanceJpaEntity ua WHERE ua.attendanceDate = :date AND ua.isAttended = false")
+    List<Long> findNotAttendedUserIdsByDate(@Param("date") LocalDate date);
+
+    @Query("SELECT COUNT(ua) FROM UserAttendanceJpaEntity ua WHERE ua.user.id = :userId AND ua.attendanceDate BETWEEN :start AND :end AND ua.isAttended = true")
+    long countAttendedByUserIdBetween(@Param("userId") Long userId, @Param("start") LocalDate start, @Param("end") LocalDate end);
+
+    @Query("SELECT ua FROM UserAttendanceJpaEntity ua WHERE ua.user.id = :userId AND ua.attendanceDate BETWEEN :start AND :end")
+    List<UserAttendanceJpaEntity> findByUserIdBetweenDates(@Param("userId") Long userId, @Param("start") LocalDate start, @Param("end") LocalDate end);
+
+    @Modifying
+    @Query(value = """
+        INSERT INTO user_attendances (fk_user_id, attendance_date, is_attended, created_at, updated_at)
+        SELECT id, :date, false, NOW(), NOW()
+        FROM users
+        WHERE deleted_at IS NULL
+        ON CONFLICT (fk_user_id, attendance_date) DO NOTHING
+    """, nativeQuery = true)
+    void initDailyAttendanceForAllUsers(@Param("date") LocalDate date);
+
+    @Query("SELECT MIN(ua.attendanceDate) FROM UserAttendanceJpaEntity ua WHERE ua.user.id = :userId")
+    Optional<LocalDate> findEarliestAttendanceDateByUserId(@Param("userId") Long userId);
+}

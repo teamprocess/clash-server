@@ -174,7 +174,8 @@ class GetUserRivalsServiceTest {
             null,
             isPrivate,
             RankTier.NONE,
-            ExpTier.UNRANKED
+            ExpTier.UNRANKED,
+            0
         );
     }
 
@@ -196,7 +197,8 @@ class GetUserRivalsServiceTest {
             Instant.now(),
             false,
             RankTier.NONE,
-            ExpTier.UNRANKED
+            ExpTier.UNRANKED,
+            0
         );
     }
 }

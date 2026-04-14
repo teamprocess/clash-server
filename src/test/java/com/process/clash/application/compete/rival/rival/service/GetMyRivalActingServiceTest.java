@@ -257,7 +257,8 @@ class GetMyRivalActingServiceTest {
             null,
             false,
             rankTier,
-            expTier
+            expTier,
+            0
         );
     }
 }

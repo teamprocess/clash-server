@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN current_attendance_streak INT NOT NULL DEFAULT 0;

@@ -82,4 +82,7 @@ public class UserJpaEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ExpTier currentExpTier;
+
+    @Column(nullable = false)
+    private int currentAttendanceStreak;
 }

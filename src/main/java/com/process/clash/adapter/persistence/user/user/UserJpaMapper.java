@@ -24,7 +24,8 @@ public class UserJpaMapper {
                 user.deletedAt(),
                 user.isPrivate(),
                 user.currentRankTier(),
-                user.currentExpTier()
+                user.currentExpTier(),
+                user.currentAttendanceStreak()
         );
     }
 
@@ -46,7 +47,8 @@ public class UserJpaMapper {
                 userJpaEntity.getDeletedAt(),
                 userJpaEntity.isPrivate(),
                 userJpaEntity.getCurrentRankTier(),
-                userJpaEntity.getCurrentExpTier()
+                userJpaEntity.getCurrentExpTier(),
+                userJpaEntity.getCurrentAttendanceStreak()
         );
     }
 }

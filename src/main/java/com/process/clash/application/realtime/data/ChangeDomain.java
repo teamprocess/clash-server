@@ -4,5 +4,6 @@ public enum ChangeDomain {
     GROUP,
     COMPETE,
     USER,
-    RECORD
+    RECORD,
+    ATTENDANCE
 }
