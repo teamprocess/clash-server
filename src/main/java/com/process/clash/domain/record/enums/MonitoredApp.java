@@ -13,4 +13,9 @@ public enum MonitoredApp {
     ANDROID_STUDIO,
     XCODE,
     UNITY,
+    BLENDER,
+    DATAGRIP,
+    NOTION,
+    FIGMA,
+    ROBLOX_STUDIO,
 }

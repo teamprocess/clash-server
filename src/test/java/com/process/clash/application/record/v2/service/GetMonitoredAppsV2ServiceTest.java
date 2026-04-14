@@ -21,6 +21,15 @@ class GetMonitoredAppsV2ServiceTest {
             new GetMonitoredAppsV2Data.Command(new Actor(1L))
         );
 
-        assertThat(result.apps()).contains(MonitoredApp.VSCODE, MonitoredApp.INTELLIJ_IDEA, MonitoredApp.XCODE);
+        assertThat(result.apps()).contains(
+            MonitoredApp.VSCODE,
+            MonitoredApp.INTELLIJ_IDEA,
+            MonitoredApp.XCODE,
+            MonitoredApp.BLENDER,
+            MonitoredApp.DATAGRIP,
+            MonitoredApp.NOTION,
+            MonitoredApp.FIGMA,
+            MonitoredApp.ROBLOX_STUDIO
+        );
     }
 }
