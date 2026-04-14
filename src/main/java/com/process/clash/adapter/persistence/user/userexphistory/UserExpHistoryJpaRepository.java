@@ -320,6 +320,17 @@ public interface UserExpHistoryJpaRepository extends JpaRepository<UserExpHistor
     Set<Long> findUserIdsWithExpByDate(@Param("date") LocalDate date);
 
     @Query(value = """
+        SELECT fk_user_id, CAST(SUM(earn_exp) AS BIGINT) AS daily_exp
+        FROM user_exp_history
+        WHERE date = :date
+          AND acting_category <> 'SEASON_RESET'
+        GROUP BY fk_user_id
+        ORDER BY daily_exp DESC
+        LIMIT :limitCount
+    """, nativeQuery = true)
+    List<Object[]> findTopUserIdsByDailyExp(@Param("date") LocalDate date, @Param("limitCount") int limitCount);
+
+    @Query(value = """
         SELECT u.id
         FROM users u
         WHERE u.user_status = 'ACTIVE'
