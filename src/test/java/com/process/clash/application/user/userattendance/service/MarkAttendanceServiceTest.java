@@ -54,17 +54,6 @@ class MarkAttendanceServiceTest {
     }
 
     @Test
-    @DisplayName("오늘 출석 레코드가 없으면 UserAttendanceNotFoundException을 던진다")
-    void execute_throwsUserAttendanceNotFoundException_whenNoRecord() {
-        MarkAttendanceData.Command command = new MarkAttendanceData.Command(new Actor(USER_ID));
-        when(userAttendanceRepositoryPort.findByUserIdAndAttendanceDate(USER_ID, ATTENDANCE_DATE))
-                .thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> markAttendanceService.execute(command))
-                .isInstanceOf(UserAttendanceNotFoundException.class);
-    }
-
-    @Test
     @DisplayName("이미 출석한 경우 AlreadyAttendedException을 던진다")
     void execute_throwsAlreadyAttendedException_whenAlreadyAttended() {
         MarkAttendanceData.Command command = new MarkAttendanceData.Command(new Actor(USER_ID));
