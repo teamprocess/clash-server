@@ -16,6 +16,7 @@ import com.process.clash.application.roadmap.v2.section.port.in.GetSectionV2Deta
 import com.process.clash.application.roadmap.v2.section.port.in.GetSectionV2ListUseCase;
 import com.process.clash.application.roadmap.v2.section.port.in.GetSectionV2PreviewUseCase;
 import java.util.List;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,31 @@ class SectionV2ControllerTest {
                 .andExpect(jsonPath("$.data.sectionId").value(1))
                 .andExpect(jsonPath("$.data.completed").value(true))
                 .andExpect(jsonPath("$.message").value("로드맵 상세 조회를 성공했습니다."));
+
+        verify(getSectionV2DetailsUseCase).execute(any(GetSectionV2DetailsData.Command.class));
+    }
+
+    @Test
+    @DisplayName("GET /api/v2/sections/{sectionId}/details 는 완료 여부와 무관하게 completed 필드를 항상 포함한다")
+    void getSectionDetails_alwaysIncludesCompletedField() throws Exception {
+        when(getSectionV2DetailsUseCase.execute(any()))
+                .thenReturn(new GetSectionV2DetailsData.Result(
+                        1L,
+                        "스프링 입문",
+                        false,
+                        3,
+                        null,
+                        null,
+                        List.of()
+                ));
+
+        mockMvc.perform(get("/api/v2/sections/1/details"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.sectionId").value(1))
+                .andExpect(jsonPath("$.data.completed").value(false))
+                .andExpect(jsonPath("$.data.currentChapterId").value(Matchers.nullValue()))
+                .andExpect(jsonPath("$.data.currentOrderIndex").value(Matchers.nullValue()))
+                .andExpect(jsonPath("$.data.totalChapters").value(3));
 
         verify(getSectionV2DetailsUseCase).execute(any(GetSectionV2DetailsData.Command.class));
     }
