@@ -23,4 +23,8 @@ public interface UserAttendanceRepositoryPort {
     long countAttendedByUserIdBetween(Long userId, LocalDate start, LocalDate end);
 
     List<UserAttendance> findByUserIdBetweenDates(Long userId, LocalDate start, LocalDate end);
+
+    void initDailyAttendanceForAllUsers(LocalDate date);
+
+    Optional<LocalDate> findEarliestAttendanceDateByUserId(Long userId);
 }

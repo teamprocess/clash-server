@@ -71,4 +71,14 @@ public class UserAttendancePersistenceAdapter implements UserAttendanceRepositor
                 .map(userAttendanceJpaMapper::toDomain)
                 .toList();
     }
+
+    @Override
+    public void initDailyAttendanceForAllUsers(LocalDate date) {
+        userAttendanceJpaRepository.initDailyAttendanceForAllUsers(date);
+    }
+
+    @Override
+    public Optional<LocalDate> findEarliestAttendanceDateByUserId(Long userId) {
+        return userAttendanceJpaRepository.findEarliestAttendanceDateByUserId(userId);
+    }
 }

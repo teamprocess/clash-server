@@ -11,6 +11,7 @@ public class GetWeeklyAttendanceData {
     public record Command(Actor actor) {}
 
     public record Result(
+            int weekNumber,
             LocalDate weekStart,
             LocalDate weekEnd,
             List<AttendanceDay> days

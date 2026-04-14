@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,8 +31,10 @@ public class GetWeeklyAttendanceService implements GetWeeklyAttendanceUseCase {
         LocalDate weekStart = today.minusDays(today.getDayOfWeek().getValue() % 7);
         LocalDate weekEnd = weekStart.plusDays(6);
 
+        Long userId = command.actor().id();
+
         List<UserAttendance> records = userAttendanceRepositoryPort
-                .findByUserIdBetweenDates(command.actor().id(), weekStart, weekEnd);
+                .findByUserIdBetweenDates(userId, weekStart, weekEnd);
 
         Map<LocalDate, Boolean> attendanceByDate = records.stream()
                 .collect(Collectors.toMap(UserAttendance::attendanceDate, UserAttendance::isAttended));
@@ -45,6 +48,19 @@ public class GetWeeklyAttendanceService implements GetWeeklyAttendanceUseCase {
                 ))
                 .toList();
 
-        return new GetWeeklyAttendanceData.Result(weekStart, weekEnd, days);
+        int weekNumber = calculateWeekNumber(userId, weekStart);
+
+        return new GetWeeklyAttendanceData.Result(weekNumber, weekStart, weekEnd, days);
+    }
+
+    private int calculateWeekNumber(Long userId, LocalDate currentWeekStart) {
+        LocalDate firstRecordDate = userAttendanceRepositoryPort
+                .findEarliestAttendanceDateByUserId(userId)
+                .orElse(currentWeekStart);
+
+        // 첫 레코드가 속한 주의 일요일
+        LocalDate firstWeekStart = firstRecordDate.minusDays(firstRecordDate.getDayOfWeek().getValue() % 7);
+
+        return (int) ChronoUnit.WEEKS.between(firstWeekStart, currentWeekStart) + 1;
     }
 }

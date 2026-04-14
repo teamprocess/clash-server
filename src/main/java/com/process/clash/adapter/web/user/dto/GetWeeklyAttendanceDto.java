@@ -9,12 +9,14 @@ import java.util.List;
 public class GetWeeklyAttendanceDto {
 
     public record Response(
+            int weekNumber,
             LocalDate weekStart,
             LocalDate weekEnd,
             List<AttendanceDayItem> days
     ) {
         public static Response from(GetWeeklyAttendanceData.Result result) {
             return new Response(
+                    result.weekNumber(),
                     result.weekStart(),
                     result.weekEnd(),
                     result.days().stream()
