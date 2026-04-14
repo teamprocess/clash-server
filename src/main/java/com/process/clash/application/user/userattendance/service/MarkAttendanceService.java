@@ -46,7 +46,9 @@ public class MarkAttendanceService implements MarkAttendanceUseCase {
         User user = userRepositoryPort.findByIdForUpdate(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        int earnedCookies = DAILY_COOKIE_REWARD + calculateWeeklyCookieBonus(userId, attendanceDate);
+        int earnedCookies = isFullWeekCompleted(userId, attendanceDate)
+                ? WEEKLY_COOKIE_REWARD
+                : DAILY_COOKIE_REWARD;
 
         User updated = user.incrementAttendanceStreak().addCookie(earnedCookies);
         userRepositoryPort.save(updated);
@@ -54,14 +56,14 @@ public class MarkAttendanceService implements MarkAttendanceUseCase {
         return new MarkAttendanceData.Result(updated.currentAttendanceStreak(), earnedCookies);
     }
 
-    private int calculateWeeklyCookieBonus(Long userId, LocalDate attendanceDate) {
+    private boolean isFullWeekCompleted(Long userId, LocalDate attendanceDate) {
         if (attendanceDate.getDayOfWeek() != DayOfWeek.SATURDAY) {
-            return 0;
+            return false;
         }
         // 토요일(getValue()=6): 6일 빼면 해당 주 일요일
         LocalDate weekSunday = attendanceDate.minusDays(6);
         long weeklyCount = userAttendanceRepositoryPort
                 .countAttendedByUserIdBetween(userId, weekSunday, attendanceDate);
-        return weeklyCount == DAYS_IN_WEEK ? WEEKLY_COOKIE_REWARD : 0;
+        return weeklyCount == DAYS_IN_WEEK;
     }
 }

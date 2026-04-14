@@ -171,7 +171,7 @@ class MarkAttendanceServiceTest {
 
             MarkAttendanceData.Result result = markAttendanceService.execute(command);
 
-            assertThat(result.earnedCookies()).isEqualTo(1300);
+            assertThat(result.earnedCookies()).isEqualTo(1000);
         }
     }
 

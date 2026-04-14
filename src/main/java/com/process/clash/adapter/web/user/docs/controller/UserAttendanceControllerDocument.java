@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "출석 API", description = "출석 체크 및 주간 출석 현황 조회")
 public interface UserAttendanceControllerDocument {
 
-    @Operation(summary = "출석 체크", description = "오늘 출석을 기록하고 쿠키를 지급합니다. 일일 300 쿠키, 일~토 주간 개근 시 추가 1000 쿠키를 지급합니다.")
+    @Operation(summary = "출석 체크", description = "오늘 출석을 기록하고 쿠키를 지급합니다. 일일 300 쿠키, 일~토 주간 개근 완료 시 해당 날(토요일)에는 1000 쿠키를 지급합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "출석 성공",
                     content = @Content(
