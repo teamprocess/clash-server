@@ -12,7 +12,8 @@ public class GetWeeklyAttendanceDto {
             int weekNumber,
             LocalDate weekStart,
             LocalDate weekEnd,
-            List<AttendanceDayItem> days
+            List<AttendanceDayItem> days,
+            int currentStreak
     ) {
         public static Response from(GetWeeklyAttendanceData.Result result) {
             return new Response(
@@ -21,7 +22,8 @@ public class GetWeeklyAttendanceDto {
                     result.weekEnd(),
                     result.days().stream()
                             .map(AttendanceDayItem::from)
-                            .toList()
+                            .toList(),
+                    result.currentStreak()
             );
         }
     }

@@ -14,7 +14,8 @@ public class GetWeeklyAttendanceData {
             int weekNumber,
             LocalDate weekStart,
             LocalDate weekEnd,
-            List<AttendanceDay> days
+            List<AttendanceDay> days,
+            int currentStreak
     ) {}
 
     public record AttendanceDay(

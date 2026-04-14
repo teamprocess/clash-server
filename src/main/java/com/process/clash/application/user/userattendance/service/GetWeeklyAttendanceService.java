@@ -1,5 +1,7 @@
 package com.process.clash.application.user.userattendance.service;
 
+import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userattendance.data.GetWeeklyAttendanceData;
 import com.process.clash.application.user.userattendance.port.in.GetWeeklyAttendanceUseCase;
 import com.process.clash.application.user.userattendance.port.out.UserAttendanceRepositoryPort;
@@ -21,6 +23,7 @@ import java.util.stream.Stream;
 public class GetWeeklyAttendanceService implements GetWeeklyAttendanceUseCase {
 
     private final UserAttendanceRepositoryPort userAttendanceRepositoryPort;
+    private final UserRepositoryPort userRepositoryPort;
 
     @Override
     public GetWeeklyAttendanceData.Result execute(GetWeeklyAttendanceData.Command command) {
@@ -50,7 +53,11 @@ public class GetWeeklyAttendanceService implements GetWeeklyAttendanceUseCase {
 
         int weekNumber = calculateWeekNumber(userId, weekStart);
 
-        return new GetWeeklyAttendanceData.Result(weekNumber, weekStart, weekEnd, days);
+        int currentStreak = userRepositoryPort.findById(userId)
+                .orElseThrow(UserNotFoundException::new)
+                .currentAttendanceStreak();
+
+        return new GetWeeklyAttendanceData.Result(weekNumber, weekStart, weekEnd, days, currentStreak);
     }
 
     private int calculateWeekNumber(Long userId, LocalDate currentWeekStart) {
