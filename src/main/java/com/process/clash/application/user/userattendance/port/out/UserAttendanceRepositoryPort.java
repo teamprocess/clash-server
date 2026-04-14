@@ -21,4 +21,6 @@ public interface UserAttendanceRepositoryPort {
     List<Long> findNotAttendedUserIdsByDate(LocalDate date);
 
     long countAttendedByUserIdBetween(Long userId, LocalDate start, LocalDate end);
+
+    List<UserAttendance> findByUserIdBetweenDates(Long userId, LocalDate start, LocalDate end);
 }

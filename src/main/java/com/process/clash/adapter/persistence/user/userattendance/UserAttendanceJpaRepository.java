@@ -30,4 +30,7 @@ public interface UserAttendanceJpaRepository extends JpaRepository<UserAttendanc
 
     @Query("SELECT COUNT(ua) FROM UserAttendanceJpaEntity ua WHERE ua.user.id = :userId AND ua.attendanceDate BETWEEN :start AND :end AND ua.isAttended = true")
     long countAttendedByUserIdBetween(@Param("userId") Long userId, @Param("start") LocalDate start, @Param("end") LocalDate end);
+
+    @Query("SELECT ua FROM UserAttendanceJpaEntity ua WHERE ua.user.id = :userId AND ua.attendanceDate BETWEEN :start AND :end")
+    List<UserAttendanceJpaEntity> findByUserIdBetweenDates(@Param("userId") Long userId, @Param("start") LocalDate start, @Param("end") LocalDate end);
 }

@@ -63,4 +63,12 @@ public class UserAttendancePersistenceAdapter implements UserAttendanceRepositor
     public long countAttendedByUserIdBetween(Long userId, LocalDate start, LocalDate end) {
         return userAttendanceJpaRepository.countAttendedByUserIdBetween(userId, start, end);
     }
+
+    @Override
+    public List<UserAttendance> findByUserIdBetweenDates(Long userId, LocalDate start, LocalDate end) {
+        return userAttendanceJpaRepository.findByUserIdBetweenDates(userId, start, end)
+                .stream()
+                .map(userAttendanceJpaMapper::toDomain)
+                .toList();
+    }
 }
