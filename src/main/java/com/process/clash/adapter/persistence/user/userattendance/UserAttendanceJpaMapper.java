@@ -13,6 +13,7 @@ public class UserAttendanceJpaMapper {
                 userAttendance.createdAt(),
                 userAttendance.updatedAt(),
                 userJpaEntity,
+                userAttendance.attendanceDate(),
                 userAttendance.isAttended()
         );
     }
@@ -23,6 +24,7 @@ public class UserAttendanceJpaMapper {
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
                 entity.getUser().getId(),
+                entity.getAttendanceDate(),
                 entity.isAttended()
         );
     }

@@ -11,12 +11,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "user_attendances",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "is_attended"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"fk_user_id", "attendance_date"})
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,6 +39,9 @@ public class UserAttendanceJpaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_user_id", nullable = false)
     private UserJpaEntity user;
+
+    @Column(nullable = false)
+    private LocalDate attendanceDate;
 
     @Column(nullable = false)
     private boolean isAttended;

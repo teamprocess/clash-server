@@ -307,4 +307,14 @@ public record User(
                 this.currentAttendanceStreak
         );
     }
+
+    public User incrementAttendanceStreak() {
+        return new User(
+                this.id, this.createdAt, Instant.now(),
+                this.username, this.email, this.name, this.password, this.role,
+                this.profileImage, this.totalExp, this.totalCookie, this.major,
+                this.userStatus, this.deletedAt, this.isPrivate, this.currentRankTier, this.currentExpTier,
+                this.currentAttendanceStreak + 1
+        );
+    }
 }

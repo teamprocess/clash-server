@@ -7,6 +7,7 @@ import com.process.clash.domain.user.userattendance.entity.UserAttendance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,14 +29,9 @@ public class UserAttendancePersistenceAdapter implements UserAttendanceRepositor
     }
 
     @Override
-    public Optional<UserAttendance> findByUserIdAndIsAttended(Long userId, boolean isAttended) {
-        return userAttendanceJpaRepository.findByUserIdAndIsAttended(userId, isAttended)
+    public Optional<UserAttendance> findByUserIdAndAttendanceDate(Long userId, LocalDate attendanceDate) {
+        return userAttendanceJpaRepository.findByUserIdAndAttendanceDate(userId, attendanceDate)
                 .map(userAttendanceJpaMapper::toDomain);
-    }
-
-    @Override
-    public boolean existsByUserIdAndIsAttended(Long userId, boolean isAttended) {
-        return userAttendanceJpaRepository.existsByUserIdAndIsAttended(userId, isAttended);
     }
 
     @Override

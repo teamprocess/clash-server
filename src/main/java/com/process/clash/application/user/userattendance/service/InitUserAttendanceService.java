@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -16,12 +17,14 @@ public class InitUserAttendanceService {
 
     @Transactional
     public void initDailyAttendance() {
+        LocalDate attendanceDate = UserAttendance.currentAttendanceDate();
+
         userAttendanceRepositoryPort.deleteAll();
 
-        List<Long> activeUserIds = userAttendanceRepositoryPort.findAllNonDeletedUserIds();
+        List<Long> userIds = userAttendanceRepositoryPort.findAllNonDeletedUserIds();
 
-        List<UserAttendance> attendances = activeUserIds.stream()
-                .map(UserAttendance::create)
+        List<UserAttendance> attendances = userIds.stream()
+                .map(userId -> UserAttendance.create(userId, attendanceDate))
                 .toList();
 
         userAttendanceRepositoryPort.saveAll(attendances);
