@@ -24,4 +24,14 @@ public class AttendanceRefetchNotifier {
                 userIds
         );
     }
+
+    /**
+     * 전체 활성 유저에게 주간 출석 데이터를 갱신하도록 소켓으로 알립니다.
+     */
+    public void notifyAttendanceBoard(Collection<Long> userIds) {
+        refetchEventPublisher.publish(
+                RefetchNotice.of(ChangeDomain.ATTENDANCE, ChangeType.DATA_CHANGED),
+                userIds
+        );
+    }
 }
