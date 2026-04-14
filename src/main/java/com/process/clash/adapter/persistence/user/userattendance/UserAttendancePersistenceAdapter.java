@@ -58,4 +58,9 @@ public class UserAttendancePersistenceAdapter implements UserAttendanceRepositor
     public List<Long> findNotAttendedUserIdsByDate(LocalDate date) {
         return userAttendanceJpaRepository.findNotAttendedUserIdsByDate(date);
     }
+
+    @Override
+    public long countAttendedByUserIdBetween(Long userId, LocalDate start, LocalDate end) {
+        return userAttendanceJpaRepository.countAttendedByUserIdBetween(userId, start, end);
+    }
 }

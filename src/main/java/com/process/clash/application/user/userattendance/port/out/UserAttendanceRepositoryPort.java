@@ -19,4 +19,6 @@ public interface UserAttendanceRepositoryPort {
     void deleteAll();
 
     List<Long> findNotAttendedUserIdsByDate(LocalDate date);
+
+    long countAttendedByUserIdBetween(Long userId, LocalDate start, LocalDate end);
 }

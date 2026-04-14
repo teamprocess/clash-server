@@ -9,6 +9,7 @@ public class MarkAttendanceData {
     ) {}
 
     public record Result(
-            int attendanceStreak
+            int attendanceStreak,
+            int earnedCookies
     ) {}
 }

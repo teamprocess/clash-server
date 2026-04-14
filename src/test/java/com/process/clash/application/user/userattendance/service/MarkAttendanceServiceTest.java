@@ -25,9 +25,12 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.mockito.MockedStatic;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -121,6 +124,78 @@ class MarkAttendanceServiceTest {
 
         assertThatThrownBy(() -> markAttendanceService.execute(command))
                 .isInstanceOf(UserNotFoundException.class);
+    }
+
+    // 2026-04-06(월) ~ 2026-04-12(토) 주의 특정 날짜 (결정론적 테스트를 위해 고정)
+    private static final LocalDate FIXED_MONDAY = LocalDate.of(2026, 4, 6);
+    private static final LocalDate FIXED_SATURDAY = LocalDate.of(2026, 4, 11);
+    private static final LocalDate FIXED_SUNDAY = LocalDate.of(2026, 4, 5);
+
+    @Test
+    @DisplayName("출석 성공 시 일일 쿠키 300개를 지급한다")
+    void execute_givesDailyCookies_whenSuccessful() {
+        try (MockedStatic<UserAttendance> mockedStatic = mockStatic(UserAttendance.class)) {
+            mockedStatic.when(UserAttendance::currentAttendanceDate).thenReturn(FIXED_MONDAY);
+
+            MarkAttendanceData.Command command = new MarkAttendanceData.Command(new Actor(USER_ID));
+            User user = createUser(USER_ID, 0);
+            UserAttendance notAttended = new UserAttendance(1L, Instant.now(), Instant.now(), USER_ID, FIXED_MONDAY, false);
+
+            when(userAttendanceRepositoryPort.findByUserIdAndAttendanceDate(USER_ID, FIXED_MONDAY))
+                    .thenReturn(Optional.of(notAttended));
+            when(userRepositoryPort.findByIdForUpdate(USER_ID))
+                    .thenReturn(Optional.of(user));
+
+            MarkAttendanceData.Result result = markAttendanceService.execute(command);
+
+            assertThat(result.earnedCookies()).isEqualTo(300);
+        }
+    }
+
+    @Test
+    @DisplayName("토요일에 이번 주 7일 전부 출석 시 일일 300 + 주간 1000 쿠키를 지급한다")
+    void execute_givesWeeklyBonusCookies_whenFullWeekCompleted() {
+        try (MockedStatic<UserAttendance> mockedStatic = mockStatic(UserAttendance.class)) {
+            mockedStatic.when(UserAttendance::currentAttendanceDate).thenReturn(FIXED_SATURDAY);
+
+            MarkAttendanceData.Command command = new MarkAttendanceData.Command(new Actor(USER_ID));
+            User user = createUser(USER_ID, 6);
+            UserAttendance notAttended = new UserAttendance(1L, Instant.now(), Instant.now(), USER_ID, FIXED_SATURDAY, false);
+
+            when(userAttendanceRepositoryPort.findByUserIdAndAttendanceDate(USER_ID, FIXED_SATURDAY))
+                    .thenReturn(Optional.of(notAttended));
+            when(userRepositoryPort.findByIdForUpdate(USER_ID))
+                    .thenReturn(Optional.of(user));
+            when(userAttendanceRepositoryPort.countAttendedByUserIdBetween(USER_ID, FIXED_SUNDAY, FIXED_SATURDAY))
+                    .thenReturn(7L);
+
+            MarkAttendanceData.Result result = markAttendanceService.execute(command);
+
+            assertThat(result.earnedCookies()).isEqualTo(1300);
+        }
+    }
+
+    @Test
+    @DisplayName("토요일에 이번 주 7일 미달 출석 시 일일 300 쿠키만 지급한다")
+    void execute_givesOnlyDailyCookies_whenWeekNotFullyCompleted() {
+        try (MockedStatic<UserAttendance> mockedStatic = mockStatic(UserAttendance.class)) {
+            mockedStatic.when(UserAttendance::currentAttendanceDate).thenReturn(FIXED_SATURDAY);
+
+            MarkAttendanceData.Command command = new MarkAttendanceData.Command(new Actor(USER_ID));
+            User user = createUser(USER_ID, 4);
+            UserAttendance notAttended = new UserAttendance(1L, Instant.now(), Instant.now(), USER_ID, FIXED_SATURDAY, false);
+
+            when(userAttendanceRepositoryPort.findByUserIdAndAttendanceDate(USER_ID, FIXED_SATURDAY))
+                    .thenReturn(Optional.of(notAttended));
+            when(userRepositoryPort.findByIdForUpdate(USER_ID))
+                    .thenReturn(Optional.of(user));
+            when(userAttendanceRepositoryPort.countAttendedByUserIdBetween(USER_ID, FIXED_SUNDAY, FIXED_SATURDAY))
+                    .thenReturn(5L);
+
+            MarkAttendanceData.Result result = markAttendanceService.execute(command);
+
+            assertThat(result.earnedCookies()).isEqualTo(300);
+        }
     }
 
     private UserAttendance createAttendance(boolean isAttended) {

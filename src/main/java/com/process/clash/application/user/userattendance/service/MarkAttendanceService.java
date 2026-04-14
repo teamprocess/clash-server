@@ -13,12 +13,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class MarkAttendanceService implements MarkAttendanceUseCase {
+
+    private static final int DAILY_COOKIE_REWARD = 300;
+    private static final int WEEKLY_COOKIE_REWARD = 1000;
+    private static final int DAYS_IN_WEEK = 7;
 
     private final UserAttendanceRepositoryPort userAttendanceRepositoryPort;
     private final UserRepositoryPort userRepositoryPort;
@@ -41,9 +46,22 @@ public class MarkAttendanceService implements MarkAttendanceUseCase {
         User user = userRepositoryPort.findByIdForUpdate(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        User updated = user.incrementAttendanceStreak();
+        int earnedCookies = DAILY_COOKIE_REWARD + calculateWeeklyCookieBonus(userId, attendanceDate);
+
+        User updated = user.incrementAttendanceStreak().addCookie(earnedCookies);
         userRepositoryPort.save(updated);
 
-        return new MarkAttendanceData.Result(updated.currentAttendanceStreak());
+        return new MarkAttendanceData.Result(updated.currentAttendanceStreak(), earnedCookies);
+    }
+
+    private int calculateWeeklyCookieBonus(Long userId, LocalDate attendanceDate) {
+        if (attendanceDate.getDayOfWeek() != DayOfWeek.SATURDAY) {
+            return 0;
+        }
+        // 토요일(getValue()=6): 6일 빼면 해당 주 일요일
+        LocalDate weekSunday = attendanceDate.minusDays(6);
+        long weeklyCount = userAttendanceRepositoryPort
+                .countAttendedByUserIdBetween(userId, weekSunday, attendanceDate);
+        return weeklyCount == DAYS_IN_WEEK ? WEEKLY_COOKIE_REWARD : 0;
     }
 }
