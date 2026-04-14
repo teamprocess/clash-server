@@ -5,4 +5,5 @@ import java.util.Collection;
 
 public interface BroadcastRefetchPort {
     void broadcastRefetchToUsers(RefetchNotice notice, Collection<Long> userIds);
+    void broadcastRefetchToAll(RefetchNotice notice);
 }
