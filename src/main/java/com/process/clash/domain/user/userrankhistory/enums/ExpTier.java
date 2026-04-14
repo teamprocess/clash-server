@@ -4,11 +4,11 @@ public enum ExpTier {
     UNRANKED,   // 0 ~ 999
     BRONZE,     // 1,000 ~ 9,999
     SILVER,     // 10,000 ~ 29,999
-    GOLD,       // 30,000 ~ 49,999
-    DIAMOND;    // 50,000+
+    GOLD,       // 30,000 ~ 99,999
+    DIAMOND;    // 100,000+
 
     public static ExpTier fromExp(int exp) {
-        if (exp >= 50_000) return DIAMOND;
+        if (exp >= 100_000) return DIAMOND;
         if (exp >= 30_000) return GOLD;
         if (exp >= 10_000) return SILVER;
         if (exp >= 1_000)  return BRONZE;

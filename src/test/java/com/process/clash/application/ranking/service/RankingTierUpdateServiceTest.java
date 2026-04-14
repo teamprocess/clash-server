@@ -60,9 +60,9 @@ class RankingTierUpdateServiceTest {
     }
 
     @Test
-    @DisplayName("1위이고 exp >= 100000이면 AURA를 부여한다")
-    void computeRankTier_rank1_expOver100k_returnsAura() {
-        User user = createUser(1L, 100_000, RankTier.NONE);
+    @DisplayName("1위이고 exp >= 200000이면 AURA를 부여한다")
+    void computeRankTier_rank1_expOver200k_returnsAura() {
+        User user = createUser(1L, 200_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -74,10 +74,10 @@ class RankingTierUpdateServiceTest {
     }
 
     @Test
-    @DisplayName("2위이고 exp >= 75000이면 MASTER를 부여한다")
-    void computeRankTier_rank2_expOver75k_returnsMaster() {
-        User rank1 = createUser(1L, 200_000, RankTier.NONE);
-        User rank2 = createUser(2L, 75_000, RankTier.NONE);
+    @DisplayName("2위이고 exp >= 150000이면 MASTER를 부여한다")
+    void computeRankTier_rank2_expOver150k_returnsMaster() {
+        User rank1 = createUser(1L, 250_000, RankTier.NONE);
+        User rank2 = createUser(2L, 150_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(rank1, rank2));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -91,11 +91,11 @@ class RankingTierUpdateServiceTest {
     }
 
     @Test
-    @DisplayName("3위이고 exp >= 75000이면 MASTER를 부여한다")
-    void computeRankTier_rank3_expOver75k_returnsMaster() {
-        User rank1 = createUser(1L, 200_000, RankTier.NONE);
-        User rank2 = createUser(2L, 150_000, RankTier.NONE);
-        User rank3 = createUser(3L, 75_000, RankTier.NONE);
+    @DisplayName("3위이고 exp >= 150000이면 MASTER를 부여한다")
+    void computeRankTier_rank3_expOver150k_returnsMaster() {
+        User rank1 = createUser(1L, 250_000, RankTier.NONE);
+        User rank2 = createUser(2L, 200_000, RankTier.NONE);
+        User rank3 = createUser(3L, 150_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(rank1, rank2, rank3));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -111,9 +111,9 @@ class RankingTierUpdateServiceTest {
     @DisplayName("4위이면 exp에 관계없이 NONE을 부여한다")
     void computeRankTier_rank4_returnsNone() {
         User rank1 = createUser(1L, 200_000, RankTier.AURA);
-        User rank2 = createUser(2L, 150_000, RankTier.MASTER);
-        User rank3 = createUser(3L, 100_000, RankTier.MASTER);
-        User rank4 = createUser(4L, 90_000, RankTier.NONE);
+        User rank2 = createUser(2L, 180_000, RankTier.MASTER);
+        User rank3 = createUser(3L, 150_000, RankTier.MASTER);
+        User rank4 = createUser(4L, 140_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(rank1, rank2, rank3, rank4));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -123,9 +123,9 @@ class RankingTierUpdateServiceTest {
     }
 
     @Test
-    @DisplayName("1위이지만 exp < 75000이면 NONE을 부여한다")
-    void computeRankTier_rank1_expUnder75k_returnsNone() {
-        User user = createUser(1L, 74_999, RankTier.AURA);
+    @DisplayName("1위이지만 exp < 150000이면 NONE을 부여한다")
+    void computeRankTier_rank1_expUnder150k_returnsNone() {
+        User user = createUser(1L, 149_999, RankTier.AURA);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -137,9 +137,9 @@ class RankingTierUpdateServiceTest {
     }
 
     @Test
-    @DisplayName("1위이고 exp가 75000~99999이면 MASTER를 부여한다")
-    void computeRankTier_rank1_expBetween75kAnd100k_returnsMaster() {
-        User user = createUser(1L, 99_999, RankTier.NONE);
+    @DisplayName("1위이고 exp가 150000~199999이면 MASTER를 부여한다")
+    void computeRankTier_rank1_expBetween150kAnd200k_returnsMaster() {
+        User user = createUser(1L, 199_999, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -151,10 +151,10 @@ class RankingTierUpdateServiceTest {
     }
 
     @Test
-    @DisplayName("2위이지만 exp < 75000이면 NONE을 부여한다")
-    void computeRankTier_rank2_expUnder75k_returnsNone() {
-        User rank1 = createUser(1L, 200_000, RankTier.NONE);
-        User rank2 = createUser(2L, 74_999, RankTier.NONE);
+    @DisplayName("2위이지만 exp < 150000이면 NONE을 부여한다")
+    void computeRankTier_rank2_expUnder150k_returnsNone() {
+        User rank1 = createUser(1L, 250_000, RankTier.NONE);
+        User rank2 = createUser(2L, 149_999, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(rank1, rank2));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -169,7 +169,7 @@ class RankingTierUpdateServiceTest {
     @Test
     @DisplayName("티어가 변경되지 않은 유저는 saveAll을 호출하지 않는다")
     void updateRankTiers_unchangedTier_doesNotSaveUser() {
-        User user = createUser(1L, 100_000, RankTier.AURA);
+        User user = createUser(1L, 200_000, RankTier.AURA);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -183,8 +183,8 @@ class RankingTierUpdateServiceTest {
     @Test
     @DisplayName("활성 시즌이 있을 때 모든 유저의 RankHistory를 저장한다")
     void updateRankTiers_withActiveSeason_savesAllHistories() {
-        User rank1 = createUser(1L, 100_000, RankTier.NONE);
-        User rank2 = createUser(2L, 75_000, RankTier.NONE);
+        User rank1 = createUser(1L, 200_000, RankTier.NONE);
+        User rank2 = createUser(2L, 150_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(rank1, rank2));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(createSeason(10L)));
 
@@ -198,7 +198,7 @@ class RankingTierUpdateServiceTest {
     @Test
     @DisplayName("활성 시즌이 없을 때 RankHistory를 저장하지 않는다")
     void updateRankTiers_withoutActiveSeason_doesNotSaveHistory() {
-        User user = createUser(1L, 100_000, RankTier.NONE);
+        User user = createUser(1L, 200_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.empty());
 
@@ -210,7 +210,7 @@ class RankingTierUpdateServiceTest {
     @Test
     @DisplayName("저장되는 RankHistory의 날짜는 오늘이다")
     void updateRankTiers_historyDate_isToday() {
-        User user = createUser(1L, 100_000, RankTier.NONE);
+        User user = createUser(1L, 200_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(createSeason(10L)));
 
@@ -238,8 +238,8 @@ class RankingTierUpdateServiceTest {
     @Test
     @DisplayName("RankHistory에 순위와 rankTier가 올바르게 저장된다")
     void updateRankTiers_historyContainsCorrectRankAndTier() {
-        User rank1 = createUser(1L, 100_000, RankTier.NONE);
-        User rank2 = createUser(2L, 75_000, RankTier.NONE);
+        User rank1 = createUser(1L, 200_000, RankTier.NONE);
+        User rank2 = createUser(2L, 150_000, RankTier.NONE);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(rank1, rank2));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(createSeason(10L)));
 
@@ -258,7 +258,7 @@ class RankingTierUpdateServiceTest {
     @Test
     @DisplayName("RankHistory의 seasonId는 현재 시즌 id로 저장된다")
     void updateRankTiers_historySeasonId_matchesCurrentSeason() {
-        User user = createUser(1L, 100_000, RankTier.NONE);
+        User user = createUser(1L, 200_000, RankTier.NONE);
         Season season = createSeason(42L);
         when(userRepositoryPort.findAllOrderByTotalExpDesc()).thenReturn(List.of(user));
         when(seasonRepositoryPort.findCurrentSeason()).thenReturn(Optional.of(season));

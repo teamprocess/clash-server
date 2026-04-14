@@ -22,8 +22,8 @@ import java.util.Optional;
 @Slf4j
 public class RankingTierUpdateService {
 
-    private static final int AURA_EXP_THRESHOLD = 100_000;
-    private static final int MASTER_EXP_THRESHOLD = 75_000;
+    private static final int AURA_EXP_THRESHOLD = 200_000;
+    private static final int MASTER_EXP_THRESHOLD = 150_000;
 
     private final UserRepositoryPort userRepositoryPort;
     private final UserRankHistoryRepositoryPort userRankHistoryRepositoryPort;
@@ -31,8 +31,8 @@ public class RankingTierUpdateService {
 
     /**
      * 랭킹 기반 티어(Master, Aura) 업데이트
-     * - Aura : 1위 && exp >= 100,000
-     * - Master: 2~3위 && exp >= 75,000  (상위 3등 2명)
+     * - Aura : 1위 && exp >= 200,000
+     * - Master: 2~3위 && exp >= 150,000  (상위 3등 2명)
      * - 그 외 : NONE
      */
     @Transactional
