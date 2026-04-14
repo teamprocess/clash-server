@@ -10,8 +10,6 @@ import com.process.clash.adapter.web.user.dto.GetMyActivityCalendarDto;
 import com.process.clash.adapter.web.user.dto.GetMyItemsDto;
 import com.process.clash.adapter.web.user.dto.GetMyProfileDto;
 import com.process.clash.adapter.web.user.dto.GetUserProfileDto;
-import com.process.clash.adapter.web.user.dto.GetWeeklyAttendanceDto;
-import com.process.clash.adapter.web.user.dto.MarkAttendanceDto;
 import com.process.clash.adapter.web.user.dto.UpdateMyPrivacyDto;
 import com.process.clash.adapter.web.user.dto.IssueProfileImageUploadUrlDto;
 import com.process.clash.adapter.web.user.dto.LinkGitHubOAuthDto;
@@ -49,10 +47,6 @@ import com.process.clash.application.user.user.port.in.IssueProfileImageUploadUr
 import com.process.clash.application.user.user.port.in.UpdateMyPrivacyUseCase;
 import com.process.clash.application.user.user.port.in.UpdateMyProfileImageUseCase;
 import com.process.clash.application.user.user.port.in.WithdrawUseCase;
-import com.process.clash.application.user.userattendance.data.GetWeeklyAttendanceData;
-import com.process.clash.application.user.userattendance.data.MarkAttendanceData;
-import com.process.clash.application.user.userattendance.port.in.GetWeeklyAttendanceUseCase;
-import com.process.clash.application.user.userattendance.port.in.MarkAttendanceUseCase;
 import com.process.clash.application.user.usergithub.data.GetMyGitHubLinkStatusData;
 import com.process.clash.application.user.usergithub.data.LinkGitHubOAuthData;
 import com.process.clash.application.user.usergithub.port.in.GetMyGitHubLinkStatusUsecase;
@@ -96,8 +90,6 @@ public class UserController implements UserControllerDocument {
     private final GetUserGitHubActivityUsecase getUserGitHubActivityUsecase;
     private final GetUserRivalsUsecase getUserRivalsUsecase;
     private final UpdateMyPrivacyUseCase updateMyPrivacyUseCase;
-    private final MarkAttendanceUseCase markAttendanceUseCase;
-    private final GetWeeklyAttendanceUseCase getWeeklyAttendanceUseCase;
 
     @DeleteMapping("/me")
     public ApiResponse<Void> withdraw(
@@ -270,26 +262,6 @@ public class UserController implements UserControllerDocument {
         GetMyRivalActingData.Result result = getUserRivalsUsecase.execute(command);
         GetMyRivalActingDto.Response response = GetMyRivalActingDto.Response.from(result);
         return ApiResponse.success(response, "유저 라이벌 목록을 성공적으로 조회했습니다.");
-    }
-
-    @GetMapping("/me/attendance/weekly")
-    public ApiResponse<GetWeeklyAttendanceDto.Response> getWeeklyAttendance(
-            @AuthenticatedActor Actor actor
-    ) {
-        GetWeeklyAttendanceData.Command command = new GetWeeklyAttendanceData.Command(actor);
-        GetWeeklyAttendanceData.Result result = getWeeklyAttendanceUseCase.execute(command);
-        GetWeeklyAttendanceDto.Response response = GetWeeklyAttendanceDto.Response.from(result);
-        return ApiResponse.success(response, "주간 출석 현황을 성공적으로 조회했습니다.");
-    }
-
-    @PostMapping("/me/attendance")
-    public ApiResponse<MarkAttendanceDto.Response> markAttendance(
-            @AuthenticatedActor Actor actor
-    ) {
-        MarkAttendanceData.Command command = new MarkAttendanceData.Command(actor);
-        MarkAttendanceData.Result result = markAttendanceUseCase.execute(command);
-        MarkAttendanceDto.Response response = MarkAttendanceDto.Response.from(result);
-        return ApiResponse.success(response, "출석이 완료되었습니다.");
     }
 
     @PatchMapping("/me/privacy")
