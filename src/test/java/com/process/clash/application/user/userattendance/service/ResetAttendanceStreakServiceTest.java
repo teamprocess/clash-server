@@ -2,6 +2,7 @@ package com.process.clash.application.user.userattendance.service;
 
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userattendance.port.out.UserAttendanceRepositoryPort;
+import com.process.clash.application.user.userattendance.realtime.AttendanceRefetchNotifier;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
@@ -36,6 +37,9 @@ class ResetAttendanceStreakServiceTest {
     @Mock
     private UserRepositoryPort userRepositoryPort;
 
+    @Mock
+    private AttendanceRefetchNotifier attendanceRefetchNotifier;
+
     private ResetAttendanceStreakService resetAttendanceStreakService;
 
     private final LocalDate YESTERDAY = UserAttendance.currentAttendanceDate().minusDays(1);
@@ -44,12 +48,13 @@ class ResetAttendanceStreakServiceTest {
     void setUp() {
         resetAttendanceStreakService = new ResetAttendanceStreakService(
                 userAttendanceRepositoryPort,
-                userRepositoryPort
+                userRepositoryPort,
+                attendanceRefetchNotifier
         );
     }
 
     @Test
-    @DisplayName("전날 미출석 유저가 없으면 saveAll을 호출하지 않는다")
+    @DisplayName("전날 미출석 유저가 없으면 saveAll과 소켓 알림을 호출하지 않는다")
     void resetStreakForMissedAttendance_doesNothing_whenNoMissedUsers() {
         when(userAttendanceRepositoryPort.findNotAttendedUserIdsByDate(YESTERDAY))
                 .thenReturn(List.of());
@@ -58,6 +63,7 @@ class ResetAttendanceStreakServiceTest {
 
         verify(userRepositoryPort, never()).findAllByIds(any());
         verify(userRepositoryPort, never()).saveAll(any());
+        verify(attendanceRefetchNotifier, never()).notifyAttendanceMissed(any());
     }
 
     @Test
@@ -108,6 +114,20 @@ class ResetAttendanceStreakServiceTest {
 
         assertThat(dateCaptor.getValue())
                 .isEqualTo(UserAttendance.currentAttendanceDate().minusDays(1));
+    }
+
+    @Test
+    @DisplayName("미출석 유저가 있으면 streak 초기화 후 소켓 알림을 발송한다")
+    void resetStreakForMissedAttendance_notifiesViaSocket_whenMissedUsersExist() {
+        List<Long> missedIds = List.of(1L, 2L);
+        when(userAttendanceRepositoryPort.findNotAttendedUserIdsByDate(YESTERDAY))
+                .thenReturn(missedIds);
+        when(userRepositoryPort.findAllByIds(missedIds))
+                .thenReturn(List.of(createUser(1L, 3), createUser(2L, 5)));
+
+        resetAttendanceStreakService.resetStreakForMissedAttendance();
+
+        verify(attendanceRefetchNotifier).notifyAttendanceMissed(missedIds);
     }
 
     private User createUser(Long id, int attendanceStreak) {
