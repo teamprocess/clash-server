@@ -30,4 +30,6 @@ public interface UserRepositoryPort {
     void deleteById(Long id);
     Optional<User> findByIdIncludingDeleted(Long id);
     List<User> findAllOrderByTotalExpDesc();
+
+    void resetAttendanceStreakByIds(List<Long> userIds);
 }

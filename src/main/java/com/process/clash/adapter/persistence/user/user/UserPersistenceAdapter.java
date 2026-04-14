@@ -112,4 +112,12 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
         return userJpaRepository.findAllByUserStatusOrderByTotalExpDesc(UserStatus.ACTIVE)
                 .stream().map(userJpaMapper::toDomain).toList();
     }
+
+    @Override
+    public void resetAttendanceStreakByIds(List<Long> userIds) {
+        if (userIds.isEmpty()) {
+            return;
+        }
+        userJpaRepository.resetAttendanceStreakByIds(userIds);
+    }
 }

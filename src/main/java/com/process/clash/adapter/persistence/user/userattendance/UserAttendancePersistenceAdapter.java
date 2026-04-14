@@ -53,4 +53,9 @@ public class UserAttendancePersistenceAdapter implements UserAttendanceRepositor
     public void deleteAll() {
         userAttendanceJpaRepository.deleteAllInBatch();
     }
+
+    @Override
+    public List<Long> findNotAttendedUserIdsByDate(LocalDate date) {
+        return userAttendanceJpaRepository.findNotAttendedUserIdsByDate(date);
+    }
 }

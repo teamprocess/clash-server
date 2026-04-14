@@ -17,4 +17,6 @@ public interface UserAttendanceRepositoryPort {
     void saveAll(List<UserAttendance> attendances);
 
     void deleteAll();
+
+    List<Long> findNotAttendedUserIdsByDate(LocalDate date);
 }

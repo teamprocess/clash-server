@@ -24,4 +24,7 @@ public interface UserAttendanceJpaRepository extends JpaRepository<UserAttendanc
         WHERE u.deleted_at IS NULL
     """, nativeQuery = true)
     List<Long> findAllNonDeletedUserIds();
+
+    @Query("SELECT ua.user.id FROM UserAttendanceJpaEntity ua WHERE ua.attendanceDate = :date AND ua.isAttended = false")
+    List<Long> findNotAttendedUserIdsByDate(@Param("date") LocalDate date);
 }
