@@ -2,6 +2,7 @@ package com.process.clash.application.user.userattendance.service;
 
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userattendance.port.out.UserAttendanceRepositoryPort;
+import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.userattendance.entity.UserAttendance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,10 @@ public class ResetAttendanceStreakService {
             return;
         }
 
-        userRepositoryPort.resetAttendanceStreakByIds(missedUserIds);
+        List<User> updated = userRepositoryPort.findAllByIds(missedUserIds).stream()
+                .map(User::resetAttendanceStreak)
+                .toList();
+
+        userRepositoryPort.saveAll(updated);
     }
 }
