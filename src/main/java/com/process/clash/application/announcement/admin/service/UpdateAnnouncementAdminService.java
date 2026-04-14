@@ -4,6 +4,7 @@ import com.process.clash.application.announcement.admin.data.UpdateAnnouncementA
 import com.process.clash.application.announcement.admin.port.in.UpdateAnnouncementAdminUseCase;
 import com.process.clash.application.announcement.exception.exception.notfound.AnnouncementNotFoundException;
 import com.process.clash.application.announcement.port.out.AnnouncementRepositoryPort;
+import com.process.clash.application.announcement.realtime.AnnouncementRefetchNotifier;
 import com.process.clash.application.common.policy.CheckAdminPolicy;
 import com.process.clash.domain.announcement.entity.Announcement;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class UpdateAnnouncementAdminService implements UpdateAnnouncementAdminUs
 
     private final AnnouncementRepositoryPort announcementRepositoryPort;
     private final CheckAdminPolicy checkAdminPolicy;
+    private final AnnouncementRefetchNotifier announcementRefetchNotifier;
 
     @Override
     public UpdateAnnouncementAdminData.Result execute(UpdateAnnouncementAdminData.Command command) {
@@ -38,6 +40,7 @@ public class UpdateAnnouncementAdminService implements UpdateAnnouncementAdminUs
         );
 
         Announcement saved = announcementRepositoryPort.save(updated);
+        announcementRefetchNotifier.notifyAnnouncementChanged();
         return UpdateAnnouncementAdminData.Result.from(saved);
     }
 }
