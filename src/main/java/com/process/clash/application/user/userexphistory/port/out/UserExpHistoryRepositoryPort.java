@@ -37,4 +37,6 @@ public interface UserExpHistoryRepositoryPort {
     List<Long> findUserIdsWithoutExpOnDate(LocalDate date);
 
     void saveAll(List<UserExpHistory> userExpHistories);
+
+    List<Long> findTopUserIdsByDailyExp(LocalDate date, int limitCount);
 }
