@@ -218,11 +218,11 @@ public class BattleFinishService {
         List<User> usersToSave = new ArrayList<>();
         List<UserGoodsHistory> historyToSave = new ArrayList<>();
 
-        userRepositoryPort.findById(winnerId).ifPresent(winner -> {
+        userRepositoryPort.findByIdForUpdate(winnerId).ifPresent(winner -> {
             usersToSave.add(winner.addCookie(winnerCookie));
             historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_WIN_REWARD, winnerCookie, null, winnerId));
         });
-        userRepositoryPort.findById(loserId).ifPresent(loser -> {
+        userRepositoryPort.findByIdForUpdate(loserId).ifPresent(loser -> {
             usersToSave.add(loser.addCookie(loserCookie));
             historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_LOSE_REWARD, loserCookie, null, loserId));
         });
@@ -233,16 +233,17 @@ public class BattleFinishService {
 
     private void grantDrawRewards(int duration, Long firstUserId, Long secondUserId) {
         int winnerCookie = WINNER_COOKIE_BY_DURATION.getOrDefault(duration, 0);
-        int drawCookie = (winnerCookie + winnerCookie / 2) / 2;
+        int loserCookie = winnerCookie / 2;
+        int drawCookie = (winnerCookie + loserCookie) / 2;
 
         List<User> usersToSave = new ArrayList<>();
         List<UserGoodsHistory> historyToSave = new ArrayList<>();
 
-        userRepositoryPort.findById(firstUserId).ifPresent(user -> {
+        userRepositoryPort.findByIdForUpdate(firstUserId).ifPresent(user -> {
             usersToSave.add(user.addCookie(drawCookie));
             historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_DRAW_REWARD, drawCookie, null, firstUserId));
         });
-        userRepositoryPort.findById(secondUserId).ifPresent(user -> {
+        userRepositoryPort.findByIdForUpdate(secondUserId).ifPresent(user -> {
             usersToSave.add(user.addCookie(drawCookie));
             historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_DRAW_REWARD, drawCookie, null, secondUserId));
         });
