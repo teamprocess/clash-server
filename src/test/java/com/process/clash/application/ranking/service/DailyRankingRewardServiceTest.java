@@ -2,6 +2,9 @@ package com.process.clash.application.ranking.service;
 
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
+import com.process.clash.application.user.usergoodshistory.port.out.UserGoodsHistoryRepositoryPort;
+import com.process.clash.domain.common.enums.GoodsActingCategory;
+import com.process.clash.domain.user.usergoodshistory.entity.UserGoodsHistory;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
@@ -32,12 +35,13 @@ class DailyRankingRewardServiceTest {
 
     @Mock private UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
     @Mock private UserRepositoryPort userRepositoryPort;
+    @Mock private UserGoodsHistoryRepositoryPort userGoodsHistoryRepositoryPort;
 
     private DailyRankingRewardService service;
 
     @BeforeEach
     void setUp() {
-        service = new DailyRankingRewardService(userExpHistoryRepositoryPort, userRepositoryPort);
+        service = new DailyRankingRewardService(userExpHistoryRepositoryPort, userRepositoryPort, userGoodsHistoryRepositoryPort);
     }
 
     @Test
@@ -50,6 +54,7 @@ class DailyRankingRewardServiceTest {
 
         verify(userRepositoryPort, never()).findByIdForUpdate(any());
         verify(userRepositoryPort, never()).save(any());
+        verify(userGoodsHistoryRepositoryPort, never()).save(any());
     }
 
     @Test
@@ -142,6 +147,47 @@ class DailyRankingRewardServiceTest {
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userRepositoryPort, times(1)).save(captor.capture());
         assertThat(captor.getValue().totalCookie()).isEqualTo(500);
+    }
+
+    @Test
+    @DisplayName("쿠키 지급 시 UserGoodsHistory에 DAILY_RANKING_REWARD 카테고리로 기록을 저장한다")
+    void rewardDailyRankingWinners_savesGoodsHistory() {
+        User rank1 = createUser(1L, 0);
+        when(userExpHistoryRepositoryPort.findTopUserIdsByDailyExp(any(), eq(3)))
+                .thenReturn(List.of(1L));
+        when(userRepositoryPort.findByIdForUpdate(1L)).thenReturn(Optional.of(rank1));
+
+        service.rewardDailyRankingWinners();
+
+        ArgumentCaptor<UserGoodsHistory> captor = ArgumentCaptor.forClass(UserGoodsHistory.class);
+        verify(userGoodsHistoryRepositoryPort, times(1)).save(captor.capture());
+        UserGoodsHistory history = captor.getValue();
+        assertThat(history.goodsActingCategory()).isEqualTo(GoodsActingCategory.DAILY_RANKING_REWARD);
+        assertThat(history.variation()).isEqualTo(1000);
+        assertThat(history.userId()).isEqualTo(1L);
+        assertThat(history.productId()).isNull();
+    }
+
+    @Test
+    @DisplayName("3명 모두 쿠키를 받으면 UserGoodsHistory 기록도 3건 저장된다")
+    void rewardDailyRankingWinners_savesGoodsHistoryForEachWinner() {
+        User rank1 = createUser(1L, 0);
+        User rank2 = createUser(2L, 0);
+        User rank3 = createUser(3L, 0);
+        when(userExpHistoryRepositoryPort.findTopUserIdsByDailyExp(any(), eq(3)))
+                .thenReturn(List.of(1L, 2L, 3L));
+        when(userRepositoryPort.findByIdForUpdate(1L)).thenReturn(Optional.of(rank1));
+        when(userRepositoryPort.findByIdForUpdate(2L)).thenReturn(Optional.of(rank2));
+        when(userRepositoryPort.findByIdForUpdate(3L)).thenReturn(Optional.of(rank3));
+
+        service.rewardDailyRankingWinners();
+
+        ArgumentCaptor<UserGoodsHistory> captor = ArgumentCaptor.forClass(UserGoodsHistory.class);
+        verify(userGoodsHistoryRepositoryPort, times(3)).save(captor.capture());
+        List<UserGoodsHistory> histories = captor.getAllValues();
+        assertThat(histories.get(0).variation()).isEqualTo(1000);
+        assertThat(histories.get(1).variation()).isEqualTo(500);
+        assertThat(histories.get(2).variation()).isEqualTo(300);
     }
 
     // ===== helpers =====
