@@ -273,7 +273,7 @@ class UserSectionProgressJpaRepositoryTest {
     private UserJpaEntity persistUser(String username, String name) {
         Instant now = Instant.now();
         User user = new User(null, now, now, username, username + "@gmail.com", name, "password",
-                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, false, RankTier.NONE, ExpTier.UNRANKED);
+                Role.USER, "", 0, 0, Major.NONE, UserStatus.PENDING, null, false, RankTier.NONE, ExpTier.UNRANKED, 0);
         UserJpaEntity entity = userJpaMapper.toJpaEntity(user);
         em.persist(entity);
         return entity;
