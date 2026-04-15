@@ -16,10 +16,14 @@ public class RefetchEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
     public void onRefetchEvent(RefetchEvent event) {
-        if (event == null || event.notice() == null || event.userIds() == null) {
+        if (event == null || event.notice() == null) {
             return;
         }
         Collection<Long> userIds = event.userIds();
+        if (userIds == null) {
+            broadcastRefetchPort.broadcastRefetchToAll(event.notice());
+            return;
+        }
         if (userIds.isEmpty()) {
             return;
         }
