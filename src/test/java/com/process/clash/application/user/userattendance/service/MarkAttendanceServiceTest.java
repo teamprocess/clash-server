@@ -7,6 +7,8 @@ import com.process.clash.application.user.userattendance.data.MarkAttendanceData
 import com.process.clash.application.user.userattendance.exception.exception.conflict.AlreadyAttendedException;
 import com.process.clash.application.user.userattendance.exception.exception.notfound.UserAttendanceNotFoundException;
 import com.process.clash.application.user.userattendance.port.out.UserAttendanceRepositoryPort;
+import com.process.clash.application.user.usergoodshistory.port.out.UserGoodsHistoryRepositoryPort;
+import com.process.clash.domain.common.enums.GoodsActingCategory;
 import com.process.clash.domain.common.enums.Major;
 import com.process.clash.domain.user.user.entity.User;
 import com.process.clash.domain.user.user.enums.Role;
@@ -33,6 +35,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
 class MarkAttendanceServiceTest {
@@ -43,6 +46,9 @@ class MarkAttendanceServiceTest {
     @Mock
     private UserRepositoryPort userRepositoryPort;
 
+    @Mock
+    private UserGoodsHistoryRepositoryPort userGoodsHistoryRepositoryPort;
+
     private MarkAttendanceService markAttendanceService;
 
     private final Long USER_ID = 1L;
@@ -50,7 +56,7 @@ class MarkAttendanceServiceTest {
 
     @BeforeEach
     void setUp() {
-        markAttendanceService = new MarkAttendanceService(userAttendanceRepositoryPort, userRepositoryPort);
+        markAttendanceService = new MarkAttendanceService(userAttendanceRepositoryPort, userRepositoryPort, userGoodsHistoryRepositoryPort);
     }
 
     @Test
@@ -161,6 +167,58 @@ class MarkAttendanceServiceTest {
             MarkAttendanceData.Result result = markAttendanceService.execute(command);
 
             assertThat(result.earnedCookies()).isEqualTo(1000);
+        }
+    }
+
+    @Test
+    @DisplayName("일일 출석 시 ATTENDANCE_DAILY_REWARD 카테고리로 쿠키 지급 기록을 남긴다")
+    void execute_savesAttendanceDailyRewardHistory_whenDailyAttendance() {
+        try (MockedStatic<UserAttendance> mockedStatic = mockStatic(UserAttendance.class)) {
+            mockedStatic.when(UserAttendance::currentAttendanceDate).thenReturn(FIXED_MONDAY);
+
+            MarkAttendanceData.Command command = new MarkAttendanceData.Command(new Actor(USER_ID));
+            User user = createUser(USER_ID, 0);
+            UserAttendance notAttended = new UserAttendance(1L, Instant.now(), Instant.now(), USER_ID, FIXED_MONDAY, false);
+
+            when(userAttendanceRepositoryPort.findByUserIdAndAttendanceDate(USER_ID, FIXED_MONDAY))
+                    .thenReturn(Optional.of(notAttended));
+            when(userRepositoryPort.findByIdForUpdate(USER_ID))
+                    .thenReturn(Optional.of(user));
+
+            markAttendanceService.execute(command);
+
+            verify(userGoodsHistoryRepositoryPort).save(argThat(h ->
+                    h.userId().equals(USER_ID)
+                    && h.goodsActingCategory() == GoodsActingCategory.ATTENDANCE_DAILY_REWARD
+                    && h.variation() == 300
+            ));
+        }
+    }
+
+    @Test
+    @DisplayName("주간 출석 완료 시 ATTENDANCE_WEEKLY_REWARD 카테고리로 쿠키 지급 기록을 남긴다")
+    void execute_savesAttendanceWeeklyRewardHistory_whenWeeklyAttendance() {
+        try (MockedStatic<UserAttendance> mockedStatic = mockStatic(UserAttendance.class)) {
+            mockedStatic.when(UserAttendance::currentAttendanceDate).thenReturn(FIXED_SATURDAY);
+
+            MarkAttendanceData.Command command = new MarkAttendanceData.Command(new Actor(USER_ID));
+            User user = createUser(USER_ID, 6);
+            UserAttendance notAttended = new UserAttendance(1L, Instant.now(), Instant.now(), USER_ID, FIXED_SATURDAY, false);
+
+            when(userAttendanceRepositoryPort.findByUserIdAndAttendanceDate(USER_ID, FIXED_SATURDAY))
+                    .thenReturn(Optional.of(notAttended));
+            when(userRepositoryPort.findByIdForUpdate(USER_ID))
+                    .thenReturn(Optional.of(user));
+            when(userAttendanceRepositoryPort.countAttendedByUserIdBetween(USER_ID, FIXED_SUNDAY, FIXED_SATURDAY))
+                    .thenReturn(7L);
+
+            markAttendanceService.execute(command);
+
+            verify(userGoodsHistoryRepositoryPort).save(argThat(h ->
+                    h.userId().equals(USER_ID)
+                    && h.goodsActingCategory() == GoodsActingCategory.ATTENDANCE_WEEKLY_REWARD
+                    && h.variation() == 1000
+            ));
         }
     }
 

@@ -2,9 +2,14 @@ package com.process.clash.application.compete.rival.battle.service;
 
 import com.process.clash.application.compete.rival.battle.port.out.BattleRepositoryPort;
 import com.process.clash.application.compete.rival.rival.port.out.RivalRepositoryPort;
+import com.process.clash.application.user.user.port.out.UserRepositoryPort;
 import com.process.clash.application.user.userexphistory.port.out.UserExpHistoryRepositoryPort;
+import com.process.clash.application.user.usergoodshistory.port.out.UserGoodsHistoryRepositoryPort;
+import com.process.clash.domain.common.enums.GoodsActingCategory;
 import com.process.clash.domain.rival.battle.entity.Battle;
 import com.process.clash.domain.rival.rival.entity.Rival;
+import com.process.clash.domain.user.user.entity.User;
+import com.process.clash.domain.user.usergoodshistory.entity.UserGoodsHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,9 +32,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BattleFinishService {
 
+    private static final Map<Integer, Integer> WINNER_COOKIE_BY_DURATION = Map.of(
+            3, 300,
+            5, 500,
+            7, 700
+    );
+
     private final BattleRepositoryPort battleRepositoryPort;
     private final RivalRepositoryPort rivalRepositoryPort;
     private final UserExpHistoryRepositoryPort userExpHistoryRepositoryPort;
+    private final UserRepositoryPort userRepositoryPort;
+    private final UserGoodsHistoryRepositoryPort userGoodsHistoryRepositoryPort;
 
     public void finishExpiredBattles() {
         List<Battle> expiredInProgress = battleRepositoryPort.findExpiredInProgressBattles();
@@ -76,6 +90,7 @@ public class BattleFinishService {
 
         if (!battlesToUpdate.isEmpty()) {
             battleRepositoryPort.saveAll(battlesToUpdate);
+            grantBatchBattleRewards(battlesToUpdate, rivalMap);
         }
         log.info("Expired battles processed. done={}", battlesToUpdate.size());
     }
@@ -114,6 +129,12 @@ public class BattleFinishService {
             Long winnerId = determineWinner(latest.id(), rival.firstUserId(), rival.secondUserId(), avgExpByUserAndBattle);
             Battle finished = latest.finishWithWinner(winnerId);
             Battle saved = battleRepositoryPort.save(finished);
+            if (winnerId != null) {
+                Long loserId = rival.firstUserId().equals(winnerId) ? rival.secondUserId() : rival.firstUserId();
+                grantBattleRewards(saved.duration(), winnerId, loserId);
+            } else {
+                grantDrawRewards(saved.duration(), rival.firstUserId(), rival.secondUserId());
+            }
             log.info("Battle lazily finished on query. battleId={}, winnerId={}", saved.id(), winnerId);
             return saved;
         } catch (Exception e) {
@@ -130,5 +151,104 @@ public class BattleFinishService {
         if (firstExp > secondExp) return firstUserId;
         if (secondExp > firstExp) return secondUserId;
         return null; // 무승부
+    }
+
+    private void grantBatchBattleRewards(List<Battle> finishedBattles, Map<Long, Rival> rivalMap) {
+        Set<Long> userIds = new HashSet<>();
+        for (Battle battle : finishedBattles) {
+            Rival rival = rivalMap.get(battle.rivalId());
+            if (rival == null) continue;
+            userIds.add(rival.firstUserId());
+            userIds.add(rival.secondUserId());
+        }
+        if (userIds.isEmpty()) return;
+
+        Map<Long, User> userMap = userRepositoryPort.findByIdIn(userIds).stream()
+                .collect(Collectors.toMap(User::id, u -> u));
+
+        List<UserGoodsHistory> historyToSave = new ArrayList<>();
+
+        for (Battle battle : finishedBattles) {
+            Rival rival = rivalMap.get(battle.rivalId());
+            if (rival == null) continue;
+
+            int winnerCookie = WINNER_COOKIE_BY_DURATION.getOrDefault(battle.duration(), 0);
+            int loserCookie = winnerCookie / 2;
+
+            if (battle.winnerId() != null) {
+                Long loserId = rival.firstUserId().equals(battle.winnerId())
+                        ? rival.secondUserId()
+                        : rival.firstUserId();
+
+                User winner = userMap.get(battle.winnerId());
+                User loser = userMap.get(loserId);
+
+                if (winner != null) {
+                    userMap.put(winner.id(), winner.addCookie(winnerCookie));
+                    historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_WIN_REWARD, winnerCookie, null, winner.id()));
+                }
+                if (loser != null) {
+                    userMap.put(loser.id(), loser.addCookie(loserCookie));
+                    historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_LOSE_REWARD, loserCookie, null, loser.id()));
+                }
+            } else {
+                int drawCookie = (winnerCookie + loserCookie) / 2;
+                User first = userMap.get(rival.firstUserId());
+                User second = userMap.get(rival.secondUserId());
+
+                if (first != null) {
+                    userMap.put(first.id(), first.addCookie(drawCookie));
+                    historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_DRAW_REWARD, drawCookie, null, first.id()));
+                }
+                if (second != null) {
+                    userMap.put(second.id(), second.addCookie(drawCookie));
+                    historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_DRAW_REWARD, drawCookie, null, second.id()));
+                }
+            }
+        }
+
+        userRepositoryPort.saveAll(new ArrayList<>(userMap.values()));
+        userGoodsHistoryRepositoryPort.saveAll(historyToSave);
+    }
+
+    private void grantBattleRewards(int duration, Long winnerId, Long loserId) {
+        int winnerCookie = WINNER_COOKIE_BY_DURATION.getOrDefault(duration, 0);
+        int loserCookie = winnerCookie / 2;
+
+        List<User> usersToSave = new ArrayList<>();
+        List<UserGoodsHistory> historyToSave = new ArrayList<>();
+
+        userRepositoryPort.findByIdForUpdate(winnerId).ifPresent(winner -> {
+            usersToSave.add(winner.addCookie(winnerCookie));
+            historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_WIN_REWARD, winnerCookie, null, winnerId));
+        });
+        userRepositoryPort.findByIdForUpdate(loserId).ifPresent(loser -> {
+            usersToSave.add(loser.addCookie(loserCookie));
+            historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_LOSE_REWARD, loserCookie, null, loserId));
+        });
+
+        userRepositoryPort.saveAll(usersToSave);
+        userGoodsHistoryRepositoryPort.saveAll(historyToSave);
+    }
+
+    private void grantDrawRewards(int duration, Long firstUserId, Long secondUserId) {
+        int winnerCookie = WINNER_COOKIE_BY_DURATION.getOrDefault(duration, 0);
+        int loserCookie = winnerCookie / 2;
+        int drawCookie = (winnerCookie + loserCookie) / 2;
+
+        List<User> usersToSave = new ArrayList<>();
+        List<UserGoodsHistory> historyToSave = new ArrayList<>();
+
+        userRepositoryPort.findByIdForUpdate(firstUserId).ifPresent(user -> {
+            usersToSave.add(user.addCookie(drawCookie));
+            historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_DRAW_REWARD, drawCookie, null, firstUserId));
+        });
+        userRepositoryPort.findByIdForUpdate(secondUserId).ifPresent(user -> {
+            usersToSave.add(user.addCookie(drawCookie));
+            historyToSave.add(new UserGoodsHistory(null, null, GoodsActingCategory.BATTLE_DRAW_REWARD, drawCookie, null, secondUserId));
+        });
+
+        userRepositoryPort.saveAll(usersToSave);
+        userGoodsHistoryRepositoryPort.saveAll(historyToSave);
     }
 }
