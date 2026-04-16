@@ -32,4 +32,13 @@ public class SocketIoBroadcastAdapter implements BroadcastRefetchPort {
             operations.sendEvent(EVENT_CHANGE, payload);
         }
     }
+
+    @Override
+    public void broadcastRefetchToAll(RefetchNotice notice) {
+        if (notice == null) {
+            return;
+        }
+        ChangePayload payload = ChangePayload.from(notice);
+        socketIOServer.getBroadcastOperations().sendEvent(EVENT_CHANGE, payload);
+    }
 }

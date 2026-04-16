@@ -30,4 +30,11 @@ public class RefetchEventPublisher {
         }
         applicationEventPublisher.publishEvent(new RefetchEvent(notice, deduped));
     }
+
+    public void publishToAll(RefetchNotice notice) {
+        if (notice == null) {
+            return;
+        }
+        applicationEventPublisher.publishEvent(new RefetchEvent(notice, null));
+    }
 }

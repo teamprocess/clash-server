@@ -9,7 +9,9 @@ public enum NoticeCategory {
     ACCEPT_BATTLE("상대방이 배틀을 수락했어요.", false),
     REJECT_BATTLE("상대방이 배틀을 거절했어요.", false),
     CANCEL_BATTLE("상대방이 배틀 신청을 취소했어요.", false),
-    GLOBAL_NOTICE("전체 공지사항이 도착했어요.", false);
+    GLOBAL_NOTICE("전체 공지사항이 도착했어요.", false),
+    NORMAL_ATTENDANCE_COOKIE("300 쿠키가 지급 되었어요. (일일 출석 보상)", false),
+    STREAK_ATTENDANCE_COOKIE("1000 쿠키가 지급 되었어요. (7일 연속 출석 보상)", false);
 
     private final String message;
     private final boolean requiresAction;

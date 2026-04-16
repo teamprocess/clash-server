@@ -93,7 +93,8 @@ class GetUserItemsServiceTest {
             id, Instant.now(), Instant.now(),
             "username", "user@example.com", "name", "encoded-password",
             Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE,
-            null, isPrivate, RankTier.NONE, ExpTier.UNRANKED
+            null, isPrivate, RankTier.NONE, ExpTier.UNRANKED,
+            0
         );
     }
 }

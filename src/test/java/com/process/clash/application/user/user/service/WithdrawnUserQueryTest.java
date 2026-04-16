@@ -133,7 +133,8 @@ class WithdrawnUserQueryTest {
                 Instant.now(),   // deletedAt 설정 → 탈퇴 상태
                 false,
                 RankTier.NONE,
-                ExpTier.UNRANKED
+                ExpTier.UNRANKED,
+                0
         );
     }
 }

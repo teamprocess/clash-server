@@ -85,7 +85,8 @@ class GetUserProfileServiceTest {
             targetUserId, Instant.now(), Instant.now(),
             "username", "user@example.com", "name", "encoded-password",
             Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE,
-            Instant.now(), false, RankTier.NONE, ExpTier.UNRANKED
+            Instant.now(), false, RankTier.NONE, ExpTier.UNRANKED,
+            0
         );
         GetUserProfileData.Command command = new GetUserProfileData.Command(targetUserId);
 
@@ -116,7 +117,8 @@ class GetUserProfileServiceTest {
             id, Instant.now(), Instant.now(),
             "username", "user@example.com", "name", "encoded-password",
             Role.USER, "", 0, 0, Major.NONE, UserStatus.ACTIVE,
-            null, isPrivate, RankTier.NONE, ExpTier.UNRANKED
+            null, isPrivate, RankTier.NONE, ExpTier.UNRANKED,
+            0
         );
     }
 }

@@ -87,9 +87,11 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
                 .findByUserIdAndChapterId(actor.id(), chapter.getId());
 
         UserQuestionHistoryV2 history;
+        boolean wasClearedBefore = false;
 
         if (historyOpt.isPresent()) {
             history = historyOpt.get();
+            wasClearedBefore = history.isCleared();
 
             retryFirstQuestion(history, question);
 
@@ -118,7 +120,7 @@ public class SubmitQuestionV2AnswerService implements SubmitQuestionV2AnswerUseC
         Long nextChapterId = null;
         Integer nextChapterOrderIndex = null;
 
-        if (isChapterCleared) {
+        if (isChapterCleared && !wasClearedBefore) {
             // progress가 없고 첫 번째 챕터인 경우 새로 생성
             if (progress == null && chapter.getOrderIndex() == 0) {
                 progress = UserSectionProgress.start(actor.id(), chapter.getSectionId(), chapter.getId());

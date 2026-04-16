@@ -67,6 +67,25 @@ class GetSectionV2DetailsServiceTest {
     }
 
     @Test
+    @DisplayName("완료된 섹션은 currentOrderIndex와 상관없이 completed 필드로 완료 여부를 표현한다")
+    void execute_keepsCompletedTrueEvenWhenCurrentOrderIndexIsNull() {
+        Actor actor = new Actor(1L);
+        Section section = createSection(10L, "Spring");
+        ChapterV2 chapter = new ChapterV2(100L, 10L, "Intro", "desc", 0, "https://example.com", List.of());
+        UserSectionProgress progress = new UserSectionProgress(1L, 1L, 10L, 999L, 3, true);
+
+        when(sectionRepository.findById(10L)).thenReturn(Optional.of(section));
+        when(chapterV2RepositoryPort.findAllBySectionId(10L)).thenReturn(List.of(chapter));
+        when(userSectionProgressRepository.findByUserIdAndSectionId(1L, 10L)).thenReturn(Optional.of(progress));
+
+        GetSectionV2DetailsData.Result result = service.execute(new GetSectionV2DetailsData.Command(actor, 10L));
+
+        assertThat(result.completed()).isTrue();
+        assertThat(result.currentChapterId()).isEqualTo(999L);
+        assertThat(result.currentOrderIndex()).isNull();
+    }
+
+    @Test
     @DisplayName("섹션 진행도가 없으면 completed 필드는 false다")
     void execute_returnsFalseWhenProgressMissing() {
         Actor actor = new Actor(1L);
@@ -82,6 +101,7 @@ class GetSectionV2DetailsServiceTest {
         assertThat(result.completed()).isFalse();
         assertThat(result.currentChapterId()).isNull();
         assertThat(result.currentOrderIndex()).isNull();
+        assertThat(result.totalChapters()).isEqualTo(1);
     }
 
     private Section createSection(Long sectionId, String title) {

@@ -21,12 +21,14 @@ public interface UserSectionProgressJpaRepository extends JpaRepository<UserSect
             u.id as userId,
             u.name as userName,
             u.profile_image as profileImage,
-            COALESCE(SUM(usp.completed_chapters), 0) as totalCompleted,
-            RANK() OVER (ORDER BY COALESCE(SUM(usp.completed_chapters), 0) DESC) as userRank,
+            COALESCE(COUNT(DISTINCT uqh.fk_chapter_id), 0) as totalCompleted,
+            RANK() OVER (ORDER BY COALESCE(COUNT(DISTINCT uqh.fk_chapter_id), 0) DESC) as userRank,
             u.current_rank_tier as currentRankTier,
             u.current_exp_tier as currentExpTier
         FROM users u
-        LEFT JOIN user_section_progress usp ON u.id = usp.fk_user_id
+        LEFT JOIN user_question_history_v2 uqh
+            ON u.id = uqh.fk_user_id
+           AND uqh.is_cleared = true
         GROUP BY u.id
     ) rankTable
     WHERE userId = :targetUserId OR userRank <= 20
@@ -34,4 +36,3 @@ public interface UserSectionProgressJpaRepository extends JpaRepository<UserSect
     """, nativeQuery = true)
     List<Object[]> findRankingsWithMyRank(@Param("targetUserId") Long targetUserId);
 }
-

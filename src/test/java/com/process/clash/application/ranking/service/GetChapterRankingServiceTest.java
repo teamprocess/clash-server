@@ -116,6 +116,42 @@ class GetChapterRankingServiceTest {
                 .doesNotContain(MY_USER_ID);
     }
 
+    @Test
+    @DisplayName("실제 클리어 챕터 수는 myRank와 allRankers에 그대로 반영된다")
+    void execute_mapsActualClearedChapterCount() {
+        Long otherUserId = 2L;
+        List<Object[]> rows = new ArrayList<>();
+        rows.add(record(otherUserId, 1, 12, "NONE", "PLATINUM"));
+        rows.add(record(MY_USER_ID, 2, 7, "NONE", "GOLD"));
+        when(loadChapterRankingPort.loadRankingsWithMyRank(MY_USER_ID)).thenReturn(rows);
+
+        GetChapterRankingData.Result result = getChapterRankingService.execute(
+                GetChapterRankingData.Command.from(new Actor(MY_USER_ID)));
+
+        assertThat(result.myRank().completedChaptersCount()).isEqualTo(7);
+        assertThat(result.allRankers())
+                .extracting(GetChapterRankingData.RankersVo::completedChaptersCount)
+                .containsExactly(12, 7);
+    }
+
+    @Test
+    @DisplayName("동점 랭킹은 저장소가 준 rank 값을 그대로 유지한다")
+    void execute_keepsRankValueWhenTied() {
+        Long otherUserId = 2L;
+        List<Object[]> rows = new ArrayList<>();
+        rows.add(record(otherUserId, 1, 8, "NONE", "GOLD"));
+        rows.add(record(MY_USER_ID, 1, 8, "NONE", "SILVER"));
+        when(loadChapterRankingPort.loadRankingsWithMyRank(MY_USER_ID)).thenReturn(rows);
+
+        GetChapterRankingData.Result result = getChapterRankingService.execute(
+                GetChapterRankingData.Command.from(new Actor(MY_USER_ID)));
+
+        assertThat(result.myRank().rank()).isEqualTo(1);
+        assertThat(result.allRankers())
+                .extracting(GetChapterRankingData.RankersVo::rank)
+                .containsExactly(1, 1);
+    }
+
     // ── helpers ───────────────────────────────────────────────────────────────
 
     private Object[] record(Long userId, int rank, int completedCount,

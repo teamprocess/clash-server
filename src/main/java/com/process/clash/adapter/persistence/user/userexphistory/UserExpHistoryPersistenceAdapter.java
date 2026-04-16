@@ -153,4 +153,12 @@ public class UserExpHistoryPersistenceAdapter implements UserExpHistoryRepositor
                 .toList();
         userExpHistoryJpaRepository.saveAll(entities);
     }
+
+    @Override
+    public List<Long> findTopUserIdsByDailyExp(LocalDate date, int limitCount) {
+        return userExpHistoryJpaRepository.findTopUserIdsByDailyExp(date, limitCount)
+                .stream()
+                .map(row -> ((Number) row[0]).longValue())
+                .toList();
+    }
 }

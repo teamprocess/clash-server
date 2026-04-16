@@ -3,6 +3,7 @@ package com.process.clash.application.announcement.admin.service;
 import com.process.clash.application.announcement.admin.data.UpdateAnnouncementAdminData;
 import com.process.clash.application.announcement.exception.exception.notfound.AnnouncementNotFoundException;
 import com.process.clash.application.announcement.port.out.AnnouncementRepositoryPort;
+import com.process.clash.application.announcement.realtime.AnnouncementRefetchNotifier;
 import com.process.clash.application.common.policy.CheckAdminPolicy;
 import com.process.clash.application.user.user.exception.exception.forbidden.RequiredAdminRoleException;
 import com.process.clash.domain.announcement.entity.Announcement;
@@ -32,11 +33,14 @@ class UpdateAnnouncementAdminServiceTest {
     @Mock
     private CheckAdminPolicy checkAdminPolicy;
 
+    @Mock
+    private AnnouncementRefetchNotifier announcementRefetchNotifier;
+
     private UpdateAnnouncementAdminService service;
 
     @BeforeEach
     void setUp() {
-        service = new UpdateAnnouncementAdminService(announcementRepositoryPort, checkAdminPolicy);
+        service = new UpdateAnnouncementAdminService(announcementRepositoryPort, checkAdminPolicy, announcementRefetchNotifier);
     }
 
     @Test

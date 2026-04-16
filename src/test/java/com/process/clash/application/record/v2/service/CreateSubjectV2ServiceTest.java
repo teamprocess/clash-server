@@ -90,7 +90,8 @@ class CreateSubjectV2ServiceTest {
             null,
             false,
             RankTier.NONE,
-            ExpTier.UNRANKED
+            ExpTier.UNRANKED,
+            0
         );
     }
 }
