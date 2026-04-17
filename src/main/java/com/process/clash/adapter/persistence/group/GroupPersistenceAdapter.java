@@ -31,10 +31,17 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
 
     @Override
     public Group save(Group group) {
-        UserJpaEntity owner = userJpaRepository.getReferenceById(group.ownerId());
+        UserJpaEntity owner = group.ownerId() != null
+            ? userJpaRepository.getReferenceById(group.ownerId())
+            : null;
         GroupJpaEntity entity = groupJpaMapper.toJpaEntity(group, owner);
         GroupJpaEntity saved = groupJpaRepository.save(entity);
         return groupJpaMapper.toDomain(saved);
+    }
+
+    @Override
+    public Optional<Group> findByCategory(GroupCategory category) {
+        return groupJpaRepository.findByCategory(category).map(groupJpaMapper::toDomain);
     }
 
     @Override
@@ -52,7 +59,7 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     @Override
     public PageResult findAllByPage(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<GroupJpaEntity> pageResult = groupJpaRepository.findAll(pageable);
+        Page<GroupJpaEntity> pageResult = groupJpaRepository.findAllExcluding(GroupCategory.GLOBAL, pageable);
         return mapPageResult(pageResult);
     }
 
@@ -66,12 +73,15 @@ public class GroupPersistenceAdapter implements GroupRepositoryPort {
     @Override
     public PageResult findAllByMemberUserId(Long userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<GroupJpaEntity> pageResult = groupJpaRepository.findAllByMemberUserId(userId, pageable);
+        Page<GroupJpaEntity> pageResult = groupJpaRepository.findAllByMemberUserId(userId, GroupCategory.GLOBAL, pageable);
         return mapPageResult(pageResult);
     }
 
     @Override
     public PageResult findAllByMemberUserIdAndCategory(Long userId, Integer page, Integer size, GroupCategory category) {
+        if (category == GroupCategory.GLOBAL) {
+            return new PageResult(List.of(), 0);
+        }
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<GroupJpaEntity> pageResult = groupJpaRepository.findAllByMemberUserIdAndCategory(userId, category, pageable);
         return mapPageResult(pageResult);
