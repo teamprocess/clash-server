@@ -5,5 +5,6 @@ public enum GroupCategory {
     CLUB,
     TEAM,
     NARSHA,
-    ETC
+    ETC,
+    GLOBAL
 }

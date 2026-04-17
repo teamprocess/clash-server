@@ -13,6 +13,8 @@ public interface GroupRepositoryPort {
 
     Optional<Group> findById(Long groupId);
 
+    Optional<Group> findByCategory(GroupCategory category);
+
     void deleteById(Long groupId);
 
     PageResult findAllByPage(Integer page, Integer size);
