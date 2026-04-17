@@ -25,6 +25,10 @@ public class GroupCategoryConverter {
             return null;
         }
 
+        if ("GLOBAL".equalsIgnoreCase(category)) {
+            throw new InvalidCategoryException("유효하지 않은 카테고리입니다: 'GLOBAL'");
+        }
+
         try {
             return GroupCategory.valueOf(category.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
