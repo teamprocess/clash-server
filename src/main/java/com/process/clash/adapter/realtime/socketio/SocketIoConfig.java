@@ -3,6 +3,7 @@ package com.process.clash.adapter.realtime.socketio;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.Transport;
 import com.process.clash.infrastructure.config.SocketIoProperties;
+import com.process.clash.infrastructure.config.socket.SocketIoExceptionListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,9 @@ public class SocketIoConfig {
         config.setPingTimeout(socketIoProperties.getPingTimeoutMs());
         config.setTransports(Transport.WEBSOCKET);
         config.setAuthorizationListener(authService::authorize);
+
+        config.setExceptionListener(new SocketIoExceptionListener());
+
         return new SocketIOServer(config);
     }
 }
