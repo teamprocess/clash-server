@@ -49,6 +49,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         LEFT JOIN rivals r ON b.fk_rival_id = r.id
         WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
             AND b.battle_status NOT IN ('REJECTED', 'PENDING', 'CANCELED')
+        ORDER BY b.started_at DESC
     """, nativeQuery = true)
     List<BattleJpaEntity> findByUserIdWithOutRejected(@Param("userId") Long userId);
 
@@ -124,6 +125,7 @@ public interface BattleJpaRepository extends JpaRepository<BattleJpaEntity, Long
         LEFT JOIN rivals r ON b.fk_rival_id = r.id
         WHERE (r.fk_first_user_id = :userId OR r.fk_second_user_id = :userId)
             AND b.battle_status = 'PENDING'
+        ORDER BY b.created_at DESC
     """, nativeQuery = true)
     List<BattleJpaEntity> findPendingBattlesByUserId(@Param("userId") Long userId);
 }
