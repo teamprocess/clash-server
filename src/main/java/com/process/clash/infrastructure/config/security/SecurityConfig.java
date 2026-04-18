@@ -124,7 +124,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/password-reset/**").permitAll()
                         .requestMatchers("/api/config/public").permitAll()
                         .requestMatchers("/auth-login.html", "/auth-signup.html").permitAll()
-                        .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**", "/api/admin/**", "/api/v2/admin/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/groups/**").authenticated()
