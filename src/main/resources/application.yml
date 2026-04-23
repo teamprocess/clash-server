@@ -2,6 +2,11 @@ spring:
   main:
     web-application-type: servlet
 
+  task:
+    scheduling:
+      pool:
+        size: 10 # 각 스케줄러가 독립 스레드 사용
+
   datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
@@ -56,8 +61,8 @@ spring:
       host: ${REDIS_HOST:localhost}
       port: 6379
       password: ${REDIS_PASSWORD}
-      connect-timeout: 30s
-      timeout: 30s
+      connect-timeout: 3s
+      timeout: 3s
       lettuce:
         pool:
           max-active: 50
