@@ -5,12 +5,14 @@ import com.process.clash.application.roadmap.v2.question.data.UpdateQuestionV2Da
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class UpdateQuestionV2Dto {
 
     @Schema(name = "UpdateQuestionV2DtoRequest")
     public record Request(
             @NotBlank(message = "content는 필수 입력값입니다.")
+            @Size(max = 2000, message = "content는 최대 2000자까지 입력할 수 있습니다.")
             String content,
 
             String explanation,
