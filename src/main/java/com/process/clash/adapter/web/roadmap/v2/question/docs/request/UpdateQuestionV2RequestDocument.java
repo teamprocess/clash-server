@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "문제 수정 요청")
 public class UpdateQuestionV2RequestDocument {
 
-    @Schema(description = "문제 내용", example = "자바의 주요 특징은?")
+    @Schema(description = "문제 내용", example = "자바의 주요 특징은?", maxLength = 2000)
     public String content;
 
     @Schema(description = "해설", example = "자바는 객체지향, 플랫폼 독립적, 멀티스레드를 지원합니다.")
