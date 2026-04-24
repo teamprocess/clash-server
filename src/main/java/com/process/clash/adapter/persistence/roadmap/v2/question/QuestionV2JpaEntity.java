@@ -32,7 +32,7 @@ public class QuestionV2JpaEntity {
     @JoinColumn(name = "fk_chapter_id", nullable = false)
     private ChapterV2JpaEntity chapter;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 2000)
     private String content;
 
     private String explanation;
