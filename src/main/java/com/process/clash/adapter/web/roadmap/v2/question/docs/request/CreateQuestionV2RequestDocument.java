@@ -8,7 +8,7 @@ public class CreateQuestionV2RequestDocument {
     @Schema(description = "챕터 ID", example = "1")
     public Long chapterId;
 
-    @Schema(description = "문제 내용", example = "자바의 특징이 아닌 것은?")
+    @Schema(description = "문제 내용", example = "자바의 특징이 아닌 것은?", maxLength = 2000)
     public String content;
 
     @Schema(description = "해설", example = "자바는 객체지향 언어입니다.")

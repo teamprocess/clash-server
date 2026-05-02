@@ -1,0 +1,2 @@
+ALTER TABLE questions_v2
+    ALTER COLUMN content TYPE VARCHAR(2000);
