@@ -1,580 +1,117 @@
-# Clash 서버 개발 가이드
+<p>
+  <img src="docs/assets/clash-background.svg" width="100%" alt="Clash" />
+</p>
 
-## 목차
-1. [프로젝트 개요](#프로젝트-개요)
-2. [기술 스택](#기술-스택)
-3. [아키텍처](#아키텍처)
-4. [패키지 구조](#패키지-구조)
-5. [코딩 컨벤션](#코딩-컨벤션)
-6. [커밋 메시지 컨벤션](#커밋-메시지-컨벤션)
-7. [주요 패턴](#주요-패턴)
+<h1>
+  <img src="./docs/assets/readme-title.svg" alt="Clash Server" />
+</h1>
 
----
+**학습 기록 기반 경쟁 애플리케이션, Clash**
 
-## 프로젝트 개요
+Clash Server는 IDE 사용 시간과 GitHub 활동을 기반으로 학습 기록을 수집하고, 경쟁·로드맵·보상·알림 기능을 제공하는 Spring Boot API 서버입니다.
 
-**Clash**는 학습 기록을 통한 경쟁 애플리케이션입니다.
+이 저장소는 Clash의 인증, 유저, 기록, 경쟁, 로드맵, 상점, 실시간 동기화 도메인을 관리합니다.
 
-- **License**: AGPL-3.0-with-Commons-Clause
-- **Java Version**: 21
-- **Spring Boot Version**: 3.5.9
+## Service
 
----
+- **학습 기록**: 사용자의 개발 시간, 할 일, GitHub 활동을 날짜 기준으로 저장하고 조회합니다.
+- **경쟁**: 개인 랭킹, 라이벌, 배틀, 그룹 데이터를 통해 학습 기록을 비교 가능한 지표로 제공합니다.
+- **로드맵**: 전공, 섹션, 챕터, 미션 진행 상태를 관리합니다.
+- **보상**: 출석, 랭킹, 활동 기록을 기반으로 경험치와 재화를 지급하고 상점 구매를 처리합니다.
+- **실시간 동기화**: Socket.IO를 통해 클라이언트의 상태 변경, 알림, 리패치 이벤트를 전달합니다.
 
-## 기술 스택
+## Product Surface
 
-### Core
-- **Java 21**
-- **Spring Boot 3.5.9**
-- **Spring Data JPA**
-- **Spring Security**
-- **Spring WebFlux** (외부 API 호출용)
+| 영역 | 설명 |
+| --- | --- |
+| REST API | Clash macOS 앱과 웹 인증 화면에서 사용하는 HTTP API |
+| Realtime Server | Socket.IO 기반 presence, 알림, refetch 이벤트 서버 |
+| Scheduler | GitHub 통계 동기화, 랭킹 보상, 배틀/시즌 종료, 출석 초기화 작업 |
+| Persistence | PostgreSQL, Redis, Flyway 기반 데이터 저장과 마이그레이션 |
+| External Integrations | GitHub GraphQL/OAuth, Google reCAPTCHA, AWS S3, AWS SES |
 
-### Database
-- **PostgreSQL** (Production)
-- **H2** (Test)
-- **Redis** (캐싱 및 세션)
+## Features
 
-### Documentation
-- **SpringDoc OpenAPI 3** (Swagger)
+- **Auth**: 회원가입, 로그인, 세션, reCAPTCHA, Electron 딥링크 인증
+- **User/Profile**: 사용자 프로필, GitHub 연동, 아이템 장착, 프로필 이미지 업로드
+- **Record**: IDE 사용 시간 기반 학습 기록과 태스크 세션 관리
+- **GitHub Sync**: GitHub 활동 통계 수집과 일별 기여 데이터 집계
+- **Competition**: 개인 분석, 랭킹, 라이벌, 배틀 기능
+- **Group**: 그룹 생성, 가입, 탈퇴, 그룹 활동 조회
+- **Roadmap**: 전공 선택, 섹션, 챕터, 미션 진행 관리
+- **Shop**: 상품 목록, 추천 상품, 구매, 시즌 상품 관리
+- **Notice & Announcement**: 사용자 알림과 서비스 공지
+- **Realtime**: socket token 발급, presence 변경, 도메인별 refetch 이벤트 발행
 
-### Build Tool
-- **Gradle 8.5+ 권장**
+## Tech Stack
 
----
+| 분류 | 기술 |
+| --- | --- |
+| Core | Java 21, Spring Boot 3.5.9 |
+| Web | Spring MVC, Spring Security, Spring Validation |
+| Persistence | Spring Data JPA, PostgreSQL, Flyway |
+| Session & Cache | Redis, Spring Session |
+| Realtime | netty-socketio |
+| External API | Spring WebFlux, GitHub GraphQL/OAuth, Google reCAPTCHA |
+| Storage & Mail | AWS S3, AWS SES SMTP |
+| API Docs | SpringDoc OpenAPI |
+| Build & Deploy | Gradle, Docker, GitHub Actions |
 
-## 아키텍처
+## Architecture
 
-본 프로젝트는
-**Hexagonal Architecture (Port & Adapter Pattern)**
-를 채택하고 있습니다.
+Clash Server는 Hexagonal Architecture를 기준으로 도메인, 유스케이스, 어댑터, 인프라를 분리합니다.
 
-```
-┌────────────────────────────────────────────────────┐
-│                 Adapter Layer                      │
-│  ┌────────────────┐  ┌───────────────────────┐     │
-│  │      Web       │  │     Persistence       │     │
-│  │  (Controller)  │  │    (JpaRepository)    │     │
-│  └──────┬─────────┘  └───────────┬───────────┘     │
-└─────────┼────────────────────────┼─────────────────┘
-          │                        │
-┌─────────▼────────────────────────▼─────────────────┐
-│                Application Layer                   │
-│  ┌──────────────┐    ┌──────────────────────┐      │
-│  │   Port-In    │    │       Service        │      │
-│  │  (UseCase)   │    │   (Business Logic)   │      │
-│  └──────────────┘    └──────────────────────┘      │
-└─────────────────────┬──────────────────────────────┘
-                      │
-┌─────────────────────▼──────────────────────────────┐
-│                Domain Layer                        │
-│         (Entity, Value Object, Enum)               │
-└────────────────────────────────────────────────────┘
+```text
+src/main/java/com/process/clash
+├── domain             # 순수 도메인 모델과 정책
+├── application        # 유스케이스, 서비스, 포트, Command/Result 데이터
+├── adapter            # web, persistence, realtime, scheduler, external adapter
+└── infrastructure     # security, config, web, 공통 기술 설정
 ```
 
-### 계층별 역할
+의존성은 아래 방향을 유지합니다.
 
-#### 1. Domain Layer (`domain`)
-- **순수 비즈니스 로직**과 **도메인 모델**
-- 외부 의존성 없음 (프레임워크 독립)
-- Entity, Value Object, Enum, Domain Service
-
-**예시:**
-```java
-// record 기반 불변 객체
-public record Task(
-    Long id,
-    String name,
-    TaskColor color,
-    Long studyTime,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt,
-    User user
-) {
-    public static Task create(String name, TaskColor color, User user) {
-        return new Task(null, name, color, 0L,
-                       LocalDateTime.now(), LocalDateTime.now(), user);
-    }
-}
+```text
+adapter -> application -> domain
+infrastructure -> application / adapter support
 ```
 
-#### 2. Application Layer (`application`)
-- 비즈니스 유스케이스 구현
-- Port (인터페이스) 정의
-- Service, Data, Port 패키지 포함
+UseCase 접근은 `port`를 이용한 간접적인 접근을 지향합니다.
 
-**구조:**
-```
-application/
-├── {feature}/
-│   ├── service/         # 비즈니스 로직 구현
-│   │   └── GetChapterRankingService.java
-│   ├── port/
-│   │   └── in/          # UseCase 인터페이스
-│   │       └── GetChapterRankingUseCase.java
-│   └── data/            # Command/Result DTO
-│       └── GetChapterRankingData.java
-```
-
-#### 3. Adapter Layer (`adapter`)
-- 외부 세계와의 통신 담당
-- Web, Persistence, External API, ExceptionHandler 등
-
-**구조:**
-```
-adapter/
-├── web/                 # REST API
-│   ├── {feature}/
-│   │   ├── controller/
-│   │   ├── dto/
-│   │   └── docs/        # Swagger 문서
-├── persistence/         # DB 접근
-│   ├── {entity}/
-│   │   ├── {Entity}JpaEntity.java
-│   │   ├── {Entity}JpaRepository.java
-│   │   └── {Entity}JpaAdapter.java
-└── github/             # 외부 API 연동
+```text
+Client
+  ├─ REST API
+  └─ Socket.IO
+       ↓
+adapter
+  ├─ web
+  ├─ realtime
+  ├─ persistence
+  ├─ github / google / aws / email
+  └─ scheduler
+       ↓
+application
+       ↓
+domain
 ```
 
-#### 4. Infrastructure Layer (`infrastructure`)
-- 기술적 설정 및 공통 인프라
-- Config, Security 등
+## Repository Structure
 
----
-
-## 패키지 구조
-
+```text
+clash-server
+├── src/main/java/com/process/clash
+│   ├── domain
+│   ├── application
+│   ├── adapter
+│   └── infrastructure
+├── src/main/resources
+│   ├── application.yml
+│   ├── db/migration
+│   ├── graphql/github
+│   └── templates/email
+├── src/test
+├── Dockerfile
+├── docker-compose.yml
+├── build.gradle
+└── docs/assets
 ```
-com.process.clash/
-│
-├── domain/                          # 도메인 계층
-│   ├── record/
-│   │   ├── model/
-│   │   │   ├── entity/             # 도메인 엔티티
-│   │   │   └── enums/              # 도메인 Enum
-│   ├── roadmap/
-│   ├── user/
-│   └── common/
-│       └── enums/                   # 공통 Enum
-│
-├── application/                     # 애플리케이션 계층
-│   ├── ranking/
-│   │   ├── service/                # 비즈니스 로직
-│   │   │   └── GetChapterRankingService.java
-│   │   ├── port/
-│   │   │   └── in/                 # UseCase 인터페이스
-│   │   │       └── GetChapterRankingUseCase.java
-│   │   └── data/                   # Command/Result DTO
-│   │       └── GetChapterRankingData.java
-│   ├── record/
-│   ├── compete/
-│   └── common/
-│       └── actor/                  # 인증된 사용자 정보
-│
-├── adapter/                         # 어댑터 계층
-│   ├── web/                        # REST API 어댑터
-│   │   ├── ranking/
-│   │   │   ├── controller/        # 컨트롤러
-│   │   │   │   └── RankingController.java
-│   │   │   ├── dto/               # Request/Response DTO
-│   │   │   │   └── GetChapterRankingDto.java
-│   │   │   └── docs/              # API 문서화
-│   │   │       ├── controller/    # Controller 문서 인터페이스
-│   │   │       └── response/      # Response 예시 문서
-│   │   ├── common/
-│   │   │   ├── ApiResponse.java
-│   │   │   └── GlobalExceptionHandler.java
-│   │   └── security/
-│   │       └── AuthenticatedActor.java
-│   ├── persistence/                # 영속성 어댑터
-│   │   ├── roadmap/
-│   │   │   ├── sectionprogress/
-│   │   │   │   ├── UserSectionProgressJpaEntity.java
-│   │   │   │   ├── UserSectionProgressJpaRepository.java
-│   │   │   │   └── UserSectionProgressJpaAdapter.java
-│   │   └── user/
-│   ├── github/                     # 외부 API 어댑터
-│   └── scheduler/                  # 스케줄러
-│
-└── infrastructure/                  # 인프라 계층
-    ├── config/                     # 설정
-    │   ├── SecurityConfig.java
-    │   ├── OpenApiConfig.java
-    │   └── RedisConfig.java
-    ├── security/
-    └── web/
-```
-
----
-
-## 코딩 컨벤션
-
-### 1. 네이밍 규칙
-
-#### 클래스명
-- **Service**: `{동사}{명사}Service`
-  - 예: `GetChapterRankingService`, `CreateTaskService`
-- **UseCase**: `{동사}{명사}UseCase`
-  - 예: `GetChapterRankingUseCase`
-- **Controller**: `{도메인}Controller`
-  - 예: `RankingController`, `RecordController`
-- **DTO**: `{동사}{명사}Dto`
-  - 예: `GetChapterRankingDto`
-- **Data**: `{동사}{명사}Data`
-  - 예: `GetChapterRankingData`
-- **Entity (JPA)**: `{명사}JpaEntity`
-  - 예: `UserSectionProgressJpaEntity`
-- **Repository**: `{명사}JpaRepository`
-  - 예: `UserSectionProgressJpaRepository`
-- **Domain Entity**: `{명사}` (접미사 없음)
-  - 예: `Task`, `User`
-- **Swagger docs 클래스** (`adapter/web/**/docs/**`): `{기능명}Document`
-  - 예: `CreateTaskRequestDocument`, `GetRankingResponseDocument`, `RankingControllerDocument`
-
-#### 메서드명
-- **UseCase 메서드**: `execute(Command command)`
-- **Service 메서드**: 동사로 시작
-  - 예: `create()`, `update()`, `delete()`, `find()`
-- **Repository 쿼리**: Spring Data JPA 규칙 준수
-  - 예: `findByUserIdAndSectionId()`, `findAllByUserId()`
-
-#### 변수명
-- **camelCase** 사용
-- 의미 있는 이름 사용
-  - 좋음: `completedChaptersCount`, `userRank`
-  - 나쁨: `cnt`, `tmp`, `data`
-
-### 2. Java Record 활용
-Domain 엔티티와 DTO는 **record**를 적극 활용합니다.
-
-```java
-// Domain Entity
-public record Task(
-    Long id,
-    String name,
-    TaskColor color,
-    Long studyTime,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt,
-    User user
-) {
-    public static Task create(String name, TaskColor color, User user) {
-        return new Task(null, name, color, 0L,
-                       LocalDateTime.now(), LocalDateTime.now(), user);
-    }
-}
-
-// Data Transfer Object
-public class GetChapterRankingData {
-    public record Command(Actor actor) {
-        public static Command from(Actor actor) {
-            return new Command(actor);
-        }
-    }
-
-    public record Result(
-        MyRankingVo myRank,
-        List<RankersVo> allRankers
-    ) {}
-}
-```
-
-### 3. Lombok 사용
-JPA Entity에는 **Lombok**을 사용합니다.
-
-```java
-@Entity
-@Table(name = "user_section_progress")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class UserSectionProgressJpaEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    // ... fields
-}
-```
-
-**참고 애너테이션:**
-- `@RequiredArgsConstructor` (의존성 주입 시 사용)
-- `@Builder` (사용 지양)
-
-### 4. 주석 규칙
-
-#### 필요한 경우
-- 복잡한 비즈니스 로직 설명
-- 특이한 구현 이유 설명
-- 외부 의존성 관련 주의사항
-
-```java
-// 현재 사용자의 랭킹 정보 저장
-if (userId.equals(command.actor().id())) {
-    myRank = new GetChapterRankingDto.MyRankingVo(...);
-}
-```
-
-#### 불필요한 경우
-- 자명한 코드
-- 메서드명/변수명으로 충분히 설명되는 경우
-
-### 5. 예외 처리
-추상 클래스를 이용한 상속을 통해 최종적으로 `GlobalExceptionHandler`에서 전역 예외를 처리합니다.
-
-```java
-// Service에서는 비즈니스 예외를 던짐
-if (user == null) {
-    throw new UserNotFoundException("사용자를 찾을 수 없습니다.");
-}
-```
-
----
-
-## 커밋 메시지 컨벤션
-
-### 기본 형식
-```
-{type}: {subject}
-```
-
-### Type 종류
-- `feat`: 새로운 기능 추가
-- `fix`: 버그 수정
-- `delete`: 코드 삭제
-- `refactor`: 리팩토링
-- `test`: 테스트 코드 추가/수정
-- `docs`: 문서 수정
-- `style`: 코드 포맷팅
-- `chore`: 빌드 설정, 패키지 매니저 등
-- `merge`: 브랜치 병합
-- `hotfix`: 긴급 수정
-- `comment`: 주석 추가/수정
-
-### 예시
-```bash
-feat: section ranking 구현
-merge: feat/compete/#114
-hotfix: samesite: None으로 설정
-```
-
-### 주의사항
-- **한글 사용**
-- **간결하게 작성** (50자 이내 권장)
-- **이슈 번호 포함** (필요시)
-
----
-
-## 주요 패턴
-
-### 1. UseCase 패턴
-모든 비즈니스 로직은 **UseCase 인터페이스**를 통해 노출됩니다.
-
-```java
-// Port-In (UseCase)
-public interface GetChapterRankingUseCase {
-    GetChapterRankingData.Result execute(GetChapterRankingData.Command command);
-}
-
-// Service가 UseCase를 구현
-@Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class GetChapterRankingService implements GetChapterRankingUseCase {
-    @Override
-    public GetChapterRankingData.Result execute(GetChapterRankingData.Command command) {
-        // 비즈니스 로직
-    }
-}
-```
-
-### 2. Command-Result 패턴
-모든 UseCase는 **Command 입력**을 받아 **Result 출력**을 반환합니다.
-
-```java
-public class GetChapterRankingData {
-    // 입력
-    public record Command(Actor actor) {
-        public static Command from(Actor actor) {
-            return new Command(actor);
-        }
-    }
-
-    // 출력
-    public record Result(
-        MyRankingVo myRank,
-        List<RankersVo> allRankers
-    ) {}
-}
-```
-
-### 3. ApiResponse 패턴
-모든 API는 표준화된 **ApiResponse**를 반환합니다.
-
-```java
-ApiResponse.success(data, "성공 메시지");
-ApiResponse.error("에러 메시지");
-```
-
-**응답 구조:**
-```json
-{
-  "success": true,
-  "message": "챕터 완료 수 랭킹 조회를 성공했습니다.",
-  "data": {
-    "myRank": { ... },
-    "allRankers": [ ... ]
-  }
-}
-```
-
-### 4. Native Query 활용
-복잡한 쿼리는 **Native Query + 커스텀 record 반환**을 사용합니다.
-+만약 서비스 Layer애서 추가적인 타입 변환이 바로 필요하거나 확장성이 떨어진다고 판단된다면
- **Native Query + Object[] 반환**을 사용합니다.
-
-```java
-@Query(value = """
-    SELECT
-        user_id AS userId,
-        cast(date_trunc('week', study_date) as date) AS recordedDate,
-        AVG(commit_count + pr_count + review_count + issue_count) AS point
-    FROM github_daily_stats
-    WHERE user_id IN (:userIds)
-        AND study_date >= date_trunc('week', CAST(:startDate AS date))
-        AND study_date < :endDate
-    GROUP BY user_id, date_trunc('week', study_date)
-    ORDER BY user_id, date_trunc('week', study_date) ASC
-""", nativeQuery = true)
-List<Object[]> findWeeklyContributionsByUserIds(
-    @Param("userIds") List<Long> userIds,
-    @Param("startDate") LocalDate startDate,
-    @Param("endDate") LocalDate endDate,
-    Pageable pageable
-);
-```
-
-**장점:**
-- N+1 문제 방지
-- 성능 최적화
-- 복잡한 집계 쿼리 가능
-
-### 5. Swagger 문서화 패턴
-Controller는 **Document 인터페이스를 구현**하여 Swagger 문서를 분리합니다.
-
-```java
-// Document 인터페이스
-@Tag(name = "랭킹 API")
-public interface RankingControllerDocument {
-    @Operation(summary = "챕터 랭킹 조회")
-    ApiResponse<GetChapterRankingDto.Response> getChapterRanking(Actor actor);
-}
-
-// Controller 구현
-@RestController
-@RequestMapping("/api/rankings")
-public class RankingController implements RankingControllerDocument {
-    // 실제 구현
-}
-```
-
----
-
-## 성능 최적화 가이드
-
-### N+1 문제 방지
-1. **Native Query 활용**: 복잡한 조회는 Native Query로 한 번에 처리
-2. **Object[] 반환**: JPA Entity 대신 필요한 데이터만 Object[]로 반환
-3. **Fetch Join**: 필요시 `@EntityGraph` 또는 Fetch Join 사용
-
-### 쿼리 최적화 체크리스트
-- [ ] N+1 문제가 없는가?
-- [ ] 필요한 데이터만 조회하는가?
-- [ ] 인덱스가 적절히 설정되었는가?
-- [ ] 불필요한 JOIN이 없는가?
-
----
-
-## 브랜치 전략
-
-```
-main (프로덕션)
-  ↑
-develop (개발)
-  ↑
-feat/{feature-name}/#{issue-number} (기능 개발)
-```
-
-**예시:**
-- `feat/section-ranking/#147`
-- `fix/n-plus-one/#152`
-
----
-
-## 개발 환경 설정
-
-### 필수 설치
-1. Java 21
-2. PostgreSQL
-3. Redis
-4. Gradle 8.5+
-
-### 프로젝트 실행
-```bash
-# 의존성 다운로드
-./gradlew build
-
-# 애플리케이션 실행
-./gradlew bootRun
-
-# 테스트 실행
-./gradlew test
-```
-
-### API 문서 접속
-```
-http://localhost:8080/swagger-ui.html
-```
-
----
-
-## UTC 타임존 운영 규칙
-
-### 저장/도메인 원칙
-- DB 타임스탬프 저장은 UTC 기준 `timestamptz` 사용
-- 모든 JPA 영속 시간 필드(`created_at`, `updated_at`, `occurred_at`, `synced_at`, `started_at`, `ended_at`)는 `Instant`로 매핑
-- `created_at`, `updated_at`은 Spring Data JPA Auditing(`@CreatedDate`, `@LastModifiedDate`)으로 자동 관리
-- Hibernate JDBC 타임존은 UTC 고정:
-  - `spring.jpa.properties.hibernate.jdbc.time_zone=UTC`
-- Flyway 컷오버 placeholder(`spring.flyway.placeholders.global_cutover_timestamp`) 설정은 유지하며,
-  현재 초기화 스크립트 구조에서는 직접 참조하지 않음
-
-### API 경계 원칙
-- API 응답 시간은 `Instant` 직렬화 시 KST(Asia/Seoul) 기준 ISO-8601(`+09:00`)으로 반환
-- 레코드 일자 경계(예: 하루 시작 06:00)는 `record.timezone`(기본 `Asia/Seoul`)에서 계산 후 `Instant`로 변환해 조회
-
-### Flyway 적용 순서
-1. 애플리케이션 기동 시 Flyway `V1`(init) -> `V2`(default insert) 순서로 자동 적용
-2. 검증 SQL 실행
-  - 대상 테이블에서 `timestamp without time zone` 잔존 컬럼 0건 확인
-  - 테이블별 row count 보존 확인
-  - 샘플 조회로 UTC/KST 해석 확인
-3. 애플리케이션 기능 점검
-  - 주요 생성/수정 API timestamp 응답이 KST 오프셋(`+09:00`) 형식인지 확인
-  - 레코드 시작/종료 및 랭킹/그룹/로드맵 조회 기능 확인
-
----
-
-## 추가 참고 자료
-
-### 도메인별 핵심 기능
-- **Ranking**: 챕터/섹션 완료 수 기준 랭킹
-- **Record**: 학습 시간 기록
-- **Compete**: 라이벌 경쟁, 배틀
-- **Roadmap**: 카테고리, 섹션, 챕터, 미션
-- **Shop**: 상품, 시즌, 추천 상품
-- **Auth**: 회원가입, 로그인, 이메일 인증
-
----
-
-**마지막 업데이트**: 2026-02-19
