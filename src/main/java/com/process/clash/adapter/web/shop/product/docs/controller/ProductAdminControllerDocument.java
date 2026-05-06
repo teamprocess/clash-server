@@ -53,7 +53,8 @@ public interface ProductAdminControllerDocument {
                                       "price": 12000,
                                       "discount": 10,
                                       "description": "프로세스 삼겹살 헌터",
-                                      "seasonId": 1
+                                      "seasonId": 1,
+                                      "isAblePurchase": true
                                     }
                                     """)
                     ))
@@ -91,7 +92,8 @@ public interface ProductAdminControllerDocument {
                                       "price": 15000,
                                       "discount": 15,
                                       "description": "리마스터 버전입니다.",
-                                      "seasonId": null
+                                      "seasonId": null,
+                                      "isAblePurchase": false
                                     }
                                     """)
                     ))

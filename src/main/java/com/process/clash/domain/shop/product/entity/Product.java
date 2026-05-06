@@ -43,7 +43,8 @@ public record Product(
             Long price,
             Integer discount,
             String description,
-            Season season
+            Season season,
+            Boolean isAblePurchase
     ) {
         return new Product(
                 null,
@@ -59,7 +60,7 @@ public record Product(
                 0L,
                 season,
                 season != null,
-                true
+                isAblePurchase != null ? isAblePurchase : true
         );
     }
 

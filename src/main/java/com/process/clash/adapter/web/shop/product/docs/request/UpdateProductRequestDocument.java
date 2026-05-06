@@ -29,4 +29,7 @@ public class UpdateProductRequestDocument {
 
     @Schema(description = "시즌 ID (시즌 상품이 아닌 경우 null)")
     public Long seasonId;
+
+    @Schema(description = "구매 가능 여부 (null이면 기존 값 유지)")
+    public Boolean isAblePurchase;
 }
