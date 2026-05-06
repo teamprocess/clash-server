@@ -64,9 +64,10 @@ class UpdateProductServiceTest {
                 1000L,
                 10,
                 "기존 설명",
-                null
+                null,
+                true
         );
-        product = new Product(10L, Instant.now(), Instant.now(), product.title(), product.category(), product.image(), null, product.price(), product.discount(), product.description(), 15L, null, false);
+        product = new Product(10L, Instant.now(), Instant.now(), product.title(), product.category(), product.image(), null, product.price(), product.discount(), product.description(), 15L, null, false, true);
 
         UpdateProductData.Command command = new UpdateProductData.Command(
                 actor,
@@ -78,7 +79,8 @@ class UpdateProductServiceTest {
                 2000L,
                 20,
                 "변경 설명",
-                2L
+                2L,
+                null
         );
 
         when(productRepositoryPort.findById(10L)).thenReturn(Optional.of(product));
@@ -101,6 +103,7 @@ class UpdateProductServiceTest {
         assertThat(savedProduct.description()).isEqualTo("변경 설명");
         assertThat(savedProduct.season()).isEqualTo(currentSeason);
         assertThat(savedProduct.isSeasonal()).isTrue();
+        assertThat(savedProduct.isAblePurchase()).isTrue();
     }
 
     @Test
@@ -121,6 +124,7 @@ class UpdateProductServiceTest {
                 "설명",
                 3L,
                 linkedSeason,
+                true,
                 true
         );
 
@@ -134,6 +138,7 @@ class UpdateProductServiceTest {
                 1000L,
                 5,
                 "설명",
+                null,
                 null
         );
 
@@ -163,6 +168,7 @@ class UpdateProductServiceTest {
                 1000L,
                 5,
                 "설명",
+                null,
                 null
         );
 
@@ -189,7 +195,8 @@ class UpdateProductServiceTest {
                 "배경음악",
                 0L,
                 null,
-                false
+                false,
+                true
         );
 
         UpdateProductData.Command command = new UpdateProductData.Command(
@@ -202,6 +209,7 @@ class UpdateProductServiceTest {
                 5000L,
                 0,
                 "배경음악",
+                null,
                 null
         );
 
@@ -215,6 +223,98 @@ class UpdateProductServiceTest {
         verify(productRepositoryPort).save(captor.capture());
         assertThat(captor.getValue().category()).isEqualTo(ProductCategory.BGM);
         assertThat(captor.getValue().audio()).isEqualTo("https://cdn.example.com/bgm.mp3");
+    }
+
+    @Test
+    @DisplayName("isAblePurchase를 false로 수정하면 저장된 상품에 반영된다")
+    void execute_updatesIsAblePurchaseToFalse() {
+        Actor actor = new Actor(1L, Role.ADMIN);
+        Product product = new Product(
+                10L,
+                Instant.now(),
+                Instant.now(),
+                "상품",
+                ProductCategory.NAMEPLATE,
+                "https://cdn.example.com/product.png",
+                null,
+                1000L,
+                0,
+                "설명",
+                0L,
+                null,
+                false,
+                true
+        );
+
+        UpdateProductData.Command command = new UpdateProductData.Command(
+                actor,
+                10L,
+                "상품",
+                ProductCategory.NAMEPLATE,
+                "https://cdn.example.com/product.png",
+                null,
+                1000L,
+                0,
+                "설명",
+                null,
+                false
+        );
+
+        when(productRepositoryPort.findById(10L)).thenReturn(Optional.of(product));
+        when(productRepositoryPort.save(any(Product.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        updateProductService.execute(command);
+
+        ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepositoryPort).save(captor.capture());
+        assertThat(captor.getValue().isAblePurchase()).isFalse();
+    }
+
+    @Test
+    @DisplayName("isAblePurchase가 null이면 기존 값을 유지한다")
+    void execute_preservesIsAblePurchaseWhenNull() {
+        Actor actor = new Actor(1L, Role.ADMIN);
+        Product product = new Product(
+                10L,
+                Instant.now(),
+                Instant.now(),
+                "상품",
+                ProductCategory.NAMEPLATE,
+                "https://cdn.example.com/product.png",
+                null,
+                1000L,
+                0,
+                "설명",
+                0L,
+                null,
+                false,
+                false
+        );
+
+        UpdateProductData.Command command = new UpdateProductData.Command(
+                actor,
+                10L,
+                "상품",
+                ProductCategory.NAMEPLATE,
+                "https://cdn.example.com/product.png",
+                null,
+                1000L,
+                0,
+                "설명",
+                null,
+                null
+        );
+
+        when(productRepositoryPort.findById(10L)).thenReturn(Optional.of(product));
+        when(productRepositoryPort.save(any(Product.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        updateProductService.execute(command);
+
+        ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepositoryPort).save(captor.capture());
+        assertThat(captor.getValue().isAblePurchase()).isFalse();
     }
 
     @Test
@@ -234,7 +334,8 @@ class UpdateProductServiceTest {
                 "설명",
                 3L,
                 null,
-                false
+                false,
+                true
         );
         UpdateProductData.Command command = new UpdateProductData.Command(
                 actor,
@@ -246,7 +347,8 @@ class UpdateProductServiceTest {
                 1000L,
                 5,
                 "설명",
-                999L
+                999L,
+                null
         );
 
         when(productRepositoryPort.findById(10L)).thenReturn(Optional.of(product));
