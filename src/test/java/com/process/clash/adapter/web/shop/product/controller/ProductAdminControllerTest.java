@@ -77,7 +77,8 @@ class ProductAdminControllerTest {
                                   "price": 12000,
                                   "discount": 10,
                                   "description": "설명",
-                                  "seasonId": 1
+                                  "seasonId": 1,
+                                  "isAblePurchase": true
                                 }
                                 """))
                 .andExpect(status().isCreated())
@@ -87,6 +88,7 @@ class ProductAdminControllerTest {
         ArgumentCaptor<CreateProductData.Command> captor = ArgumentCaptor.forClass(CreateProductData.Command.class);
         verify(createProductUseCase).execute(captor.capture());
         org.assertj.core.api.Assertions.assertThat(captor.getValue().seasonId()).isEqualTo(1L);
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().isAblePurchase()).isTrue();
     }
 
     @Test
@@ -97,14 +99,17 @@ class ProductAdminControllerTest {
 
         mockMvc.perform(put("/api/admin/shop/products/100")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(java.util.Map.of(
-                                "title", "수정 상품",
-                                "category", "BANNER",
-                                "image", "https://cdn.example.com/products/100-v2.png",
-                                "price", 15000,
-                                "discount", 15,
-                                "description", "수정 설명"
-                        ))))
+                        .content("""
+                                {
+                                  "title": "수정 상품",
+                                  "category": "BANNER",
+                                  "image": "https://cdn.example.com/products/100-v2.png",
+                                  "price": 15000,
+                                  "discount": 15,
+                                  "description": "수정 설명",
+                                  "isAblePurchase": false
+                                }
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("상품 수정에 성공했습니다."))
                 .andExpect(jsonPath("$.data.productId").value(100));
@@ -113,6 +118,32 @@ class ProductAdminControllerTest {
         verify(updateProductUseCase).execute(captor.capture());
         org.assertj.core.api.Assertions.assertThat(captor.getValue().productId()).isEqualTo(100L);
         org.assertj.core.api.Assertions.assertThat(captor.getValue().title()).isEqualTo("수정 상품");
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().isAblePurchase()).isFalse();
+    }
+
+    @Test
+    @DisplayName("POST /api/admin/shop/products isAblePurchase 미입력 시 Command에 null로 전달된다")
+    void createProduct_withoutIsAblePurchase_passesNullToCommand() throws Exception {
+        when(createProductUseCase.execute(any()))
+                .thenReturn(new CreateProductData.Result(101L));
+
+        mockMvc.perform(post("/api/admin/shop/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "신규 상품",
+                                  "category": "NAMEPLATE",
+                                  "image": "https://cdn.example.com/products/101.png",
+                                  "price": 10000,
+                                  "discount": 0,
+                                  "description": "설명"
+                                }
+                                """))
+                .andExpect(status().isCreated());
+
+        ArgumentCaptor<CreateProductData.Command> captor = ArgumentCaptor.forClass(CreateProductData.Command.class);
+        verify(createProductUseCase).execute(captor.capture());
+        org.assertj.core.api.Assertions.assertThat(captor.getValue().isAblePurchase()).isNull();
     }
 
     @Test

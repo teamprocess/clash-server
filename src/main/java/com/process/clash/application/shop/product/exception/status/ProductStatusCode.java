@@ -13,6 +13,7 @@ public enum ProductStatusCode implements StatusCode {
     INVALID_TITLE("INVALID_TITLE", "상품 제목은 필수입니다.", HttpStatus.BAD_REQUEST),
     INVALID_PRICE("INVALID_PRICE", "가격은 0 이상이어야 합니다.", HttpStatus.BAD_REQUEST),
     INVALID_DISCOUNT("INVALID_DISCOUNT", "할인율은 0~100 사이여야 합니다.", HttpStatus.BAD_REQUEST),
+    NOT_ABLE_PURCHASE("NOT_ABLE_PURCHASE", "구매할 수 없는 상품입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;

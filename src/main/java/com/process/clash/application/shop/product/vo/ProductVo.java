@@ -16,6 +16,7 @@ public record ProductVo(
         Long popularity,
         String seasonName,
         Boolean isSeasonal,
+        Boolean isAblePurchase,
         Boolean isBought,
         Instant createdAt
 ) {
@@ -38,6 +39,7 @@ public record ProductVo(
                 domain.popularity(),
                 seasonName,
                 domain.isSeasonal(),
+                domain.isAblePurchase(),
                 isBought,
                 domain.createdAt()
         );

@@ -14,7 +14,8 @@ public class CreateProductData {
             Long price,
             Integer discount,
             String description,
-            Long seasonId
+            Long seasonId,
+            Boolean isAblePurchase
     ) {}
 
     public record Result(

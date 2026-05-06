@@ -97,7 +97,8 @@ class GetRecommendedProductsServiceTest {
                 "상품100 설명",
                 0L,
                 null,
-                false
+                false,
+                true
         );
         Product product200 = new Product(
                 200L,
@@ -112,7 +113,8 @@ class GetRecommendedProductsServiceTest {
                 "상품200 설명",
                 0L,
                 null,
-                false
+                false,
+                true
         );
 
         when(recommendedProductRepositoryPort.findTop10ActiveByDateOrderByDisplayOrder(any()))
