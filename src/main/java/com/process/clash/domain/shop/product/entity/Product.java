@@ -20,7 +20,8 @@ public record Product(
         String description,
         Long popularity,
         Season season,
-        Boolean isSeasonal
+        Boolean isSeasonal,
+        Boolean isAblePurchase
 ) {
     public Product {
         if (title == null || title.isBlank()) {
@@ -57,7 +58,8 @@ public record Product(
                 description,
                 0L,
                 season,
-                season != null
+                season != null,
+                true
         );
     }
 
@@ -69,7 +71,8 @@ public record Product(
             Long price,
             Integer discount,
             String description,
-            Season season
+            Season season,
+            Boolean isAblePurchase
     ) {
         return new Product(
                 this.id,
@@ -84,7 +87,8 @@ public record Product(
                 description,
                 this.popularity,
                 season,
-                season != null
+                season != null,
+                isAblePurchase != null ? isAblePurchase : this.isAblePurchase
         );
     }
 
@@ -103,7 +107,8 @@ public record Product(
                 this.description,
                 nextPopularity,
                 this.season,
-                this.isSeasonal
+                this.isSeasonal,
+                this.isAblePurchase
         );
     }
 }

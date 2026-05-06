@@ -27,7 +27,8 @@ public class UpdateProductDto {
             @Max(value = 100, message = "할인율은 100 이하여야 합니다.")
             Integer discount,
             String description,
-            Long seasonId
+            Long seasonId,
+            Boolean isAblePurchase
     ) {
         public UpdateProductData.Command toCommand(Long productId, Actor actor) {
             return new UpdateProductData.Command(
@@ -40,7 +41,8 @@ public class UpdateProductDto {
                     price,
                     discount,
                     description,
-                    seasonId
+                    seasonId,
+                    isAblePurchase
             );
         }
     }

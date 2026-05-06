@@ -26,7 +26,8 @@ public class ProductJpaMapper {
                 product.description(),
                 product.popularity(),
                 product.season() != null ? seasonJpaMapper.toJpaEntity(product.season()) : null,
-                product.isSeasonal()
+                product.isSeasonal(),
+                product.isAblePurchase()
         );
     }
 
@@ -48,7 +49,8 @@ public class ProductJpaMapper {
                 productJpaEntity.getDescription(),
                 productJpaEntity.getPopularity(),
                 season,
-                productJpaEntity.getIsSeasonal()
+                productJpaEntity.getIsSeasonal(),
+                productJpaEntity.getIsAblePurchase()
         );
     }
 }

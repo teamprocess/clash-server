@@ -43,7 +43,8 @@ public class UpdateProductService implements UpdateProductUseCase {
                 command.price(),
                 command.discount(),
                 command.description(),
-                season
+                season,
+                command.isAblePurchase()
         );
 
         Product savedProduct = productRepositoryPort.save(updatedProduct);
