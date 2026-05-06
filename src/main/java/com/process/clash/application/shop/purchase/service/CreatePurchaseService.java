@@ -6,6 +6,7 @@ import com.process.clash.application.shop.purchase.exception.exception.conflict.
 import com.process.clash.application.shop.purchase.exception.exception.badrequest.PriceTooLargeException;
 import com.process.clash.application.shop.purchase.port.in.CreatePurchaseUseCase;
 import com.process.clash.application.shop.purchase.port.out.PurchaseRepositoryPort;
+import com.process.clash.application.shop.product.exception.exception.badrequest.NotAblePurchaseException;
 import com.process.clash.application.shop.product.exception.exception.notfound.ProductNotFoundException;
 import com.process.clash.application.shop.product.port.out.ProductRepositoryPort;
 import com.process.clash.application.user.user.exception.exception.notfound.UserNotFoundException;
@@ -38,6 +39,10 @@ public class CreatePurchaseService implements CreatePurchaseUseCase {
     public CreatePurchaseData.Result execute(CreatePurchaseData.Command command) {
         Product product = productRepositoryPort.findById(command.productId())
                 .orElseThrow(ProductNotFoundException::new);
+
+        if (!product.isAblePurchase()) {
+            throw new NotAblePurchaseException();
+        }
 
         Long userId = command.actor().id();
 
