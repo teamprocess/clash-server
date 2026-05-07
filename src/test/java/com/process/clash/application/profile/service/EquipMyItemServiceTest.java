@@ -147,7 +147,8 @@ class EquipMyItemServiceTest {
                 "desc",
                 0L,
                 null,
-                false
+                false,
+                true
         );
     }
 }

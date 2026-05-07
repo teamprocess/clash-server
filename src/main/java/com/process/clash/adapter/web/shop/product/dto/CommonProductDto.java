@@ -15,6 +15,7 @@ public record CommonProductDto(
         Long popularity,
         String seasonName,
         Boolean isSeasonal,
+        Boolean isAblePurchase,
         Boolean isBought,
         Instant createdAt
 ) {
@@ -31,6 +32,7 @@ public record CommonProductDto(
                 product.popularity(),
                 product.seasonName(),
                 product.isSeasonal(),
+                product.isAblePurchase(),
                 product.isBought(),
                 product.createdAt()
         );

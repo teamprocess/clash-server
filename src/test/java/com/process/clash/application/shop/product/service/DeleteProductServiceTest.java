@@ -58,7 +58,8 @@ class DeleteProductServiceTest {
                 "설명",
                 0L,
                 null,
-                false
+                false,
+                true
         );
         DeleteProductData.Command command = new DeleteProductData.Command(actor, 10L);
 
@@ -99,7 +100,8 @@ class DeleteProductServiceTest {
                 "설명",
                 0L,
                 null,
-                false
+                false,
+                true
         );
         DeleteProductData.Command command = new DeleteProductData.Command(actor, 10L);
 

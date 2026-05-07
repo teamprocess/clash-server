@@ -28,7 +28,8 @@ public class CreateProductDto {
             @Max(value = 100, message = "할인율은 100 이하여야 합니다.")
             Integer discount,
             String description,
-            Long seasonId  // 시즌 상품이 아니면 null
+            Long seasonId,  // 시즌 상품이 아니면 null
+            Boolean isAblePurchase
     ) {
         public CreateProductData.Command toCommand(Actor actor) {
             return new CreateProductData.Command(
@@ -40,7 +41,8 @@ public class CreateProductDto {
                     price,
                     discount,
                     description,
-                    seasonId
+                    seasonId,
+                    isAblePurchase
             );
         }
     }

@@ -78,7 +78,8 @@ class UnequipMyItemServiceTest {
                 "desc",
                 0L,
                 null,
-                false
+                false,
+                true
         );
     }
 }

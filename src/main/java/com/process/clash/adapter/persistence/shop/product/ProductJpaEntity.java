@@ -65,4 +65,7 @@ public class ProductJpaEntity {
 
     @Column(nullable = false)
     private Boolean isSeasonal;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean isAblePurchase;
 }

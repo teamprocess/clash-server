@@ -39,7 +39,8 @@ public class CreateProductService implements CreateProductUseCase {
                 command.price(),
                 command.discount(),
                 command.description(),
-                season
+                season,
+                command.isAblePurchase()
         );
 
         Product savedProduct = productRepositoryPort.save(product);
