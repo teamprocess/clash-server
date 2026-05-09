@@ -58,4 +58,10 @@ public class GroupPolicy {
             throw new GroupAccessDeniedException();
         }
     }
+
+    public void validateNotGlobal(GroupCategory category) {
+        if (category == GroupCategory.GLOBAL) {
+            throw new GroupAccessDeniedException();
+        }
+    }
 }

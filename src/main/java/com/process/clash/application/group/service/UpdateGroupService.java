@@ -31,6 +31,7 @@ public class UpdateGroupService implements UpdateGroupUseCase {
 
         int currentMemberCount = groupRepositoryPort.countMembers(command.groupId());
         policy.validateNotGlobal(group);
+        policy.validateNotGlobal(command.category());
         policy.validateOwnership(command.actor(), group);
         policy.validateMaxMembers(command.maxMembers());
         policy.validateMemberLimit(group.maxMembers(), currentMemberCount);
