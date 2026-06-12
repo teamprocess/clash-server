@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -81,6 +82,16 @@ class GithubStatsSyncSchedulerTest {
     @Test
     @DisplayName("6시 스케줄러는 0 EXP 초기화를 호출한다")
     void runDaily365DaysSyncAtMorningSix_callsZeroExpInit() {
+        scheduler.runDaily365DaysSyncAtMorningSix();
+
+        verify(zeroRankingDataInitService, times(1)).initZeroExpForToday();
+    }
+
+    @Test
+    @DisplayName("6시 GitHub 동기화가 실패해도 0 EXP 초기화를 호출한다")
+    void runDaily365DaysSyncAtMorningSix_callsZeroExpInitWhenSyncFails() {
+        doThrow(new RuntimeException("github sync failed")).when(syncService).syncRecent365Days();
+
         scheduler.runDaily365DaysSyncAtMorningSix();
 
         verify(zeroRankingDataInitService, times(1)).initZeroExpForToday();
