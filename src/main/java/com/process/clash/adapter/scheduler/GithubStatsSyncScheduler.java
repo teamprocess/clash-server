@@ -57,12 +57,11 @@ public class GithubStatsSyncScheduler {
         try {
             action.run();
             log.info("{} 스케줄러 완료. elapsedMs={}", jobName, System.currentTimeMillis() - startedAt);
-            return true;
         } catch (Exception e) {
             log.error("{} 스케줄러 실패. elapsedMs={}", jobName, System.currentTimeMillis() - startedAt, e);
-            return false;
         } finally {
             syncRunning.set(false);
         }
+        return true;
     }
 }
