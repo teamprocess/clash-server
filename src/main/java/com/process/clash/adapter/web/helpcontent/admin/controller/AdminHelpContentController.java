@@ -2,14 +2,18 @@ package com.process.clash.adapter.web.helpcontent.admin.controller;
 
 import com.process.clash.adapter.web.common.ApiResponse;
 import com.process.clash.adapter.web.helpcontent.docs.controller.AdminHelpContentControllerDocument;
+import com.process.clash.adapter.web.helpcontent.dto.CreateHelpContentDto;
 import com.process.clash.adapter.web.helpcontent.dto.UpdateHelpContentDto;
 import com.process.clash.adapter.web.security.AuthenticatedActor;
 import com.process.clash.application.common.actor.Actor;
+import com.process.clash.application.helpcontent.data.CreateHelpContentData;
 import com.process.clash.application.helpcontent.data.UpdateHelpContentData;
+import com.process.clash.application.helpcontent.port.in.CreateHelpContentUseCase;
 import com.process.clash.application.helpcontent.port.in.UpdateHelpContentUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +24,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AdminHelpContentController implements AdminHelpContentControllerDocument {
 
+    private final CreateHelpContentUseCase createHelpContentUseCase;
     private final UpdateHelpContentUseCase updateHelpContentUseCase;
+
+    @Override
+    @PostMapping
+    public ApiResponse<CreateHelpContentDto.Response> createHelpContent(
+            @AuthenticatedActor Actor actor,
+            @Valid @RequestBody CreateHelpContentDto.Request request
+    ) {
+        CreateHelpContentData.Result result = createHelpContentUseCase.execute(request.toCommand(actor));
+        return ApiResponse.created(
+                CreateHelpContentDto.Response.from(result),
+                "도움말 내용이 성공적으로 생성되었습니다."
+        );
+    }
 
     @Override
     @PutMapping("/{key}")

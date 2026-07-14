@@ -8,5 +8,7 @@ public interface HelpContentRepositoryPort {
 
     Optional<HelpContent> findByKey(String key);
 
+    boolean existsByKey(String key);
+
     HelpContent save(HelpContent helpContent);
 }
