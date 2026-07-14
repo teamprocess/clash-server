@@ -9,7 +9,7 @@ public class CreateHelpContentData {
 
     public record Command(Actor actor, String key, String content) {
         public HelpContent toDomain() {
-            return new HelpContent(key, content, 1, null, null);
+            return new HelpContent(key, content, null, null, null);
         }
     }
 

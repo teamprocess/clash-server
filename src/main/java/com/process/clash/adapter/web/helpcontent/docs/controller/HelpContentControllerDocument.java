@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.context.request.WebRequest;
 
 @Tag(name = "도움말 API", description = "클라이언트 도움말 조회")
 public interface HelpContentControllerDocument {
@@ -23,5 +24,5 @@ public interface HelpContentControllerDocument {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "304", description = "변경 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "도움말을 찾을 수 없음")
     })
-    ResponseEntity<String> getHelpContent(@PathVariable String key, String ifNoneMatch);
+    ResponseEntity<String> getHelpContent(@PathVariable String key, WebRequest request);
 }

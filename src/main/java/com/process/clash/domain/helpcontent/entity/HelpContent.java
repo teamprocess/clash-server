@@ -5,7 +5,7 @@ import java.time.Instant;
 public record HelpContent(
         String key,
         String content,
-        long version,
+        Long version,
         Instant createdAt,
         Instant updatedAt
 ) {

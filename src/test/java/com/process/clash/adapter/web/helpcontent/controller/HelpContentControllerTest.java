@@ -1,6 +1,8 @@
 package com.process.clash.adapter.web.helpcontent.controller;
 
+import com.process.clash.adapter.web.common.GlobalExceptionHandler;
 import com.process.clash.application.helpcontent.data.GetHelpContentData;
+import com.process.clash.application.helpcontent.exception.exception.notfound.HelpContentNotFoundException;
 import com.process.clash.application.helpcontent.port.in.GetHelpContentUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +31,9 @@ class HelpContentControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new HelpContentController(getHelpContentUseCase)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new HelpContentController(getHelpContentUseCase))
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
     }
 
     @Test
@@ -55,5 +60,18 @@ class HelpContentControllerTest {
                 .andExpect(status().isNotModified())
                 .andExpect(header().string(HttpHeaders.ETAG, "\"3\""))
                 .andExpect(content().string(""));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 도움말 조회는 JSON 오류 응답을 반환한다")
+    void getHelpContent_whenNotFound_returnsJsonError() throws Exception {
+        when(getHelpContentUseCase.execute("unknown-tooltip"))
+                .thenThrow(new HelpContentNotFoundException());
+
+        mockMvc.perform(get("/api/help-contents/unknown-tooltip"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.error.code").value("HELP_CONTENT_NOT_FOUND"));
     }
 }

@@ -28,7 +28,7 @@ public interface AdminHelpContentControllerDocument {
                                       "data": {
                                         "key": "new-tooltip",
                                         "content": "새 안내 문구입니다.",
-                                        "version": 1,
+                                        "version": 0,
                                         "createdAt": "2026-07-14T14:00:00Z"
                                       }
                                     }

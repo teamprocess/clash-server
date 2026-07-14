@@ -40,14 +40,14 @@ class UpdateHelpContentServiceTest {
         HelpContent existing = new HelpContent(
                 "cookie-tooltip",
                 "기존 문구",
-                3,
+                3L,
                 Instant.parse("2026-07-14T00:00:00Z"),
                 Instant.parse("2026-07-14T00:00:00Z")
         );
         HelpContent saved = new HelpContent(
                 "cookie-tooltip",
                 "변경 문구",
-                4,
+                4L,
                 existing.createdAt(),
                 Instant.parse("2026-07-14T01:00:00Z")
         );
@@ -63,7 +63,7 @@ class UpdateHelpContentServiceTest {
         ArgumentCaptor<HelpContent> captor = ArgumentCaptor.forClass(HelpContent.class);
         verify(helpContentRepositoryPort).save(captor.capture());
         assertThat(captor.getValue().content()).isEqualTo("변경 문구");
-        assertThat(captor.getValue().version()).isEqualTo(4);
+        assertThat(captor.getValue().version()).isEqualTo(3);
         assertThat(result.version()).isEqualTo(4);
         assertThat(result.content()).isEqualTo("변경 문구");
     }

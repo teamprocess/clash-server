@@ -28,7 +28,7 @@ public class UpdateHelpContentService implements UpdateHelpContentUseCase {
         HelpContent updated = new HelpContent(
                 existing.key(),
                 command.content(),
-                existing.version() + 1,
+                existing.version(),
                 existing.createdAt(),
                 null
         );

@@ -37,12 +37,12 @@ class CreateHelpContentServiceTest {
     }
 
     @Test
-    @DisplayName("관리자가 새 도움말을 생성하면 버전 1로 저장된다")
+    @DisplayName("관리자가 새 도움말을 생성하면 JPA가 초기 버전을 부여한다")
     void createHelpContent_savesInitialVersion() {
         HelpContent saved = new HelpContent(
                 "new-tooltip",
                 "새 안내 문구",
-                1,
+                0L,
                 Instant.parse("2026-07-14T00:00:00Z"),
                 Instant.parse("2026-07-14T00:00:00Z")
         );
@@ -57,9 +57,9 @@ class CreateHelpContentServiceTest {
 
         ArgumentCaptor<HelpContent> captor = ArgumentCaptor.forClass(HelpContent.class);
         verify(helpContentRepositoryPort).save(captor.capture());
-        assertThat(captor.getValue().version()).isEqualTo(1);
+        assertThat(captor.getValue().version()).isNull();
         assertThat(captor.getValue().key()).isEqualTo("new-tooltip");
-        assertThat(result.version()).isEqualTo(1);
+        assertThat(result.version()).isZero();
     }
 
     @Test

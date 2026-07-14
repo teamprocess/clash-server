@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,8 +31,9 @@ public class HelpContentJpaEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Version
     @Column(nullable = false)
-    private long version;
+    private Long version;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

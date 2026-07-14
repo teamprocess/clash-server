@@ -1,7 +1,7 @@
 CREATE TABLE help_contents (
     content_key VARCHAR(100) PRIMARY KEY,
     content TEXT NOT NULL,
-    version BIGINT NOT NULL DEFAULT 1,
+    version BIGINT NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -22,7 +22,7 @@ PR: 1개당 100점 (최대 5개)
 1분당 10점 (최대 10시간)
 오전 6시 갱신
 $$,
-    1
+    0
 ),
 (
     'cookie-tooltip',
@@ -39,7 +39,7 @@ EXP 하루 랭킹
 출석
 하루 출석: 300쿠키 (한 주 전체 출석 시: +700쿠키)
 $$,
-    1
+    0
 ),
 (
     'ranking-reward-tooltip',
@@ -49,25 +49,25 @@ Diamond: 50,000 EXP
 Gold: 30,000 EXP
 Silver: 10,000 EXP
 Bronze: 1,000 EXP$$,
-    1
+    0
 ),
 (
     'chapter-ranking-tooltip',
     '챕터 랭킹은 상위 20명까지 표시됩니다.',
-    1
+    0
 ),
 (
     'activity-analysis-tooltip',
     'GitHub 관련 데이터는 1시간마다 업데이트 됩니다.',
-    1
+    0
 ),
 (
     'major-change-tooltip',
     '전공 테스트와 새로운 전공을 만나보세요',
-    1
+    0
 ),
 (
     'rival-limit-tooltip',
     '최대 라이벌 수는 4명입니다.',
-    1
+    0
 );
