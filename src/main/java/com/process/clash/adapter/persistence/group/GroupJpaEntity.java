@@ -61,7 +61,7 @@ public class GroupJpaEntity {
     @Enumerated(EnumType.STRING)
     private GroupCategory category;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fk_user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "fk_user_id", nullable = true)
     private UserJpaEntity owner;
 }

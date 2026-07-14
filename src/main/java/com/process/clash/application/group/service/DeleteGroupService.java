@@ -26,6 +26,7 @@ public class DeleteGroupService implements DeleteGroupUseCase {
         Group group = groupRepositoryPort.findById(command.groupId())
             .orElseThrow(GroupNotFoundException::new);
 
+        groupPolicy.validateNotGlobal(group);
         groupPolicy.validateOwnership(command.actor(), group);
         List<Long> memberUserIds = groupRepositoryPort.findMemberUserIdsByGroupIds(List.of(group.id()));
         groupRepositoryPort.deleteById(group.id());
