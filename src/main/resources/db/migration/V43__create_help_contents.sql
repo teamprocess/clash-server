@@ -1,12 +1,12 @@
 CREATE TABLE help_contents (
-    content_key VARCHAR(100) PRIMARY KEY,
+    key VARCHAR(100) PRIMARY KEY,
     content TEXT NOT NULL,
     version BIGINT NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO help_contents (content_key, content, version)
+INSERT INTO help_contents (key, content, version)
 VALUES
 (
     'exp-tooltip',

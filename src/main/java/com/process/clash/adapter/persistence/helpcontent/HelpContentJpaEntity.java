@@ -25,7 +25,7 @@ import java.time.Instant;
 public class HelpContentJpaEntity {
 
     @Id
-    @Column(name = "content_key", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private String key;
 
     @Column(nullable = false, columnDefinition = "TEXT")

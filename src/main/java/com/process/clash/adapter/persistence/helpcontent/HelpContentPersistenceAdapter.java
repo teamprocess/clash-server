@@ -27,6 +27,7 @@ public class HelpContentPersistenceAdapter implements HelpContentRepositoryPort 
     @Override
     public HelpContent save(HelpContent helpContent) {
         HelpContentJpaEntity entity = helpContentJpaMapper.toJpaEntity(helpContent);
-        return helpContentJpaMapper.toDomain(helpContentJpaRepository.save(entity));
+        HelpContentJpaEntity saved = helpContentJpaRepository.saveAndFlush(entity);
+        return helpContentJpaMapper.toDomain(saved);
     }
 }
