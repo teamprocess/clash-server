@@ -14,13 +14,17 @@ import org.springframework.stereotype.Repository;
 public interface GroupJpaRepository extends JpaRepository<GroupJpaEntity, Long> {
 
     @EntityGraph(attributePaths = {"owner"})
-    Page<GroupJpaEntity> findAll(Pageable pageable);
+    @Query("select g from GroupJpaEntity g where g.category != :excluded")
+    Page<GroupJpaEntity> findAllExcluding(@Param("excluded") GroupCategory excluded, Pageable pageable);
 
     @EntityGraph(attributePaths = {"owner"})
     Page<GroupJpaEntity> findAllByCategory(GroupCategory category, Pageable pageable);
 
     @EntityGraph(attributePaths = {"owner"})
     Optional<GroupJpaEntity> findById(Long id);
+
+    @EntityGraph(attributePaths = {"owner"})
+    Optional<GroupJpaEntity> findByCategory(GroupCategory category);
 
     boolean existsByName(String name);
 
@@ -30,8 +34,9 @@ public interface GroupJpaRepository extends JpaRepository<GroupJpaEntity, Long> 
         from GroupJpaEntity g
         join GroupMemberJpaEntity gm on gm.group = g
         where gm.user.id = :userId
+        and g.category != :excluded
     """)
-    Page<GroupJpaEntity> findAllByMemberUserId(@Param("userId") Long userId, Pageable pageable);
+    Page<GroupJpaEntity> findAllByMemberUserId(@Param("userId") Long userId, @Param("excluded") GroupCategory excluded, Pageable pageable);
 
     @EntityGraph(attributePaths = {"owner"})
     @Query("""

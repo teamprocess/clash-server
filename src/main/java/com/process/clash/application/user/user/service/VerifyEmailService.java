@@ -1,5 +1,6 @@
 package com.process.clash.application.user.user.service;
 
+import com.process.clash.application.group.port.out.GroupRepositoryPort;
 import com.process.clash.application.mail.port.out.VerificationCodePort;
 import com.process.clash.application.user.user.data.VerifyEmailData;
 import com.process.clash.application.user.user.exception.exception.badrequest.VerificationCodeExpiredOrWrongEmailException;
@@ -10,6 +11,7 @@ import com.process.clash.application.user.user.exception.exception.notfound.User
 import com.process.clash.application.user.user.port.in.VerifyEmailUseCase;
 import com.process.clash.application.user.user.port.out.PendingUserCachePort;
 import com.process.clash.application.user.user.port.out.UserRepositoryPort;
+import com.process.clash.domain.group.enums.GroupCategory;
 import com.process.clash.domain.user.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class VerifyEmailService implements VerifyEmailUseCase {
     private final VerificationCodePort verificationCodePort;
     private final UserRepositoryPort userRepositoryPort;
     private final PendingUserCachePort pendingUserCachePort;
+    private final GroupRepositoryPort groupRepositoryPort;
 
     @Override
     @Transactional
@@ -46,7 +49,11 @@ public class VerifyEmailService implements VerifyEmailUseCase {
         }
 
         // 인증 완료 처리 후 DB 저장
-        userRepositoryPort.save(pendingUser.active());
+        User savedUser = userRepositoryPort.save(pendingUser.active());
+
+        // 전체 유저 그룹 자동 가입
+        groupRepositoryPort.findByCategory(GroupCategory.GLOBAL)
+            .ifPresent(g -> groupRepositoryPort.addMember(g.id(), savedUser.id()));
 
         // Redis 정리
         pendingUserCachePort.delete(command.token());

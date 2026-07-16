@@ -1,9 +1,9 @@
 <p>
-  <img src="docs/assets/clash-background.svg" width="100%" alt="Clash" />
+  <img src="./.github/clash-background.svg" width="100%" alt="Clash" />
 </p>
 
 <h1>
-  <img src="./docs/assets/readme-title.svg" alt="Clash Server" />
+  <img src="./.github/assets/readme-title.svg" alt="Clash Server" />
 </h1>
 
 **학습 기록 기반 경쟁 애플리케이션, Clash**
@@ -113,5 +113,5 @@ clash-server
 ├── Dockerfile
 ├── docker-compose.yml
 ├── build.gradle
-└── docs/assets
+└── .github/assets        # README 전용 에셋
 ```

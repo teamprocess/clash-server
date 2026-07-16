@@ -38,7 +38,7 @@ public class GroupJpaMapper {
                 groupJpaEntity.getPassword(),
                 groupJpaEntity.getPasswordRequired(),
                 groupJpaEntity.getCategory(),
-                groupJpaEntity.getOwner().getId()
+                groupJpaEntity.getOwner() != null ? groupJpaEntity.getOwner().getId() : null
         );
     }
 }

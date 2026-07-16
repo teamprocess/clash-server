@@ -67,6 +67,12 @@ public enum GroupStatusCode implements StatusCode {
         "DUPLICATE_GROUP_NAME",
         "이미 사용 중인 그룹 이름입니다.",
         HttpStatus.CONFLICT
+    ),
+
+    CANNOT_QUIT_GLOBAL_GROUP(
+        "CANNOT_QUIT_GLOBAL_GROUP",
+        "전체 유저 그룹에서는 탈퇴할 수 없습니다.",
+        HttpStatus.CONFLICT
     );
 
     private final String code;
