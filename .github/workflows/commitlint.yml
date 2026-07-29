@@ -3,7 +3,7 @@ name: Commit Message Lint
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   commitlint:
