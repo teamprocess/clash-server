@@ -20,54 +20,12 @@ public class SectionJpaMapper {
     private final ChapterJpaMapper chapterJpaMapper;
     private final SectionKeyPointJpaMapper sectionKeyPointJpaMapper;
     private final CategoryJpaMapper categoryJpaMapper;
-    private final SectionJpaRepository sectionJpaRepository;
 
-    public SectionJpaEntity toJpaEntity(Section section) {
-        SectionJpaEntity sectionEntity = new SectionJpaEntity(
-                section.getId(),
-                section.getMajor(),
-                section.getTitle(),
-                section.getDescription(),
-                categoryJpaMapper.toJpaEntity(section.getCategory()),
-                section.getOrderIndex(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new HashSet<>(),
-                section.getCreatedAt(), // createdAt
-                section.getUpdatedAt()  // updatedAt
-        );
-
-        // null 안전성: section.getChapters()가 null이면 빈 리스트로 처리
-        List<ChapterJpaEntity> chapters = (section.getChapters() != null)
-                ? section.getChapters().stream()
-                .map(c -> chapterJpaMapper.toEntity(c, sectionEntity)).toList() :
-                new ArrayList<>();
-
-        List<SectionKeyPointJpaEntity> keyPoints = (section.getKeyPoints() != null)
-                ? section.getKeyPoints().stream().map(k -> sectionKeyPointJpaMapper.toJpaEntity(k, sectionEntity)).toList() :
-                new ArrayList<>();
-
-        sectionEntity.getChapters().addAll(chapters);
-        sectionEntity.getKeyPoints().addAll(keyPoints);
-
-        if (section.getPrerequisites() != null && !section.getPrerequisites().isEmpty()) {
-            // DB에서 managed 엔티티를 가져와서 사용 (transient 엔티티 생성 방지)
-            List<Long> prerequisiteIds = section.getPrerequisites().stream()
-                    .map(Section::getId)
-                    .toList();
-            List<SectionJpaEntity> managedPrerequisites = sectionJpaRepository.findAllById(prerequisiteIds);
-            sectionEntity.getPrerequisites().addAll(managedPrerequisites);
-        }
-
-        return sectionEntity;
-    }
-
-    public SectionJpaEntity toJpaEntity(Section section, Map<Long, CategoryJpaEntity> categoryMap) {
-        CategoryJpaEntity categoryEntity = categoryMap.get(section.getCategory().getId());
-        if (categoryEntity == null) {
-            throw new RuntimeException("Category not found: " + section.getCategory().getId());
-        }
-
+    public SectionJpaEntity toJpaEntity(
+            Section section,
+            CategoryJpaEntity categoryEntity,
+            Set<SectionJpaEntity> prerequisites
+    ) {
         SectionJpaEntity sectionEntity = new SectionJpaEntity(
                 section.getId(),
                 section.getMajor(),
@@ -77,7 +35,7 @@ public class SectionJpaMapper {
                 section.getOrderIndex(),
                 new ArrayList<>(),
                 new ArrayList<>(),
-                new HashSet<>(),
+                new HashSet<>(prerequisites),
                 section.getCreatedAt(), // createdAt
                 section.getUpdatedAt()  // updatedAt
         );
@@ -94,15 +52,6 @@ public class SectionJpaMapper {
 
         sectionEntity.getChapters().addAll(chapters);
         sectionEntity.getKeyPoints().addAll(keyPoints);
-
-        if (section.getPrerequisites() != null && !section.getPrerequisites().isEmpty()) {
-            // DB에서 managed 엔티티를 가져와서 사용 (transient 엔티티 생성 방지)
-            List<Long> prerequisiteIds = section.getPrerequisites().stream()
-                    .map(Section::getId)
-                    .toList();
-            List<SectionJpaEntity> managedPrerequisites = sectionJpaRepository.findAllById(prerequisiteIds);
-            sectionEntity.getPrerequisites().addAll(managedPrerequisites);
-        }
 
         return sectionEntity;
     }

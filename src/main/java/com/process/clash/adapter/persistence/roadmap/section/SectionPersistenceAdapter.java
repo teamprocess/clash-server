@@ -12,6 +12,7 @@ import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.Chapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,9 +32,12 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
             // 카테고리 조회
             CategoryJpaEntity categoryEntity = categoryJpaRepository.findById(section.getCategory().getId())
                     .orElseThrow(CategoryNotFoundException::new);
-            Map<Long, CategoryJpaEntity> categoryMap = Map.of(section.getCategory().getId(), categoryEntity);
 
-            SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(section, categoryMap);
+            SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(
+                    section,
+                    categoryEntity,
+                    resolveManagedPrerequisites(section.getPrerequisites())
+            );
             SectionJpaEntity saved = sectionJpaRepository.save(newEntity);
             return sectionJpaMapper.toDomain(saved);
         }
@@ -88,7 +92,15 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
                 allEntities.add(entity);
             } else {
                 // 신규 객체만 saveAll로 저장
-                SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(domain, categoryMap);
+                CategoryJpaEntity categoryEntity = categoryMap.get(domain.getCategory().getId());
+                if (categoryEntity == null) {
+                    throw new CategoryNotFoundException();
+                }
+                SectionJpaEntity newEntity = sectionJpaMapper.toJpaEntity(
+                        domain,
+                        categoryEntity,
+                        resolveManagedPrerequisites(domain.getPrerequisites())
+                );
                 newEntities.add(newEntity);
                 allEntities.add(newEntity);
             }
@@ -112,8 +124,11 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Section> findAllById(List<Long> ids) {
-        return sectionJpaRepository.findAllById(ids).stream().map(sectionJpaMapper::toDomain).toList();
+        return sectionJpaRepository.findAllReferencesById(ids).stream()
+                .map(sectionJpaMapper::toDomain)
+                .toList();
     }
 
     @Override
@@ -194,19 +209,32 @@ public class SectionPersistenceAdapter implements SectionRepositoryPort {
         // CreateSection은 toJpaEntity()에서 cascade로 처리됨
 
         // 4. Prerequisites (선수 로드맵) 교체
-        // ManyToMany는 관계 테이블만 관리하므로, 보통 ID 조회 후 Set 교체 방식을 써도 무방함
         if (domain.getPrerequisites() != null) {
-            List<Long> prereqIds = domain.getPrerequisites().stream()
-                    .map(Section::getId)
-                    .toList();
-
-            if (!prereqIds.isEmpty()) {
-                // DB에서 실제 엔티티를 조회하여 영속성 컨텍스트가 관리하는 객체로 세팅
-                Set<SectionJpaEntity> managedPrereqs = new HashSet<>(sectionJpaRepository.findAllById(prereqIds));
-                entity.updatePrerequisites(managedPrereqs);
-            } else {
-                entity.updatePrerequisites(new HashSet<>());
-            }
+            entity.updatePrerequisites(resolveManagedPrerequisites(domain.getPrerequisites()));
         }
+    }
+
+    private Set<SectionJpaEntity> resolveManagedPrerequisites(Set<Section> prerequisites) {
+        if (prerequisites == null || prerequisites.isEmpty()) {
+            return Set.of();
+        }
+
+        Set<Long> prerequisiteIds = prerequisites.stream()
+                .map(Section::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        if (prerequisiteIds.size() != prerequisites.size()) {
+            throw new SectionNotFoundException();
+        }
+
+        List<SectionJpaEntity> managedPrerequisites = sectionJpaRepository
+                .findAllReferencesById(prerequisiteIds);
+
+        if (managedPrerequisites.size() != prerequisiteIds.size()) {
+            throw new SectionNotFoundException();
+        }
+
+        return new HashSet<>(managedPrerequisites);
     }
 }

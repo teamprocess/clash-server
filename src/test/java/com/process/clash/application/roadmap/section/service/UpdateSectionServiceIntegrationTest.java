@@ -5,10 +5,14 @@ import com.process.clash.application.roadmap.category.data.CreateCategoryData;
 import com.process.clash.application.roadmap.category.port.in.CreateCategoryUseCase;
 import com.process.clash.application.roadmap.section.data.CreateSectionData;
 import com.process.clash.application.roadmap.section.data.UpdateSectionData;
+import com.process.clash.application.roadmap.section.exception.exception.notfound.SectionNotFoundException;
 import com.process.clash.application.roadmap.section.port.in.CreateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.in.UpdateSectionUseCase;
 import com.process.clash.application.roadmap.section.port.out.SectionKeyPointRepositoryPort;
+import com.process.clash.application.roadmap.section.port.out.SectionRepositoryPort;
 import com.process.clash.domain.common.enums.Major;
+import com.process.clash.domain.roadmap.entity.Category;
+import com.process.clash.domain.roadmap.entity.Section;
 import com.process.clash.domain.roadmap.entity.SectionKeyPoint;
 import com.process.clash.domain.user.user.enums.Role;
 import jakarta.persistence.EntityManager;
@@ -24,8 +28,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * UpdateSectionService의 keyPoints 업데이트 시 JPA Cascade와의 충돌 여부를 확인하는 통합 테스트
@@ -51,6 +57,9 @@ public class UpdateSectionServiceIntegrationTest {
 
     @Autowired
     private SectionKeyPointRepositoryPort keyPointRepository;
+
+    @Autowired
+    private SectionRepositoryPort sectionRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -136,6 +145,53 @@ public class UpdateSectionServiceIntegrationTest {
         System.out.println("Entity Update Count: " + statistics.getEntityUpdateCount());
         System.out.println("Query Execution Count: " + statistics.getQueryExecutionCount());
         System.out.println("===========================");
+    }
+
+    @Test
+    @DisplayName("선수 Section은 영속 엔티티로 연결하여 저장한다")
+    void saveSection_withPrerequisite_shouldPersistRelationship() {
+        CreateCategoryData.Result categoryResult = createCategoryUseCase.execute(
+                new CreateCategoryData.Command(adminActor, "BASIC")
+        );
+        CreateSectionData.Result prerequisiteResult = createSectionUseCase.execute(new CreateSectionData.Command(
+                adminActor, Major.SERVER, "Prerequisite", categoryResult.categoryId(), "", List.of()
+        ));
+        CreateSectionData.Result targetResult = createSectionUseCase.execute(new CreateSectionData.Command(
+                adminActor, Major.SERVER, "Target", categoryResult.categoryId(), "", List.of()
+        ));
+
+        updateSectionUseCase.execute(new UpdateSectionData.Command(
+                adminActor, targetResult.sectionId(), null, null, null, null, null,
+                List.of(prerequisiteResult.sectionId())
+        ));
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Section savedTarget = sectionRepository.findById(targetResult.sectionId()).orElseThrow();
+        assertThat(savedTarget.getPrerequisites())
+                .extracting(Section::getId)
+                .containsExactly(prerequisiteResult.sectionId());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 선수 Section은 저장하지 않는다")
+    void saveSection_withMissingPrerequisite_shouldFail() {
+        CreateCategoryData.Result categoryResult = createCategoryUseCase.execute(
+                new CreateCategoryData.Command(adminActor, "BASIC")
+        );
+        Category category = new Category(categoryResult.categoryId(), "BASIC", null, null, null);
+        Section missingPrerequisite = new Section(
+                Long.MAX_VALUE, Major.SERVER, "Missing", "", category, 0,
+                List.of(), List.of(), Set.of(), null, null
+        );
+        Section newSection = new Section(
+                null, Major.SERVER, "Target", "", category, 0,
+                List.of(), List.of(), Set.of(missingPrerequisite), null, null
+        );
+
+        assertThatThrownBy(() -> sectionRepository.save(newSection))
+                .isInstanceOf(SectionNotFoundException.class);
     }
 
     @Test
