@@ -13,6 +13,7 @@ import com.process.clash.application.github.service.StudyDateCalculator;
 import com.process.clash.domain.github.entity.GitHubDailyStats;
 import java.io.IOException;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
@@ -36,6 +38,7 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
 
     private static final DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ISO_INSTANT;
     private static final int PAGE_SIZE = 100;
+    private static final Duration GRAPHQL_QUERY_TIMEOUT = Duration.ofMinutes(2);
 
     private final WebClient githubWebClient;
     private final ObjectMapper objectMapper;
@@ -695,6 +698,12 @@ public class GithubGraphqlAdapter implements GithubStatsFetchPort {
                         .bodyValue(request)
                         .retrieve()
                         .bodyToMono(String.class)
+                        // GitHub 응답이 멈춰도 전체 동기화 잠금이 무기한 유지되지 않도록 요청 전체에 제한을 둡니다.
+                        .timeout(GRAPHQL_QUERY_TIMEOUT)
+                        .onErrorMap(TimeoutException.class, ex -> {
+                            log.warn("GitHub GraphQL 요청 시간이 초과되었습니다. query={}", queryName);
+                            return new GithubGraphqlRequestFailedException(ex);
+                        })
                         .block();
 
                 JsonNode root = objectMapper.readTree(response);
